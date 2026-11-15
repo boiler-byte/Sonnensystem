@@ -1,11 +1,11 @@
-# ORBITAL – 3D-Sonnensystematlas
+# Sonnensystem – 3D-Sonnensystematlas (v2)
 
 Eine responsive **WebGL-App ohne externe JavaScript-Bibliotheken oder Build-Schritt**. Sie visualisiert Sonne, Planeten, Monde, Zwergplaneten, ausgewählte Asteroiden und künstliche Satelliten. Daten der vier genannten APIs werden **serverseitig** abgerufen und im Browser zusammengeführt.
 
 ## Start (Node.js 20 oder neuer)
 
 ```bash
-cd helio-webgl
+cd sonnensystem-v2  # bei einem Delta-Update alternativ: cd helio-webgl
 node server.mjs
 ```
 
@@ -44,6 +44,27 @@ Alle Datenabrufe laufen über `/api/...` auf dem lokalen Node-Server. Dadurch is
 - `GET /api/satellites` – CelesTrak-Gruppe STATIONS als JSON
 - `GET /api/horizons?target=399&date=2026-11-15` – ekliptikaler Positionsvektor der Erde um 00:00 UTC
 
+## PWA und Offline-Modus (v2)
+
+Die App besitzt ein Web App Manifest, Installations-Icons (192/512 px und Apple-Touch-Icon)
+und einen Service Worker. Die statischen App-Dateien werden nach dem ersten erfolgreichen Online-Aufruf
+lokal zwischengespeichert. Damit funktionieren die **eingebauten Himmelskörper und die WebGL-Ansicht** auch
+bei nicht erreichbarem Server – API-Abfragen bleiben dann offline und liefern keine neuen Daten.
+
+- **Lokal:** `http://localhost:4173` im Browser öffnen; localhost gilt für Service Worker als sicherer Ursprung.
+- **Produktiv:** App hinter HTTPS bereitstellen. Die Node.js-API muss auf derselben Domain erreichbar sein.
+- **Installieren:** Im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“ auswählen, sofern angeboten.
+- **Updates:** Bei neuer App-Version neu laden; der Service Worker ersetzt den alten statischen Cache.
+- **Datenschutz:** Der Service Worker speichert *keine* NASA-, CelesTrak- oder API-Antworten offline.
+
+### Mobile Navigation
+
+Auf Geräten bis 770 px Breite erscheint unten ein standardmäßig geschlossenes **Bottom Sheet**.
+Ziehe am oberen Griff nach oben bzw. unten oder tippe auf ihn, um zwischen geschlossen, halb und voll zu wechseln.
+Über „Objekte“, „Details“ und „Zeit“ lässt sich der geöffnete Bereich wechseln. Ein Tipp auf einen Himmelskörper
+öffnet automatisch dessen Details. Durch Tippen auf die 3D-Fläche bleibt die Kamerasteuerung erreichbar,
+wenn das Sheet nicht vollflächig geöffnet ist.
+
 ## Bedienung
 
 - **Maus ziehen / Touch**: Kamera drehen; **Mausrad**: zoomen; **Rechtsklick + ziehen**: verschieben.
@@ -68,7 +89,8 @@ Horizons-Vektoren sind präzise Daten für **00:00 UTC des angegebenen Datums**,
 - `styles.css` – responsive Gestaltung
 - `data.js` – eingebaute Beispielobjekte und Objektdefinitionen
 - `renderer.js` – eigenständiger WebGL-Renderer (Shader, Licht, Kamera, Bahnen, Labels)
-- `app.js` – Suche, Auswahl, Datenintegration, Zeitleiste
+- `app.js` – Suche, Auswahl, Datenintegration, Zeitleiste und Bottom-Sheet-Interaktion
 - `server.mjs` – Node-HTTP-Server und API-Proxies mit Cache
+- `manifest.webmanifest`, `sw.js`, `icons/` – PWA-Installation und Offline-App-Shell
 
 Keine Frameworks, externen CDNs, Fonts oder Bilder erforderlich. Firefox/Chromium/Edge mit WebGL-Unterstützung empfohlen.

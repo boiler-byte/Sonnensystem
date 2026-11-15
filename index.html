@@ -2,20 +2,25 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
-  <title>ORBITAL — Interaktiver Sonnensystematlas</title>
+  <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Sonnensystem" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div class="brand"><span class="brandmark"><i></i><i></i><b></b></span><div><strong>ORBITAL<span class="brand-dot">.</span></strong><small>SONNENSYSTEM ATLAS</small></div></div>
+      <div class="brand"><span class="brandmark"><i></i><i></i><b></b></span><div><strong>Sonnensystem<span class="brand-dot">.</span></strong><small>INTERAKTIVER 3D-ATLAS</small></div></div>
       <div class="header-separator"></div>
-      <div class="header-meta"><span class="meta-spark">✦</span> INTERAKTIVES OBSERVATORIUM <span class="header-version">/ V1.0</span></div>
-      <div class="top-actions"><span class="live-pill"><span class="live-pulse"></span> WEBGL AKTIV</span><button class="icon-button" id="help-btn" aria-label="Bedienung anzeigen" title="Hilfe">?</button><button class="icon-button mobile-menu" id="mobile-menu" title="Katalog öffnen" aria-label="Katalog öffnen">☰</button></div>
+      <div class="header-meta"><span class="meta-spark">✦</span> INTERAKTIVES OBSERVATORIUM <span class="header-version">/ V2.0</span></div>
+      <div class="top-actions"><span class="live-pill"><span class="live-pulse"></span> WEBGL AKTIV</span><button class="icon-button" id="help-btn" aria-label="Bedienung anzeigen" title="Hilfe">?</button><button class="icon-button mobile-menu" id="mobile-menu" title="Objekte öffnen" aria-label="Objekte öffnen">☰</button></div>
     </header>
     <main class="shell">
       <aside class="catalog" id="catalog">
@@ -30,17 +35,30 @@
         <canvas id="space" aria-label="WebGL Sonnensystem"></canvas>
         <div class="space-glow" id="space-glow"></div>
         <canvas id="labels-canvas" aria-hidden="true"></canvas>
-        <div class="viewport-title"><span class="eyebrow">LIVE-RENDERING / 3D SZENE</span><h1>Das Sonnensystem<span class="title-period">.</span></h1><p>Eine Reise durch Raum und Zeit</p></div>
+        <h1 class="sr-only">Sonnensystem</h1>
         <div class="viewport-topright"><span class="view-mode"><span class="small-cross">✳</span> HELIOZENTRISCHE ANSICHT</span><span class="scale-warning">NICHT MASSSTABSGETREU</span></div>
         <div class="camera-hints"><span><span class="hint-icon">↔</span> Drehen</span><span><span class="hint-icon">＋</span> Zoomen</span><span><span class="hint-icon">⌕</span> Objekt wählen</span></div>
         <div class="scene-tools"><button class="scene-tool active" id="toggle-orbits" title="Umlaufbahnen ein/aus">◎ <span>Bahnen</span></button><button class="scene-tool active" id="toggle-labels" title="Beschriftungen ein/aus">Aa <span>Namen</span></button><button class="scene-tool" id="reset-camera" title="Kamera zurücksetzen">⤾ <span>Übersicht</span></button></div>
-        <div class="time-panel"><div class="timeline-heading"><span class="eyebrow">ZEITREISE</span><span id="sim-date-readout">15. NOVEMBER 2026</span></div><div class="timeline-controls"><button class="play-button" id="play-btn" aria-label="Zeit anhalten oder starten">Ⅱ</button><div class="date-field"><span>DATUM</span><input id="date-input" aria-label="Simulationsdatum" type="date" value="2026-11-15" /></div><div class="speed-control"><div class="speed-line"><span>SIMULATION</span><strong id="speed-readout">10 Tage / s</strong></div><input id="speed" type="range" min="0" max="5" step="1" value="2" aria-label="Simulationsgeschwindigkeit" /></div><button class="now-button" id="today-btn">Heute ↗</button></div></div>
+        <div class="time-panel" id="time-panel"><div class="timeline-heading"><span class="eyebrow">ZEITREISE</span><span id="sim-date-readout">15. NOVEMBER 2026</span></div><div class="timeline-controls"><button class="play-button" id="play-btn" aria-label="Zeit anhalten oder starten">Ⅱ</button><div class="date-field"><span>DATUM</span><input id="date-input" aria-label="Simulationsdatum" type="date" value="2026-11-15" /></div><div class="speed-control"><div class="speed-line"><span>SIMULATION</span><strong id="speed-readout">10 Tage / s</strong></div><input id="speed" type="range" min="0" max="5" step="1" value="2" aria-label="Simulationsgeschwindigkeit" /></div><button class="now-button" id="today-btn">Heute ↗</button></div></div>
         <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
       </section>
       <aside class="detail" id="detail"><div class="detail-top"><span class="eyebrow">02 / OBJEKTDETAILS</span><span class="detail-index" id="detail-index">01 / 09</span></div><div class="detail-scroll"><div class="detail-hero"><div class="hero-orbit ring1"></div><div class="hero-orbit ring2"></div><div id="hero-body" class="hero-body earth"><div class="hero-shade"></div></div><span class="hero-ref">ZIEL / <b id="hero-target">SOL–003</b></span></div><div class="object-type"><span class="type-dot" id="type-dot"></span><span id="detail-type">PLANET</span><span class="object-origin" id="detail-origin">SONNENSYSTEM</span></div><h2 id="detail-name">Erde</h2><p id="detail-description" class="detail-description"></p><div class="detail-divider"></div><div class="facts-title">PHYSIKALISCHE DATEN <span>↗</span></div><div id="stats-grid" class="stats-grid"></div><div class="detail-divider"></div><div class="facts-title">ORBIT & ZUGEHÖRIGKEIT</div><div class="orbit-facts" id="orbit-facts"></div><div id="related" class="related"></div><div class="detail-divider"></div><div class="facts-title">PRÄZISIONSDATEN</div><button id="horizons-btn" class="horizons-btn"><span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span></button><p class="source-hint" id="horizons-note">Position für das gewählte Datum von NASA/JPL abrufen.</p></div><div class="detail-sources"><div class="source-head"><span>DATENQUELLEN</span><span>LIVE / FALLBACK</span></div><div class="source-status" id="source-status"></div></div></div></aside>
     </main>
+    <!-- Auf Mobilgeräten werden die bestehenden drei Menüs ohne Duplikate hierher verschoben. -->
+    <div class="mobile-sheet-scrim" id="mobile-sheet-scrim" hidden></div>
+    <section class="mobile-sheet" id="mobile-sheet" data-snap="closed" aria-label="Menüs: Objekte, Details und Zeit">
+      <div class="sheet-header" id="sheet-header">
+        <button class="sheet-handle" id="sheet-handle" type="button" aria-label="Menü hochziehen oder schließen" aria-controls="sheet-content" aria-expanded="false"><span class="sheet-grabber" aria-hidden="true"></span></button>
+        <nav class="sheet-tabs" aria-label="Mobile Menüs">
+          <button type="button" class="sheet-tab" data-sheet-panel="catalog" aria-controls="catalog" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">☷</span> Objekte</button>
+          <button type="button" class="sheet-tab active" data-sheet-panel="detail" aria-controls="detail" aria-pressed="true"><span class="sheet-tab-icon" aria-hidden="true">◉</span> Details</button>
+          <button type="button" class="sheet-tab" data-sheet-panel="time" aria-controls="time-panel" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">◷</span> Zeit</button>
+        </nav>
+      </div>
+      <div class="sheet-content" id="sheet-content"></div>
+    </section>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div class="modal-backdrop" id="help-modal" hidden><div class="help-modal"><div class="modal-top"><span class="eyebrow">ORBITAL / ANLEITUNG</span><button id="help-close" class="icon-button" aria-label="Schließen">✕</button></div><h2>Dein Observatorium</h2><p>Drehe und zoome die 3D-Ansicht mit der Maus oder per Touch. Klicke einen Himmelskörper oder wähle ihn links aus.</p><div class="help-grid"><div><b>01 — Navigation</b><span>Ziehen: Kamera drehen. Mausrad: zoomen. Rechtsklick + ziehen: verschieben.</span></div><div><b>02 — Zeitreise</b><span>Wähle ein Datum und steuere die Geschwindigkeit der Umläufe.</span></div><div><b>03 — Live-Daten</b><span>Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizons laufen über den lokalen Server.</span></div><div><b>04 — Darstellung</b><span>Bahnen und Körpergrößen sind aus Gründen der Lesbarkeit stark skaliert. Satellitenpositionen sind nur angenähert.</span></div></div><button class="modal-confirm" id="help-confirm">Verstanden <span>↗</span></button></div></div>
+    <div class="modal-backdrop" id="help-modal" hidden><div class="help-modal"><div class="modal-top"><span class="eyebrow">SONNENSYSTEM / ANLEITUNG</span><button id="help-close" class="icon-button" aria-label="Schließen">✕</button></div><h2>Dein Observatorium</h2><p>Drehe und zoome die 3D-Ansicht mit der Maus oder per Touch. Auf dem Smartphone kannst du die Menüs am unteren Rand nach oben ziehen und zwischen Objekten, Details und Zeit wechseln.</p><div class="help-grid"><div><b>01 — Navigation</b><span>In der 3D-Ansicht ziehen: drehen. Mausrad oder Touch-Geste: zoomen. Desktop: Rechtsklick + ziehen zum Verschieben.</span></div><div><b>02 — Zeitreise</b><span>Wähle ein Datum und steuere die Geschwindigkeit der Umläufe.</span></div><div><b>03 — Live-Daten</b><span>Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizons laufen über den lokalen Server.</span></div><div><b>04 — Darstellung</b><span>Bahnen und Körpergrößen sind aus Gründen der Lesbarkeit stark skaliert. Satellitenpositionen sind nur angenähert.</span></div></div><button class="modal-confirm" id="help-confirm">Verstanden <span>↗</span></button></div></div>
   </div>
   <script type="module" src="app.js"></script>
 </body>

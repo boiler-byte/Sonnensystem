@@ -1,5 +1,5 @@
 /**
- * ORBITAL / Zero-dependency development and production server.
+ * Sonnensystem / Zero-dependency development and production server.
  * Node.js >= 20. Calls to all four providers run SERVER-SIDE (no browser CORS issues).
  * Caches and serializes JPL queries to respect NASA/JPL fair-use rules.
  */
@@ -20,7 +20,7 @@ const PORT = Number(process.env.PORT) || 4173;
 const KEY = process.env.SOLAR_SYSTEM_API_KEY || '';
 const NASA_CONTACT = (process.env.NASA_CONTACT_EMAIL || '').trim();
 const NASA_CONTACT_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(NASA_CONTACT);
-const userAgent = `OrbitalAtlas/1.0 (contact: ${NASA_CONTACT || 'not-configured'})`;
+const userAgent = `Sonnensystem/2.0 (contact: ${NASA_CONTACT || 'not-configured'})`;
 const cache = new Map();
 let nasaQueue = Promise.resolve();
 
@@ -132,20 +132,20 @@ async function handler(req, res) {
       const [xKm,yKm,zKm] = parseVector(result.result || '');
       return json(res, 200, { provider:'NASA/JPL Horizons', target,date, center: target === '301' ? 'earth' : 'sun',frame:'ecliptic',xKm,yKm,zKm });
     }
-    // Serve only the four app assets. No user-controlled path traversal.
-    const files = { '/':'index.html','/index.html':'index.html','/app.js':'app.js','/data.js':'data.js','/renderer.js':'renderer.js','/styles.css':'styles.css','/favicon.svg':'favicon.svg' };
+    // Serve only explicitly allowlisted app assets, including PWA files. No path traversal.
+    const files = { '/':'index.html','/index.html':'index.html','/app.js':'app.js','/data.js':'data.js','/renderer.js':'renderer.js','/styles.css':'styles.css','/favicon.svg':'favicon.svg', '/manifest.webmanifest':'manifest.webmanifest', '/sw.js':'sw.js', '/icons/icon-192.png':'icons/icon-192.png', '/icons/icon-512.png':'icons/icon-512.png', '/icons/icon-180.png':'icons/icon-180.png' };
     const file = files[url.pathname];
     if (!file) return json(res,404,err(404,'Nicht gefunden'));
-    const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml'};
+    const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'};
     const bytes = await readFile(join(ROOT,file));
-    res.writeHead(200,{'Content-Type':mime[extname(file)] || 'application/octet-stream','Cache-Control':'no-cache','X-Content-Type-Options':'nosniff'});
+    res.writeHead(200,{'Content-Type':mime[extname(file)] || 'application/octet-stream','Cache-Control':url.pathname==='/sw.js'?'no-store':'no-cache','X-Content-Type-Options':'nosniff'});
     res.end(bytes);
   } catch (error) {
-    console.error('[ORBITAL]', url.pathname, describeError(error));
+    console.error('[Sonnensystem]', url.pathname, describeError(error));
     json(res,502,err(502,describeError(error)));
   }
 }
 createServer(handler).listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  ORBITAL Sonnensystem Atlas: http://localhost:${PORT}\n`);
+  console.log(`\n  Sonnensystem / WebGL & PWA: http://localhost:${PORT}\n`);
   console.log(`  Solar OpenData: ${KEY ? 'API-Key konfiguriert' : 'Ohne Key (integrierte Startdaten)'}\n`);
 });
