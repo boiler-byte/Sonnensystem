@@ -1,0 +1,14 @@
+{
+  "name": "orbital-solar-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Interaktives WebGL-Sonnensystem mit Solar System OpenData, NASA JPL und CelesTrak",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "check": "node --check server.mjs && node --check app.js && node --check data.js && node --check renderer.js && node test.mjs"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {}
+}
