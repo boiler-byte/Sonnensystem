@@ -229,3 +229,138 @@
   .sheet-content>.detail .detail-tabs{margin:14px 0 17px}
   .sheet-content>.detail .detail-top{display:flex}
 }
+
+/* v14: narrow vertical control panel; the same controls move into mobile tab 3. */
+@media(min-width:771px){
+  .viewport>.control-panel{
+    width:184px;max-width:calc(100% - 26px);right:15px;top:16px;
+    gap:9px;padding:12px;align-items:stretch;
+  }
+  .control-panel .time-panel .timeline-controls{
+    display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
+  }
+  .control-panel .time-panel .timeline-button{min-height:42px;height:42px;width:100%}
+  .control-panel .time-panel .speed-button{justify-content:space-between;padding:0 11px}
+  .control-panel .time-panel .now-button{justify-content:center;padding:0 6px}
+  .control-panel .time-panel .speed-popover{
+    top:-75px;left:auto;right:calc(100% + 14px);bottom:auto;
+    width:210px;transform:none;
+  }
+}
+/* SVG-only scene tools keep their accessible labels in aria-label/title. */
+.control-panel .scene-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding-top:9px}
+.control-panel .scene-tool{min-width:0;min-height:39px;padding:6px;gap:0}
+.scene-tool svg{display:block;width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.mobile-overview{display:none}
+@media(min-width:771px) and (max-width:1030px){
+  .viewport>.control-panel{width:180px;top:12px;right:13px}
+  .detail{top:395px}
+}
+@media(max-width:770px){
+  /* On mobile only the overview action remains over the 3D canvas. */
+  .viewport>.control-panel{display:none!important}
+  .mobile-overview{
+    display:flex;position:absolute;right:max(14px,env(safe-area-inset-right));
+    bottom:calc(var(--sheet-overlay-visible,72px) + 14px);z-index:10;pointer-events:auto;
+    transition:bottom .28s cubic-bezier(.22,.82,.24,1);
+  }
+  .mobile-overview.dragging{transition:none}
+  .mobile-overview .scene-tool{
+    width:46px;height:46px;min-height:46px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    background:#172437ed;border:1px solid #5b6d83;border-radius:11px;
+    color:#e5c498;box-shadow:0 7px 27px #0009;backdrop-filter:blur(12px);
+  }
+  .mobile-overview .scene-tool:hover{background:#26384b;color:#ffe1ad}
+  .sheet-content>.control-panel{
+    position:static!important;inset:auto!important;display:flex!important;
+    flex:1;flex-direction:column;align-items:stretch;gap:13px;
+    min-width:0;width:100%!important;max-width:none;height:auto;min-height:0;
+    overflow-y:auto;overscroll-behavior:contain;
+    padding:21px 19px calc(29px + env(safe-area-inset-bottom))!important;
+    margin:0;border:0;border-radius:0;background:none;box-shadow:none;
+    backdrop-filter:none;text-align:left;pointer-events:auto;
+  }
+  .sheet-content>.control-panel .view-mode-select{min-height:44px;font-size:12px}
+  .sheet-content>.control-panel .time-panel{
+    display:block!important;position:static!important;inset:auto!important;
+    width:100%;height:auto;min-width:0;min-height:0;overflow:visible;
+    margin:0!important;padding:0!important;background:none!important;border:0!important;
+    box-shadow:none!important;
+  }
+  .sheet-content>.control-panel .timeline-controls{
+    display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:0;
+  }
+  .sheet-content>.control-panel .timeline-button{
+    width:100%;height:46px;min-height:46px;justify-content:center;
+  }
+  .sheet-content>.control-panel .speed-picker-wrap{width:100%}
+  .sheet-content>.control-panel .speed-button{padding:0 14px;justify-content:space-between}
+  .sheet-content>.control-panel .now-button{justify-content:center;padding:0 10px;gap:9px}
+  .sheet-content>.control-panel .speed-popover{
+    position:relative;top:auto;left:auto;right:auto;bottom:auto;
+    transform:none;width:min(100%,250px);margin:11px auto 0;
+  }
+  .sheet-content>.control-panel .scene-tools{
+    display:grid;position:static;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;padding-top:14px;border-top:1px solid #2b3c50;
+  }
+  .sheet-content>.control-panel .scene-tool{min-height:47px;justify-content:center}
+  .sheet-content>.control-panel .scene-tool svg{width:23px;height:23px}
+  /* Desktop overview is moved into the floating slot, never duplicated. */
+  .sheet-content>.control-panel #reset-camera{display:none!important}
+}
+@media(max-width:550px){
+  .mobile-overview{bottom:calc(var(--sheet-overlay-visible,72px) + 14px)}
+}
+
+
+/* v15: 40% narrower desktop toolbar, label-free view picker and accessible layer dropdown. */
+@media(min-width:771px){
+  .viewport>.control-panel{width:110px;max-width:calc(100% - 24px);padding:8px;gap:8px;right:13px;top:14px}
+  .control-panel .view-mode-select{padding:7px 21px 7px 6px;min-height:37px;font-size:9px;background-position:right 5px center}
+  .control-panel .time-panel .timeline-controls{gap:7px}
+  .control-panel .time-panel .timeline-button{min-height:41px;height:auto;min-width:0;padding:7px 3px}
+  .control-panel .time-panel .speed-button{padding:0 6px;min-height:41px}
+  .control-panel .time-panel .speed-button-copy small{font-size:9px}
+  .control-panel .time-panel .now-button{flex-wrap:wrap;column-gap:3px;row-gap:0;padding:4px 3px;min-height:52px}
+  .control-panel .time-panel .now-button time{font-size:9px;white-space:normal;overflow-wrap:normal;line-height:1.3;text-align:center}
+  .control-panel .time-panel .now-button span{font-size:15px}
+  .control-panel .scene-tools{gap:4px;padding-top:8px}
+  .control-panel .scene-tool{min-height:34px;padding:4px 2px}
+  .control-panel .scene-tool svg{width:19px;height:19px}
+  .control-panel .time-panel .speed-popover{right:calc(100% + 12px)}
+}
+@media(min-width:771px) and (max-width:1030px){.detail{top:315px}}
+/* The native select keeps its full accessible name while the visible caption is suppressed. */
+.control-panel .control-label.sr-only{position:absolute!important}
+.layer-picker-wrap{position:relative;min-width:0;width:100%}
+.layer-button{width:100%;min-height:38px;min-width:0;display:flex;gap:3px;align-items:center;justify-content:center;padding:5px 3px;border:1px solid #405269;border-radius:7px;background:#172739;color:#dec199;cursor:pointer;font:inherit}
+.layer-button:hover,.layer-button[aria-expanded="true"]{background:#26394c;border-color:#9e7b52}
+.layer-button>svg{height:14px;width:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.layer-button #layer-summary{font-size:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-weight:710}
+.layer-chevron{font-size:13px;flex:none;color:#a8b9cb;line-height:1}
+.layer-popover{position:absolute;z-index:35;top:0;right:calc(100% + 12px);width:227px;box-sizing:border-box;max-height:min(70vh,490px);overflow-y:auto;padding:14px;border:1px solid #455b72;border-radius:11px;background:#142134;box-shadow:0 18px 44px #000b;scrollbar-width:thin;scrollbar-color:#405875 transparent}
+.layer-popover[hidden]{display:none!important}
+.layer-popover-title{font-size:10px;font-weight:760;letter-spacing:1.35px;color:#d9bc96;margin-bottom:12px}
+.layer-presets{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
+.layer-preset{min-height:36px;background:#172839;color:#a8b8c9;border:1px solid #3d4f63;border-radius:7px;font-size:11px;font-weight:690;cursor:pointer}
+.layer-preset.active{background:#453828;color:#f5d6a4;border-color:#a48054}
+.layer-options{display:grid;gap:3px;border-top:1px solid #304359;padding-top:9px}
+.layer-option{min-height:35px;display:flex;align-items:center;gap:10px;border-radius:6px;padding:4px 6px;color:#d0dbea;font-size:11px;cursor:pointer}
+.layer-option:hover,.layer-option:focus-within{background:#25384d}
+.layer-option input{accent-color:#d3a76a;width:16px;height:16px;flex:none;cursor:pointer}
+.layer-option span{flex:1}
+.layer-note{font-size:10px;line-height:1.5;color:#93a7ba;margin:10px 0 0}
+/* Category chips were removed from catalog; reclaim the space below search. */
+.catalog>.search{margin-bottom:9px}
+@media(max-width:770px){
+  .sheet-content>.control-panel .layer-button{min-height:46px;padding:9px 13px;justify-content:space-between}
+  .sheet-content>.control-panel .layer-button #layer-summary{font-size:12px}
+  .sheet-content>.control-panel .layer-popover{position:relative;top:auto;right:auto;width:100%;max-height:none;padding:14px;margin-top:10px;box-shadow:none;background:#142235}
+  .sheet-content>.control-panel .layer-option{min-height:39px;font-size:12px}
+  .sheet-content>.control-panel .layer-preset{min-height:42px;font-size:12px}
+}
+/* At tablet widths the popover must win over the floating details panel. */
+@media (min-width:771px){.viewport>.control-panel{z-index:22}}
+@media (min-width:771px) and (max-width:1030px){.detail{top:395px;bottom:13px}}

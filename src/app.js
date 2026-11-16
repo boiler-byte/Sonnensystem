@@ -1,13 +1,14 @@
 import { HORIZONS_IDS } from './data/bodies.js';
 import { loadCatalog, mergeLiveBodies } from './data/catalog.js';
 import { clean, formatAsteroid } from './data/normalization.js';
+import { layerEnabled, layerPreset, layerSummary, updateLayerSelection } from './data/layers.js';
 import { SolarRenderer } from './renderer/index.js';
 import { fetchJSON } from './services/api.js';
 import { fetchSolarBodies } from './services/solar-api.js';
 import { fetchSatellites } from './services/celestrak-api.js';
 import { fetchAsteroid, fetchHorizons } from './services/nasa-api.js';
 import { dateISO } from './ui/formatters.js';
-import { renderCatalog, renderFilters } from './ui/object-list.js';
+import { renderCatalog } from './ui/object-list.js';
 import { renderDetail, setDetailTab } from './ui/object-details.js';
 import { syncSceneMode } from './ui/scene-mode.js';
 import { syncControls, syncSpeedMode, speedAtStep, SPEED_MODES } from './ui/timeline.js';
@@ -16,8 +17,8 @@ import { initMobileSheets } from './ui/bottom-sheet.js';
 
 const $ = id => document.getElementById(id);
 const S = {
-  bodies:[], selected:'earth', filter:'all', search:'',
-  playing:true, speed:SPEED_MODES.solar.defaultSpeed, timelineMode:'solar', modeSpeeds:{solar:SPEED_MODES.solar.defaultSpeed,planet:SPEED_MODES.planet.defaultSpeed}, time:Date.now(), settings:{orbits:true,labels:true},
+  bodies:[], selected:'earth', search:'',
+  playing:true, speed:SPEED_MODES.solar.defaultSpeed, timelineMode:'solar', modeSpeeds:{solar:SPEED_MODES.solar.defaultSpeed,planet:SPEED_MODES.planet.defaultSpeed}, time:Date.now(), settings:{orbits:true,labels:true,layers:layerPreset('standard')},
   status:{ catalog:['loading','Lädt ...'],solar:['loading','Verbinde'],sbdb:['idle','Auf Abruf'],celestrak:['loading','Verbinde'],horizons:['idle','Auf Abruf'] }
 };
 let renderer=null, mobileSheets=null, lastTimeReadoutAt=0;
@@ -33,6 +34,30 @@ const updateMode=()=>{
   }
 };
 const updateTime=()=>syncControls(S);
+function syncLayers(){
+  const selected=S.settings.layers;
+  $('layer-summary').textContent=layerSummary(selected);
+  $('layer-btn').title=selected.mode==='custom'
+    ? 'Aktive Objektlayer: '+[...selected.types].join(', ')
+    : (selected.mode==='all'?'Alle Objektkategorien':'Standard: Planeten und Monde');
+  for(const check of document.querySelectorAll('[data-layer-type]'))
+    check.checked=layerEnabled(selected,check.dataset.layerType);
+  for(const preset of document.querySelectorAll('[data-layer-preset]')){
+    const active=preset.dataset.layerPreset===selected.mode;
+    preset.classList.toggle('active',active);
+    preset.setAttribute('aria-pressed',String(active));
+  }
+}
+function setLayerPopover(open){
+  $('layer-popover').hidden=!open;
+  $('layer-btn').setAttribute('aria-expanded',String(open));
+}
+function changeLayers(next){
+  if(next===S.settings.layers)return;
+  S.settings.layers=next;
+  if(S.selected && !layerEnabled(next,byId(S.selected)?.type))clearSelection();
+  syncLayers();updateCatalog();updateDetail();
+}
 
 function mergeBodies(list){
   S.bodies=mergeLiveBodies(S.bodies,list);
@@ -67,8 +92,8 @@ async function loadAsteroid(name,existing=null,addNew=false){
     const body=formatAsteroid(data,id,name,existing);
     mergeBodies([body]);updateStatus('sbdb','ok','Bahndaten geladen');
     if(addNew){
-      selectBody(id,true);S.filter='all';S.search='';$('search').value='';
-      renderFilters(S);updateCatalog();notify(`${name} wurde zum Atlas hinzugefügt`);
+      selectBody(id,true);S.settings.layers=layerPreset('all');S.search='';$('search').value='';
+      syncLayers();updateCatalog();notify(`${name} wurde zum Atlas hinzugefügt`);
     }else if(S.selected===id)updateDetail();
   }catch(e){updateStatus('sbdb','offline','Abfrage fehlgeschlagen');notify('JPL SBDB: '+e.message,true);}
   finally{inFlightAsteroids.delete(q);}
@@ -117,9 +142,18 @@ function setSpeedPopover(open) {
   if(open) $('speed').focus({preventScroll:true});
 }
 function initControls(){
-  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
-    S.filter=b.dataset.filter;renderFilters(S);updateCatalog();
-  }));
+  $('layer-btn').addEventListener('click',()=>{
+    const opening=$('layer-popover').hidden;
+    if(opening){setSpeedPopover(false);mobileSheets?.expand();}
+    setLayerPopover(opening);
+  });
+  for(const btn of document.querySelectorAll('[data-layer-preset]'))
+    btn.addEventListener('click',()=>changeLayers(layerPreset(btn.dataset.layerPreset)));
+  for(const input of document.querySelectorAll('[data-layer-type]'))
+    input.addEventListener('change',()=>{
+      const next=updateLayerSelection(S.settings.layers,input.dataset.layerType,input.checked);
+      changeLayers(next);syncLayers(); // Restore the last checkbox if it was the only active layer.
+    });
   $('search').addEventListener('input',e=>{S.search=e.target.value;updateCatalog();});
   $('asteroid-form').addEventListener('submit',e=>{
     e.preventDefault();const name=$('asteroid-name').value.trim();if(!name)return;
@@ -154,7 +188,11 @@ function initControls(){
     renderer.setSelected(planet.id);updateMode();updateDetail();mobileSheets?.close();
   });
   $('play-btn').addEventListener('click',()=>{S.playing=!S.playing;updateTime();});
-  $('speed-btn').addEventListener('click',()=>setSpeedPopover($('speed-popover').hidden));
+  $('speed-btn').addEventListener('click',()=>{
+    const opening=$('speed-popover').hidden;
+    if(opening){mobileSheets?.expand();setLayerPopover(false);} // One open panel at a time.
+    setSpeedPopover(opening);
+  });
   $('speed').addEventListener('input',e=>{
     S.speed=speedAtStep(S.timelineMode,Number(e.target.value));
     S.modeSpeeds[S.timelineMode]=S.speed;
@@ -163,6 +201,7 @@ function initControls(){
   $('today-btn').addEventListener('click',()=>{S.time=Date.now();updateTime();updateDetail();});
   document.addEventListener('pointerdown',e=>{
     if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
+    if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);
   });
   $('horizons-btn').addEventListener('click',alignHorizons);
   $('help-btn').addEventListener('click',()=>{$('help-modal').hidden=false;});
@@ -171,7 +210,7 @@ function initControls(){
   $('help-modal').addEventListener('click',e=>{if(e.target===$('help-modal'))$('help-modal').hidden=true;});
   $('mobile-menu').addEventListener('click',()=>mobileSheets?.open('catalog'));
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){setSpeedPopover(false);$('help-modal').hidden=true;mobileSheets?.close();}
+    if(e.key==='Escape'){setLayerPopover(false);setSpeedPopover(false);$('help-modal').hidden=true;mobileSheets?.close();}
     if(e.key==='/'&&!(e.target instanceof HTMLInputElement)){
       e.preventDefault();mobileSheets?.open('catalog');requestAnimationFrame(()=>$('search').focus());
     }
@@ -197,7 +236,7 @@ async function loadServerStatus(){
 }
 async function init(){
   mobileSheets=initMobileSheets();initControls();registerServiceWorker();
-  renderFilters(S);renderStatus(S.status);updateTime();
+  syncLayers();renderStatus(S.status);updateTime();
   try{
     const catalog=await loadCatalog();
     const missions=await fetchJSON('./data/catalog/probes.json').catch(error=>{

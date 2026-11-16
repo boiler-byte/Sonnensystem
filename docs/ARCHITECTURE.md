@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v13.0
+# Architektur – Sonnensystem v16.0
 
 ## Grundprinzip
 
@@ -15,13 +15,13 @@ Die **neue Datenarchitektur** ist in [DATA-ARCHITECTURE.md](DATA-ARCHITECTURE.md
 5. `src/app.js` startet Katalog, Details, Zeitsteuerung, WebGL und (optional) Serveranfragen unter `/api/...`.
 6. `src/data/normalization.js` interpretiert Live-Daten von Solar OpenData, CelesTrak und JPL. `mergeLiveBodies` ergänzt physikalische Felder und bewahrt redaktionelle Einträge.
 7. `src/renderer/scene.js`, `solar-view.js` und `planet-view.js` stellen die gewählten Körper dar; `controls.js` und `camera.js` erhalten ihre bisherigen Mouse-/Touch-/Pfeiltastenfunktionen.
-8. `src/renderer/labels.js` erzeugt je Frame priorisierte Bildschirm-Labels, misst Bewegung in CSS-Pixeln pro Sekunde und prüft Rechteck- und Kreiskollisionen, bevor es in ein transparentes 2D-Canvas zeichnet.
+8. `src/renderer/labels.js` erzeugt je Frame priorisierte Bildschirm-Labels, misst Bewegung in CSS-Pixeln pro Sekunde und begrenzt normale Beschriftungen auf zwei pro Bildschirmfeld von 160 × 110 CSS-Pixeln, bevor es in ein transparentes 2D-Canvas zeichnet.
 9. `sw.js` cached die App-Shell und nach Manifest alle lokalen JSON-Dateien, aber **nicht** `/api/...`.
 
 ## Erweiterungen v11: Auswahl, Bildtexturen und Caches
 
 - `SolarRenderer.pick(x, y)` ruft bei einem Treffer `onSelect(id)`, bei leerem Himmel `onClearSelect()` auf. `app.js` setzt anschließend `state.selected=null`, ohne den Kamerastatus oder die aktive Planetenansicht zu verändern; `object-details.js` leert die Detailansicht.
-- `labels.js`: ausgewählte Labels werden **nicht** durch Bewegungs-, Disk- oder Rechteckkollisionen verworfen. Ihre bevorzugte Seite bleibt stabil; übrige Labels belegen nur unbesetzte Plätze.
+- `labels.js`: ausgewählte Labels werden **nicht** durch Bewegungs-, Disk- oder Rechteckkollisionen verworfen. Ihre bevorzugte Seite bleibt stabil; übrige Labels teilen sich ein Dichtelimit pro Bildschirmfeld.
 - `geometry.js` liefert UV-Koordinaten zusätzlich zu Position und Normalen (8 Float-Werte pro Kugelvertex). `shaders.js` liest mit `texture2D` das Bild, wenn ein geladenes WebGL-Texture-Handle vorliegt. Ansonsten bleibt der bisherige prozedurale Körper-Shader aktiv.
 - `texture-sources.js` enthält lokale Dateipfade unter `textures/standard/` und die Stufen mobile/standard/detail (512/2048/4096 px). `textures.js` lädt Karten nur vom selben Origin, begrenzt gleichzeitige Abrufe und den GPU-Speicher und skaliert beim Canvas-Upload herunter.
 - Seit v12 gibt es keinen externen Texturdownload und keinen Texturproxy. Der statische Server liefert erlaubte lokale Bilddateien unter `textures/standard/`. Fehlende Dateien werden durch schematische Materialien ersetzt.
@@ -68,14 +68,34 @@ Der Katalog umfasst 160 Körper und 160 redaktionelle Datensätze. Die zusätzli
 
 ## v10 – Anker für ruhige Labels
 
-`src/renderer/labels.js` speichert zusätzlich zur zuletzt gezeichneten Seite einen kurzzeitig persistenten Anker je Körper. Wenn die bevorzugte Seite kurz blockiert ist, zeichnet es zunächst kein Label, statt zwischen vier Alternativen zu springen. Ein Seitenwechsel benötigt mindestens 650 ms anhaltende Blockierung, mindestens 1300 ms seit dem vorherigen Wechsel und 180 ms eine freie Alternative. Nicht mehr gesehene Anker werden nach 6 Sekunden entfernt. Die priorisierte Kollisionsprüfung und die geschwindigkeitsbasierte Hysterese aus v9 bleiben bestehen.
+`src/renderer/labels.js` behält Ankerseiten bei und wechselt nur an Viewport-Rändern. Kollisionen zwischen Texten oder mit Himmelskörpern führen nicht mehr zum Ausblenden. Die Dichteschranke beträgt zwei reguläre Labels je 160 × 110 CSS-Pixeln; ausgewählte Labels sind zusätzlich sichtbar. Ein 18-Pixel-Randpuffer stabilisiert die Rasterzuordnung. Der unabhängige Bewegungsfilter bleibt aktiv.
 
 ## v10 – Zeitsimulation
 
-Die interne Zeitgeschwindigkeit bleibt in simulierten **Tagen pro realer Sekunde**. `src/ui/timeline.js` definiert getrennte logarithmische Bereiche mit 241 diskreten Schiebereglerpositionen und exakt erreichbaren Standardwerten für beide Szenen. `src/app.js` verwaltet Play/Pause, den v10-Popover-Regler, den Heute-Button sowie die geschwindigkeitsspezifischen Einstellungen pro Ansicht. Das Datum wird in der Zeitzone des Browsers als `DD.MM.YYYY hh:mm` dargestellt. Das responsive `css/styles.css` zeigt den vertikalen Regler auf Desktop oberhalb des Auslöser-Buttons und im Mobile-Bottom-Sheet innerhalb des Zeitmenüs. Siehe [DELTA-V10.md](DELTA-V10.md).
+Die interne Zeitgeschwindigkeit bleibt in simulierten **Tagen pro realer Sekunde**. `src/ui/timeline.js` definiert getrennte logarithmische Bereiche mit 241 diskreten Schiebereglerpositionen und exakt erreichbaren Standardwerten für beide Szenen. `src/app.js` verwaltet Play/Pause, den v10-Popover-Regler, den Heute-Button sowie die geschwindigkeitsspezifischen Einstellungen pro Ansicht. Das Datum wird in der Zeitzone des Browsers als `DD.MM.YYYY hh:mm` dargestellt. Das responsive `css/styles.css` zeigt den vertikalen Regler auf Desktop neben dem schmalen Control-Panel und im Mobile-Bottom-Sheet inline innerhalb des Tabs „Steuerung“. Siehe [DELTA-V10.md](DELTA-V10.md).
 
 ## v13 – Control-Panel und Tabs
 
-`index.html` platziert das Ansicht-Dropdown, die drei Zeitbuttons und die Szene-Schalter in einem semantischen Control-Panel oben rechts. `src/ui/scene-mode.js` synchronisiert den Dropdown-Wert nach jedem Szenenwechsel, `src/app.js` behandelt Wechsel zu heliozentrischer oder Planetensystem-Ansicht und die Tastaturnavigation der Details. In der mobilen Bottom-Sheet-Ansicht werden die **gleichen** Zeitbuttons in die Registerkarte „Zeit“ verschoben, nicht dupliziert.
+`index.html` platziert das Ansicht-Dropdown, die drei Zeitbuttons und die Szene-Schalter in einem semantischen Control-Panel oben rechts. `src/ui/scene-mode.js` synchronisiert den Dropdown-Wert nach jedem Szenenwechsel, `src/app.js` behandelt Wechsel zu heliozentrischer oder Planetensystem-Ansicht und die Tastaturnavigation der Details. Seit v14 wird auf Mobilgeräten **das komplette** Control-Panel in die dritte Registerkarte „Steuerung“ verschoben, nicht dupliziert.
 
 `src/ui/object-details.js` hält die redaktionellen Inhalte und astronomischen Kennzahlen getrennt in `Wissen` und `Daten`. Die `detail-sources`-Anzeige liegt innerhalb von `detail-scroll` und scrollt mit dem Inhalt. Die Kopfzeile trägt den ausgewählten Objektnamen; Objekttyp und Zuordnung erscheinen als Overlay im Hero. Siehe [DELTA-V13.md](DELTA-V13.md).
+
+## v14 – Vertikales Control-Panel und mobile Übersicht
+
+`css/styles.css` begrenzt die Breite des Desktop-Control-Panels auf ungefähr 180 px. Die drei Zeitaktionen sind vertikal gestapelt; Bahnen, Namen und Übersicht werden über SVG-Icons ohne visuelle Beschriftung dargestellt. Titel und ARIA-Namen bleiben für Screenreader und Tastaturbedienung vorhanden. Der Geschwindigkeits-Popover öffnet auf Desktop links vom schmalen Panel und auf Mobilgeräten inline im scrollbaren Tab.
+
+`src/ui/bottom-sheet.js` verschiebt die **unveränderte Instanz** von `#view-mode-status` in den dritten Tab `data-sheet-panel="control"` und zurück an ihren ursprünglichen DOM-Anker. `#reset-camera` wird innerhalb desselben Umbruchs aus der Szenen-Schalterzeile nach `#mobile-overview` auf der Bühne verschoben; alle Ereignisbehandler bleiben durch die DOM-Umsortierung erhalten. Der freie Übersichtsknopf folgt der sichtbaren Bottom-Sheet-Höhe und wird auf Desktop an seinen Originalplatz zurückgesetzt. Die Tabs „Objekte“ und „Details“ bleiben unverändert. Siehe [DELTA-V14.md](DELTA-V14.md).
+
+
+## Erweiterungen v15: gemeinsame Objektlayer
+
+- `src/data/layers.js` stellt die Presets `standard` (Planet, Mond) und `all` sowie die immutable Mehrfachauswahl bereit. `layerEnabled()` ist die gemeinsame Sichtbarkeitsprüfung ohne Abhängigkeit vom DOM.
+- `src/app.js` verwaltet die Layer in `S.settings.layers`, synchronisiert das Dropdown inkl. Checkboxen, Preset-Tastenzustand und Auswahl und schließt es bei Escape/außerhalb sowie beim Wechsel in andere mobile Tabs. Der Geschwindigkeitsregler und das Layer-Dropdown werden nicht gleichzeitig angezeigt.
+- `src/ui/object-list.js` nutzt denselben Filter für den Katalog und erweitert `catalogMatches()` um Kategorie und direkte Elternobjekte; die bisherigen Filterchips werden vollständig entfernt.
+- `src/renderer/renderer.js`, `solar-view.js` und `planet-view.js` wenden die Layer-Prüfung auf Körper, Bahnen und Labels (über die `rendered`-Liste) an. Eine ausgeblendete Sonne hat keinen Glow. Die Positionen selbst werden weiterhin für alle Himmelskörper berechnet; so bleiben abhängige Mondbahnen korrekt.
+- Raumsonden besitzen weiterhin keine berechneten WebGL-Positionen, auch wenn ihre Layer-Kategorie aktiv ist. Der Service Worker cached das neue Modul und verwendet `sonnensystem-shell-v15`.
+- Das Control-Panel ist auf Desktop 110 px breit (v14: 184 px). In der mobilen Ansicht ist die Layer-Auswahl in das Bottom-Sheet integriert und erweitert dieses bei Bedarf.
+
+## Erweiterungen v16: Dichte statt Kollisionsunterdrückung
+
+`STANDARD_LAYERS` umfasst `planet`, `moon`, `star`. Die Labels werden priorisiert und je Rasterzelle gezählt; wegen der fehlenden Kollisionsprüfung sind Überlagerungen zugelassen. Ankerseiten wechseln nur, wenn sie außerhalb des Viewports liegen würden. Ausgewählte Labels ignorieren das Dichtelimit.

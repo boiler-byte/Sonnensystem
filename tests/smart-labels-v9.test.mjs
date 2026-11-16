@@ -41,21 +41,15 @@ const overlaps = (a, b) =>
   a.x < b.x + b.w + 5 && a.x + a.w + 5 > b.x &&
   a.y < b.y + b.h + 5 && a.y + a.h + 5 > b.y;
 
-test('v9: neither scene renders overlapping captions; the selected body wins conflicts', () => {
+test('v16: dense clusters admit a limited number of labels, selected wins', () => {
   for (const planetId of [null, 'jupiter']) {
     const bodies = Array.from({length: 16}, (_, i) => body(`moon-${i}`, 'moon', 100 + i * 50));
     const {renderer, ctx} = scene(bodies, bodies.map(() => [0, 0, 0]),
       {planetId, selectedId: 'moon-15'});
     const labels = layoutSceneLabels(renderer, VP, ctx, 0);
-    assert.equal(labels[0].body.id, 'moon-15', 'selection takes first available position');
-    for (let i = 0; i < labels.length; i++) {
-      for (let j = i + 1; j < labels.length; j++) {
-        assert.equal(overlaps(labels[i].rect, labels[j].rect), false,
-          `${planetId || 'solar'}: ${labels[i].body.id} and ${labels[j].body.id} overlap`);
-      }
-    }
-    assert.ok(labels.length < bodies.length, 'congestion hides captions, not bodies');
-    assert.ok(renderer.rendered.length === 16, 'layout does not remove scene bodies');
+    assert.equal(labels[0].body.id, 'moon-15');
+    assert.equal(labels.length, 3, 'two ordinary labels plus the selected one');
+    assert.equal(renderer.rendered.length, 16, 'all bodies still rendered');
   }
 });
 
@@ -68,21 +62,15 @@ test('v9: tries alternative sides when near the viewport edge and honors bounds'
   assert.ok(label.rect.x >= 8 && label.rect.x + label.rect.w <= renderer.width - 8);
 });
 
-test('v9: labels avoid other visible disks, including disks with no label', () => {
+test('v16: a passing disk does not move or suppress a neighboring label', () => {
   const objects = [body('earth', 'planet', 6371), body('moon', 'moon', 1700)];
   const {renderer, ctx} = scene(objects, [[.17, 0, 0], [0, 0, 0]], {selectedId: 'moon'});
   const labels = layoutSceneLabels(renderer, VP, ctx, 0);
-  const moon = labels.find(l => l.body.id === 'moon');
-  assert.ok(moon, 'moon can use an alternative position rather than being suppressed');
-  {
-    const planetRadius = labels.find(l => l.body.id === 'earth')?.radius ||
-      0.19 * 420 / (2 * Math.tan((Math.PI / 4.35) / 2) * 20);
-    const rect = moon.rect;
-    const x = Math.max(rect.x - 3, Math.min(320 + .17 * 320, rect.x + rect.w + 3));
-    const y = Math.max(rect.y - 3, Math.min(210, rect.y + rect.h + 3));
-    assert.ok(Math.hypot(x - (320 + .17 * 320), y - 210) >= planetRadius,
-      'moon label must not be drawn across the planet');
-  }
+  assert.ok(labels.some(l => l.body.id === 'moon'));
+  const side = labels.find(l=>l.body.id==='moon').side;
+  renderer.positions.set('earth',[0,0,0]);
+  const later=layoutSceneLabels(renderer,VP,ctx,500);
+  assert.equal(later.find(l=>l.body.id==='moon').side,side);
 });
 
 test('v9: movement is measured in real screen pixels per second, with settling hysteresis', () => {

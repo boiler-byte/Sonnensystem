@@ -1,3 +1,4 @@
+import { layerEnabled } from '../data/layers.js';
 import { planetOrbitRadius, planetBodyRadius } from '../data/orbital-math.js';
 import { CAMERA_FOV, clamp } from './math.js';
 
@@ -5,7 +6,7 @@ import { CAMERA_FOV, clamp } from './math.js';
 export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const selected=renderer.byId.get(selectedId);
-   const planet=renderer.byId.get(renderer.planetId),children=renderer.planetChildren();
+   const planet=renderer.byId.get(renderer.planetId),children=renderer.planetChildren().filter(b=>layerEnabled(settings.layers,b.type));
    if(settings.orbits){
     gl.depthMask(false);
     // All bodies remain visible. Limit the number of orbit strokes for dense live catalogs.
@@ -15,7 +16,7 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
     for(const b of children)if(orbitIds.has(b.id))renderer.orbitLine(b,[0,0,0],vp,b.id===selectedId?.70:.22,b.id===selectedId);
     gl.depthMask(true);
    }
-   renderer.rendered=[planet,...children].filter(b=>b && renderer.positions.has(b.id));
+   renderer.rendered=[planet,...children].filter(b=>b && layerEnabled(settings.layers,b.type) && renderer.positions.has(b.id));
    for(const b of renderer.rendered){const pos=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(pos,vp);renderer.drawSphere(b,pos,vp);}
    renderer.drawLabels(vp);
    renderer.glow.style.opacity='0';

@@ -19,14 +19,13 @@
     <header class="topbar">
       <div class="brand"><span class="brandmark"><i></i><i></i><b></b></span><div><strong>Sonnensystem<span class="brand-dot">.</span></strong><small>INTERAKTIVER 3D-ATLAS</small></div></div>
       <div class="header-separator"></div>
-      <div class="header-meta"><span class="meta-spark">✦</span> INTERAKTIVES OBSERVATORIUM <span class="header-version">/ V13.0</span></div>
+      <div class="header-meta"><span class="meta-spark">✦</span> INTERAKTIVES OBSERVATORIUM <span class="header-version">/ V16.0</span></div>
       <div class="top-actions"><span class="live-pill"><span class="live-pulse"></span> WEBGL AKTIV</span><button class="icon-button" id="help-btn" aria-label="Bedienung anzeigen" title="Hilfe">?</button><button class="icon-button mobile-menu" id="mobile-menu" title="Objekte öffnen" aria-label="Objekte öffnen">☰</button></div>
     </header>
     <main class="shell">
       <aside class="catalog" id="catalog">
         
-        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Objekt suchen ..." autocomplete="off" aria-label="Himmelskörper suchen" /><span class="shortcut">/</span></div>
-        <nav class="filters" id="filters" aria-label="Objektkategorien"><button data-filter="all" class="filter active">Alle</button><button data-filter="planet" class="filter">Planeten</button><button data-filter="moon" class="filter">Monde</button><button data-filter="dwarf" class="filter">Zwergplaneten</button><button data-filter="asteroid" class="filter">Asteroiden</button><button data-filter="satellite" class="filter">Satelliten</button><button data-filter="comet" class="filter">Kometen</button><button data-filter="probe" class="filter">Raumsonden</button></nav>
+        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><span class="shortcut">/</span></div>
         <div class="list-header"><span id="list-label">OBJEKTE IM ATLAS</span><span id="object-count">—</span></div>
         <div id="object-list" class="object-list" role="listbox" aria-label="Himmelskörper"></div>
         <div class="catalog-bottom"><div class="section-label">OBJEKT HINZUFÜGEN <span>JPL SBDB</span></div><form id="asteroid-form" class="add-form"><input id="asteroid-name" type="text" maxlength="56" placeholder="z. B. 433 Eros" aria-label="Asteroid über NASA suchen"/><button type="submit" title="Asteroid laden">↗</button></form><div class="tiny-help">NASA-Kleinkörperdatenbank durchsuchen</div></div>
@@ -37,7 +36,7 @@
         <canvas id="labels-canvas" aria-hidden="true"></canvas>
         <h1 class="sr-only">Sonnensystem</h1>
         <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
-          <label class="control-label" for="view-mode-select">Ansicht</label>
+          <label class="control-label sr-only" for="view-mode-select">Ansicht wählen</label>
           <select id="view-mode-select" class="view-mode-select" aria-label="Ansicht wählen">
             <option value="solar">Heliozentrische Ansicht, nicht maßstabsgetreu</option>
                 <option value="planet:mercury">Planetensystem · Merkur</option>
@@ -50,6 +49,30 @@
                 <option value="planet:neptune">Planetensystem · Neptun</option>
           </select>
           <span class="sr-only" id="view-mode-label">HELIOZENTRISCHE ANSICHT</span>
+          <div class="layer-picker-wrap" id="layer-picker-wrap">
+            <button class="layer-button" id="layer-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="layer-popover" title="Objektlayer auswählen">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
+              <span id="layer-summary">Standard</span><span class="layer-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <div class="layer-popover" id="layer-popover" role="group" aria-label="Objektlayer" hidden>
+              <div class="layer-popover-title">OBJEKTLAYER</div>
+              <div class="layer-presets" role="group" aria-label="Layer-Voreinstellungen">
+                <button type="button" class="layer-preset" data-layer-preset="all" aria-pressed="false">Alle</button>
+                <button type="button" class="layer-preset active" data-layer-preset="standard" aria-pressed="true">Standard</button>
+              </div>
+              <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">
+                <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="moon" checked/><span>Monde</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="dwarf"/><span>Zwergplaneten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="asteroid"/><span>Asteroiden</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="star"/><span>Sterne</span></label>
+              </div>
+              <p class="layer-note">Standard: Planeten und Monde. Raumsonden erscheinen im Katalog, bis Positionsdaten verfügbar sind.</p>
+            </div>
+          </div>
           <div class="time-panel" id="time-panel">
             <div class="timeline-controls" role="group" aria-label="Zeitsteuerung">
               <button class="timeline-button play-button" id="play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true"><svg id="play-icon" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false"><path id="play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z" fill="currentColor"/></svg></button>
@@ -68,8 +91,20 @@
               <button class="timeline-button now-button" id="today-btn" type="button" aria-label="Simulation auf aktuelle Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit"><span aria-hidden="true">↺</span><time id="sim-date-readout" aria-live="off"></time></button>
             </div>
           </div>
-          <div class="scene-tools" role="group" aria-label="Szenensteuerung"><button class="scene-tool active" id="toggle-orbits" type="button" title="Umlaufbahnen ein/aus" aria-pressed="true">◎ <span>Bahnen</span></button><button class="scene-tool active" id="toggle-labels" type="button" title="Beschriftungen ein/aus" aria-pressed="true">Aa <span>Namen</span></button><button class="scene-tool" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen">⤾ <span>Übersicht</span></button></div>
+          <div class="scene-tools" role="group" aria-label="Szenensteuerung">
+            <button class="scene-tool active" id="toggle-orbits" type="button" title="Umlaufbahnen ein/aus" aria-label="Bahnen anzeigen oder ausblenden" aria-pressed="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="12" cy="12" rx="9" ry="5" transform="rotate(-30 12 12)"/><circle cx="12" cy="12" r="1.8"/><circle cx="19.5" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </button>
+            <button class="scene-tool active" id="toggle-labels" type="button" title="Beschriftungen ein/aus" aria-label="Namen anzeigen oder ausblenden" aria-pressed="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M12 6v13M8 19h8"/></svg>
+            </button>
+            <button class="scene-tool" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 11a8.5 8.5 0 1 1 2.2 7.3"/><path d="M3.5 4.5V11H10"/><circle cx="12" cy="12" r="2.1"/></svg>
+            </button>
+          </div>
         </section>
+        <!-- Der vorhandene Übersicht-Button wird auf Mobilgeräten hierher verschoben. -->
+        <div class="mobile-overview" id="mobile-overview" aria-label="Kameraübersicht"></div>
         <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
       </section>
       <aside class="detail" id="detail">
@@ -99,21 +134,21 @@
         </div>
       </aside>
     </main>
-    <!-- Auf Mobilgeräten werden die bestehenden drei Menüs ohne Duplikate hierher verschoben. -->
+    <!-- Auf Mobilgeräten werden Katalog, Details und das gesamte Control-Panel ohne Duplikate hierher verschoben. -->
     <div class="mobile-sheet-scrim" id="mobile-sheet-scrim" hidden></div>
-    <section class="mobile-sheet" id="mobile-sheet" data-snap="closed" aria-label="Menüs: Objekte, Details und Zeit">
+    <section class="mobile-sheet" id="mobile-sheet" data-snap="closed" aria-label="Menüs: Objekte, Details und Steuerung">
       <div class="sheet-header" id="sheet-header">
         <button class="sheet-handle" id="sheet-handle" type="button" aria-label="Menü hochziehen oder schließen" aria-controls="sheet-content" aria-expanded="false"><span class="sheet-grabber" aria-hidden="true"></span></button>
         <nav class="sheet-tabs" aria-label="Mobile Menüs">
           <button type="button" class="sheet-tab" data-sheet-panel="catalog" aria-controls="catalog" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">☷</span> Objekte</button>
           <button type="button" class="sheet-tab active" data-sheet-panel="detail" aria-controls="detail" aria-pressed="true"><span class="sheet-tab-icon" aria-hidden="true">◉</span> Details</button>
-          <button type="button" class="sheet-tab" data-sheet-panel="time" aria-controls="time-panel" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">◷</span> Zeit</button>
+          <button type="button" class="sheet-tab" data-sheet-panel="control" aria-controls="view-mode-status" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">⚙</span> Steuerung</button>
         </nav>
       </div>
       <div class="sheet-content" id="sheet-content"></div>
     </section>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div class="modal-backdrop" id="help-modal" hidden><div class="help-modal"><div class="modal-top"><span class="eyebrow">SONNENSYSTEM / ANLEITUNG</span><button id="help-close" class="icon-button" aria-label="Schließen">✕</button></div><h2>Dein Observatorium</h2><p>Steuere die 3D-Ansicht per Maus, Pfeiltasten oder Touch. Auf dem Smartphone lassen sich die Menüs vom unteren Rand hochziehen und zwischen Objekten, Details und Zeit wechseln.</p><div class="help-grid"><div><b>01 — Navigation</b><span>Desktop: links ziehen = umschauen, Mausrad = zoomen, rechts oder mit Umschalttaste ziehen = direkt verschieben. Pfeiltasten = über die Bahnebene bewegen (unabhängig vom Neigungswinkel). Mobil: mit einem Finger umschauen, mit zwei Fingern spreizen/zusammenziehen = zoomen, mit zwei Fingern gemeinsam wischen = parallel zur Bahnebene verschieben.</span></div><div><b>02 — Zeitreise</b><span>Play/Pause hält die Simulation an oder startet sie. Geschwindigkeit öffnet einen vertikalen, logarithmischen Regler für die jeweilige Ansicht. Heute setzt das simulierte Datum auf die aktuelle Uhrzeit zurück.</span></div><div><b>03 — Live-Daten</b><span>Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizons laufen über den lokalen Server.</span></div><div><b>04 — Darstellung</b><span>In den Planetendetails öffnet „Planetenansicht“ nur den Planeten mit seinen Monden und künstlichen Satelliten. „Übersicht“ führt sofort zum Sonnensystem zurück. Größen und Abstände sind illustrativ skaliert; Satellitenpositionen sind nur angenähert.</span></div></div><button class="modal-confirm" id="help-confirm">Verstanden <span>↗</span></button></div></div>
+    <div class="modal-backdrop" id="help-modal" hidden><div class="help-modal"><div class="modal-top"><span class="eyebrow">SONNENSYSTEM / ANLEITUNG</span><button id="help-close" class="icon-button" aria-label="Schließen">✕</button></div><h2>Dein Observatorium</h2><p>Steuere die 3D-Ansicht per Maus, Pfeiltasten oder Touch. Auf dem Smartphone lassen sich die Menüs vom unteren Rand hochziehen und zwischen Objekten, Details und Steuerung wechseln.</p><div class="help-grid"><div><b>01 — Navigation</b><span>Desktop: links ziehen = umschauen, Mausrad = zoomen, rechts oder mit Umschalttaste ziehen = direkt verschieben. Pfeiltasten = über die Bahnebene bewegen (unabhängig vom Neigungswinkel). Mobil: mit einem Finger umschauen, mit zwei Fingern spreizen/zusammenziehen = zoomen, mit zwei Fingern gemeinsam wischen = parallel zur Bahnebene verschieben.</span></div><div><b>02 — Zeitreise</b><span>Play/Pause hält die Simulation an oder startet sie. Über den dritten Tab „Steuerung“ startest oder pausierst du die Simulation, passt die Geschwindigkeit logarithmisch an und setzt mit dem Datumsknopf auf die lokale aktuelle Uhrzeit zurück.</span></div><div><b>03 — Live-Daten</b><span>Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizons laufen über den lokalen Server.</span></div><div><b>04 — Darstellung</b><span>In den Planetendetails öffnet „Planetenansicht“ nur den Planeten mit seinen Monden und künstlichen Satelliten. „Übersicht“ führt sofort zum Sonnensystem zurück. Größen und Abstände sind illustrativ skaliert; Satellitenpositionen sind nur angenähert.</span></div></div><button class="modal-confirm" id="help-confirm">Verstanden <span>↗</span></button></div></div>
   </div>
   <script type="module" src="src/app.js"></script>
 </body>

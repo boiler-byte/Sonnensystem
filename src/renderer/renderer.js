@@ -1,6 +1,7 @@
 import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, model, hex, projected } from './math.js';
 import { renderRadius, planetBodyRadius, planetOrbitRadius, orbitalRadius, sceneRadius, keplerPosition } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
+import { layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
 import { panCameraByPixels, cameraView } from './camera.js';
@@ -78,12 +79,11 @@ export class SolarRenderer {
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});}
  calcPositions(timeMs){computePositions(this,timeMs);}
-  shouldDraw(b){if(b.type==='star'||b.type==='planet'||b.type==='dwarf')return true;
-  if(b.type==='asteroid'||b.type==='comet')return true;
-  const s=this.byId.get(this.selectedId);
-  if(b.type==='satellite')return this.selectedId===b.id || this.selectedId==='earth' || (s?.type==='satellite' && b.id.startsWith('sat-'));
-  if(b.type==='moon') return b.id===this.selectedId || (s && (s.id===b.parentId || s.parentId===b.parentId)) || (this.camera.dist<21 && ['moon','europa','ganymede','titan','triton','charon'].includes(b.id));
-  return false;
+  shouldDraw(b){
+  if(!layerEnabled(this.settings?.layers,b.type))return false;
+  // Categories are actual scene layers, not only catalog filters.
+  // All registered orbiters are eligible; labels still apply motion/collision rules.
+  return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
  }
  start(time,selected,settings){this.simTime=time;this.selectedId=selected;this.settings=settings;this.calcPositions(time);}
  makeVP(){this.updateKeyboard();return cameraView(this.camera,this.width,this.height);}

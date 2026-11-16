@@ -12,34 +12,26 @@ function scene(pos=[0,0,0],planetId='earth'){
   return {renderer,layout:now=>layoutSceneLabels(renderer,VP,ctx,now)};
 }
 
-test('v10: fast conjunctions do not make satellite labels switch side repeatedly',()=>{
-  for(const planetId of ['earth',null]) {
+test('v16: satellite label only changes side to remain on-screen',()=>{
+  for (const planetId of ['earth',null]) {
     const {renderer,layout}=scene([0,0,0],planetId);
     assert.equal(layout(0)[0].side,'right');
     renderer.positions.set('sat-25544',[.94,0,0]);
-    assert.equal(layout(300).length,0,'obstructed side is hidden rather than moved immediately');
-    assert.equal(layout(600).length,0,'one short obstruction does not flip the side');
+    assert.equal(layout(300)[0].side,'left','edge requires alternate side immediately');
+    assert.equal(layout(600)[0].side,'left');
     renderer.positions.set('sat-25544',[0,0,0]);
-    layout(800); // large position change might trigger motion-based suppression
-    assert.equal(layout(1000)[0].side,'right','returns to established side, no jump');
+    assert.equal(layout(1000)[0].side,'left','keeps established side on return');
   }
 });
 
-test('v10: only persistent blockage permits a deliberate stable side change',()=>{
+test('v16: no delayed collision-driven side switching',()=>{
   const {renderer,layout}=scene();
   assert.equal(layout(0)[0].side,'right');
   renderer.positions.set('sat-25544',[.94,0,0]);
-  assert.equal(layout(300).length,0);
-  assert.equal(layout(700).length,0);
-  assert.equal(layout(1200).length,0,'side hold not elapsed');
-  assert.equal(layout(1400).length,0,'alternative needs clear-time confirmation');
-  assert.equal(layout(1620)[0].side,'left','sustained blockage triggers one switch');
-  assert.equal(layout(1900)[0].side,'left');
+  for (const now of [300,700,1200,1400,1620,1900])
+    assert.equal(layout(now)[0].side,'left');
   renderer.positions.set('sat-25544',[0,0,0]);
-  layout(2300);
-  assert.equal(layout(2600)[0].side,'left','does not snap back to default right side');
-  assert.ok(LABEL_STABILITY.sideHoldMs>=1000);
-  assert.ok(LABEL_STABILITY.blockedMs>=400);
+  assert.equal(layout(2600)[0].side,'left');
 });
 
 test('v10: reset and fast-motion filter remain functional with anchors',()=>{

@@ -15,7 +15,7 @@ assert.match(html, /rel="manifest"/);
 assert.match(html, /id="mobile-sheet"/);
 assert.match(html, /data-sheet-panel="catalog"/);
 assert.match(html, /data-sheet-panel="detail"/);
-assert.match(html, /data-sheet-panel="time"/);
+assert.match(html, /data-sheet-panel="control"/);
 assert.doesNotMatch(html, /ORBITAL|LIVE-RENDERING \/ 3D SZENE|Eine Reise durch Raum und Zeit/);
 assert.match(boot, /navigator\.serviceWorker\.register/);
 assert.match(css, /\.mobile-sheet\.dragging\{transition:none\}/);
@@ -36,13 +36,18 @@ class MockEl {
   hasPointerCapture(){return this.captured;}
   releasePointerCapture(){this.captured=false;}
 }
-const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','sheet-handle','catalog','detail','time-panel'].map(id=>[id,new MockEl(id)]));
+const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','sheet-handle','catalog','detail','view-mode-status','mobile-overview','toggle-orbits','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn'].map(id=>[id,new MockEl(id)]));
 nodes['mobile-sheet'].height=760;nodes['sheet-header'].height=74;
-const buttons=Object.fromEntries(['catalog','detail','time'].map(name=>[name,new MockEl('tab-'+name)]));
+const buttons=Object.fromEntries(['catalog','detail','control'].map(name=>[name,new MockEl('tab-'+name)]));
 for(const [name,el] of Object.entries(buttons)){el.dataset.sheetPanel=name;}
 const shell=new MockEl('shell'),viewport=new MockEl('viewport');
 for(const name of ['catalog','detail'])shell.append(nodes[name]);
-viewport.append(nodes['time-panel']);
+viewport.append(nodes['view-mode-status']);
+const sceneTools=new MockEl('scene-tools');
+nodes['view-mode-status'].append(sceneTools);
+sceneTools.append(nodes['toggle-orbits']);
+sceneTools.append(nodes['reset-camera']);
+viewport.append(nodes['mobile-overview']);
 const mq={matches:true,handlers:[],addEventListener(_,fn){this.handlers.push(fn);}};
 const windowMock={innerHeight:844,matchMedia:()=>mq,addEventListener(){}};
 const documentMock={getElementById:id=>nodes[id],createComment:()=>new MockEl('anchor')};
@@ -54,7 +59,8 @@ vm.runInContext(app.slice(start,end).replace('export function initMobileSheets()
 const controller=module.controller;
 assert.equal(nodes['detail'].parentNode,nodes['sheet-content']);
 assert.equal(nodes['catalog'].parentNode,nodes['sheet-content']);
-assert.equal(nodes['time-panel'].parentNode,nodes['sheet-content']);
+assert.equal(nodes['view-mode-status'].parentNode,nodes['sheet-content']);
+assert.equal(nodes['reset-camera'].parentNode,nodes['mobile-overview']);
 assert.equal(nodes['mobile-sheet'].dataset.snap,'closed');
 assert.equal(nodes['sheet-content'].inert,true);
 assert.equal(nodes['detail'].hidden,false);
@@ -64,6 +70,16 @@ assert.equal(nodes['mobile-sheet'].dataset.snap,'half');
 assert.equal(nodes['catalog'].hidden,false);
 assert.equal(nodes['detail'].hidden,true);
 assert.equal(buttons.catalog.getAttribute('aria-pressed'),'true');
+controller.open('control');
+assert.equal(nodes['view-mode-status'].hidden,false,'third tab contains all shared controls');
+assert.equal(nodes['catalog'].hidden,true);
+assert.equal(buttons.control.getAttribute('aria-pressed'),'true');
+assert.equal(nodes['reset-camera'].parentNode,nodes['mobile-overview'],'overview remains on stage');
+controller.expand();
+assert.equal(nodes['mobile-sheet'].dataset.snap,'full','Expanding controls reveals the entire speed slider');
+assert.equal(nodes['mobile-overview'].style.values['--sheet-overlay-visible'],'760px');
+controller.open('detail');
+assert.equal(nodes['speed-popover'].hidden,true,'popover closes on switching tabs');
 controller.close();
 assert.equal(nodes['mobile-sheet'].dataset.snap,'closed');
 const header=nodes['sheet-header'];
@@ -78,7 +94,8 @@ assert.equal(nodes['mobile-sheet'].dataset.snap,'closed','Swipe downward closes'
 mq.matches=false;mq.handlers.forEach(fn=>fn());
 assert.equal(nodes.catalog.parentNode,shell);
 assert.equal(nodes.detail.parentNode,shell);
-assert.equal(nodes['time-panel'].parentNode,viewport);
+assert.equal(nodes['view-mode-status'].parentNode,viewport);
+assert.equal(nodes['reset-camera'].parentNode,sceneTools);
 assert.equal(nodes.catalog.hidden,false);
 
 const swEvents={};const entries=new Map();

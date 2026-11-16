@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { INITIAL_BODIES } from './helpers/catalog-fixture.mjs';
 import { clean, normalizeSolar, normalizeStation, formatAsteroid } from '../src/data/normalization.js';
 import { renderDetail } from '../src/ui/object-details.js';
-import { renderCatalog,renderFilters } from '../src/ui/object-list.js';
+import { renderCatalog } from '../src/ui/object-list.js';
 import { syncSceneMode } from '../src/ui/scene-mode.js';
 import { syncControls } from '../src/ui/timeline.js';
 import { changeStatus } from '../src/ui/status.js';
@@ -44,7 +44,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     renderer.width=1000;renderer.height=680;renderer.positions=new Map();renderer.overrides=new Map();
     renderer.planetId=null;renderer.simTime=state.time;renderer.setBodies(bodies);
     const select=(id)=>{state.selected=id;renderDetail(state,renderer,select);};
-    renderCatalog(state,select);renderFilters(state);renderDetail(state,renderer,select);syncSceneMode(state,renderer);syncControls(state);
+    renderCatalog(state,select);renderDetail(state,renderer,select);syncSceneMode(state,renderer);syncControls(state);
     assert.equal(get('planet-view-actions').hidden,false);
     assert.match(get('planet-view-subtitle').textContent,/1 Monde · 2 Satelliten/);
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'false');

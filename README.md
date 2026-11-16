@@ -1,9 +1,9 @@
-# Sonnensystem – interaktiver 3D-Atlas v13.0
+# Sonnensystem – interaktiver 3D-Atlas v16.0
 
-**Delta-Update auf v12.** Ausgangsbasis ist v11. Das v12-ZIP enthält ausschließlich geänderte und zusätzliche Dateien und ersetzt die externen Texturabrufe durch lokale Bilddateien. Die bestehenden 160 astronomischen Objekte bleiben erhalten; acht dokumentierte historische bzw. laufende Raumfahrtmissionen sind als eigene Info-Kategorie ergänzt.
+**Delta-Update auf v15.** V16 ergänzt die Sterne im Standard-Layer und ersetzt kollisionsbedingtes Flackern der Beschriftungen durch eine stabile maximale Labelzahl pro Bildschirmfeld. V15 reduzierte das Desktop-Control-Panel von 184 auf 110 px (rund 40 % schmaler), entfernt die sichtbare Ansicht-Beschriftung und bringt die Objektkategorien in ein Mehrfachauswahl-Dropdown „Layer“. Die Katalogsuche berücksichtigt zusätzlich Kategorien und direkte Elternobjekte. Layer bestimmen Katalog und 3D-Szene; alle Texturdateien bleiben unverändert.
 ## Starten
 
-1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12 und v13 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
+1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15 und v16 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
 2. Node.js 20+ verwenden. Zusätzliche npm-Pakete sind nicht erforderlich.
 3. `npm start` im Workspace-Root aufrufen und `http://localhost:4173` öffnen.
 4. Die Anwendung kann auch von einem einfachen statischen Workspace-HTTP-Server geladen werden; dann fehlen die optionalen Live-API-Funktionen.
@@ -28,24 +28,38 @@ Es gibt **keinen externen Textur-Download, kein CORS-Fallback und keinen Texturp
 
 ## Raumsonden (v12)
 
-Neue Filterkategorie „Raumsonden“ mit **Voyager 1, Voyager 2, Pioneer 10, Pioneer 11, New Horizons, Cassini, Galileo und Huygens**. In der Liste und Detailansicht erscheinen belegte Startdaten, Ziele, Missionsstatus und NASA-Quellenlinks. **Keine schematischen 3D-Positionen:** Interplanetare und interstellare Bahnen werden ohne echte Ephemeriden nicht als künstliche Kreisbahnen dargestellt. Diese Kategorie enthält daher Missionsinformationen, keine live berechneten Ortsdaten.
+Neue Layer-Kategorie „Raumsonden“ mit **Voyager 1, Voyager 2, Pioneer 10, Pioneer 11, New Horizons, Cassini, Galileo und Huygens**. In der Liste und Detailansicht erscheinen belegte Startdaten, Ziele, Missionsstatus und NASA-Quellenlinks. **Keine schematischen 3D-Positionen:** Interplanetare und interstellare Bahnen werden ohne echte Ephemeriden nicht als künstliche Kreisbahnen dargestellt. Diese Kategorie enthält daher Missionsinformationen, keine live berechneten Ortsdaten.
 
-## Smarte Labels (v9 + v10)
+## Smarte Labels (v16)
 
-In **Sonnensystem- und Planetenansicht** werden Beschriftungen nun nach Relevanz zugeordnet: Das ausgewählte Objekt, der Planet in der Planetenansicht und weitere bedeutende Objekte haben Vorrang. Andere sichtbare Objekte können bei genügend freier Fläche ebenfalls ein Label erhalten (die bisherige feste 14-Monde-/5-Satelliten-Auswahl entfällt).
+In beiden Ansichten werden Beschriftungen nach Bedeutung sortiert. **Statt Überlagerungskollisionen auszuwerten, begrenzt v16 die Anzahl der normalen Labels je Bildschirmfeld von 160 × 110 CSS-Pixeln auf zwei.** Labelüberlappungen sind daher bewusst möglich. Die wichtigste Beschriftung gewinnt; zuvor sichtbare Labels erhalten einen kleinen Prioritätsbonus. Eine 18-Pixel-Randzone um ein zuvor zugewiesenes Feld verhindert Flackern beim Überschreiten der Feldgrenze.
 
-Die nicht ausgewählten Beschriftungen weichen einander und größeren Himmelskörpern auf dem Bildschirm aus. Dafür prüft der Renderer alternative Positionen und zeigt nur Labels an, die vollständig in den Sichtbereich passen. Text hat eine lesbarere Mindestgröße und eine dunkle Kontur; lange Namen werden bei Bedarf mit Auslassungszeichen gekürzt.
+**Ausgewählte Objekte sind vom Dichtelimit ausgenommen** und bleiben beschriftet. Labels behalten ihre Ankerseite und wechseln diese nur, wenn die Beschriftung sonst den sichtbaren Bildschirm verlassen würde. Vorbeifliegende Satelliten, andere Labels und Himmelskörper lösen keinen positionsbedingten Seitenwechsel und keine kollisionsbedingte Ausblendung mehr aus.
 
-Bewegen sich nicht ausgewählte Objekte über **220 Bildschirmpixel pro realer Sekunde**, wird ihre Beschriftung ausgeblendet. Nach Verlangsamung auf weniger als 140 Pixel/s und 140 ms Ruhe kehrt sie zurück. Der Schwellenwert bezieht Kamerabewegung und Zeitsimulation ein; das jeweilige Objekt bleibt sichtbar und auswählbar. Mit der bestehenden Labels-Schaltfläche lassen sich Beschriftungen weiterhin vollständig ausblenden.
+Der separate Geschwindigkeitsfilter aus v9 bleibt erhalten: Normale Labels bei mehr als 220 Bildschirmpixeln/s werden vorübergehend unterdrückt und kehren nach einer Ruhephase zurück. Ausgewählte Labels sind hiervon ausgenommen. Das manuelle Ein-/Ausschalten der Namen bleibt unverändert.
 
-**Neu in v10:** Hat ein Label eine passende Seite gefunden, bleibt diese als Anker erhalten. Kurzzeitige Konflikte führen zum vorübergehenden Ausblenden statt zu einem sofortigen Sprung auf eine andere Seite. Erst nach mindestens 650 ms anhaltender Blockade, 1300 ms seit dem letzten Seitenwechsel und 180 ms stabil freier Ausweichposition darf eine neue Seite verwendet werden. Der bestehende Bewegungsfilter bleibt erhalten. Das gilt für beide Ansichten und insbesondere für schnell umlaufende Erdsatelliten.
+## Objektlayer und Katalogsuche (v15)
 
-## Control-Panel und Zeitleiste (v13)
+Das Control-Panel oben rechts ist im Desktoplayout jetzt **110 px breit statt 184 px**. Der sichtbare Schriftzug „Ansicht“ über der Ansichtsauswahl entfällt (ein Screenreader-Label bleibt vorhanden). Beim mobilen Layout bleiben das Panel und die Layer-Auswahl im **dritten Tab „Steuerung“**.
 
-Oben rechts ersetzt ein **Control-Panel** die alte Ansichtsbezeichnung. Es enthält ein Dropdown für die heliozentrische Darstellung (nicht maßstabsgetreu) und die acht Planetensysteme, dazu Play/Pause, logarithmische Geschwindigkeitswahl, die Zeit-Zurücksetzung sowie **Bahnen, Namen, Übersicht**. Beschriftungen „Geschwindigkeit“ und „Heute“ werden auf den Buttons nicht angezeigt: die Geschwindigkeit steht als Wert, die lokale Uhrzeit als `DD.MM.YYYY hh:mm` neben dem Zurücksetzen-Symbol. Auf Mobilgeräten bleiben die Zeitbuttons im Menü „Zeit“ des Bottom Sheets.
+Das neue **Layer-Dropdown** bietet zwei Voreinstellungen und eine freie Mehrfachauswahl:
+
+- **Standard (beim Start aktiv):** Planeten, natürliche Monde und Sterne.
+- **Alle:** alle acht Objektkategorien (Planeten, Monde, Zwergplaneten, Asteroiden, Satelliten, Kometen, Raumsonden, Sterne).
+- **Individuell:** beliebige Kombinationen über Checkboxen, mindestens eine Kategorie bleibt aktiv. Bei exakt den Standard-/Alle-Kategorien wird der jeweilige Preset-Status automatisch angezeigt.
+
+Die Layer-Auswahl filtert **gleichzeitig den Katalog und die WebGL-Objekte** in Sonnensystem- und Planetenansicht, einschließlich Bahnen, Labels und Anklickbarkeit. Die Sonne zählt zur Kategorie „Sterne“ und ist in „Standard“ sichtbar. Das Sternenfeld im Hintergrund bleibt als Szenendekoration bestehen. Raumsonden bleiben ohne Ephemeriden wie in v12 reine Katalogeinträge. Beim Ausblenden der ausgewählten Objektkategorie wird auch die Auswahl aufgehoben. Suchergebnisse sind immer auf die aktiven Layer beschränkt.
+
+Der Katalog hat keine Filterchips mehr. Die Suche prüft zusätzlich zum Namen, zur Objekt-ID und zur Katalognummer die **deutsche Objektkategorie (Singular/Plural)** sowie den **Namen bzw. die ID des direkten übergeordneten Objekts**. Beispiel: „Jupiter“ findet Jupiter und seine Monde, „Satelliten“ findet bei aktivierter Satelliten-Ebene künstliche Erdsatelliten. Groß- und Kleinschreibung sowie Akzente werden normalisiert.
+
+## Control-Panel und Zeitleiste (v14)
+
+Auf dem Desktop befindet sich oben rechts ein **schmales, vertikales Control-Panel** mit dem Ansicht-Dropdown (heliozentrische Darstellung oder Planetensysteme). **Play/Pause, Geschwindigkeitswert und Datumsbutton** stehen einzeln untereinander; **Bahnen, Namen und Übersicht** sind kompakte SVG-Icon-Buttons ohne sichtbaren Text, aber mit zugänglichen Beschriftungen. Der lokale Zeitpunkt wird als `DD.MM.YYYY hh:mm` im Datumsbutton angezeigt.
+
+Auf Smartphones und schmalen Tablets (bis 770 px) wird **das komplette Control-Panel ohne Duplikate** in den dritten Bottom-Sheet-Tab **„Steuerung“** verschoben. Dort stehen Ansicht, die drei Zeitbuttons sowie Bahnen und Namen bereit. **Nur Übersicht bleibt als einzelner SVG-Button auf der 3D-Bühne**, folgt der geöffneten Höhe des Bottom-Sheets und wandert bei einem Wechsel zum Desktop wieder an seinen Platz im Panel.
 
 - **Play/Pause** startet oder stoppt die Simulation, ohne den eingestellten Wert zu verändern.
-- **Geschwindigkeitswert** öffnet einen **vertikalen Schieberegler mit 241 logarithmischen Stufen** (schneller nach oben); die ausgewählte Geschwindigkeit wird direkt angezeigt. Klick außerhalb bzw. Escape schließt den Regler. Auf Mobilgeräten befindet er sich im bestehenden Bottom-Sheet-Menü „Zeit“.
+- **Geschwindigkeitswert** öffnet einen **vertikalen Schieberegler mit 241 logarithmischen Stufen** (schneller nach oben); die ausgewählte Geschwindigkeit wird direkt angezeigt. Klick außerhalb bzw. Escape schließt den Regler. Auf Mobilgeräten befindet er sich im dritten Bottom-Sheet-Tab „Steuerung“; das Öffnen erweitert das Sheet automatisch, damit der Regler vollständig bedienbar bleibt.
 - **Datumsbutton** setzt nur das Simulationsdatum auf die tatsächliche aktuelle Uhrzeit zurück. Kameraposition, Ansicht, Geschwindigkeit und Play/Pause-Zustand bleiben erhalten.
 
 | Ansicht | Minimum | Standard | Maximum |
@@ -116,10 +130,10 @@ Die neuen Mondumlaufbahnen basieren auf **NASA/JPL – Planetary Satellite Mean 
 
 ## PWA und Updates
 
-`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v13-PWA verwendet den Cache `sonnensystem-shell-v13` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
+`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v14-PWA verwendet den Cache `sonnensystem-shell-v14` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
 
 ## Weiterarbeiten
 
 Astronomische Objekte werden nur in `data/catalog/` verwaltet; Texte, Status und Links nur in `data/editorial/`. Mehrere Dateien pro Kategorie und Sprache sind möglich, die Dateiübersicht steht im `manifest.json`. Beim Hinzufügen neuer Objekte auch `catalogVersion` und `CACHE_NAME` erhöhen. Ein Import-Job und ein visuelles CMS sind **nicht** Bestandteil dieser Version. Bei sehr viel größeren Katalogen werden Filter, Indexierung, stufenweises Laden und Renderer-Optimierungen erforderlich.
 
-**Dokumentation:** [Delta v13](docs/DELTA-V13.md), [Delta v12](docs/DELTA-V12.md), [Delta v11](docs/DELTA-V11.md), [Texturquellen](docs/TEXTURE-SOURCES.md), [Delta v10](docs/DELTA-V10.md), [Datenarchitektur](docs/DATA-ARCHITECTURE.md), [Architektur](docs/ARCHITECTURE.md), [Delta v9](docs/DELTA-V9.md), [Änderungen v8](docs/DELTA-V8.md).
+**Dokumentation:** [Delta v14](docs/DELTA-V14.md), [Delta v13](docs/DELTA-V13.md), [Delta v12](docs/DELTA-V12.md), [Delta v11](docs/DELTA-V11.md), [Texturquellen](docs/TEXTURE-SOURCES.md), [Delta v10](docs/DELTA-V10.md), [Datenarchitektur](docs/DATA-ARCHITECTURE.md), [Architektur](docs/ARCHITECTURE.md), [Delta v9](docs/DELTA-V9.md), [Änderungen v8](docs/DELTA-V8.md).

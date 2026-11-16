@@ -164,8 +164,8 @@ try{
   }
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  assert.match(sw,/sonnensystem-shell-v(?:[4-9]|1[0-3])\d*/,'PWA cache bumped');
-  assert.match(html,/V(?:[4-9]|1[0-3])\d*\.\d+/,'UI version bumped');
+  assert.match(sw,/sonnensystem-shell-v(?:[4-9]|1[0-6])\d*/,'PWA cache bumped');
+  assert.match(html,/V(?:[4-9]|1[0-6])\d*\.\d+/,'UI version bumped');
   assert.match(html,/zwei Finger/i,'Help describes new gestures');
   console.log('✓ v3 gesture regression (v4 ground-plane) mouse pan, keyboard movement, two-finger pinch/pan, focus and selection regression checks passed');
 }finally{

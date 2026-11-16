@@ -112,6 +112,6 @@ test('v10: DOM has precisely Play, Geschwindigkeit and Heute; speed popup is ver
   assert.match(app,/if\(syncSpeedMode\(S,renderer\?\.planetId\?'planet':'solar'\)\)/);
   assert.match(app,/\$\('speed-btn'\)\.addEventListener\('click'/);
   assert.match(app,/\$\('today-btn'\)\.addEventListener\('click',\(\)=>\{S\.time=Date\.now\(\);updateTime\(\);updateDetail\(\);\}\)/);
-  assert.match(app,/if\(e\.key==='Escape'\)\{setSpeedPopover\(false\)/);
+  assert.match(app,/if\(e\.key==='Escape'\)\{setLayerPopover\(false\);setSpeedPopover\(false\)/);
   assert.match(app,/!\$\('speed-picker-wrap'\)\.contains\(e\.target\)/);
 });

@@ -156,7 +156,7 @@ try {
 }
 const sw = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-assert.match(sw, /sonnensystem-shell-v(?:[4-9]|1[0-3])\d*/, 'PWA cache invalidated for v4');
-assert.match(html, /V(?:[4-9]|1[0-3])\d*\.\d+/, 'UI version shown as v4');
+assert.match(sw, /sonnensystem-shell-v(?:[4-9]|1[0-6])\d*/, 'PWA cache invalidated for v4');
+assert.match(html, /V(?:[4-9]|1[0-6])\d*\.\d+/, 'UI version shown as v4');
 assert.match(html, /unabhängig vom Neigungswinkel/, 'Help describes inclination independence');
 console.log('✓ v4 ground-plane invariant at 7 inclinations and 5 headings, mouse, Shift, touch/pinch and arrow input paths');
