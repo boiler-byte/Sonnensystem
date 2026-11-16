@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "type": "planet",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "mercury",
+      "name": "Merkur",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 2439.7
+      },
+      "orbit": {
+        "semiMajorAxis": 0.387098,
+        "unit": "AU",
+        "periodDays": 87.969,
+        "eccentricity": 0.20563,
+        "inclinationDeg": 7.005,
+        "ascendingNodeDeg": 48.33,
+        "periapsisDeg": 29.12,
+        "meanAnomalyDeg": 174.8,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#b7aba0",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "venus",
+      "name": "Venus",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 6051.8
+      },
+      "orbit": {
+        "semiMajorAxis": 0.723332,
+        "unit": "AU",
+        "periodDays": 224.701,
+        "eccentricity": 0.00677,
+        "inclinationDeg": 3.395,
+        "ascendingNodeDeg": 76.68,
+        "periapsisDeg": 54.88,
+        "meanAnomalyDeg": 50.12,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#e8c78f",
+        "style": "venus"
+      }
+    },
+    {
+      "id": "earth",
+      "name": "Erde",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 6371,
+        "temperatureK": 288
+      },
+      "orbit": {
+        "semiMajorAxis": 1,
+        "unit": "AU",
+        "periodDays": 365.256,
+        "eccentricity": 0.01671,
+        "inclinationDeg": 0,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 102.94,
+        "meanAnomalyDeg": 357.52,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#4e95db",
+        "style": "earth"
+      }
+    },
+    {
+      "id": "mars",
+      "name": "Mars",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 3389.5
+      },
+      "orbit": {
+        "semiMajorAxis": 1.523679,
+        "unit": "AU",
+        "periodDays": 686.98,
+        "eccentricity": 0.0934,
+        "inclinationDeg": 1.85,
+        "ascendingNodeDeg": 49.56,
+        "periapsisDeg": 286.5,
+        "meanAnomalyDeg": 19.37,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#d66c4d",
+        "style": "mars"
+      }
+    },
+    {
+      "id": "jupiter",
+      "name": "Jupiter",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 69911
+      },
+      "orbit": {
+        "semiMajorAxis": 5.2044,
+        "unit": "AU",
+        "periodDays": 4332.59,
+        "eccentricity": 0.0489,
+        "inclinationDeg": 1.304,
+        "ascendingNodeDeg": 100.46,
+        "periapsisDeg": 273.87,
+        "meanAnomalyDeg": 20.02,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#d6a27c",
+        "style": "jupiter"
+      }
+    },
+    {
+      "id": "saturn",
+      "name": "Saturn",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 58232
+      },
+      "orbit": {
+        "semiMajorAxis": 9.5826,
+        "unit": "AU",
+        "periodDays": 10759.2,
+        "eccentricity": 0.0565,
+        "inclinationDeg": 2.485,
+        "ascendingNodeDeg": 113.67,
+        "periapsisDeg": 339.39,
+        "meanAnomalyDeg": 317.02,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#e7c991",
+        "style": "saturn"
+      }
+    },
+    {
+      "id": "uranus",
+      "name": "Uranus",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 25362
+      },
+      "orbit": {
+        "semiMajorAxis": 19.2184,
+        "unit": "AU",
+        "periodDays": 30688.5,
+        "eccentricity": 0.0463,
+        "inclinationDeg": 0.773,
+        "ascendingNodeDeg": 74.01,
+        "periapsisDeg": 96.99,
+        "meanAnomalyDeg": 142.24,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#99d8dd",
+        "style": "uranus"
+      }
+    },
+    {
+      "id": "neptune",
+      "name": "Neptun",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 24622
+      },
+      "orbit": {
+        "semiMajorAxis": 30.11,
+        "unit": "AU",
+        "periodDays": 60182,
+        "eccentricity": 0.009,
+        "inclinationDeg": 1.77,
+        "ascendingNodeDeg": 131.78,
+        "periapsisDeg": 273.19,
+        "meanAnomalyDeg": 256.23,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#4c74d8",
+        "style": "neptune"
+      }
+    }
+  ]
+}

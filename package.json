@@ -1,14 +1,17 @@
 {
   "name": "sonnensystem",
-  "version": "2.0.0",
+  "version": "13.0.0",
   "private": true,
   "type": "module",
-  "description": "Interaktives WebGL-Sonnensystem mit Solar System OpenData, NASA JPL und CelesTrak",
+  "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und serverseitigen API-Proxies",
   "scripts": {
-    "start": "node server.mjs",
-    "dev": "node --watch server.mjs",
-    "check": "node --check server.mjs && node --check app.js && node --check sw.js && node --check data.js && node --check renderer.js && node test.mjs && node test-v2.mjs"
+    "start": "node server/server.mjs",
+    "dev": "node --watch server/server.mjs",
+    "check": "node scripts/validate-catalog.mjs && node --test tests/*.test.mjs",
+    "check:data": "node scripts/validate-catalog.mjs"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {}
 }

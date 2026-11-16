@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "8.0.0",
+  "defaultLocale": "de",
+  "categories": [
+    {
+      "type": "star",
+      "path": "./data/catalog/stars.json"
+    },
+    {
+      "type": "planet",
+      "path": "./data/catalog/planets.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons.json"
+    },
+    {
+      "type": "dwarf",
+      "path": "./data/catalog/dwarf-planets.json"
+    },
+    {
+      "type": "asteroid",
+      "path": "./data/catalog/asteroids.json"
+    },
+    {
+      "type": "satellite",
+      "path": "./data/catalog/satellites.json"
+    },
+    {
+      "type": "comet",
+      "path": "./data/catalog/comets.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-jupiter-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-saturn-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-uranus-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-uranus-inner-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-uranus-outer-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-neptune-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-neptune-outer-jpl.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-pluto-jpl.json"
+    },
+    {
+      "type": "asteroid",
+      "path": "./data/catalog/asteroids-jpl.json"
+    },
+    {
+      "type": "comet",
+      "path": "./data/catalog/comets-jpl.json"
+    }
+  ],
+  "editorial": [
+    {
+      "locale": "de",
+      "path": "./data/editorial/de.json"
+    },
+    {
+      "locale": "de",
+      "path": "./data/editorial/de-moons.json"
+    },
+    {
+      "locale": "de",
+      "path": "./data/editorial/de-small-bodies.json"
+    }
+  ]
+}

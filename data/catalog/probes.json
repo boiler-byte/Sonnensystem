@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "type": "probe",
+  "provenance": {
+    "source": "NASA Science Missionsübersichten",
+    "reviewStatus": "source-linked",
+    "note": "Missionsdaten ohne Positions-Ephemeriden; keine schematischen Flugbahnen."
+  },
+  "objects": [
+    {
+      "id": "voyager-1",
+      "name": "Voyager 1",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1977-09-05",
+      "targets": "Jupiter, Saturn, interstellarer Raum",
+      "missionStatus": "Erweiterte Mission",
+      "description": "1979 Jupiter; 1980 Saturn; 2012 Eintritt in den interstellaren Raum.",
+      "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-1/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "voyager-2",
+      "name": "Voyager 2",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1977-08-20",
+      "targets": "Jupiter, Saturn, Uranus, Neptun",
+      "missionStatus": "Erweiterte Mission",
+      "description": "Einzige Sonde mit Vorbeiflügen an allen vier Gas- und Eisriesen; seit 2018 interstellar.",
+      "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "pioneer-10",
+      "name": "Pioneer 10",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1972-03-02",
+      "targets": "Jupiter",
+      "missionStatus": "Keine Verbindung",
+      "description": "Erster Jupiter-Vorbeiflug 1973; letztes empfangenes Signal im Januar 2003.",
+      "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "pioneer-11",
+      "name": "Pioneer 11",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1973-04-06",
+      "targets": "Jupiter, Saturn",
+      "missionStatus": "Keine Verbindung",
+      "description": "Jupiter-Vorbeiflug 1974; erster Saturn-Vorbeiflug 1979; letzter Kontakt 1995.",
+      "sourceUrl": "https://science.nasa.gov/mission/pioneer-11/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "new-horizons",
+      "name": "New Horizons",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "2006-01-19",
+      "targets": "Pluto, Arrokoth, Kuipergürtel",
+      "missionStatus": "Erweiterte Mission",
+      "description": "Pluto-Vorbeiflug 2015; Arrokoth-Vorbeiflug 2019.",
+      "sourceUrl": "https://science.nasa.gov/mission/new-horizons/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "cassini",
+      "name": "Cassini",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1997-10-15",
+      "targets": "Saturn, Titan, Enceladus",
+      "missionStatus": "Beendet 2017",
+      "description": "Saturn-Orbiter ab 2004; Missionsende durch kontrollierten Eintritt in Saturn 2017.",
+      "sourceUrl": "https://science.nasa.gov/mission/cassini/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "galileo",
+      "name": "Galileo",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1989-10-18",
+      "targets": "Jupiter und Monde",
+      "missionStatus": "Beendet 2003",
+      "description": "Jupiter-Orbiter ab 1995; Untersuchung von Jupiter, Europa, Io und Ganymed.",
+      "sourceUrl": "https://science.nasa.gov/mission/galileo/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    },
+    {
+      "id": "huygens",
+      "name": "Huygens",
+      "type": "probe",
+      "parentId": null,
+      "launchDate": "1997-10-15",
+      "targets": "Titan",
+      "missionStatus": "Beendet 2005",
+      "description": "ESA-Landesonde: Landung auf Titan am 14. Januar 2005.",
+      "sourceUrl": "https://science.nasa.gov/mission/cassini-huygens/",
+      "color": "#d4ad7d",
+      "style": "rock"
+    }
+  ]
+}

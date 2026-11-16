@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "type": "asteroid",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "vesta",
+      "name": "Vesta",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 262.7
+      },
+      "orbit": {
+        "semiMajorAxis": 2.361,
+        "unit": "AU",
+        "periodDays": 1325.3,
+        "eccentricity": 0.0887,
+        "inclinationDeg": 7.14,
+        "ascendingNodeDeg": 103.85,
+        "periapsisDeg": 151.2,
+        "meanAnomalyDeg": 50,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#b39b87",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "pallas",
+      "name": "Pallas",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 256
+      },
+      "orbit": {
+        "semiMajorAxis": 2.773,
+        "unit": "AU",
+        "periodDays": 1686.1,
+        "eccentricity": 0.231,
+        "inclinationDeg": 34.8,
+        "ascendingNodeDeg": 173.1,
+        "periapsisDeg": 310,
+        "meanAnomalyDeg": 70,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#aaa49c",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "eros",
+      "name": "Eros",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 8.4
+      },
+      "orbit": {
+        "semiMajorAxis": 1.458,
+        "unit": "AU",
+        "periodDays": 643.2,
+        "eccentricity": 0.222,
+        "inclinationDeg": 10.83,
+        "ascendingNodeDeg": 304.3,
+        "periapsisDeg": 178.7,
+        "meanAnomalyDeg": 300,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#c69d7a",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "bennu",
+      "name": "Bennu",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0.245
+      },
+      "orbit": {
+        "semiMajorAxis": 1.126,
+        "unit": "AU",
+        "periodDays": 436.6,
+        "eccentricity": 0.2037,
+        "inclinationDeg": 6.03,
+        "ascendingNodeDeg": 2.06,
+        "periapsisDeg": 66.2,
+        "meanAnomalyDeg": 101,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#8f8a80",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "apophis",
+      "name": "Apophis",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0.17
+      },
+      "orbit": {
+        "semiMajorAxis": 0.922,
+        "unit": "AU",
+        "periodDays": 323.6,
+        "eccentricity": 0.191,
+        "inclinationDeg": 3.34,
+        "ascendingNodeDeg": 203,
+        "periapsisDeg": 127,
+        "meanAnomalyDeg": 42,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#b89f91",
+        "style": "rock"
+      }
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "styx",
+      "name": "Styx",
+      "parentId": "pluto",
+      "physical": {
+        "radiusKm": 5.2
+      },
+      "orbit": {
+        "semiMajorAxis": 43200,
+        "unit": "km",
+        "periodDays": 20.16,
+        "eccentricity": 0.025,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 322.5,
+        "meanAnomalyDeg": 358.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "nix",
+      "name": "Nix",
+      "parentId": "pluto",
+      "physical": {
+        "radiusKm": 18.0
+      },
+      "orbit": {
+        "semiMajorAxis": 49300,
+        "unit": "km",
+        "periodDays": 24.85,
+        "eccentricity": 0.015,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 31.4,
+        "meanAnomalyDeg": 338.2,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "kerberos",
+      "name": "Kerberos",
+      "parentId": "pluto",
+      "physical": {
+        "radiusKm": 6.0
+      },
+      "orbit": {
+        "semiMajorAxis": 58300,
+        "unit": "km",
+        "periodDays": 32.17,
+        "eccentricity": 0.01,
+        "inclinationDeg": 0.4,
+        "ascendingNodeDeg": 314.3,
+        "periapsisDeg": 32.1,
+        "meanAnomalyDeg": 276.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "hydra",
+      "name": "Hydra",
+      "parentId": "pluto",
+      "physical": {
+        "radiusKm": 18.5
+      },
+      "orbit": {
+        "semiMajorAxis": 65200,
+        "unit": "km",
+        "periodDays": 38.2,
+        "eccentricity": 0.009,
+        "inclinationDeg": 0.3,
+        "ascendingNodeDeg": 114.3,
+        "periapsisDeg": 139.3,
+        "meanAnomalyDeg": 335.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export function fetchJSON(path){return fetch(path,{headers:{Accept:'application/json'}}).then(async res=>{let data;try{data=await res.json();}catch{throw Error('Serverantwort konnte nicht gelesen werden');}if(!res.ok)throw Error(data.error||`HTTP ${res.status}`);return data;});}

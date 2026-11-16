@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "caliban",
+      "name": "Caliban",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 7167000,
+        "unit": "km",
+        "periodDays": 580.0,
+        "eccentricity": 0.2,
+        "inclinationDeg": 141.4,
+        "ascendingNodeDeg": 174.9,
+        "periapsisDeg": 349.7,
+        "meanAnomalyDeg": 241.2,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "sycorax",
+      "name": "Sycorax",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 12193200,
+        "unit": "km",
+        "periodDays": 1286.0,
+        "eccentricity": 0.52,
+        "inclinationDeg": 157.0,
+        "ascendingNodeDeg": 267.1,
+        "periapsisDeg": 25.4,
+        "meanAnomalyDeg": 332.1,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "prospero",
+      "name": "Prospero",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 16221000,
+        "unit": "km",
+        "periodDays": 1974.0,
+        "eccentricity": 0.441,
+        "inclinationDeg": 149.4,
+        "ascendingNodeDeg": 324.5,
+        "periapsisDeg": 180.4,
+        "meanAnomalyDeg": 197.6,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "setebos",
+      "name": "Setebos",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 17519800,
+        "unit": "km",
+        "periodDays": 2215.0,
+        "eccentricity": 0.579,
+        "inclinationDeg": 153.9,
+        "ascendingNodeDeg": 244.7,
+        "periapsisDeg": 356.1,
+        "meanAnomalyDeg": 148.0,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "stephano",
+      "name": "Stephano",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 7951400,
+        "unit": "km",
+        "periodDays": 677.0,
+        "eccentricity": 0.235,
+        "inclinationDeg": 143.6,
+        "ascendingNodeDeg": 193.3,
+        "periapsisDeg": 17.1,
+        "meanAnomalyDeg": 164.4,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "trinculo",
+      "name": "Trinculo",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 8502600,
+        "unit": "km",
+        "periodDays": 749.0,
+        "eccentricity": 0.22,
+        "inclinationDeg": 167.1,
+        "ascendingNodeDeg": 196.5,
+        "periapsisDeg": 162.2,
+        "meanAnomalyDeg": 55.6,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "francisco",
+      "name": "Francisco",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 4275700,
+        "unit": "km",
+        "periodDays": 267.0,
+        "eccentricity": 0.144,
+        "inclinationDeg": 146.8,
+        "ascendingNodeDeg": 101.9,
+        "periapsisDeg": 137.6,
+        "meanAnomalyDeg": 288.4,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "margaret",
+      "name": "Margaret",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 14425000,
+        "unit": "km",
+        "periodDays": 1655.0,
+        "eccentricity": 0.642,
+        "inclinationDeg": 60.5,
+        "ascendingNodeDeg": 0.9,
+        "periapsisDeg": 90.7,
+        "meanAnomalyDeg": 115.9,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "ferdinand",
+      "name": "Ferdinand",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20421400,
+        "unit": "km",
+        "periodDays": 2788.0,
+        "eccentricity": 0.395,
+        "inclinationDeg": 169.2,
+        "ascendingNodeDeg": 223.9,
+        "periapsisDeg": 166.9,
+        "meanAnomalyDeg": 172.3,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

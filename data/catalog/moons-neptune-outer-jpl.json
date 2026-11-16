@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "nereid",
+      "name": "Nereid",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 170.0
+      },
+      "orbit": {
+        "semiMajorAxis": 5513900,
+        "unit": "km",
+        "periodDays": 360.133039,
+        "eccentricity": 0.751,
+        "inclinationDeg": 5.1,
+        "ascendingNodeDeg": 319.5,
+        "periapsisDeg": 296.8,
+        "meanAnomalyDeg": 318.5,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "halimede",
+      "name": "Halimede",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 16590500,
+        "unit": "km",
+        "periodDays": 1879.0,
+        "eccentricity": 0.521,
+        "inclinationDeg": 119.6,
+        "ascendingNodeDeg": 198.5,
+        "periapsisDeg": 157.9,
+        "meanAnomalyDeg": 135.8,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "psamathe",
+      "name": "Psamathe",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 47646600,
+        "unit": "km",
+        "periodDays": 9149.0,
+        "eccentricity": 0.413,
+        "inclinationDeg": 127.8,
+        "ascendingNodeDeg": 302.9,
+        "periapsisDeg": 148.2,
+        "meanAnomalyDeg": 183.2,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "sao",
+      "name": "Sao",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 22239900,
+        "unit": "km",
+        "periodDays": 2919.0,
+        "eccentricity": 0.296,
+        "inclinationDeg": 50.2,
+        "ascendingNodeDeg": 41.8,
+        "periapsisDeg": 93.5,
+        "meanAnomalyDeg": 178.5,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "laomedeia",
+      "name": "Laomedeia",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23499900,
+        "unit": "km",
+        "periodDays": 3168.0,
+        "eccentricity": 0.419,
+        "inclinationDeg": 36.9,
+        "ascendingNodeDeg": 57.6,
+        "periapsisDeg": 146.2,
+        "meanAnomalyDeg": 248.1,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "neso",
+      "name": "Neso",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 49897800,
+        "unit": "km",
+        "periodDays": 9805.0,
+        "eccentricity": 0.455,
+        "inclinationDeg": 128.4,
+        "ascendingNodeDeg": 55.4,
+        "periapsisDeg": 89.8,
+        "meanAnomalyDeg": 13.8,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

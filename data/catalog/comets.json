@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "type": "comet",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": []
+}

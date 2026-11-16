@@ -1,0 +1,3143 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "revision": 1,
+  "articles": [
+    {
+      "id": "amalthea",
+      "status": "imported",
+      "revision": 1,
+      "title": "Amalthea",
+      "summary": "Amalthea ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 181.400 km, die Umlaufdauer etwa 0,5 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Amalthea ist ein unregelmäßig geformter, auffallend rötlicher innerer Jupitermond."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 181.400 km; die angegebene Umlaufzeit beträgt rund 0,5 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,003 erfasst. Der tabellierte mittlere Radius liegt bei etwa 83,5 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/amalthea/"
+        }
+      ]
+    },
+    {
+      "id": "thebe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Thebe",
+      "summary": "Thebe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 221.900 km, die Umlaufdauer etwa 0,676 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Thebe gehört zu den inneren kleinen Jupitermonden. Staub solcher Monde trägt zu den schwachen Jupiterringen bei."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 221.900 km; die angegebene Umlaufzeit beträgt rund 0,676 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,018 erfasst. Der tabellierte mittlere Radius liegt bei etwa 49,3 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/"
+        }
+      ]
+    },
+    {
+      "id": "adrastea",
+      "status": "imported",
+      "revision": 1,
+      "title": "Adrastea",
+      "summary": "Adrastea ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 129.000 km, die Umlaufdauer etwa 0,298 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Adrastea umläuft Jupiter sehr nahe am Planeten und ist mit dessen schwachem Ringsystem verbunden."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 129.000 km; die angegebene Umlaufzeit beträgt rund 0,298 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 8,2 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/"
+        }
+      ]
+    },
+    {
+      "id": "metis",
+      "status": "imported",
+      "revision": 1,
+      "title": "Metis",
+      "summary": "Metis ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 128.000 km, die Umlaufdauer etwa 0,295 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Metis ist einer der innersten bekannten Jupitermonde und eine mögliche Staubquelle für das Ringsystem."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 128.000 km; die angegebene Umlaufzeit beträgt rund 0,295 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 21,5 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/"
+        }
+      ]
+    },
+    {
+      "id": "himalia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Himalia",
+      "summary": "Himalia ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.439.000 km, die Umlaufdauer etwa 249,909 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Himalia zählt zu den größeren irregulären äußeren Jupitermonden und gehört zu einer Gruppe ähnlicher Bahnen."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.439.000 km; die angegebene Umlaufzeit beträgt rund 249,909 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,16 erfasst. Der tabellierte mittlere Radius liegt bei etwa 85 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/"
+        }
+      ]
+    },
+    {
+      "id": "elara",
+      "status": "imported",
+      "revision": 1,
+      "title": "Elara",
+      "summary": "Elara ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.710.700 km, die Umlaufdauer etwa 258,886 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.710.700 km; die angegebene Umlaufzeit beträgt rund 258,886 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,212 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "pasiphae",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pasiphae",
+      "summary": "Pasiphae ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.463.200 km, die Umlaufdauer etwa 734,422 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.463.200 km; die angegebene Umlaufzeit beträgt rund 734,422 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,412 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "sinope",
+      "status": "imported",
+      "revision": 1,
+      "title": "Sinope",
+      "summary": "Sinope ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.679.300 km, die Umlaufdauer etwa 744,595 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.679.300 km; die angegebene Umlaufzeit beträgt rund 744,595 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,262 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "lysithea",
+      "status": "imported",
+      "revision": 1,
+      "title": "Lysithea",
+      "summary": "Lysithea ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.699.100 km, die Umlaufdauer etwa 258,503 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.699.100 km; die angegebene Umlaufzeit beträgt rund 258,503 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,117 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "carme",
+      "status": "imported",
+      "revision": 1,
+      "title": "Carme",
+      "summary": "Carme ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.139.200 km, die Umlaufdauer etwa 719,281 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.139.200 km; die angegebene Umlaufzeit beträgt rund 719,281 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,261 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ananke",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ananke",
+      "summary": "Ananke ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 21.029.500 km, die Umlaufdauer etwa 623,11 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 21.029.500 km; die angegebene Umlaufzeit beträgt rund 623,11 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,238 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "leda",
+      "status": "imported",
+      "revision": 1,
+      "title": "Leda",
+      "summary": "Leda ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.145.200 km, die Umlaufdauer etwa 240,326 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.145.200 km; die angegebene Umlaufzeit beträgt rund 240,326 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,162 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "callirrhoe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Callirrhoe",
+      "summary": "Callirrhoe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.789.400 km, die Umlaufdauer etwa 749,791 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.789.400 km; die angegebene Umlaufzeit beträgt rund 749,791 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,29 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "themisto",
+      "status": "imported",
+      "revision": 1,
+      "title": "Themisto",
+      "summary": "Themisto ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 7.397.000 km, die Umlaufdauer etwa 129,968 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 7.397.000 km; die angegebene Umlaufzeit beträgt rund 129,968 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,257 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "megaclite",
+      "status": "imported",
+      "revision": 1,
+      "title": "Megaclite",
+      "summary": "Megaclite ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.640.100 km, die Umlaufdauer etwa 742,771 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.640.100 km; die angegebene Umlaufzeit beträgt rund 742,771 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,421 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "taygete",
+      "status": "imported",
+      "revision": 1,
+      "title": "Taygete",
+      "summary": "Taygete ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.103.400 km, die Umlaufdauer etwa 717,592 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.103.400 km; die angegebene Umlaufzeit beträgt rund 717,592 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,257 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "chaldene",
+      "status": "imported",
+      "revision": 1,
+      "title": "Chaldene",
+      "summary": "Chaldene ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 22.926.300 km, die Umlaufdauer etwa 709,362 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.926.300 km; die angegebene Umlaufzeit beträgt rund 709,362 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,261 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "harpalyke",
+      "status": "imported",
+      "revision": 1,
+      "title": "Harpalyke",
+      "summary": "Harpalyke ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 20.887.500 km, die Umlaufdauer etwa 616,783 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.887.500 km; die angegebene Umlaufzeit beträgt rund 616,783 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,239 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "kalyke",
+      "status": "imported",
+      "revision": 1,
+      "title": "Kalyke",
+      "summary": "Kalyke ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.298.000 km, die Umlaufdauer etwa 726,701 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.298.000 km; die angegebene Umlaufzeit beträgt rund 726,701 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,261 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "iocaste",
+      "status": "imported",
+      "revision": 1,
+      "title": "Iocaste",
+      "summary": "Iocaste ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 21.062.300 km, die Umlaufdauer etwa 624,548 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 21.062.300 km; die angegebene Umlaufzeit beträgt rund 624,548 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,223 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "erinome",
+      "status": "imported",
+      "revision": 1,
+      "title": "Erinome",
+      "summary": "Erinome ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.027.200 km, die Umlaufdauer etwa 714,054 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.027.200 km; die angegebene Umlaufzeit beträgt rund 714,054 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,272 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "isonoe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Isonoe",
+      "summary": "Isonoe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 22.976.300 km, die Umlaufdauer etwa 711,66 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.976.300 km; die angegebene Umlaufzeit beträgt rund 711,66 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,249 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "praxidike",
+      "status": "imported",
+      "revision": 1,
+      "title": "Praxidike",
+      "summary": "Praxidike ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 20.931.100 km, die Umlaufdauer etwa 618,723 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.931.100 km; die angegebene Umlaufzeit beträgt rund 618,723 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,245 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "autonoe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Autonoe",
+      "summary": "Autonoe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.785.200 km, die Umlaufdauer etwa 749,61 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.785.200 km; die angegebene Umlaufzeit beträgt rund 749,61 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,326 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "thyone",
+      "status": "imported",
+      "revision": 1,
+      "title": "Thyone",
+      "summary": "Thyone ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 20.972.700 km, die Umlaufdauer etwa 620,587 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.972.700 km; die angegebene Umlaufzeit beträgt rund 620,587 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,235 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "hermippe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Hermippe",
+      "summary": "Hermippe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 21.103.600 km, die Umlaufdauer etwa 626,38 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 21.103.600 km; die angegebene Umlaufzeit beträgt rund 626,38 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,22 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "aitne",
+      "status": "imported",
+      "revision": 1,
+      "title": "Aitne",
+      "summary": "Aitne ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.059.400 km, die Umlaufdauer etwa 715,54 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.059.400 km; die angegebene Umlaufzeit beträgt rund 715,54 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,273 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "eurydome",
+      "status": "imported",
+      "revision": 1,
+      "title": "Eurydome",
+      "summary": "Eurydome ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 22.894.500 km, die Umlaufdauer etwa 707,857 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.894.500 km; die angegebene Umlaufzeit beträgt rund 707,857 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,287 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "euanthe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Euanthe",
+      "summary": "Euanthe ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 20.822.900 km, die Umlaufdauer etwa 613,928 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.822.900 km; die angegebene Umlaufzeit beträgt rund 613,928 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,243 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "euporie",
+      "status": "imported",
+      "revision": 1,
+      "title": "Euporie",
+      "summary": "Euporie ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 19.261.900 km, die Umlaufdauer etwa 546,178 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.261.900 km; die angegebene Umlaufzeit beträgt rund 546,178 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,148 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "orthosie",
+      "status": "imported",
+      "revision": 1,
+      "title": "Orthosie",
+      "summary": "Orthosie ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 20.897.800 km, die Umlaufdauer etwa 617,235 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.897.800 km; die angegebene Umlaufzeit beträgt rund 617,235 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,294 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "sponde",
+      "status": "imported",
+      "revision": 1,
+      "title": "Sponde",
+      "summary": "Sponde ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.538.700 km, die Umlaufdauer etwa 737,954 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.538.700 km; die angegebene Umlaufzeit beträgt rund 737,954 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,323 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "kale",
+      "status": "imported",
+      "revision": 1,
+      "title": "Kale",
+      "summary": "Kale ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 23.047.800 km, die Umlaufdauer etwa 715,016 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.047.800 km; die angegebene Umlaufzeit beträgt rund 715,016 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,262 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "pasithee",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pasithee",
+      "summary": "Pasithee ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 22.840.800 km, die Umlaufdauer etwa 705,409 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.840.800 km; die angegebene Umlaufzeit beträgt rund 705,409 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,274 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "dia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Dia",
+      "summary": "Dia ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 12.257.900 km, die Umlaufdauer etwa 277,247 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 12.257.900 km; die angegebene Umlaufzeit beträgt rund 277,247 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,232 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "valetudo",
+      "status": "imported",
+      "revision": 1,
+      "title": "Valetudo",
+      "summary": "Valetudo ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 18.690.100 km, die Umlaufdauer etwa 522,074 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Valetudo zählt zu Jupiters kleinen unregelmäßigen Monden und hat eine bemerkenswerte Bahn unter den weit außen kreisenden Begleitern."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 18.690.100 km; die angegebene Umlaufzeit beträgt rund 522,074 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,217 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/"
+        }
+      ]
+    },
+    {
+      "id": "pandia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pandia",
+      "summary": "Pandia ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.479.600 km, die Umlaufdauer etwa 251,232 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.479.600 km; die angegebene Umlaufzeit beträgt rund 251,232 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,178 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ersa",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ersa",
+      "summary": "Ersa ist ein Mond von Jupiter. Seine mittlere Umlaufentfernung beträgt rund 11.399.400 km, die Umlaufdauer etwa 248,615 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.399.400 km; die angegebene Umlaufzeit beträgt rund 248,615 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,117 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "tethys",
+      "status": "imported",
+      "revision": 1,
+      "title": "Tethys",
+      "summary": "Tethys ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 295.000 km, die Umlaufdauer etwa 1,888 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Tethys trägt den großen Einschlagskrater Odysseus und teilt seine Umlaufbahnregion mit den Trojanermonden Telesto und Calypso."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 295.000 km; die angegebene Umlaufzeit beträgt rund 1,888 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 531,1 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/tethys/"
+        }
+      ]
+    },
+    {
+      "id": "dione",
+      "status": "imported",
+      "revision": 1,
+      "title": "Dione",
+      "summary": "Dione ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 377.700 km, die Umlaufdauer etwa 2,737 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Dione besitzt helle Eisstrukturen und ein komplexes Netz geologischer Bruchlinien."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 377.700 km; die angegebene Umlaufzeit beträgt rund 2,737 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,002 erfasst. Der tabellierte mittlere Radius liegt bei etwa 561,4 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "hyperion",
+      "status": "imported",
+      "revision": 1,
+      "title": "Hyperion",
+      "summary": "Hyperion ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 1.481.500 km, die Umlaufdauer etwa 21,277 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Hyperion ist auffallend porös und zeigt eine unregelmäßige, schwammartig zerklüftete Oberfläche."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1.481.500 km; die angegebene Umlaufzeit beträgt rund 21,277 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,105 erfasst. Der tabellierte mittlere Radius liegt bei etwa 135 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "phoebe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Phoebe",
+      "summary": "Phoebe ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 12.929.400 km, die Umlaufdauer etwa 550,304 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Phoebe ist ein dunkler, rückläufig kreisender äußerer Saturnmond; Cassini untersuchte ihn 2004."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 12.929.400 km; die angegebene Umlaufzeit beträgt rund 550,304 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,164 erfasst. Der tabellierte mittlere Radius liegt bei etwa 106,5 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/phoebe/"
+        }
+      ]
+    },
+    {
+      "id": "helene",
+      "status": "imported",
+      "revision": 1,
+      "title": "Helene",
+      "summary": "Helene ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 377.600 km, die Umlaufdauer etwa 2,737 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Helene ist ein trojanischer Begleiter des Saturnmondes Dione."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 377.600 km; die angegebene Umlaufzeit beträgt rund 2,737 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Der tabellierte mittlere Radius liegt bei etwa 18 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "telesto",
+      "status": "imported",
+      "revision": 1,
+      "title": "Telesto",
+      "summary": "Telesto ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 295.000 km, die Umlaufdauer etwa 1,888 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Telesto ist ein Trojanermond von Tethys und bewegt sich in dessen Bahnregion um Saturn."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 295.000 km; die angegebene Umlaufzeit beträgt rund 1,888 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/tethys/"
+        }
+      ]
+    },
+    {
+      "id": "calypso",
+      "status": "imported",
+      "revision": 1,
+      "title": "Calypso",
+      "summary": "Calypso ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 295.000 km, die Umlaufdauer etwa 1,888 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Calypso teilt sich als Trojanermond die Bahnregion von Tethys."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 295.000 km; die angegebene Umlaufzeit beträgt rund 1,888 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/tethys/"
+        }
+      ]
+    },
+    {
+      "id": "methone",
+      "status": "imported",
+      "revision": 1,
+      "title": "Methone",
+      "summary": "Methone ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 194.700 km, die Umlaufdauer etwa 1,01 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 194.700 km; die angegebene Umlaufzeit beträgt rund 1,01 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,002 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "polydeuces",
+      "status": "imported",
+      "revision": 1,
+      "title": "Polydeuces",
+      "summary": "Polydeuces ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 377.600 km, die Umlaufdauer etwa 2,737 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 377.600 km; die angegebene Umlaufzeit beträgt rund 2,737 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,019 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "janus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Janus",
+      "summary": "Janus ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 151.500 km, die Umlaufdauer etwa 0,697 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Janus und Epimetheus stehen in einer bemerkenswerten koorbitalen Beziehung: Sie tauschen regelmäßig ihre Bahnlagen."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 151.500 km; die angegebene Umlaufzeit beträgt rund 0,697 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Der tabellierte mittlere Radius liegt bei etwa 89,2 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "epimetheus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Epimetheus",
+      "summary": "Epimetheus ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 151.400 km, die Umlaufdauer etwa 0,697 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Epimetheus tauscht mit Janus im Rahmen ihres koorbitalen Tanzes regelmäßig die innere und äußere Bahn."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 151.400 km; die angegebene Umlaufzeit beträgt rund 0,697 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,02 erfasst. Der tabellierte mittlere Radius liegt bei etwa 58,2 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "atlas",
+      "status": "imported",
+      "revision": 1,
+      "title": "Atlas",
+      "summary": "Atlas ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 137.700 km, die Umlaufdauer etwa 0,605 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 137.700 km; die angegebene Umlaufzeit beträgt rund 0,605 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 15,1 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "prometheus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Prometheus",
+      "summary": "Prometheus ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 139.400 km, die Umlaufdauer etwa 0,616 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Prometheus übt einen gravitativen Einfluss auf den schmalen F-Ring des Saturn aus."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 139.400 km; die angegebene Umlaufzeit beträgt rund 0,616 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,002 erfasst. Der tabellierte mittlere Radius liegt bei etwa 43,1 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "pandora",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pandora",
+      "summary": "Pandora ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 141.700 km, die Umlaufdauer etwa 0,631 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Pandora bewegt sich nahe am F-Ring des Saturn und beeinflusst seine Struktur."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 141.700 km; die angegebene Umlaufzeit beträgt rund 0,631 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Der tabellierte mittlere Radius liegt bei etwa 40,6 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "pan",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pan",
+      "summary": "Pan ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 133.600 km, die Umlaufdauer etwa 0,575 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Pan bewegt sich innerhalb der Encke-Teilung in Saturns Ringsystem."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 133.600 km; die angegebene Umlaufzeit beträgt rund 0,575 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 14 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "pallene",
+      "status": "imported",
+      "revision": 1,
+      "title": "Pallene",
+      "summary": "Pallene ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 212.300 km, die Umlaufdauer etwa 1,156 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 212.300 km; die angegebene Umlaufzeit beträgt rund 1,156 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "daphnis",
+      "status": "imported",
+      "revision": 1,
+      "title": "Daphnis",
+      "summary": "Daphnis ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 136.500 km, die Umlaufdauer etwa 0,594 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Daphnis durchzieht die Keeler-Teilung und kann Wellen in den benachbarten Ringkanten anregen."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 136.500 km; die angegebene Umlaufzeit beträgt rund 0,594 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "anthe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Anthe",
+      "summary": "Anthe ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 198.100 km, die Umlaufdauer etwa 1,039 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 198.100 km; die angegebene Umlaufzeit beträgt rund 1,039 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,002 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "aegaeon",
+      "status": "imported",
+      "revision": 1,
+      "title": "Aegaeon",
+      "summary": "Aegaeon ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 167.500 km, die Umlaufdauer etwa 0,808 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 167.500 km; die angegebene Umlaufzeit beträgt rund 0,808 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ymir",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ymir",
+      "summary": "Ymir ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 22.955.600 km, die Umlaufdauer etwa 1298,682 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.955.600 km; die angegebene Umlaufzeit beträgt rund 1298,682 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,338 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "paaliaq",
+      "status": "imported",
+      "revision": 1,
+      "title": "Paaliaq",
+      "summary": "Paaliaq ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 14.997.700 km, die Umlaufdauer etwa 685,715 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 14.997.700 km; die angegebene Umlaufzeit beträgt rund 685,715 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,378 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "tarvos",
+      "status": "imported",
+      "revision": 1,
+      "title": "Tarvos",
+      "summary": "Tarvos ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 18.216.600 km, die Umlaufdauer etwa 917,984 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 18.216.600 km; die angegebene Umlaufzeit beträgt rund 917,984 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,522 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ijiraq",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ijiraq",
+      "summary": "Ijiraq ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 11.344.700 km, die Umlaufdauer etwa 451,12 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.344.700 km; die angegebene Umlaufzeit beträgt rund 451,12 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,293 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "suttungr",
+      "status": "imported",
+      "revision": 1,
+      "title": "Suttungr",
+      "summary": "Suttungr ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 19.391.900 km, die Umlaufdauer etwa 1008,245 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.391.900 km; die angegebene Umlaufzeit beträgt rund 1008,245 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,116 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "kiviuq",
+      "status": "imported",
+      "revision": 1,
+      "title": "Kiviuq",
+      "summary": "Kiviuq ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 11.307.400 km, die Umlaufdauer etwa 448,908 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 11.307.400 km; die angegebene Umlaufzeit beträgt rund 448,908 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,275 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "mundilfari",
+      "status": "imported",
+      "revision": 1,
+      "title": "Mundilfari",
+      "summary": "Mundilfari ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 18.588.200 km, die Umlaufdauer etwa 946,29 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 18.588.200 km; die angegebene Umlaufzeit beträgt rund 946,29 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,211 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "albiorix",
+      "status": "imported",
+      "revision": 1,
+      "title": "Albiorix",
+      "summary": "Albiorix ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 16.329.200 km, die Umlaufdauer etwa 779,07 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 16.329.200 km; die angegebene Umlaufzeit beträgt rund 779,07 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,482 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "skathi",
+      "status": "imported",
+      "revision": 1,
+      "title": "Skathi",
+      "summary": "Skathi ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 15.575.400 km, die Umlaufdauer etwa 725,731 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 15.575.400 km; die angegebene Umlaufzeit beträgt rund 725,731 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,281 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "erriapus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Erriapus",
+      "summary": "Erriapus ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 17.506.900 km, die Umlaufdauer etwa 864,924 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 17.506.900 km; die angegebene Umlaufzeit beträgt rund 864,924 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,475 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "siarnaq",
+      "status": "imported",
+      "revision": 1,
+      "title": "Siarnaq",
+      "summary": "Siarnaq ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 17.881.100 km, die Umlaufdauer etwa 892,68 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 17.881.100 km; die angegebene Umlaufzeit beträgt rund 892,68 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,308 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "thrymr",
+      "status": "imported",
+      "revision": 1,
+      "title": "Thrymr",
+      "summary": "Thrymr ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 20.330.500 km, die Umlaufdauer etwa 1082,229 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.330.500 km; die angegebene Umlaufzeit beträgt rund 1082,229 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,467 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "narvi",
+      "status": "imported",
+      "revision": 1,
+      "title": "Narvi",
+      "summary": "Narvi ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 19.285.000 km, die Umlaufdauer etwa 999,942 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.285.000 km; die angegebene Umlaufzeit beträgt rund 999,942 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,441 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "aegir",
+      "status": "imported",
+      "revision": 1,
+      "title": "Aegir",
+      "summary": "Aegir ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 20.664.400 km, die Umlaufdauer etwa 1109,128 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.664.400 km; die angegebene Umlaufzeit beträgt rund 1109,128 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,255 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "bebhionn",
+      "status": "imported",
+      "revision": 1,
+      "title": "Bebhionn",
+      "summary": "Bebhionn ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 17.027.300 km, die Umlaufdauer etwa 829,644 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 17.027.300 km; die angegebene Umlaufzeit beträgt rund 829,644 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,459 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "bergelmir",
+      "status": "imported",
+      "revision": 1,
+      "title": "Bergelmir",
+      "summary": "Bergelmir ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 19.268.100 km, die Umlaufdauer etwa 998,619 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.268.100 km; die angegebene Umlaufzeit beträgt rund 998,619 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,145 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "bestla",
+      "status": "imported",
+      "revision": 1,
+      "title": "Bestla",
+      "summary": "Bestla ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 20.337.800 km, die Umlaufdauer etwa 1082,944 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.337.800 km; die angegebene Umlaufzeit beträgt rund 1082,944 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,486 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "farbauti",
+      "status": "imported",
+      "revision": 1,
+      "title": "Farbauti",
+      "summary": "Farbauti ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 20.290.700 km, die Umlaufdauer etwa 1079,124 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.290.700 km; die angegebene Umlaufzeit beträgt rund 1079,124 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,249 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "fenrir",
+      "status": "imported",
+      "revision": 1,
+      "title": "Fenrir",
+      "summary": "Fenrir ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 22.330.800 km, die Umlaufdauer etwa 1245,921 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.330.800 km; die angegebene Umlaufzeit beträgt rund 1245,921 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,137 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "fornjot",
+      "status": "imported",
+      "revision": 1,
+      "title": "Fornjot",
+      "summary": "Fornjot ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 24.936.800 km, die Umlaufdauer etwa 1470,362 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 24.936.800 km; die angegebene Umlaufzeit beträgt rund 1470,362 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,213 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "hati",
+      "status": "imported",
+      "revision": 1,
+      "title": "Hati",
+      "summary": "Hati ist ein Mond von Saturn. Seine mittlere Umlaufentfernung beträgt rund 19.695.000 km, die Umlaufdauer etwa 1032,024 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.695.000 km; die angegebene Umlaufzeit beträgt rund 1032,024 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,372 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ariel",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ariel",
+      "summary": "Ariel ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 190.929 km, die Umlaufdauer etwa 2,52 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Ariel ist ein heller Uranusmond, auf dem tiefe Täler und Spuren früherer geologischer Aktivität sichtbar sind."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 190.929 km; die angegebene Umlaufzeit beträgt rund 2,52 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 578,9 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "umbriel",
+      "status": "imported",
+      "revision": 1,
+      "title": "Umbriel",
+      "summary": "Umbriel ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 265.986 km, die Umlaufdauer etwa 4,144 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Umbriel gehört zu den dunkleren großen Uranusmonden und besitzt viele Einschlagskrater."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 265.986 km; die angegebene Umlaufzeit beträgt rund 4,144 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Der tabellierte mittlere Radius liegt bei etwa 584,7 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "miranda",
+      "status": "imported",
+      "revision": 1,
+      "title": "Miranda",
+      "summary": "Miranda ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 129.846 km, die Umlaufdauer etwa 1,413 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Miranda zeigt eine ungewöhnliche Mischung aus alten Kraterlandschaften und gewaltigen Klippen."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 129.846 km; die angegebene Umlaufzeit beträgt rund 1,413 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 235,8 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/miranda/"
+        }
+      ]
+    },
+    {
+      "id": "puck",
+      "status": "imported",
+      "revision": 1,
+      "title": "Puck",
+      "summary": "Puck ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 86.004 km, die Umlaufdauer etwa 0,762 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Puck ist ein kleiner innerer Uranusmond, der auf Voyager-2-Bildern identifiziert wurde."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 86.004 km; die angegebene Umlaufzeit beträgt rund 0,762 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "cordelia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Cordelia",
+      "summary": "Cordelia ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 49.755 km, die Umlaufdauer etwa 0,335 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Cordelia liegt im Bereich der schmalen Ringe von Uranus und gehört zu den kleinen inneren Begleitern."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 49.755 km; die angegebene Umlaufzeit beträgt rund 0,335 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "ophelia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ophelia",
+      "summary": "Ophelia ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 53.765 km, die Umlaufdauer etwa 0,376 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Ophelia zählt zu den kleinen inneren Uranusmonden und bewegt sich nahe an den schmalen Ringen."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 53.765 km; die angegebene Umlaufzeit beträgt rund 0,376 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,011 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "bianca",
+      "status": "imported",
+      "revision": 1,
+      "title": "Bianca",
+      "summary": "Bianca ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 59.170 km, die Umlaufdauer etwa 0,435 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 59.170 km; die angegebene Umlaufzeit beträgt rund 0,435 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,006 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "cressida",
+      "status": "imported",
+      "revision": 1,
+      "title": "Cressida",
+      "summary": "Cressida ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 61.770 km, die Umlaufdauer etwa 0,464 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 61.770 km; die angegebene Umlaufzeit beträgt rund 0,464 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "desdemona",
+      "status": "imported",
+      "revision": 1,
+      "title": "Desdemona",
+      "summary": "Desdemona ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 62.663 km, die Umlaufdauer etwa 0,474 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 62.663 km; die angegebene Umlaufzeit beträgt rund 0,474 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "juliet",
+      "status": "imported",
+      "revision": 1,
+      "title": "Juliet",
+      "summary": "Juliet ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 64.362 km, die Umlaufdauer etwa 0,493 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 64.362 km; die angegebene Umlaufzeit beträgt rund 0,493 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,006 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "portia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Portia",
+      "summary": "Portia ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 66.101 km, die Umlaufdauer etwa 0,513 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 66.101 km; die angegebene Umlaufzeit beträgt rund 0,513 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "rosalind",
+      "status": "imported",
+      "revision": 1,
+      "title": "Rosalind",
+      "summary": "Rosalind ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 69.930 km, die Umlaufdauer etwa 0,558 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 69.930 km; die angegebene Umlaufzeit beträgt rund 0,558 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,003 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "belinda",
+      "status": "imported",
+      "revision": 1,
+      "title": "Belinda",
+      "summary": "Belinda ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 75.258 km, die Umlaufdauer etwa 0,624 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 75.258 km; die angegebene Umlaufzeit beträgt rund 0,624 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,002 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "perdita",
+      "status": "imported",
+      "revision": 1,
+      "title": "Perdita",
+      "summary": "Perdita ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 76.418 km, die Umlaufdauer etwa 0,638 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 76.418 km; die angegebene Umlaufzeit beträgt rund 0,638 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,005 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "mab",
+      "status": "imported",
+      "revision": 1,
+      "title": "Mab",
+      "summary": "Mab ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 97.737 km, die Umlaufdauer etwa 0,923 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 97.737 km; die angegebene Umlaufzeit beträgt rund 0,923 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,006 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "cupid",
+      "status": "imported",
+      "revision": 1,
+      "title": "Cupid",
+      "summary": "Cupid ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 74.396 km, die Umlaufdauer etwa 0,613 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 74.396 km; die angegebene Umlaufzeit beträgt rund 0,613 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "caliban",
+      "status": "imported",
+      "revision": 1,
+      "title": "Caliban",
+      "summary": "Caliban ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 7.167.000 km, die Umlaufdauer etwa 580 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 7.167.000 km; die angegebene Umlaufzeit beträgt rund 580 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,2 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "sycorax",
+      "status": "imported",
+      "revision": 1,
+      "title": "Sycorax",
+      "summary": "Sycorax ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 12.193.200 km, die Umlaufdauer etwa 1286 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 12.193.200 km; die angegebene Umlaufzeit beträgt rund 1286 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,52 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "prospero",
+      "status": "imported",
+      "revision": 1,
+      "title": "Prospero",
+      "summary": "Prospero ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 16.221.000 km, die Umlaufdauer etwa 1974 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 16.221.000 km; die angegebene Umlaufzeit beträgt rund 1974 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,441 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "setebos",
+      "status": "imported",
+      "revision": 1,
+      "title": "Setebos",
+      "summary": "Setebos ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 17.519.800 km, die Umlaufdauer etwa 2215 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 17.519.800 km; die angegebene Umlaufzeit beträgt rund 2215 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,579 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "stephano",
+      "status": "imported",
+      "revision": 1,
+      "title": "Stephano",
+      "summary": "Stephano ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 7.951.400 km, die Umlaufdauer etwa 677 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 7.951.400 km; die angegebene Umlaufzeit beträgt rund 677 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,235 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "trinculo",
+      "status": "imported",
+      "revision": 1,
+      "title": "Trinculo",
+      "summary": "Trinculo ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 8.502.600 km, die Umlaufdauer etwa 749 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 8.502.600 km; die angegebene Umlaufzeit beträgt rund 749 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,22 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "francisco",
+      "status": "imported",
+      "revision": 1,
+      "title": "Francisco",
+      "summary": "Francisco ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 4.275.700 km, die Umlaufdauer etwa 267 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 4.275.700 km; die angegebene Umlaufzeit beträgt rund 267 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,144 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "margaret",
+      "status": "imported",
+      "revision": 1,
+      "title": "Margaret",
+      "summary": "Margaret ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 14.425.000 km, die Umlaufdauer etwa 1655 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 14.425.000 km; die angegebene Umlaufzeit beträgt rund 1655 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,642 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "ferdinand",
+      "status": "imported",
+      "revision": 1,
+      "title": "Ferdinand",
+      "summary": "Ferdinand ist ein Mond von Uranus. Seine mittlere Umlaufentfernung beträgt rund 20.421.400 km, die Umlaufdauer etwa 2788 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 20.421.400 km; die angegebene Umlaufzeit beträgt rund 2788 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,395 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "naiad",
+      "status": "imported",
+      "revision": 1,
+      "title": "Naiad",
+      "summary": "Naiad ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 48.300 km, die Umlaufdauer etwa 0,295 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 48.300 km; die angegebene Umlaufzeit beträgt rund 0,295 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 29 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "thalassa",
+      "status": "imported",
+      "revision": 1,
+      "title": "Thalassa",
+      "summary": "Thalassa ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 50.100 km, die Umlaufdauer etwa 0,312 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 50.100 km; die angegebene Umlaufzeit beträgt rund 0,312 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 40 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "despina",
+      "status": "imported",
+      "revision": 1,
+      "title": "Despina",
+      "summary": "Despina ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 52.600 km, die Umlaufdauer etwa 0,335 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 52.600 km; die angegebene Umlaufzeit beträgt rund 0,335 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 74 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "galatea",
+      "status": "imported",
+      "revision": 1,
+      "title": "Galatea",
+      "summary": "Galatea ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 62.000 km, die Umlaufdauer etwa 0,429 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 62.000 km; die angegebene Umlaufzeit beträgt rund 0,429 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 79 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "larissa",
+      "status": "imported",
+      "revision": 1,
+      "title": "Larissa",
+      "summary": "Larissa ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 73.600 km, die Umlaufdauer etwa 0,555 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 73.600 km; die angegebene Umlaufzeit beträgt rund 0,555 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 96 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        }
+      ]
+    },
+    {
+      "id": "proteus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Proteus",
+      "summary": "Proteus ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 117.700 km, die Umlaufdauer etwa 1,123 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Proteus ist ein großer, unregelmäßig geformter innerer Neptunmond."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 117.700 km; die angegebene Umlaufzeit beträgt rund 1,123 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 208 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/neptune/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "hippocamp",
+      "status": "imported",
+      "revision": 1,
+      "title": "Hippocamp",
+      "summary": "Hippocamp ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 105.300 km, die Umlaufdauer etwa 0,951 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Hippocamp ist ein kleiner innerer Neptunmond, der auf Hubble-Aufnahmen entdeckt wurde."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 105.300 km; die angegebene Umlaufzeit beträgt rund 0,951 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/neptune/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "nereid",
+      "status": "imported",
+      "revision": 1,
+      "title": "Nereid",
+      "summary": "Nereid ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 5.513.900 km, die Umlaufdauer etwa 360,133 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Nereid ist für eine besonders exzentrische Umlaufbahn um Neptun bekannt."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 5.513.900 km; die angegebene Umlaufzeit beträgt rund 360,133 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,751 erfasst. Der tabellierte mittlere Radius liegt bei etwa 170 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/neptune/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "halimede",
+      "status": "imported",
+      "revision": 1,
+      "title": "Halimede",
+      "summary": "Halimede ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 16.590.500 km, die Umlaufdauer etwa 1879 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 16.590.500 km; die angegebene Umlaufzeit beträgt rund 1879 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,521 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "psamathe",
+      "status": "imported",
+      "revision": 1,
+      "title": "Psamathe",
+      "summary": "Psamathe ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 47.646.600 km, die Umlaufdauer etwa 9149 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 47.646.600 km; die angegebene Umlaufzeit beträgt rund 9149 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,413 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "sao",
+      "status": "imported",
+      "revision": 1,
+      "title": "Sao",
+      "summary": "Sao ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 22.239.900 km, die Umlaufdauer etwa 2919 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 22.239.900 km; die angegebene Umlaufzeit beträgt rund 2919 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,296 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "laomedeia",
+      "status": "imported",
+      "revision": 1,
+      "title": "Laomedeia",
+      "summary": "Laomedeia ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 23.499.900 km, die Umlaufdauer etwa 3168 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.499.900 km; die angegebene Umlaufzeit beträgt rund 3168 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,419 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "neso",
+      "status": "imported",
+      "revision": 1,
+      "title": "Neso",
+      "summary": "Neso ist ein Mond von Neptun. Seine mittlere Umlaufentfernung beträgt rund 49.897.800 km, die Umlaufdauer etwa 9805 Tage.",
+      "sections": [
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 49.897.800 km; die angegebene Umlaufzeit beträgt rund 9805 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,455 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        }
+      ]
+    },
+    {
+      "id": "styx",
+      "status": "imported",
+      "revision": 1,
+      "title": "Styx",
+      "summary": "Styx ist ein Mond von Pluto. Seine mittlere Umlaufentfernung beträgt rund 43.200 km, die Umlaufdauer etwa 20,16 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Styx ist einer der vier kleinen äußeren Begleiter des Pluto-Charon-Systems."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 43.200 km; die angegebene Umlaufzeit beträgt rund 20,16 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,025 erfasst. Der tabellierte mittlere Radius liegt bei etwa 5,2 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "nix",
+      "status": "imported",
+      "revision": 1,
+      "title": "Nix",
+      "summary": "Nix ist ein Mond von Pluto. Seine mittlere Umlaufentfernung beträgt rund 49.300 km, die Umlaufdauer etwa 24,85 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Nix gehört zu den kleinen Monden des Pluto-Charon-Systems; seine Form wurde durch New Horizons sichtbar."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 49.300 km; die angegebene Umlaufzeit beträgt rund 24,85 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,015 erfasst. Der tabellierte mittlere Radius liegt bei etwa 18 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "kerberos",
+      "status": "imported",
+      "revision": 1,
+      "title": "Kerberos",
+      "summary": "Kerberos ist ein Mond von Pluto. Seine mittlere Umlaufentfernung beträgt rund 58.300 km, die Umlaufdauer etwa 32,17 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Kerberos ist ein kleiner Mond in Plutos äußerem Begleitersystem."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 58.300 km; die angegebene Umlaufzeit beträgt rund 32,17 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,01 erfasst. Der tabellierte mittlere Radius liegt bei etwa 6 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "hydra",
+      "status": "imported",
+      "revision": 1,
+      "title": "Hydra",
+      "summary": "Hydra ist ein Mond von Pluto. Seine mittlere Umlaufentfernung beträgt rund 65.200 km, die Umlaufdauer etwa 38,2 Tage.",
+      "sections": [
+        {
+          "heading": "Besonderheit",
+          "text": "Hydra ist einer der äußeren kleinen Monde von Pluto, die New Horizons 2015 beobachtete."
+        },
+        {
+          "heading": "Umlaufbahn und Größe",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 65.200 km; die angegebene Umlaufzeit beträgt rund 38,2 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,009 erfasst. Der tabellierte mittlere Radius liegt bei etwa 18,5 km."
+        },
+        {
+          "heading": "Einordnung der Messwerte",
+          "text": "Die NASA/JPL-Tabelle enthält mittlere Bahnelemente aus einem festgelegten Bezugsrahmen. Die Darstellung ist ein schematischer Orbit, keine präzise, zeitaktuelle Position des Mondes. Bei irregulären Monden und großen Bahnneigungen können echte Himmelspositionen deutlich abweichen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA/JPL – Physikalische Parameter der Monde",
+          "url": "https://ssd.jpl.nasa.gov/sats/phys_par/"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/moons/facts/"
+        }
+      ]
+    }
+  ]
+}

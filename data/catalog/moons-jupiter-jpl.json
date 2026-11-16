@@ -1,0 +1,964 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "amalthea",
+      "name": "Amalthea",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 83.5
+      },
+      "orbit": {
+        "semiMajorAxis": 181400,
+        "unit": "km",
+        "periodDays": 0.499918,
+        "eccentricity": 0.003,
+        "inclinationDeg": 0.4,
+        "ascendingNodeDeg": 282.9,
+        "periapsisDeg": 180.1,
+        "meanAnomalyDeg": 310.6,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "thebe",
+      "name": "Thebe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 49.3
+      },
+      "orbit": {
+        "semiMajorAxis": 221900,
+        "unit": "km",
+        "periodDays": 0.676105,
+        "eccentricity": 0.018,
+        "inclinationDeg": 1.1,
+        "ascendingNodeDeg": 340.4,
+        "periapsisDeg": 26.6,
+        "meanAnomalyDeg": 182.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "adrastea",
+      "name": "Adrastea",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 8.2
+      },
+      "orbit": {
+        "semiMajorAxis": 129000,
+        "unit": "km",
+        "periodDays": 0.29826,
+        "eccentricity": 0.0,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 0.0,
+        "meanAnomalyDeg": 214.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "metis",
+      "name": "Metis",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 21.5
+      },
+      "orbit": {
+        "semiMajorAxis": 128000,
+        "unit": "km",
+        "periodDays": 0.294779,
+        "eccentricity": 0.0,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 0.0,
+        "meanAnomalyDeg": 166.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "himalia",
+      "name": "Himalia",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 85.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11439000,
+        "unit": "km",
+        "periodDays": 249.909,
+        "eccentricity": 0.16,
+        "inclinationDeg": 28.4,
+        "ascendingNodeDeg": 64.2,
+        "periapsisDeg": 321.1,
+        "meanAnomalyDeg": 78.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "elara",
+      "name": "Elara",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11710700,
+        "unit": "km",
+        "periodDays": 258.8861,
+        "eccentricity": 0.212,
+        "inclinationDeg": 27.8,
+        "ascendingNodeDeg": 112.8,
+        "periapsisDeg": 129.9,
+        "meanAnomalyDeg": 346.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "pasiphae",
+      "name": "Pasiphae",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23463200,
+        "unit": "km",
+        "periodDays": 734.4215,
+        "eccentricity": 0.412,
+        "inclinationDeg": 148.3,
+        "ascendingNodeDeg": 315.7,
+        "periapsisDeg": 172.8,
+        "meanAnomalyDeg": 279.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "sinope",
+      "name": "Sinope",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23679300,
+        "unit": "km",
+        "periodDays": 744.5951,
+        "eccentricity": 0.262,
+        "inclinationDeg": 157.3,
+        "ascendingNodeDeg": 308.0,
+        "periapsisDeg": 354.3,
+        "meanAnomalyDeg": 157.4,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "lysithea",
+      "name": "Lysithea",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11699100,
+        "unit": "km",
+        "periodDays": 258.5035,
+        "eccentricity": 0.117,
+        "inclinationDeg": 27.7,
+        "ascendingNodeDeg": 9.2,
+        "periapsisDeg": 48.3,
+        "meanAnomalyDeg": 328.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "carme",
+      "name": "Carme",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23139200,
+        "unit": "km",
+        "periodDays": 719.2806,
+        "eccentricity": 0.261,
+        "inclinationDeg": 164.6,
+        "ascendingNodeDeg": 115.5,
+        "periapsisDeg": 6.5,
+        "meanAnomalyDeg": 259.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "ananke",
+      "name": "Ananke",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 21029500,
+        "unit": "km",
+        "periodDays": 623.1097,
+        "eccentricity": 0.238,
+        "inclinationDeg": 147.6,
+        "ascendingNodeDeg": 13.7,
+        "periapsisDeg": 78.8,
+        "meanAnomalyDeg": 271.7,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "leda",
+      "name": "Leda",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11145200,
+        "unit": "km",
+        "periodDays": 240.3264,
+        "eccentricity": 0.162,
+        "inclinationDeg": 28.2,
+        "ascendingNodeDeg": 216.9,
+        "periapsisDeg": 271.3,
+        "meanAnomalyDeg": 232.6,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "callirrhoe",
+      "name": "Callirrhoe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23789400,
+        "unit": "km",
+        "periodDays": 749.791,
+        "eccentricity": 0.29,
+        "inclinationDeg": 144.9,
+        "ascendingNodeDeg": 278.2,
+        "periapsisDeg": 13.5,
+        "meanAnomalyDeg": 117.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "themisto",
+      "name": "Themisto",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 7397000,
+        "unit": "km",
+        "periodDays": 129.9681,
+        "eccentricity": 0.257,
+        "inclinationDeg": 44.3,
+        "ascendingNodeDeg": 202.7,
+        "periapsisDeg": 236.3,
+        "meanAnomalyDeg": 289.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "megaclite",
+      "name": "Megaclite",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23640100,
+        "unit": "km",
+        "periodDays": 742.7715,
+        "eccentricity": 0.421,
+        "inclinationDeg": 149.9,
+        "ascendingNodeDeg": 292.2,
+        "periapsisDeg": 309.9,
+        "meanAnomalyDeg": 116.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "taygete",
+      "name": "Taygete",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23103400,
+        "unit": "km",
+        "periodDays": 717.5917,
+        "eccentricity": 0.257,
+        "inclinationDeg": 164.7,
+        "ascendingNodeDeg": 300.8,
+        "periapsisDeg": 207.7,
+        "meanAnomalyDeg": 116.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "chaldene",
+      "name": "Chaldene",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 22926300,
+        "unit": "km",
+        "periodDays": 709.3625,
+        "eccentricity": 0.261,
+        "inclinationDeg": 164.7,
+        "ascendingNodeDeg": 134.5,
+        "periapsisDeg": 231.6,
+        "meanAnomalyDeg": 275.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "harpalyke",
+      "name": "Harpalyke",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20887500,
+        "unit": "km",
+        "periodDays": 616.7833,
+        "eccentricity": 0.239,
+        "inclinationDeg": 147.8,
+        "ascendingNodeDeg": 35.6,
+        "periapsisDeg": 104.3,
+        "meanAnomalyDeg": 255.4,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "kalyke",
+      "name": "Kalyke",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23298000,
+        "unit": "km",
+        "periodDays": 726.7007,
+        "eccentricity": 0.261,
+        "inclinationDeg": 164.7,
+        "ascendingNodeDeg": 37.7,
+        "periapsisDeg": 240.5,
+        "meanAnomalyDeg": 224.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "iocaste",
+      "name": "Iocaste",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 21062300,
+        "unit": "km",
+        "periodDays": 624.5479,
+        "eccentricity": 0.223,
+        "inclinationDeg": 148.7,
+        "ascendingNodeDeg": 268.9,
+        "periapsisDeg": 91.4,
+        "meanAnomalyDeg": 182.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "erinome",
+      "name": "Erinome",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23027200,
+        "unit": "km",
+        "periodDays": 714.0542,
+        "eccentricity": 0.272,
+        "inclinationDeg": 164.3,
+        "ascendingNodeDeg": 311.2,
+        "periapsisDeg": 359.9,
+        "meanAnomalyDeg": 273.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "isonoe",
+      "name": "Isonoe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 22976300,
+        "unit": "km",
+        "periodDays": 711.6604,
+        "eccentricity": 0.249,
+        "inclinationDeg": 164.9,
+        "ascendingNodeDeg": 134.1,
+        "periapsisDeg": 131.0,
+        "meanAnomalyDeg": 116.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "praxidike",
+      "name": "Praxidike",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20931100,
+        "unit": "km",
+        "periodDays": 618.7229,
+        "eccentricity": 0.245,
+        "inclinationDeg": 148.2,
+        "ascendingNodeDeg": 281.3,
+        "periapsisDeg": 182.5,
+        "meanAnomalyDeg": 128.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "autonoe",
+      "name": "Autonoe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23785200,
+        "unit": "km",
+        "periodDays": 749.6097,
+        "eccentricity": 0.326,
+        "inclinationDeg": 150.7,
+        "ascendingNodeDeg": 264.8,
+        "periapsisDeg": 61.2,
+        "meanAnomalyDeg": 134.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "thyone",
+      "name": "Thyone",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20972700,
+        "unit": "km",
+        "periodDays": 620.5875,
+        "eccentricity": 0.235,
+        "inclinationDeg": 147.6,
+        "ascendingNodeDeg": 240.8,
+        "periapsisDeg": 105.1,
+        "meanAnomalyDeg": 242.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "hermippe",
+      "name": "Hermippe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 21103600,
+        "unit": "km",
+        "periodDays": 626.3799,
+        "eccentricity": 0.22,
+        "inclinationDeg": 150.2,
+        "ascendingNodeDeg": 330.3,
+        "periapsisDeg": 277.2,
+        "meanAnomalyDeg": 158.6,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "aitne",
+      "name": "Aitne",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23059400,
+        "unit": "km",
+        "periodDays": 715.5396,
+        "eccentricity": 0.273,
+        "inclinationDeg": 164.5,
+        "ascendingNodeDeg": 358.4,
+        "periapsisDeg": 72.2,
+        "meanAnomalyDeg": 120.6,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "eurydome",
+      "name": "Eurydome",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 22894500,
+        "unit": "km",
+        "periodDays": 707.8569,
+        "eccentricity": 0.287,
+        "inclinationDeg": 148.9,
+        "ascendingNodeDeg": 297.7,
+        "periapsisDeg": 223.4,
+        "meanAnomalyDeg": 281.8,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "euanthe",
+      "name": "Euanthe",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20822900,
+        "unit": "km",
+        "periodDays": 613.9278,
+        "eccentricity": 0.243,
+        "inclinationDeg": 148.1,
+        "ascendingNodeDeg": 265.2,
+        "periapsisDeg": 312.4,
+        "meanAnomalyDeg": 353.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "euporie",
+      "name": "Euporie",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 19261900,
+        "unit": "km",
+        "periodDays": 546.1778,
+        "eccentricity": 0.148,
+        "inclinationDeg": 145.5,
+        "ascendingNodeDeg": 63.4,
+        "periapsisDeg": 109.5,
+        "meanAnomalyDeg": 56.4,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "orthosie",
+      "name": "Orthosie",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 20897800,
+        "unit": "km",
+        "periodDays": 617.2347,
+        "eccentricity": 0.294,
+        "inclinationDeg": 144.2,
+        "ascendingNodeDeg": 212.4,
+        "periapsisDeg": 244.7,
+        "meanAnomalyDeg": 161.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "sponde",
+      "name": "Sponde",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23538700,
+        "unit": "km",
+        "periodDays": 737.9542,
+        "eccentricity": 0.323,
+        "inclinationDeg": 149.4,
+        "ascendingNodeDeg": 109.3,
+        "periapsisDeg": 56.6,
+        "meanAnomalyDeg": 177.4,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "kale",
+      "name": "Kale",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 23047800,
+        "unit": "km",
+        "periodDays": 715.016,
+        "eccentricity": 0.262,
+        "inclinationDeg": 164.6,
+        "ascendingNodeDeg": 56.7,
+        "periapsisDeg": 69.2,
+        "meanAnomalyDeg": 175.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "pasithee",
+      "name": "Pasithee",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 22840800,
+        "unit": "km",
+        "periodDays": 705.409,
+        "eccentricity": 0.274,
+        "inclinationDeg": 164.5,
+        "ascendingNodeDeg": 318.0,
+        "periapsisDeg": 207.9,
+        "meanAnomalyDeg": 237.8,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "dia",
+      "name": "Dia",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 12257900,
+        "unit": "km",
+        "periodDays": 277.2472,
+        "eccentricity": 0.232,
+        "inclinationDeg": 29.1,
+        "ascendingNodeDeg": 293.9,
+        "periapsisDeg": 164.1,
+        "meanAnomalyDeg": 320.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "valetudo",
+      "name": "Valetudo",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 18690100,
+        "unit": "km",
+        "periodDays": 522.0743,
+        "eccentricity": 0.217,
+        "inclinationDeg": 34.5,
+        "ascendingNodeDeg": 291.2,
+        "periapsisDeg": 316.3,
+        "meanAnomalyDeg": 90.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "pandia",
+      "name": "Pandia",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11479600,
+        "unit": "km",
+        "periodDays": 251.2319,
+        "eccentricity": 0.178,
+        "inclinationDeg": 28.9,
+        "ascendingNodeDeg": 249.8,
+        "periapsisDeg": 188.7,
+        "meanAnomalyDeg": 158.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "ersa",
+      "name": "Ersa",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 11399400,
+        "unit": "km",
+        "periodDays": 248.6153,
+        "eccentricity": 0.117,
+        "inclinationDeg": 29.0,
+        "ascendingNodeDeg": 113.7,
+        "periapsisDeg": 300.7,
+        "meanAnomalyDeg": 270.8,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "mixed: Laplace (inner), ecliptic (irregular)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

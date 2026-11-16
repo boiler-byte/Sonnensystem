@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "type": "star",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "sun",
+      "name": "Sonne",
+      "parentId": null,
+      "physical": {
+        "radiusKm": 696340,
+        "temperatureK": 5772
+      },
+      "orbit": {
+        "semiMajorAxis": 0,
+        "unit": "AU",
+        "periodDays": 0,
+        "eccentricity": 0,
+        "inclinationDeg": 0,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 0,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#ffca71",
+        "style": "sun"
+      }
+    }
+  ]
+}

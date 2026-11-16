@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "ariel",
+      "name": "Ariel",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 578.9
+      },
+      "orbit": {
+        "semiMajorAxis": 190929,
+        "unit": "km",
+        "periodDays": 2.520379,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 9.6,
+        "meanAnomalyDeg": 193.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial (inner)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "umbriel",
+      "name": "Umbriel",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 584.7
+      },
+      "orbit": {
+        "semiMajorAxis": 265986,
+        "unit": "km",
+        "periodDays": 4.144177,
+        "eccentricity": 0.004,
+        "inclinationDeg": 0.1,
+        "ascendingNodeDeg": 174.8,
+        "periapsisDeg": 183.4,
+        "meanAnomalyDeg": 253.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial (inner)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "miranda",
+      "name": "Miranda",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 235.8
+      },
+      "orbit": {
+        "semiMajorAxis": 129846,
+        "unit": "km",
+        "periodDays": 1.413479,
+        "eccentricity": 0.001,
+        "inclinationDeg": 4.4,
+        "ascendingNodeDeg": 100.9,
+        "periapsisDeg": 154.8,
+        "meanAnomalyDeg": 73.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial (inner)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "puck",
+      "name": "Puck",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 86004,
+        "unit": "km",
+        "periodDays": 0.761833,
+        "eccentricity": 0.0,
+        "inclinationDeg": 0.3,
+        "ascendingNodeDeg": 216.1,
+        "periapsisDeg": 0.0,
+        "meanAnomalyDeg": 50.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial (inner)",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

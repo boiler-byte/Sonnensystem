@@ -1,0 +1,978 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "revision": 2,
+  "articles": [
+    {
+      "id": "sun",
+      "status": "imported",
+      "revision": 2,
+      "title": "Sonne",
+      "summary": "Der Stern im Zentrum unseres Sonnensystems. Seine Schwerkraft bindet Planeten, Monde und Kleinkörper.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die Sonne liefert durch Kernfusion die Energie für Licht und Wärme im Sonnensystem; die Schwerkraft hält die Körper auf ihren Bahnen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die Sonne ist das Zentralgestirn; für sie wird in diesem Modell keine Umlaufbahn um ein weiteres Objekt angegeben. Der tabellierte mittlere Radius liegt bei etwa 696340 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Unser Sonnensystem",
+          "url": "https://science.nasa.gov/solar-system/solar-system-facts/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/sun/facts/"
+        }
+      ]
+    },
+    {
+      "id": "mercury",
+      "status": "imported",
+      "revision": 2,
+      "title": "Merkur",
+      "summary": "Der kleinste Planet kreist in nur 88 Tagen um die Sonne.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Merkur ist der sonnennächste und kleinste der acht Planeten. Seine stark verkraterte Oberfläche erzählt von Einschlägen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 0,387 AE; die angegebene Umlaufzeit beträgt rund 87,969 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,206 erfasst. Der tabellierte mittlere Radius liegt bei etwa 2439,7 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/mercury/facts/"
+        }
+      ]
+    },
+    {
+      "id": "venus",
+      "status": "imported",
+      "revision": 2,
+      "title": "Venus",
+      "summary": "Eine dichte Atmosphäre und extreme Temperaturen prägen die Venus.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die Venus besitzt eine sehr dichte Kohlendioxidatmosphäre. Ihr starker Treibhauseffekt macht die Oberfläche besonders heiß."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 0,723 AE; die angegebene Umlaufzeit beträgt rund 224,701 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Der tabellierte mittlere Radius liegt bei etwa 6051,8 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/venus/facts/"
+        }
+      ]
+    },
+    {
+      "id": "earth",
+      "status": "imported",
+      "revision": 2,
+      "title": "Erde",
+      "summary": "Unsere Heimatwelt – der einzige bekannte Planet mit flüssigen Ozeanen und Leben.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Auf der Erde sind flüssige Ozeane und Leben nachgewiesen. Ihre Atmosphäre und ihr Magnetfeld beeinflussen die Umwelt an der Oberfläche."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1 AE; die angegebene Umlaufzeit beträgt rund 365,256 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,017 erfasst. Der tabellierte mittlere Radius liegt bei etwa 6371 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/earth/facts/"
+        }
+      ]
+    },
+    {
+      "id": "mars",
+      "status": "imported",
+      "revision": 2,
+      "title": "Mars",
+      "summary": "Der Rote Planet besitzt eisige Polkappen, gewaltige Vulkane und zwei kleine Monde.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Mars besitzt riesige Vulkane, ein ausgedehntes Grabensystem und Spuren einstiger Wasseraktivität."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1,524 AE; die angegebene Umlaufzeit beträgt rund 686,98 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,093 erfasst. Der tabellierte mittlere Radius liegt bei etwa 3389,5 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/mars/facts/"
+        }
+      ]
+    },
+    {
+      "id": "jupiter",
+      "status": "imported",
+      "revision": 2,
+      "title": "Jupiter",
+      "summary": "Der größte Planet ist ein Gasriese mit auffälligen Wolkenbändern und vielen Monden.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Jupiters Großer Roter Fleck ist ein langlebiges Sturmsystem in seiner Atmosphäre."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 5,204 AE; die angegebene Umlaufzeit beträgt rund 4332,59 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,049 erfasst. Der tabellierte mittlere Radius liegt bei etwa 69911 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/jupiter/facts/"
+        }
+      ]
+    },
+    {
+      "id": "saturn",
+      "status": "imported",
+      "revision": 2,
+      "title": "Saturn",
+      "summary": "Der Gasriese ist für sein ausgedehntes Ringsystem aus Eis und Gestein bekannt.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die auffälligen Saturnringe bestehen überwiegend aus Eispartikeln und weiteren Bestandteilen; sie sind keine feste Scheibe."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 9,583 AE; die angegebene Umlaufzeit beträgt rund 10759,2 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,057 erfasst. Der tabellierte mittlere Radius liegt bei etwa 58232 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/facts/"
+        }
+      ]
+    },
+    {
+      "id": "uranus",
+      "status": "imported",
+      "revision": 2,
+      "title": "Uranus",
+      "summary": "Ein Eisriese mit ungewöhnlich stark geneigter Rotationsachse.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Uranus rotiert nahezu auf der Seite; seine ungewöhnliche Achsenneigung prägt den Verlauf der Jahreszeiten."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19,218 AE; die angegebene Umlaufzeit beträgt rund 30688,5 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,046 erfasst. Der tabellierte mittlere Radius liegt bei etwa 25362 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/uranus/facts/"
+        }
+      ]
+    },
+    {
+      "id": "neptune",
+      "status": "imported",
+      "revision": 2,
+      "title": "Neptun",
+      "summary": "Der äußerste der acht Planeten – kalt, windig und tiefblau.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Neptun ist ein Eisriese mit dynamischer Atmosphäre und sehr schnellen Winden."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 30,11 AE; die angegebene Umlaufzeit beträgt rund 60182 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,009 erfasst. Der tabellierte mittlere Radius liegt bei etwa 24622 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/neptune/facts/"
+        }
+      ]
+    },
+    {
+      "id": "ceres",
+      "status": "imported",
+      "revision": 2,
+      "title": "Ceres",
+      "summary": "Ceres ist der größte Himmelskörper des Asteroidengürtels.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die NASA-Mission Dawn untersuchte den Zwergplaneten Ceres und seine auffälligen hellen Ablagerungen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 2,768 AE; die angegebene Umlaufzeit beträgt rund 1681,63 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,076 erfasst. Der tabellierte mittlere Radius liegt bei etwa 473 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten und Zwergplaneten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/ceres/facts/"
+        }
+      ]
+    },
+    {
+      "id": "pluto",
+      "status": "imported",
+      "revision": 2,
+      "title": "Pluto",
+      "summary": "Ein eisiger Zwergplanet im Kuipergürtel mit dem großen Mond Charon.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die Sonde New Horizons flog 2015 an Pluto vorbei und fotografierte eine vielfältige Eislandschaft."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 39,482 AE; die angegebene Umlaufzeit beträgt rund 90560 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,249 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1188,3 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten und Zwergplaneten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/facts/"
+        }
+      ]
+    },
+    {
+      "id": "eris",
+      "status": "imported",
+      "revision": 2,
+      "title": "Eris",
+      "summary": "Ein weit entfernter Zwergplanet jenseits der Neptunbahn.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die Entdeckung von Eris trug zur Debatte über die Definition des Begriffs „Planet“ bei."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 67,8 AE; die angegebene Umlaufzeit beträgt rund 203600 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,44 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1163 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten und Zwergplaneten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/eris/"
+        }
+      ]
+    },
+    {
+      "id": "haumea",
+      "status": "imported",
+      "revision": 2,
+      "title": "Haumea",
+      "summary": "Schnell rotierender, stark länglicher Zwergplanet im Kuipergürtel.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Haumea rotiert sehr schnell und hat eine auffallend längliche Gestalt."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 43,2 AE; die angegebene Umlaufzeit beträgt rund 103774 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,19 erfasst. Der tabellierte mittlere Radius liegt bei etwa 816 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten und Zwergplaneten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/haumea/"
+        }
+      ]
+    },
+    {
+      "id": "makemake",
+      "status": "imported",
+      "revision": 2,
+      "title": "Makemake",
+      "summary": "Ein heller Zwergplanet der äußeren Sonnensystemregion.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Makemake gehört zu den bekannten Zwergplaneten jenseits der Neptunbahn."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 45,7 AE; die angegebene Umlaufzeit beträgt rund 112900 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,16 erfasst. Der tabellierte mittlere Radius liegt bei etwa 715 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Planeten und Zwergplaneten",
+          "url": "https://science.nasa.gov/solar-system/planets/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/makemake/"
+        }
+      ]
+    },
+    {
+      "id": "moon",
+      "status": "imported",
+      "revision": 2,
+      "title": "Mond",
+      "summary": "Der einzige natürliche Satellit der Erde; seine Schwerkraft beeinflusst die Gezeiten.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Der Mond ist der einzige natürliche Erdtrabant. Seine Gravitation trägt wesentlich zur Entstehung von Gezeiten bei."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 384.400 km; die angegebene Umlaufzeit beträgt rund 27,322 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,055 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1737,4 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/moon/facts/"
+        }
+      ]
+    },
+    {
+      "id": "phobos",
+      "status": "imported",
+      "revision": 2,
+      "title": "Phobos",
+      "summary": "Der größere und innere Mond des Mars.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Phobos umläuft Mars so schnell, dass er aus Mars-Sicht mehrfach am Tag auf- und untergehen kann."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 9.376 km; die angegebene Umlaufzeit beträgt rund 0,319 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,015 erfasst. Der tabellierte mittlere Radius liegt bei etwa 11,3 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/mars/moons/phobos/"
+        }
+      ]
+    },
+    {
+      "id": "deimos",
+      "status": "imported",
+      "revision": 2,
+      "title": "Deimos",
+      "summary": "Der kleine äußere Mond des Mars.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Deimos ist der kleinere und weiter entfernte der beiden bekannten Marsmonde."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 23.463 km; die angegebene Umlaufzeit beträgt rund 1,263 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 6,2 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/mars/moons/deimos/"
+        }
+      ]
+    },
+    {
+      "id": "io",
+      "status": "imported",
+      "revision": 2,
+      "title": "Io",
+      "summary": "Der vulkanisch aktivste Mond des Sonnensystems.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Io gehört zu den vulkanisch aktivsten Körpern des Sonnensystems; die Gezeitenkräfte Jupiters heizen sein Inneres auf."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 421.700 km; die angegebene Umlaufzeit beträgt rund 1,769 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,004 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1821,6 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/io/"
+        }
+      ]
+    },
+    {
+      "id": "europa",
+      "status": "imported",
+      "revision": 2,
+      "title": "Europa",
+      "summary": "Unter ihrer Eiskruste wird ein globaler Ozean vermutet.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Unter Europas eisiger Kruste wird ein globaler salziger Ozean vermutet. Die Mission Europa Clipper untersucht den Mond aus Jupiter-Umlaufbahnen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 671.100 km; die angegebene Umlaufzeit beträgt rund 3,551 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,009 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1560,8 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/europa/"
+        }
+      ]
+    },
+    {
+      "id": "ganymede",
+      "status": "imported",
+      "revision": 2,
+      "title": "Ganymed",
+      "summary": "Der größte Mond des Sonnensystems ist sogar größer als Merkur.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Ganymed ist der größte Mond des Sonnensystems und besitzt ein eigenes Magnetfeld."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1.070.400 km; die angegebene Umlaufzeit beträgt rund 7,155 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 2634,1 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/ganymede/"
+        }
+      ]
+    },
+    {
+      "id": "callisto",
+      "status": "imported",
+      "revision": 2,
+      "title": "Kallisto",
+      "summary": "Ein stark verkrateter äußerer Galileischer Mond Jupiters.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Kallisto trägt zahlreiche Einschlagskrater; seine alte Oberfläche zeigt einen großen Teil der frühen Kollisionsgeschichte."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1.882.700 km; die angegebene Umlaufzeit beträgt rund 16,689 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,007 erfasst. Der tabellierte mittlere Radius liegt bei etwa 2410,3 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/jupiter/jupiter-moons/callisto/"
+        }
+      ]
+    },
+    {
+      "id": "mimas",
+      "status": "imported",
+      "revision": 2,
+      "title": "Mimas",
+      "summary": "Eismond mit einem charakteristischen großen Einschlagskrater.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Auf Mimas fällt der große Einschlagskrater Herschel auf."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 185.540 km; die angegebene Umlaufzeit beträgt rund 0,942 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,02 erfasst. Der tabellierte mittlere Radius liegt bei etwa 198,2 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/moons/mimas/"
+        }
+      ]
+    },
+    {
+      "id": "enceladus",
+      "status": "imported",
+      "revision": 2,
+      "title": "Enceladus",
+      "summary": "Ein eisiger Saturnmond mit Wasserfontänen nahe dem Südpol.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Aus Rissen am Südpol von Enceladus treten Eis- und Wasserdampffontänen aus; unter der Eiskruste liegt ein Ozean."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 237.950 km; die angegebene Umlaufzeit beträgt rund 1,37 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,005 erfasst. Der tabellierte mittlere Radius liegt bei etwa 252,1 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/moons/enceladus/"
+        }
+      ]
+    },
+    {
+      "id": "rhea",
+      "status": "imported",
+      "revision": 2,
+      "title": "Rhea",
+      "summary": "Zweitgrößter Mond des Saturn.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Rhea ist einer der großen Eismonde Saturns und besitzt eine stark verkraterte Oberfläche."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 527.040 km; die angegebene Umlaufzeit beträgt rund 4,518 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 763,8 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "titan",
+      "status": "imported",
+      "revision": 2,
+      "title": "Titan",
+      "summary": "Ein großer Mond mit dichter Atmosphäre und Seen aus flüssigen Kohlenwasserstoffen.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Titan trägt eine dichte Stickstoffatmosphäre und auf seiner Oberfläche Seen und Meere aus flüssigen Kohlenwasserstoffen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1.221.870 km; die angegebene Umlaufzeit beträgt rund 15,945 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,029 erfasst. Der tabellierte mittlere Radius liegt bei etwa 2574,7 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/moons/titan/"
+        }
+      ]
+    },
+    {
+      "id": "iapetus",
+      "status": "imported",
+      "revision": 2,
+      "title": "Iapetus",
+      "summary": "Saturnmond mit auffälligem Hell-Dunkel-Kontrast.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Iapetus zeigt einen markanten Helligkeitsunterschied zwischen seinen beiden Hemisphären."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 3.561.300 km; die angegebene Umlaufzeit beträgt rund 79,321 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,029 erfasst. Der tabellierte mittlere Radius liegt bei etwa 734,5 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/saturn/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "titania",
+      "status": "imported",
+      "revision": 2,
+      "title": "Titania",
+      "summary": "Größter Mond des Uranus.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Titania ist der größte Mond des Uranus; seine Oberfläche zeigt Krater und Verwerfungen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 436.300 km; die angegebene Umlaufzeit beträgt rund 8,706 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 788,9 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "oberon",
+      "status": "imported",
+      "revision": 2,
+      "title": "Oberon",
+      "summary": "Ein großer, stark verkraterter Uranusmond.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Oberon zählt zu den großen Uranusmonden und besitzt eine eisig-gesteinige, kraterreiche Oberfläche."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 583.500 km; die angegebene Umlaufzeit beträgt rund 13,463 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Der tabellierte mittlere Radius liegt bei etwa 761,4 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/uranus/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "triton",
+      "status": "imported",
+      "revision": 2,
+      "title": "Triton",
+      "summary": "Der große Neptunmond bewegt sich auf einer rückläufigen Umlaufbahn.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Triton umläuft Neptun rückläufig. Das gilt als Indiz dafür, dass er eingefangen wurde; Voyager 2 beobachtete dort aktive Fontänen."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 354.760 km; die angegebene Umlaufzeit beträgt rund 5,877 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 1353,4 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/neptune/moons/triton/"
+        }
+      ]
+    },
+    {
+      "id": "charon",
+      "status": "imported",
+      "revision": 2,
+      "title": "Charon",
+      "summary": "Plutos größter Mond; beide bilden nahezu ein Doppelsystem.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Charon ist verglichen mit Pluto ungewöhnlich groß. Beide rotieren gebunden und zeigen ein komplexes gemeinsames System."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 19.596 km; die angegebene Umlaufzeit beträgt rund 6,387 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Der tabellierte mittlere Radius liegt bei etwa 606 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/sep.html"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/dwarf-planets/pluto/moons/facts/"
+        }
+      ]
+    },
+    {
+      "id": "vesta",
+      "status": "imported",
+      "revision": 2,
+      "title": "Vesta",
+      "summary": "Einer der größten Asteroiden des Hauptgürtels.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Vesta ist ein großer Körper im Asteroidengürtel; die Raumsonde Dawn untersuchte seine Oberfläche."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 2,361 AE; die angegebene Umlaufzeit beträgt rund 1325,3 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,089 erfasst. Der tabellierte mittlere Radius liegt bei etwa 262,7 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        }
+      ]
+    },
+    {
+      "id": "pallas",
+      "status": "imported",
+      "revision": 2,
+      "title": "Pallas",
+      "summary": "Ein großer Asteroid auf stark geneigter Umlaufbahn.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Pallas ist ein großer Asteroid im Hauptgürtel zwischen Mars und Jupiter."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 2,773 AE; die angegebene Umlaufzeit beträgt rund 1686,1 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,231 erfasst. Der tabellierte mittlere Radius liegt bei etwa 256 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        }
+      ]
+    },
+    {
+      "id": "eros",
+      "status": "imported",
+      "revision": 2,
+      "title": "Eros",
+      "summary": "Der erdnahe Asteroid wurde von der Raumsonde NEAR Shoemaker untersucht.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Die NASA-Mission NEAR Shoemaker untersuchte Eros aus der Nähe."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1,458 AE; die angegebene Umlaufzeit beträgt rund 643,2 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,222 erfasst. Der tabellierte mittlere Radius liegt bei etwa 8,4 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        }
+      ]
+    },
+    {
+      "id": "bennu",
+      "status": "imported",
+      "revision": 2,
+      "title": "Bennu",
+      "summary": "Der erdnahe Asteroid wurde von OSIRIS-REx beprobt.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "OSIRIS-REx entnahm Bennu eine Probe und brachte sie 2023 zur Erde."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 1,126 AE; die angegebene Umlaufzeit beträgt rund 436,6 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,204 erfasst. Der tabellierte mittlere Radius liegt bei etwa 0,245 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/solar-system/asteroids/101955-bennu/facts/"
+        }
+      ]
+    },
+    {
+      "id": "apophis",
+      "status": "imported",
+      "revision": 2,
+      "title": "Apophis",
+      "summary": "Ein erdnaher Asteroid, dessen nahe Erdpassagen intensiv untersucht werden.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Apophis ist ein erdnaher Asteroid, dessen nahe Begegnung 2029 wissenschaftlich besonders interessant ist."
+        },
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 0,922 AE; die angegebene Umlaufzeit beträgt rund 323,6 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,191 erfasst. Der tabellierte mittlere Radius liegt bei etwa 0,17 km. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        },
+        {
+          "title": "NASA – Weiterführender Artikel",
+          "url": "https://science.nasa.gov/solar-system/asteroids/apophis/"
+        }
+      ]
+    },
+    {
+      "id": "sat-25544",
+      "status": "imported",
+      "revision": 2,
+      "title": "ISS",
+      "summary": "Internationale Raumstation. Ohne CelesTrak-Anbindung nur illustrative Umlaufbahn; keine aktuelle Ortung.",
+      "sections": [
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 6.795 km; die angegebene Umlaufzeit beträgt rund 0,065 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,001 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Unser Sonnensystem",
+          "url": "https://science.nasa.gov/solar-system/solar-system-facts/"
+        }
+      ]
+    },
+    {
+      "id": "sat-20580",
+      "status": "imported",
+      "revision": 2,
+      "title": "Hubble Space Telescope",
+      "summary": "Weltraumteleskop in einer niedrigen Erdumlaufbahn. Ohne Live-Daten wird nur eine illustrative Bahn gezeigt.",
+      "sections": [
+        {
+          "heading": "Steckbrief und Umlaufbahn",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 6.910 km; die angegebene Umlaufzeit beträgt rund 0,066 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt. Die älteren Katalogwerte dienen der anschaulichen Darstellung und sind nicht als aktuelle Ephemeride zu verstehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Unser Sonnensystem",
+          "url": "https://science.nasa.gov/solar-system/solar-system-facts/"
+        }
+      ]
+    }
+  ]
+}

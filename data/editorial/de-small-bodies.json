@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "revision": 1,
+  "articles": [
+    {
+      "id": "juno",
+      "status": "imported",
+      "revision": 1,
+      "title": "(3) Juno",
+      "summary": "(3) Juno ist ein Asteroid auf einer elliptischen Sonnenbahn. Die hier dargestellten Bahnelemente stammen aus einem historischen NASA/JPL-Beispieldatensatz.",
+      "sections": [
+        {
+          "heading": "Bahn in der Simulation",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 2,67 AE; die angegebene Umlaufzeit beträgt rund 1593,626 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,255 erfasst. Ein belastbarer Radiuswert ist in der verwendeten Quellentabelle nicht angegeben und wird hier bewusst nicht geschätzt. Die Elemente stammen aus einer historischen Beispiel-Epoche, nicht aus einer aktuellen Bahnvorhersage."
+        },
+        {
+          "heading": "Grenzen der Darstellung",
+          "text": "Die gezeigte Bahn ist eine schematische Näherung. Gravitative Störungen und Änderungen bei Kometen werden hier nicht dynamisch nachgeführt."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Bahnelemente für Kleinkörper",
+          "url": "https://ssd.jpl.nasa.gov/sb/elem_tables.html"
+        },
+        {
+          "title": "NASA – Asteroiden",
+          "url": "https://science.nasa.gov/solar-system/asteroids/facts/"
+        }
+      ]
+    },
+    {
+      "id": "halley",
+      "status": "imported",
+      "revision": 1,
+      "title": "1P/Halley",
+      "summary": "1P/Halley ist ein Komet auf einer elliptischen Sonnenbahn. Die hier dargestellten Bahnelemente stammen aus einem historischen NASA/JPL-Beispieldatensatz.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Halleys Komet kehrt ungefähr alle 76 Jahre in Sonnennähe zurück. Seine letzte Passage war 1986; die nächste wird für 2061 erwartet."
+        },
+        {
+          "heading": "Bahn in der Simulation",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 17,834 AE; die angegebene Umlaufzeit beträgt rund 27509,063 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,967 erfasst. Der tabellierte mittlere Radius liegt bei etwa 5,5 km. Die Elemente stammen aus einer historischen Beispiel-Epoche, nicht aus einer aktuellen Bahnvorhersage."
+        },
+        {
+          "heading": "Grenzen der Darstellung",
+          "text": "Die gezeigte Bahn ist eine schematische Näherung. Gravitative Störungen und Änderungen bei Kometen werden hier nicht dynamisch nachgeführt."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Bahnelemente für Kleinkörper",
+          "url": "https://ssd.jpl.nasa.gov/sb/elem_tables.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/solar-system/comets/1p-halley/"
+        }
+      ]
+    },
+    {
+      "id": "encke",
+      "status": "imported",
+      "revision": 1,
+      "title": "2P/Encke",
+      "summary": "2P/Encke ist ein Komet auf einer elliptischen Sonnenbahn. Die hier dargestellten Bahnelemente stammen aus einem historischen NASA/JPL-Beispieldatensatz.",
+      "sections": [
+        {
+          "heading": "Wissenschaftlicher Hintergrund",
+          "text": "Encke besitzt unter den bekannten periodischen Kometen eine der kürzesten Umlaufzeiten, etwa 3,3 Jahre; seine Staubspur hängt mit den Tauriden zusammen."
+        },
+        {
+          "heading": "Bahn in der Simulation",
+          "text": "Die hinterlegte große Halbachse beträgt etwa 2,214 AE; die angegebene Umlaufzeit beträgt rund 1203,674 Tage. Die Bahn ist als vereinfachte Ellipse mit der Exzentrizität 0,848 erfasst. Der tabellierte mittlere Radius liegt bei etwa 2,4 km. Die Elemente stammen aus einer historischen Beispiel-Epoche, nicht aus einer aktuellen Bahnvorhersage."
+        },
+        {
+          "heading": "Grenzen der Darstellung",
+          "text": "Die gezeigte Bahn ist eine schematische Näherung. Gravitative Störungen und Änderungen bei Kometen werden hier nicht dynamisch nachgeführt."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Bahnelemente für Kleinkörper",
+          "url": "https://ssd.jpl.nasa.gov/sb/elem_tables.html"
+        },
+        {
+          "title": "NASA – Hintergrund",
+          "url": "https://science.nasa.gov/solar-system/comets/2p-encke/"
+        }
+      ]
+    }
+  ]
+}

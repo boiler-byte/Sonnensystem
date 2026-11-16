@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "type": "dwarf",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "ceres",
+      "name": "Ceres",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 473
+      },
+      "orbit": {
+        "semiMajorAxis": 2.768,
+        "unit": "AU",
+        "periodDays": 1681.63,
+        "eccentricity": 0.0758,
+        "inclinationDeg": 10.59,
+        "ascendingNodeDeg": 80.3,
+        "periapsisDeg": 73.6,
+        "meanAnomalyDeg": 77,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#bebbb5",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "pluto",
+      "name": "Pluto",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 1188.3
+      },
+      "orbit": {
+        "semiMajorAxis": 39.482,
+        "unit": "AU",
+        "periodDays": 90560,
+        "eccentricity": 0.2488,
+        "inclinationDeg": 17.16,
+        "ascendingNodeDeg": 110.3,
+        "periapsisDeg": 113.83,
+        "meanAnomalyDeg": 14.53,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#cbb5a5",
+        "style": "pluto"
+      }
+    },
+    {
+      "id": "eris",
+      "name": "Eris",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 1163
+      },
+      "orbit": {
+        "semiMajorAxis": 67.8,
+        "unit": "AU",
+        "periodDays": 203600,
+        "eccentricity": 0.44,
+        "inclinationDeg": 44,
+        "ascendingNodeDeg": 35.9,
+        "periapsisDeg": 151.4,
+        "meanAnomalyDeg": 210,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#d0d7dc",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "haumea",
+      "name": "Haumea",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 816
+      },
+      "orbit": {
+        "semiMajorAxis": 43.2,
+        "unit": "AU",
+        "periodDays": 103774,
+        "eccentricity": 0.19,
+        "inclinationDeg": 28.2,
+        "ascendingNodeDeg": 122.1,
+        "periapsisDeg": 239.3,
+        "meanAnomalyDeg": 90,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#bdc8cf",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "makemake",
+      "name": "Makemake",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 715
+      },
+      "orbit": {
+        "semiMajorAxis": 45.7,
+        "unit": "AU",
+        "periodDays": 112900,
+        "eccentricity": 0.16,
+        "inclinationDeg": 29,
+        "ascendingNodeDeg": 79.6,
+        "periapsisDeg": 296.2,
+        "meanAnomalyDeg": 150,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#c79a80",
+        "style": "rock"
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "type": "comet",
+  "provenance": {
+    "source": "NASA/JPL – Small-Body Element Tables (historische Beispielzeilen)",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sb/elem_tables.html",
+    "reviewStatus": "source-reviewed",
+    "note": "Elliptische Darstellungsbahnen aus historischen Beispielwerten; M=0 am Periheldatum, präzise Ephemeriden daraus nicht ableitbar."
+  },
+  "objects": [
+    {
+      "id": "halley",
+      "name": "1P/Halley",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 5.5
+      },
+      "orbit": {
+        "semiMajorAxis": 17.83414508,
+        "unit": "AU",
+        "periodDays": 27509.0632,
+        "eccentricity": 0.96714291,
+        "inclinationDeg": 162.26269,
+        "ascendingNodeDeg": 58.42008,
+        "periapsisDeg": 111.33249,
+        "meanAnomalyDeg": 0,
+        "epoch": "1986-02-05T21:29:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "historical-perihelion"
+      },
+      "appearance": {
+        "color": "#90c9c5",
+        "style": "comet"
+      }
+    },
+    {
+      "id": "encke",
+      "name": "2P/Encke",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 2.4
+      },
+      "orbit": {
+        "semiMajorAxis": 2.21449314,
+        "unit": "AU",
+        "periodDays": 1203.674,
+        "eccentricity": 0.84833156,
+        "inclinationDeg": 11.78308,
+        "ascendingNodeDeg": 334.56582,
+        "periapsisDeg": 186.5497,
+        "meanAnomalyDeg": 0,
+        "epoch": "2010-08-06T12:03:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "historical-perihelion"
+      },
+      "appearance": {
+        "color": "#90c9c5",
+        "style": "comet"
+      }
+    }
+  ]
+}

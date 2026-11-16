@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "cordelia",
+      "name": "Cordelia",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 49755,
+        "unit": "km",
+        "periodDays": 0.3347,
+        "eccentricity": 0.0,
+        "inclinationDeg": 0.2,
+        "ascendingNodeDeg": 1.1,
+        "periapsisDeg": 0.0,
+        "meanAnomalyDeg": 287.4,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "ophelia",
+      "name": "Ophelia",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 53765,
+        "unit": "km",
+        "periodDays": 0.3764,
+        "eccentricity": 0.011,
+        "inclinationDeg": 0.2,
+        "ascendingNodeDeg": 151.6,
+        "periapsisDeg": 19.3,
+        "meanAnomalyDeg": 213.4,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "bianca",
+      "name": "Bianca",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 59170,
+        "unit": "km",
+        "periodDays": 0.4347,
+        "eccentricity": 0.006,
+        "inclinationDeg": 2.3,
+        "ascendingNodeDeg": 272.5,
+        "periapsisDeg": 328.0,
+        "meanAnomalyDeg": 109.1,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "cressida",
+      "name": "Cressida",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 61770,
+        "unit": "km",
+        "periodDays": 0.4639,
+        "eccentricity": 0.004,
+        "inclinationDeg": 1.8,
+        "ascendingNodeDeg": 308.2,
+        "periapsisDeg": 87.9,
+        "meanAnomalyDeg": 0.5,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "desdemona",
+      "name": "Desdemona",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 62663,
+        "unit": "km",
+        "periodDays": 0.4736,
+        "eccentricity": 0.007,
+        "inclinationDeg": 3.1,
+        "ascendingNodeDeg": 283.9,
+        "periapsisDeg": 137.0,
+        "meanAnomalyDeg": 230.0,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "juliet",
+      "name": "Juliet",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 64362,
+        "unit": "km",
+        "periodDays": 0.4931,
+        "eccentricity": 0.006,
+        "inclinationDeg": 3.0,
+        "ascendingNodeDeg": 141.0,
+        "periapsisDeg": 274.9,
+        "meanAnomalyDeg": 319.8,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "portia",
+      "name": "Portia",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 66101,
+        "unit": "km",
+        "periodDays": 0.5132,
+        "eccentricity": 0.004,
+        "inclinationDeg": 2.7,
+        "ascendingNodeDeg": 146.7,
+        "periapsisDeg": 31.6,
+        "meanAnomalyDeg": 310.1,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "rosalind",
+      "name": "Rosalind",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 69930,
+        "unit": "km",
+        "periodDays": 0.5583,
+        "eccentricity": 0.003,
+        "inclinationDeg": 1.7,
+        "ascendingNodeDeg": 330.0,
+        "periapsisDeg": 231.8,
+        "meanAnomalyDeg": 287.7,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "belinda",
+      "name": "Belinda",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 75258,
+        "unit": "km",
+        "periodDays": 0.6236,
+        "eccentricity": 0.002,
+        "inclinationDeg": 1.4,
+        "ascendingNodeDeg": 96.2,
+        "periapsisDeg": 58.6,
+        "meanAnomalyDeg": 226.4,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "perdita",
+      "name": "Perdita",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 76418,
+        "unit": "km",
+        "periodDays": 0.6382,
+        "eccentricity": 0.005,
+        "inclinationDeg": 1.6,
+        "ascendingNodeDeg": 270.4,
+        "periapsisDeg": 296.9,
+        "meanAnomalyDeg": 168.0,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "mab",
+      "name": "Mab",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 97737,
+        "unit": "km",
+        "periodDays": 0.9229,
+        "eccentricity": 0.006,
+        "inclinationDeg": 1.8,
+        "ascendingNodeDeg": 307.8,
+        "periapsisDeg": 318.6,
+        "meanAnomalyDeg": 250.8,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "cupid",
+      "name": "Cupid",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 74396,
+        "unit": "km",
+        "periodDays": 0.6125,
+        "eccentricity": 0.007,
+        "inclinationDeg": 2.0,
+        "ascendingNodeDeg": 31.1,
+        "periapsisDeg": 168.0,
+        "meanAnomalyDeg": 3.3,
+        "epoch": "2025-01-01T00:00:00.000Z",
+        "referenceFrame": "Laplace",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

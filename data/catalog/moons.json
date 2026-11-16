@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "moon",
+      "name": "Mond",
+      "parentId": "earth",
+      "physical": {
+        "radiusKm": 1737.4
+      },
+      "orbit": {
+        "semiMajorAxis": 384400,
+        "unit": "km",
+        "periodDays": 27.32166,
+        "eccentricity": 0.0549,
+        "inclinationDeg": 5.145,
+        "ascendingNodeDeg": 125.1,
+        "periapsisDeg": 318.15,
+        "meanAnomalyDeg": 115.4,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#bcbab5",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "phobos",
+      "name": "Phobos",
+      "parentId": "mars",
+      "physical": {
+        "radiusKm": 11.3
+      },
+      "orbit": {
+        "semiMajorAxis": 9376,
+        "unit": "km",
+        "periodDays": 0.319,
+        "eccentricity": 0.015,
+        "inclinationDeg": 1.1,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 145,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#958a80",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "deimos",
+      "name": "Deimos",
+      "parentId": "mars",
+      "physical": {
+        "radiusKm": 6.2
+      },
+      "orbit": {
+        "semiMajorAxis": 23463,
+        "unit": "km",
+        "periodDays": 1.263,
+        "eccentricity": 0.0003,
+        "inclinationDeg": 0.9,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 265,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#aca193",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "io",
+      "name": "Io",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 1821.6
+      },
+      "orbit": {
+        "semiMajorAxis": 421700,
+        "unit": "km",
+        "periodDays": 1.769,
+        "eccentricity": 0.0041,
+        "inclinationDeg": 0.04,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 90,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#efd18b",
+        "style": "io"
+      }
+    },
+    {
+      "id": "europa",
+      "name": "Europa",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 1560.8
+      },
+      "orbit": {
+        "semiMajorAxis": 671100,
+        "unit": "km",
+        "periodDays": 3.551,
+        "eccentricity": 0.009,
+        "inclinationDeg": 0.47,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 155,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#dacbbb",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "ganymede",
+      "name": "Ganymed",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 2634.1
+      },
+      "orbit": {
+        "semiMajorAxis": 1070400,
+        "unit": "km",
+        "periodDays": 7.155,
+        "eccentricity": 0.0013,
+        "inclinationDeg": 0.18,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 242,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#b7a18f",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "callisto",
+      "name": "Kallisto",
+      "parentId": "jupiter",
+      "physical": {
+        "radiusKm": 2410.3
+      },
+      "orbit": {
+        "semiMajorAxis": 1882700,
+        "unit": "km",
+        "periodDays": 16.689,
+        "eccentricity": 0.0074,
+        "inclinationDeg": 0.19,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 28,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#827b79",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "mimas",
+      "name": "Mimas",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 198.2
+      },
+      "orbit": {
+        "semiMajorAxis": 185540,
+        "unit": "km",
+        "periodDays": 0.942,
+        "eccentricity": 0.0196,
+        "inclinationDeg": 1.57,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 45,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#c6c6bf",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "enceladus",
+      "name": "Enceladus",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 252.1
+      },
+      "orbit": {
+        "semiMajorAxis": 237950,
+        "unit": "km",
+        "periodDays": 1.37,
+        "eccentricity": 0.0047,
+        "inclinationDeg": 0.01,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 85,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#e3edf2",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "rhea",
+      "name": "Rhea",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 763.8
+      },
+      "orbit": {
+        "semiMajorAxis": 527040,
+        "unit": "km",
+        "periodDays": 4.518,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.35,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 310,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#c6bfb5",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "titan",
+      "name": "Titan",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 2574.7
+      },
+      "orbit": {
+        "semiMajorAxis": 1221870,
+        "unit": "km",
+        "periodDays": 15.945,
+        "eccentricity": 0.0288,
+        "inclinationDeg": 0.35,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 20,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#ddb477",
+        "style": "venus"
+      }
+    },
+    {
+      "id": "iapetus",
+      "name": "Iapetus",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 734.5
+      },
+      "orbit": {
+        "semiMajorAxis": 3561300,
+        "unit": "km",
+        "periodDays": 79.321,
+        "eccentricity": 0.0286,
+        "inclinationDeg": 15.47,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 210,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#a89c8f",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "titania",
+      "name": "Titania",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 788.9
+      },
+      "orbit": {
+        "semiMajorAxis": 436300,
+        "unit": "km",
+        "periodDays": 8.706,
+        "eccentricity": 0.0011,
+        "inclinationDeg": 0.08,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 135,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#bdc1c4",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "oberon",
+      "name": "Oberon",
+      "parentId": "uranus",
+      "physical": {
+        "radiusKm": 761.4
+      },
+      "orbit": {
+        "semiMajorAxis": 583500,
+        "unit": "km",
+        "periodDays": 13.463,
+        "eccentricity": 0.0014,
+        "inclinationDeg": 0.07,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 60,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#b5b1a6",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 1353.4
+      },
+      "orbit": {
+        "semiMajorAxis": 354760,
+        "unit": "km",
+        "periodDays": 5.877,
+        "eccentricity": 0,
+        "inclinationDeg": 157,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 20,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#c8b5b4",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "charon",
+      "name": "Charon",
+      "parentId": "pluto",
+      "physical": {
+        "radiusKm": 606
+      },
+      "orbit": {
+        "semiMajorAxis": 19596,
+        "unit": "km",
+        "periodDays": 6.387,
+        "eccentricity": 0,
+        "inclinationDeg": 0,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 55,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#a7a5a8",
+        "style": "moon"
+      }
+    }
+  ]
+}

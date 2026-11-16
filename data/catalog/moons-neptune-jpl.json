@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/sep.html",
+    "physicalSourceUrl": "https://ssd.jpl.nasa.gov/sats/phys_par/",
+    "reviewStatus": "source-reviewed",
+    "note": "Mittlere Bahnelemente; Bezugsrahmen je Ephemeride verschieden, nicht für genaue Ephemeriden. Radius 0 bedeutet unbekannt."
+  },
+  "objects": [
+    {
+      "id": "naiad",
+      "name": "Naiad",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 29.0
+      },
+      "orbit": {
+        "semiMajorAxis": 48300,
+        "unit": "km",
+        "periodDays": 0.2951,
+        "eccentricity": 0.001,
+        "inclinationDeg": 4.7,
+        "ascendingNodeDeg": 38.7,
+        "periapsisDeg": 144.5,
+        "meanAnomalyDeg": 6.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "thalassa",
+      "name": "Thalassa",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 40.0
+      },
+      "orbit": {
+        "semiMajorAxis": 50100,
+        "unit": "km",
+        "periodDays": 0.3118,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.2,
+        "ascendingNodeDeg": 124.7,
+        "periapsisDeg": 223.6,
+        "meanAnomalyDeg": 3.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "despina",
+      "name": "Despina",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 74.0
+      },
+      "orbit": {
+        "semiMajorAxis": 52600,
+        "unit": "km",
+        "periodDays": 0.3347,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 182.1,
+        "meanAnomalyDeg": 354.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "galatea",
+      "name": "Galatea",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 79.0
+      },
+      "orbit": {
+        "semiMajorAxis": 62000,
+        "unit": "km",
+        "periodDays": 0.4292,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.0,
+        "ascendingNodeDeg": 0.0,
+        "periapsisDeg": 113.9,
+        "meanAnomalyDeg": 12.0,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "larissa",
+      "name": "Larissa",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 96.0
+      },
+      "orbit": {
+        "semiMajorAxis": 73600,
+        "unit": "km",
+        "periodDays": 0.5549,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.2,
+        "ascendingNodeDeg": 317.4,
+        "periapsisDeg": 222.0,
+        "meanAnomalyDeg": 215.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "proteus",
+      "name": "Proteus",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 208.0
+      },
+      "orbit": {
+        "semiMajorAxis": 117700,
+        "unit": "km",
+        "periodDays": 1.1229,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.6,
+        "ascendingNodeDeg": 355.5,
+        "periapsisDeg": 357.2,
+        "meanAnomalyDeg": 297.4,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b5b8be",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "hippocamp",
+      "name": "Hippocamp",
+      "parentId": "neptune",
+      "physical": {
+        "radiusKm": 0.0
+      },
+      "orbit": {
+        "semiMajorAxis": 105300,
+        "unit": "km",
+        "periodDays": 0.9507,
+        "eccentricity": 0.001,
+        "inclinationDeg": 0.3,
+        "ascendingNodeDeg": 4.0,
+        "periapsisDeg": 323.3,
+        "meanAnomalyDeg": 322.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "equatorial",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#a2a6ad",
+        "style": "moon"
+      }
+    }
+  ]
+}

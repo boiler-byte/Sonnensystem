@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "type": "asteroid",
+  "provenance": {
+    "source": "NASA/JPL – Small-Body Element Tables (Beispielzeile)",
+    "origin": "JPL Solar System Dynamics",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sb/elem_tables.html",
+    "reviewStatus": "source-reviewed",
+    "note": "Epoche MJD 55400. Historische Beispiel-Orbitelemente, keine aktuelle Ephemeride. Radius unbekannt."
+  },
+  "objects": [
+    {
+      "id": "juno",
+      "name": "(3) Juno",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 2.6700912,
+        "unit": "AU",
+        "periodDays": 1593.6263495469134,
+        "eccentricity": 0.25498122,
+        "inclinationDeg": 12.98211,
+        "ascendingNodeDeg": 169.91138,
+        "periapsisDeg": 248.10807,
+        "meanAnomalyDeg": 32.0960832,
+        "epoch": "2010-07-23T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-sample"
+      },
+      "appearance": {
+        "color": "#b69e8d",
+        "style": "rock"
+      }
+    }
+  ]
+}

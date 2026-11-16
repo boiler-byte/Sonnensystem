@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "type": "satellite",
+  "provenance": {
+    "source": "Startdatensatz",
+    "origin": "Sonnensystem v6.1",
+    "reviewStatus": "unverified",
+    "note": "Übernommene illustrative Startdaten; keine neu überprüften Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "sat-25544",
+      "name": "ISS",
+      "parentId": "earth",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 6795,
+        "unit": "km",
+        "periodDays": 0.0646,
+        "eccentricity": 0.0007,
+        "inclinationDeg": 51.6,
+        "ascendingNodeDeg": 180,
+        "periapsisDeg": 15,
+        "meanAnomalyDeg": 85,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#79d6c8",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 25544
+      }
+    },
+    {
+      "id": "sat-20580",
+      "name": "Hubble Space Telescope",
+      "parentId": "earth",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 6910,
+        "unit": "km",
+        "periodDays": 0.0661,
+        "eccentricity": 0.0003,
+        "inclinationDeg": 28.5,
+        "ascendingNodeDeg": 110,
+        "periapsisDeg": 41,
+        "meanAnomalyDeg": 210,
+        "epoch": "2000-01-01T12:00:00.000Z"
+      },
+      "appearance": {
+        "color": "#83d3c3",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 20580
+      }
+    }
+  ]
+}
