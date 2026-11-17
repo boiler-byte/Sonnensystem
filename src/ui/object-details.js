@@ -32,6 +32,7 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
     $('hero-body').className='hero-body';
     $('editorial-content').innerHTML='';$('editorial-content').hidden=true;
     $('planet-view-actions').hidden=true;
+    $('detail-scene-actions').hidden=true;
     $('stats-grid').innerHTML='';$('orbit-facts').innerHTML='';$('related').innerHTML='';
     $('horizons-btn').disabled=true;
     $('horizons-note').textContent='Wähle zunächst einen Himmelskörper aus.';
@@ -44,6 +45,7 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
     $('detail-description').textContent=b.description;
     $('texture-credit').hidden=true;$('texture-credit').textContent='';
     $('planet-view-actions').hidden=true;
+    $('detail-scene-actions').hidden=true;
     $('hero-body').className='hero-body rock';
     const date=b.launchDate.split('-').reverse().join('.');
     $('stats-grid').innerHTML=`<div class="stat"><span>START</span><strong>${esc(date)}</strong></div><div class="stat"><span>STATUS</span><strong>${esc(b.missionStatus)}</strong></div>`;
@@ -70,6 +72,17 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   extra.hidden=!sections.length&&!refs.length;
   extra.innerHTML=sections.map(s=>`<section class="editorial-section"><h3>${esc(s.heading)}</h3><p>${esc(s.text)}</p></section>`).join('')+
     (refs.length?`<div class="editorial-references"><strong>QUELLEN</strong>${refs.map(r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>`).join('')}</div>`:'');
+  $('detail-scene-actions').hidden=false;
+  const centerButton=$('center-object-btn');
+  // Follow is a single global toggle, not a property of the current selection.
+  const following=renderer?.followEnabled===true;
+  centerButton.disabled=!renderer;
+  centerButton.classList.toggle('active',following);
+  centerButton.setAttribute('aria-pressed',String(following));
+  centerButton.setAttribute('aria-label',following?'Folgen ausschalten':'Ausgewähltem Objekt folgen');
+  centerButton.title=following
+    ? 'Folgen ausschalten (für alle Objekte)'
+    : 'Folgen einschalten (auch bei Objektwechsel, Drehung und Zoom)';
   const planetActions=$('planet-view-actions'),planetButton=$('planet-view-btn');
   // An orbital moon opens its parent system; dwarfs can themselves be the
   // center of the isolated scene (e.g. Pluto with Charon and smaller moons).
@@ -78,13 +91,8 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   planetActions.hidden=!canOpenSystem;
   if(canOpenSystem){
     const active=renderer?.planetId===systemCenter.id;
-    const children=state.bodies.filter(x=>x.parentId===systemCenter.id && (x.type==='moon'||x.type==='satellite'));
-    const moons=children.filter(x=>x.type==='moon').length,satellites=children.length-moons;
-    $('planet-view-subtitle').textContent=b.type==='moon'
-      ? `${systemCenter.name} · ${moons} Monde · ${satellites} Satelliten`
-      : `${moons} Monde · ${satellites} Satelliten`;
-    $('planet-view-title').textContent=active&&b.type!=='moon'?'System zentrieren':'Planetenansicht öffnen';
-    planetButton.setAttribute('aria-label',`${systemCenter.name}: ${active?'Planetensystem zentrieren':'Planetenansicht öffnen'}`);
+    $('planet-view-title').textContent='Planetenansicht';
+    planetButton.setAttribute('aria-label',`Planetenansicht · ${systemCenter.name}${active?' zentrieren':''}`);
     planetButton.classList.toggle('active',active);
     planetButton.setAttribute('aria-pressed',String(active));
   }

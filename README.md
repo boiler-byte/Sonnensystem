@@ -1,6 +1,40 @@
-# Sonnensystem – interaktiver 3D-Atlas v33.0
+# Sonnensystem – interaktiver 3D-Atlas v39.0
 
-**Aktueller Stand v33.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht und weicht mobil dem geöffneten Sheet nach oben aus. Das rahmenlose Control-Panel oben rechts ist **58 px** breit. Seine Dropdown-Auslöser für Layer und Zeit enthalten keine Pfeilindikatoren; das Layer-Menü ist seit v31 **166 px**, das Zeitmenü **116 px** breit. Die bestehenden Ansichts- und Objektfunktionen bleiben erhalten.
+**Aktueller Stand v39.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht und weicht mobil dem geöffneten Sheet nach oben aus. Das rahmenlose Control-Panel oben rechts ist **58 px** breit; die Dropdowns messen **145 px (Layer)** und **120 px (Zeitsteuerung)**.
+
+## Folgen: Ansicht des übergeordneten Planeten (v39)
+
+Bei **Folgen → An** für ein Objekt, das einen Planeten oder Zwergplaneten direkt umkreist (z. B. Mond, Charon oder künstlicher Satellit), öffnet die App zuerst die **Planetenansicht des Parents** und verfolgt anschließend das **gewählte Kindobjekt**. Die Auswahl wechselt nicht zum Parent. Bei bereits geöffneter passender Planetenansicht erfolgt kein erneuter Szenenwechsel. Bei anderen Objekten (z. B. Sonne, Planet, Zwergplanet oder Asteroid mit Sonne als Parent) bleibt die bisherige Ansicht erhalten. **Folgen → Aus** ändert die Ansicht nicht.
+
+Der globale Folgen-Toggle, seine Abbruchbedingungen und die Szenensteuerung bleiben ansonsten unverändert. Siehe [Delta v39](docs/DELTA-V39.md).
+
+## Objektdetails: Planetenansicht und globales Folgen (v38)
+
+- Der Button **„Planetenansicht“** ersetzt **„Planetenansicht öffnen“**. Die bisherige Unterzeile mit den Zahlen zu Monden und Satelliten entfällt. Monden bleibt die Aktion auf das übergeordnete Planetensystem erhalten; eine bereits geöffnete Planetenansicht kann damit weiterhin neu zentriert werden.
+- Der bisherige **„Zentrieren“**-Button heißt jetzt **„Folgen“** und behält sein Fadenkreuz-Symbol. Er ist ein **globaler An/Aus-Toggle** (grün bei An, `aria-pressed` synchron), unabhängig von der Kategorie oder der aktuellen Szene.
+- Ist **Folgen An**, zentriert die Kamera das aktuelle Objekt und führt dessen berechnete Position nach. Bei Auswahl eines anderen darstellbaren Objekts springt das Tracking automatisch auf das neue Ziel, ohne den Toggle auszuschalten.
+- **Drehen, Perspektivenwechsel und Zoomen (Mausrad oder Touch-Pinch)** lassen Folgen eingeschaltet. Ein bewusstes **Verschieben/Schwenken** der Kameraposition (Rechtsziehen, Shift-Ziehen, Pfeiltasten oder Zwei-Finger-Pan) schaltet Folgen aus. Ebenso beendet eine zu schnelle Bewegung (> eine projizierte Bildschirmhöhe pro Echtzeitsekunde) die Nachführung, um abrupte Kamerasprünge zu vermeiden.
+- Bei fehlender Auswahl oder einer Raumsonde ohne Ephemeride pausiert die aktive Nachführung, bleibt jedoch eingeschaltet und folgt nach der nächsten gültigen Auswahl automatisch weiter. Änderungen zwischen Sonnensystem- und Planetenansicht behalten den globalen Zustand bei. Die mobile Fokussierung berücksichtigt weiterhin die freie Fläche oberhalb des geöffneten Sheets.
+
+Die Menübreiten aus v37 bleiben unverändert. Weitere Details: [Delta v38](docs/DELTA-V38.md). Die ursprüngliche Ein-Ziel-Nachführung ist in [Delta v37](docs/DELTA-V37.md) dokumentiert.
+
+## Zeitsteuerung: längerer Range-Slider mit seitlichen Endwerten (v36)
+
+Der vertikale Geschwindigkeitsregler ist jetzt **50 px länger** (Range von 132 auf 182 px, zugehörige Schiene von 150 auf 200 px). **Maximum und Minimum stehen rechts neben dem Regler**, jeweils auf Höhe des oberen bzw. unteren Endpunkts statt darüber und darunter. Das Zeit-Popover ist dafür 160 px breit; damit bleiben beide Beschriftungen lesbar und die Slider-Spalte hat mehr Platz in der Höhe. Bei niedrigen Viewports wird die bisherige kompaktere Variante ebenfalls um 50 px verlängert. Geschwindigkeitsbereich, logarithmische Stufen und Wiedergabefunktionen bleiben unverändert.
+
+Details: [Delta v36](docs/DELTA-V36.md).
+
+## Mobile Ansicht: eingeklapptes Sheet 45 px (v35)
+
+Im **geschlossenen** Zustand ragt das Mobile-Sheet jetzt **45 px statt 52 px** über den unteren Bildschirmrand. Die Tab-Leiste ist 44 px hoch zuzüglich 1 px Rahmen, sodass die dynamische Höhe `--sheet-visible` ebenfalls exakt 45 px beträgt. Der Kamera-Button hält den bisherigen Abstand oberhalb der sichtbaren Sheet-Kante ein. Halb und vollständig geöffnetes Sheet sowie Wischgesten und History-Back bleiben unverändert.
+
+Details: [Delta v35](docs/DELTA-V35.md).
+
+## Beleuchtungsschalter als An/Aus-Toggle (v34)
+
+Der Schalter **Beleuchtung** im Layer-Dropdown zeigt jetzt **Aus** (Standard, **Optimiert**) bzw. **An** (**Realistisch**). Nur die Beschriftung und die Schalterzustände wurden umgestellt: Die beiden Rendering-Modi und ihre bisherigen Beleuchtungsformeln bleiben identisch. `aria-pressed` und die aktive Schalterdarstellung sind nur bei **An / Realistisch** gesetzt. Die Sonnensystem- und Planetenansicht behalten ihre separaten Einstellungen.
+
+Details: [Delta v34](docs/DELTA-V34.md).
 
 ## Mobiles Sheet mit Verlauf-Zurück schließen (v33)
 
@@ -38,7 +72,7 @@ Details: [Delta v30](docs/DELTA-V30.md).
 
 Im Layer-Dropdown befinden sich direkt unter **Beschriftung** zwei zusätzliche Toggles:
 
-- **Beleuchtung:** **Optimiert** ist der neue Standard in beiden Ansichten (hellere unbeleuchtete Planetenseite). **Realistisch** bewahrt die bisherige v28-Beleuchtung unverändert. Die Sonne bleibt in beiden Modi selbstleuchtend.
+- **Beleuchtung:** Der Schalter steht standardmäßig auf **Aus = Optimiert** in beiden Ansichten (hellere unbeleuchtete Planetenseite). **An = Realistisch** bewahrt die bisherige v28-Beleuchtung unverändert. Die Sonne bleibt in beiden Modi selbstleuchtend.
 - **4 Monde:** zeigt höchstens die **vier größten natürlichen Monde pro Planet bzw. Zwergplanet** anhand des Katalogradius. Der Schalter ist in der Sonnensystemansicht standardmäßig **An**, in der isolierten Planetenansicht standardmäßig **Aus**. Bei „Aus“ werden alle Monde des aktivierten Mond-Layers gezeigt. Die Auswahl gilt auch für Objektkörper, Mond-Umlaufbahnen in der Planetenansicht, Anklickbarkeit und Labels. Katalogeinträge bleiben vollständig erhalten. Ein ausgeschalteter Mond-Layer bleibt durch „4 Monde“ ausgeschaltet.
 
 Die Beleuchtungs- und Mond-Einstellungen werden wie die anderen Ansichtsoptionen getrennt pro Szenentyp beibehalten. Details: [Delta v29](docs/DELTA-V29.md).
@@ -57,7 +91,7 @@ Die Zwergplaneten- und Mondfunktionen von v26 bleiben erhalten. Anleitung: [docs
 
 ## Starten
 
-1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32 und v33 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
+1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35 und v36 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
 2. Node.js 20+ verwenden. Zusätzliche npm-Pakete sind nicht erforderlich.
 3. `npm start` im Workspace-Root aufrufen und `http://localhost:4173` öffnen.
 4. Die Anwendung kann auch von einem einfachen statischen Workspace-HTTP-Server geladen werden; dann fehlen die optionalen Live-API-Funktionen.
@@ -222,12 +256,12 @@ Die neuen Mondumlaufbahnen basieren auf **NASA/JPL – Planetary Satellite Mean 
 
 - **Desktop:** Links ziehen: umschauen. Mausrad: Zoom. Rechts ziehen oder Shift + links ziehen: bodenparallel bewegen. Pfeiltasten: bodenparallel bewegen.
 - **Mobil:** Ein Finger: umschauen. Zwei Finger spreizen/zusammenziehen: Zoom. Zwei Finger gemeinsam bewegen: bodenparallel verschieben.
-- **Planetenansicht:** In Planet-, Zwergplanet- oder Monddetails „Planetenansicht öffnen“ wählen. Bei Monden wird das übergeordnete Planeten-/Zwergplanetensystem geöffnet. Der runde Kamera-Reset rechts oben kehrt zur Sonnensystemübersicht zurück.
+- **Planetenansicht:** In Planet-, Zwergplanet- oder Monddetails „Planetenansicht“ wählen. Bei Monden wird das übergeordnete Planeten-/Zwergplanetensystem geöffnet. Der runde Kamera-Reset rechts oben kehrt zur Sonnensystemübersicht zurück.
 - **Redaktion:** In den Objektdetails unter den Kennzahlen erscheinen Hintergrundabschnitte und direkte Quellenlinks (auf Mobilgeräten Detail-Panel erweitern).
 
 ## PWA und Updates
 
-`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v33-PWA verwendet den Cache `sonnensystem-shell-v33` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
+`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v39-PWA verwendet den Cache `sonnensystem-shell-v39` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
 
 ## Weiterarbeiten
 

@@ -135,7 +135,7 @@ test('v29: new toggles follow labels, expose states, and synchronize for each vi
     assert.match(html.slice(html.indexOf(`id="${id}"`)),/aria-label=/);
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\('click'`));
   }
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:166px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:145px/);
   const start=app.indexOf('function syncLightingControl(){');
   const end=app.indexOf('function changeLayers(next){',start);
   assert.ok(start>=0&&end>start);
@@ -150,17 +150,20 @@ test('v29: new toggles follow labels, expose states, and synchronize for each vi
   const ctx=vm.createContext({S,$:id=>buttons[id]});
   vm.runInContext(app.slice(start,end)+'\nthis.syncControlsV29=()=>{syncLightingControl();syncFourMoonsControl()};',ctx);
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Optimiert');
+  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Aus');
+  assert.equal(buttons['toggle-lighting'].attrs['aria-pressed'],'false');
+  assert.equal(buttons['toggle-lighting'].classes.has('active'),false);
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'true');
   S.settings.lighting='realistic';S.settings.fourMoons=false;
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Realistisch');
-  assert.equal(buttons['toggle-lighting'].attrs['aria-pressed'],'false');
+  assert.equal(buttons['toggle-lighting'].indicator.textContent,'An');
+  assert.equal(buttons['toggle-lighting'].attrs['aria-pressed'],'true');
+  assert.equal(buttons['toggle-lighting'].classes.has('active'),true);
   assert.equal(buttons['toggle-four-moons'].indicator.textContent,'Aus');
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'false');
   S.settings=createViewSettings('planet');
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Optimiert');
+  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Aus');
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'false');
   assert.match(app,/syncLightingControl\(\);syncFourMoonsControl\(\);syncLayers\(\);/,
     'Scene switch refreshes both new controls');

@@ -4,7 +4,7 @@ import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
-import { panCameraByPixels, cameraView } from './camera.js';
+import { panCameraByPixels, cameraView, followMotionTooFast } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
 import { drawOrbitLine } from './orbits.js';
 import { drawSceneLabels } from './labels.js';
@@ -29,15 +29,78 @@ export class SolarRenderer {
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.focusedBodyId=null;this.focusOffsetY=0;
+  this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
-  this.drag=null;this.pointers=new Map();this.gesture=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
+  this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
   this.attachEvents();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
  }
  attachEvents(){attachCameraControls(this);}
- panByPixels(dx,dy){if(dx || dy){this.markCameraMoved();panCameraByPixels(this.camera,dx,dy,this.height);}}
- markCameraMoved(){this.cameraManuallyMoved=true;this.focusedBodyId=null;}
+ panByPixels(dx,dy){if(dx || dy){this.markCameraMoved({positionChanged:true});panCameraByPixels(this.camera,dx,dy,this.height);}}
+ /** Rotation and zoom change the view but must not disable the global follow toggle. */
+ markCameraMoved({positionChanged=false}={}){
+  this.cameraManuallyMoved=true;
+  if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
+  else if(!this.followEnabled)this.focusedBodyId=null;
+ }
+ /** Clear a target without turning off the global toggle (e.g. no selection/probe). */
+ clearFollowTarget(){
+  this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
+ }
+ /** Leave the camera where it is when tracking ends; do not change the selection. */
+ stopFollowing(){
+  const active=this.followEnabled===true;
+  this.followEnabled=false;this.clearFollowTarget();
+  if(active)this.callbacks?.onFollowChange?.(false);
+  return active;
+ }
+ /** The single toggle persists across selections and view changes. */
+ follow(id=this.selectedId,now=performance.now()){
+  if(this.followEnabled){this.stopFollowing();return false;}
+  const body=this.byId.get(id);
+  if(!body || body.type==='probe' || id!==this.selectedId)return false;
+  this.followEnabled=true;
+  if(!this.followSelectedBody(now)){
+    this.followEnabled=false;return false;
+  }
+  this.callbacks?.onFollowChange?.(true);
+  return true;
+ }
+ /** Track the current selection; reset the speed sample when the object/scene changes. */
+ followSelectedBody(now=performance.now()){
+  if(!this.followEnabled)return false;
+  const id=this.selectedId,body=this.byId.get(id);
+  if(!body || body.type==='probe'){
+    this.clearFollowTarget();this.focusedBodyId=null;return false;
+  }
+  this.calcPositions(this.simTime);
+  const position=this.positions.get(id);
+  if(!position || position.some(value=>!Number.isFinite(value))){
+    this.clearFollowTarget();this.focusedBodyId=null;return false;
+  }
+  this.followedBodyId=id;
+  this.focus(id);
+  this.camera.desiredTarget=position.slice();
+  this.followLastPosition=position.slice();this.followLastAtMs=now;
+  return true;
+ }
+ /** Follow each slow scene update, without interpreting a selection change as motion. */
+ updateFollowTarget(now=performance.now()){
+  if(!this.followEnabled)return;
+  const id=this.selectedId;
+  if(this.followedBodyId!==id){this.followSelectedBody(now);return;}
+  const position=this.positions.get(id);
+  if(!position || position.some(value=>!Number.isFinite(value))){
+    this.clearFollowTarget();this.focusedBodyId=null;return;
+  }
+  if(followMotionTooFast(this.followLastPosition,position,this.camera.desiredDist,
+      this.height,now-this.followLastAtMs)){
+    this.stopFollowing();return;
+  }
+  this.camera.desiredTarget=position.slice();
+  this.followLastPosition=position.slice();this.followLastAtMs=now;
+ }
  /** Next preset only while the active one has not been changed by the user. */
  cycleCameraPerspective(){
   if(this.planetId){this.reset();return;}
@@ -45,8 +108,11 @@ export class SolarRenderer {
   this.applyCameraPreset(index);
  }
  applyCameraPreset(index){
-  this.cameraPresetIndex=index;this.cameraManuallyMoved=false;this.focusedBodyId=null;
-  this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=47;
+  this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
+  const tracked=this.followEnabled && this.followedBodyId===this.selectedId;
+  this.focusedBodyId=tracked?this.selectedId:null;
+  this.camera.desiredTarget=tracked?(this.positions.get(this.selectedId)?.slice()||[0,0,0]):[0,0,0];
+  this.camera.desiredDist=47;
   this.camera.theta=.63;this.camera.phi=[.99,1.54,.16][index];
  }
  updateKeyboard(now=performance.now()){moveCameraWithKeyboard(this,now);}
@@ -70,9 +136,16 @@ export class SolarRenderer {
   this.camera.target=[0,0,0];this.camera.desiredTarget=[0,0,0];
   this.camera.dist=this.camera.desiredDist=this.planetFrameDistance(id);
   this.calcPositions(this.simTime);
+  if(this.followEnabled)this.followSelectedBody();
   return true;
  }
- setSelected(id,{focus=false}={}){this.selectedId=id;if(focus)this.focus(id);else if(id!==this.focusedBodyId)this.focusedBodyId=null;}
+ setSelected(id,{focus=false}={}){
+  const changed=id!==this.selectedId;
+  this.selectedId=id;
+  if(this.followEnabled && changed){this.followSelectedBody();return;}
+  if(focus && id!==this.followedBodyId)this.focus(id);
+  else if(id!==this.focusedBodyId && !this.followEnabled)this.focusedBodyId=null;
+ }
  focus(id){const b=this.byId.get(id);if(!b)return;this.markCameraMoved();this.focusedBodyId=id;
   if(this.planetId){
    if(id===this.planetId){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.planetFrameDistance();}
@@ -89,7 +162,10 @@ export class SolarRenderer {
  /** Overview always exits the isolated planet view and returns to the solar system. */
  reset(){const wasPlanet=Boolean(this.planetId);this.planetId=null;
   this.applyCameraPreset(0);
-  if(wasPlanet){this.camera.target=[0,0,0];this.camera.dist=47;this.calcPositions(this.simTime);}
+  if(wasPlanet){
+    this.camera.target=[0,0,0];this.camera.dist=47;this.calcPositions(this.simTime);
+    if(this.followEnabled)this.followSelectedBody();
+  }
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});}
  calcPositions(timeMs){computePositions(this,timeMs);}
@@ -152,6 +228,7 @@ export class SolarRenderer {
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
   this.start(timeMs,selectedId,settings);
+  this.updateFollowTarget();
   const {vp}=this.makeVP();this.vp=vp;
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   this.drawStars(vp);

@@ -99,11 +99,12 @@ function syncLabelControl(){
 }
 
 function syncLightingControl(){
-  const optimized=S.settings.lighting!=='realistic',button=$('toggle-lighting');
-  button.classList.toggle('active',optimized);
-  button.setAttribute('aria-pressed',String(optimized));
-  button.querySelector('.orbit-toggle-indicator').textContent=optimized?'Optimiert':'Realistisch';
-  button.title=`Beleuchtung: ${optimized?'Optimiert':'Realistisch'} (zum Wechseln klicken)`;
+  // The on/off switch controls realistic lighting; optimized remains the default when off.
+  const realistic=S.settings.lighting==='realistic',button=$('toggle-lighting');
+  button.classList.toggle('active',realistic);
+  button.setAttribute('aria-pressed',String(realistic));
+  button.querySelector('.orbit-toggle-indicator').textContent=realistic?'An':'Aus';
+  button.title=`Beleuchtung: ${realistic?'An (Realistisch)':'Aus (Optimiert)'} (zum Wechseln klicken)`;
 }
 
 function syncFourMoonsControl(){
@@ -261,6 +262,20 @@ function initControls(){
     syncFourMoonsControl();
   });
   syncFourMoonsControl();
+  $('center-object-btn').addEventListener('click',()=>{
+    const body=byId(S.selected);
+    if(!body || body.type==='probe' || !renderer)return;
+    // Activating Folgen for an orbiter starts in its parent's (dwarf)planet
+    // scene. Keep the child selected so that tracking targets the child,
+    // rather than the parent. Switching the toggle off never changes scenes.
+    if(!renderer.followEnabled){
+      const parent=byId(body.parentId);
+      if(['planet','dwarf'].includes(parent?.type) && renderer.planetId!==parent.id && openPlanetScene(parent.id))
+        updateMode();
+    }
+    renderer.follow(body.id); // Global An/Aus: follow stays on across selections.
+    updateDetail();
+  });
   $('reset-camera').addEventListener('click',()=>{renderer?.cycleCameraPerspective();updateMode();updateDetail();mobileSheets?.close();});
   $('planet-view-btn').addEventListener('click',()=>{
     const selected=byId(S.selected);
@@ -340,7 +355,7 @@ async function init(){
     return;
   }
   try{
-    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection});
+    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail()});
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);
   }catch(e){
     console.error(e);$('canvas-error').hidden=false;

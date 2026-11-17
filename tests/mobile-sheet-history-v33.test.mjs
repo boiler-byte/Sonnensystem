@@ -35,7 +35,7 @@ function setup({hasHistory=true}={}){
   const originalWindow=globalThis.window,originalDocument=globalThis.document;
   const keys=['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','catalog','detail','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn','sidebar','sidebar-content'];
   const elements=Object.fromEntries(keys.map(id=>[id,new FakeElement(id)]));
-  elements['sheet-header'].height=52;
+  elements['sheet-header'].height=45;
   const tabButtons=['catalog','detail'].map(name=>{
     const button=new FakeElement(`sheet-tab-${name}`);button.dataset.sheetPanel=name;return button;
   });

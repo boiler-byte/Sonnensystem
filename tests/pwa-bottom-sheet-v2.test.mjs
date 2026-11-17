@@ -40,7 +40,7 @@ class MockEl {
   releasePointerCapture(){this.captured=false;}
 }
 const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','catalog','detail','view-mode-status','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn','sidebar','sidebar-content'].map(id=>[id,new MockEl(id)]));
-nodes['mobile-sheet'].height=760;nodes['sheet-header'].height=52;
+nodes['mobile-sheet'].height=760;nodes['sheet-header'].height=45;
 const buttons=Object.fromEntries(['catalog','detail'].map(name=>[name,new MockEl('tab-'+name)]));
 for(const [name,el] of Object.entries(buttons)){el.dataset.sheetPanel=name;}
 const desktopButtons=Object.fromEntries(['catalog','detail'].map(name=>[name,new MockEl('desktop-tab-'+name)]));
@@ -61,7 +61,7 @@ const module=vm.createContext({window:windowMock,document:documentMock,$:id=>nod
 vm.runInContext(app.slice(start,end).replace('export function initMobileSheets()','function initMobileSheets()')+'\nthis.controller=initMobileSheets();',module);
 const controller=module.controller;
 assert.doesNotMatch(html,/id="sheet-handle"|class="sheet-grabber"/);
-assert.match(css,/height:var\(--sheet-visible,52px\)!important/);
+assert.match(css,/height:var\(--sheet-visible,45px\)!important/);
 assert.match(app,/const full=window.innerHeight;/);
 assert.equal(nodes['sheet-header'].getAttribute('aria-expanded'),'false');
 assert.equal(nodes['detail'].parentNode,nodes['sheet-content']);
@@ -69,7 +69,7 @@ assert.equal(nodes['catalog'].parentNode,nodes['sheet-content']);
 assert.equal(nodes['view-mode-status'].parentNode,viewport);
 assert.equal(nodes['reset-camera'].parentNode,viewportActions);
 assert.equal(nodes['mobile-sheet'].dataset.snap,'closed');
-assert.equal(viewportActions.style.values['--sheet-visible'],'52px');
+assert.equal(viewportActions.style.values['--sheet-visible'],'45px');
 assert.equal(viewportActions.inert,false);
 assert.equal(nodes['sheet-content'].inert,true);
 assert.equal(nodes['catalog'].hidden,false);

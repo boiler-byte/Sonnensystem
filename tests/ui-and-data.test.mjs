@@ -46,7 +46,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     const select=(id)=>{state.selected=id;renderDetail(state,renderer,select);};
     renderCatalog(state,select);renderDetail(state,renderer,select);syncSceneMode(state,renderer);syncControls(state);
     assert.equal(get('planet-view-actions').hidden,false);
-    assert.match(get('planet-view-subtitle').textContent,/1 Monde · 2 Satelliten/);
+    assert.equal(get('planet-view-title').textContent,'Planetenansicht');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'false');
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('detail-name').textContent,'Erde');
@@ -55,7 +55,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Planet Erde');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'true');
     select('moon');assert.equal(get('planet-view-actions').hidden,false);
-    assert.match(get('planet-view-subtitle').textContent,/Erde · 1 Monde · 2 Satelliten/);
+    assert.equal(get('planet-view-title').textContent,'Planetenansicht');
     renderer.reset();syncSceneMode(state,renderer);
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('reset-camera').title,'Kamera zurücksetzen');

@@ -23,7 +23,7 @@ test('v21: dropdown matches its trigger width; slider, side-by-side icons and da
 
 test('v21: centered 26px thumb and filled track work in WebKit/Chromium and Firefox',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.speed-slider-rail\{\s*position:relative;width:44px;height:150px/);
+  assert.match(css,/\.speed-slider-rail\{\s*position:relative;width:44px;height:200px/);
   assert.match(css,/\.vertical-speed-control #speed\{[\s\S]*?top:50%;left:50%;[\s\S]*?transform:translate\(-50%,-50%\) rotate\(-90deg\)/);
   for(const pseudo of ['::-webkit-slider-runnable-track','::-moz-range-track']){
     const block=css.slice(css.lastIndexOf(`.vertical-speed-control #speed${pseudo}{`));

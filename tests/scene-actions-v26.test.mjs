@@ -28,7 +28,6 @@ function withDetail(id,planetId=null){
     renderDetail(state,renderer,()=>{});
     return {hidden:get('planet-view-actions').hidden,
       label:get('planet-view-title').textContent,
-      subtitle:get('planet-view-subtitle').textContent,
       aria:get('planet-view-btn').getAttribute('aria-label'),
       pressed:get('planet-view-btn').getAttribute('aria-pressed')};
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
@@ -63,21 +62,20 @@ test('v26: layer trigger is icon-only and keeps an accessible, state-dependent n
 test('v26: dwarf planets and moons have the action, moon actions target the parent system',()=>{
   const pluto=withDetail('pluto');
   assert.equal(pluto.hidden,false);
-  assert.equal(pluto.label,'Planetenansicht öffnen');
-  assert.match(pluto.subtitle,/5 Monde/);
+  assert.equal(pluto.label,'Planetenansicht');
   assert.match(pluto.aria,/Pluto/);
   const ceres=withDetail('ceres');
   assert.equal(ceres.hidden,false,'A dwarf without children still opens an isolated scene');
-  assert.equal(ceres.label,'Planetenansicht öffnen');
+  assert.equal(ceres.label,'Planetenansicht');
   const charon=withDetail('charon');
   assert.equal(charon.hidden,false);
-  assert.match(charon.subtitle,/Pluto · 5 Monde/);
+  assert.equal(charon.label,'Planetenansicht');
   assert.match(charon.aria,/Pluto/);
   const moon=withDetail('moon','earth');
   assert.equal(moon.hidden,false);
-  assert.match(moon.subtitle,/Erde · 1 Monde/);
+  assert.equal(moon.label,'Planetenansicht');
   assert.equal(moon.pressed,'true');
-  assert.match(moon.label,/Planetenansicht öffnen/);
+  assert.match(moon.aria,/Erde/);
   assert.equal(withDetail('sat-25544').hidden,true,'Satellites were not requested to have scene actions');
   assert.equal(withDetail('sun').hidden,true);
 });

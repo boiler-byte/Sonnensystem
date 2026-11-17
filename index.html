@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V33.0" />
+  <meta name="app-version" content="V39.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -50,7 +50,13 @@
             <div id="hero-body" class="hero-body earth"><div class="hero-shade"></div></div>
             <div class="hero-ref"><span class="type-dot" id="type-dot"></span><span id="detail-type">PLANET</span><span class="hero-ref-divider" aria-hidden="true">/</span><span id="detail-origin">SONNENSYSTEM</span></div>
           </div>
-          <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Planetenansicht öffnen</strong><small id="planet-view-subtitle">Planet mit Monden und Satelliten</small></span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+          <div class="detail-scene-actions" id="detail-scene-actions">
+            <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Planetenansicht</strong></span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+            <button id="center-object-btn" class="object-center-btn" type="button" aria-label="Ausgewähltem Objekt folgen" title="Ausgewähltem Objekt dauerhaft folgen" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>
+              <span>Folgen</span>
+            </button>
+          </div>
           <div class="detail-tabs" role="tablist" aria-label="Objektinformationen">
             <button class="detail-tab active" id="detail-tab-wissen" type="button" role="tab" data-detail-tab="wissen" aria-controls="detail-wissen" aria-selected="true" tabindex="0">Wissen</button>
             <button class="detail-tab" id="detail-tab-daten" type="button" role="tab" data-detail-tab="daten" aria-controls="detail-daten" aria-selected="false" tabindex="-1">Daten</button>
@@ -109,7 +115,7 @@
                 <button class="orbit-option active" id="toggle-labels" type="button" title="Beschriftungen ein/aus" aria-label="Beschriftungen anzeigen oder ausblenden" aria-pressed="true"><span>Beschriftung</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
               </section>
               <section class="layer-display-section" aria-label="Weitere Darstellungseinstellungen">
-                <button class="orbit-option active" id="toggle-lighting" type="button" title="Beleuchtungsmodus wechseln" aria-label="Optimierte Beleuchtung" aria-pressed="true"><span>Beleuchtung</span><span class="orbit-toggle-indicator" aria-hidden="true">Optimiert</span></button>
+                <button class="orbit-option" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert) (zum Wechseln klicken)" aria-label="Realistische Beleuchtung" aria-pressed="false"><span>Beleuchtung</span><span class="orbit-toggle-indicator" aria-hidden="true">Aus</span></button>
                 <button class="orbit-option active" id="toggle-four-moons" type="button" title="Nur die vier größten Monde je Planet anzeigen" aria-label="Nur die vier größten Monde je Planet anzeigen" aria-pressed="true"><span>4 Monde</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
               </section>
               <p class="layer-note" id="layer-note">Standard: Sterne und Planeten.</p>
@@ -129,9 +135,11 @@
                 </div>
                 <div class="time-popover-grid">
                   <div class="vertical-speed-control">
-                    <span id="speed-max-label">10 Jahre / s</span>
-                    <div class="speed-slider-rail"><input id="speed" type="range" min="0" max="240" step="1" value="101" aria-label="Geschwindigkeit in logarithmischen Stufen" aria-orientation="vertical" /></div>
-                    <span id="speed-min-label">1 Std. / s</span>
+                    <div class="speed-slider-rail"><input id="speed" type="range" min="0" max="240" step="1" value="101" aria-label="Geschwindigkeit in logarithmischen Stufen" aria-describedby="speed-min-label speed-max-label" aria-orientation="vertical" /></div>
+                    <div class="speed-range-labels">
+                      <span id="speed-max-label">10 Jahre / s</span>
+                      <span id="speed-min-label">1 Std. / s</span>
+                    </div>
                   </div>
                   <div class="time-popover-actions" role="group" aria-label="Wiedergabe und Datum">
                     <div class="time-popover-buttons">

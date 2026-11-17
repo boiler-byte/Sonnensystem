@@ -17,6 +17,20 @@ export function panCameraByPixels(camera, dx, dy, viewportHeight) {
   camera.desiredTarget = target.slice();
 }
 
+/**
+ * Stop following when the target would cross more than one viewport-height per
+ * real second at the current camera distance. This protects against jumps when
+ * the simulation accelerates or the date changes, without using orbital units
+ * as a fixed threshold (those differ in solar and isolated-planet scenes).
+ */
+export function followMotionTooFast(previous, current, distance, viewportHeight, elapsedMs) {
+  if(!previous || !current || !Number.isFinite(elapsedMs) || elapsedMs<=0)return false;
+  const displacement=Math.hypot(...current.map((value,i)=>value-previous[i]));
+  const pixelsPerSecond=displacement/Math.max(2.2,distance)
+    *viewportHeight/(2*Math.tan(CAMERA_FOV/2))*1000/elapsedMs;
+  return pixelsPerSecond>viewportHeight;
+}
+
 /** Smooth focus changes; manual pan remains immediate. */
 export function cameraView(camera, width, height, focusOffsetY=0) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
   for(let i=0;i<3;i++)cam.target[i]=lerp(cam.target[i],cam.desiredTarget[i],.075);

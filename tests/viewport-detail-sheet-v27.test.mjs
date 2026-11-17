@@ -14,15 +14,15 @@ test('v27: viewport reset is bottom-right and control panel is frameless 58px',a
   assert.match(panel,/padding:0!important;border:0!important;background:none!important/);
   assert.match(panel,/box-shadow:none!important;backdrop-filter:none!important/);
   assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:max\(16px/);
-  assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:calc\(52px/);
+  assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:calc\(45px/);
   const layer=html.split('class="layer-button"')[1].split('</button>')[0];
   const time=html.split('class="timeline-button speed-button time-trigger"')[1].split('</button>')[0];
   assert.match(layer,/<svg[^>]+viewBox=/);
   assert.doesNotMatch(layer,/layer-chevron|⌄/);
   assert.doesNotMatch(time,/time-trigger-chevron/);
   assert.match(time,/id="speed-readout"/);
-  assert.match(panel,/speed-popover\{width:116px/,'wider popover remains usable despite the narrow trigger');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v33/);
+  assert.match(panel,/speed-popover\{width:120px/,'wider popover remains usable despite the narrow trigger');
+  assert.match(await read('sw.js'),/sonnensystem-shell-v39/);
 });
 
 test('v27: detail index cycles across objects of the same category and wraps around',()=>{
@@ -91,7 +91,7 @@ test('v27: mobile header replaces the handle and half-snap sizes its scrollport'
   assert.match(sheet,/header\.addEventListener\('keydown'/);
   assert.match(sheet,/const full=window\.innerHeight/);
   assert.doesNotMatch(sheet,/const full=sheet\.getBoundingClientRect\(\)\.height/);
-  assert.match(css,/height:var\(--sheet-visible,52px\)!important;transform:none!important/);
+  assert.match(css,/height:var\(--sheet-visible,45px\)!important;transform:none!important/);
   assert.match(css,/\.sheet-content\{flex:1;min-height:0;overflow:hidden\}/);
   assert.match(css,/\.sheet-content>\.catalog \.object-list,\.sheet-content>\.detail \.detail-scroll\{/);
 });

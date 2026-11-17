@@ -25,6 +25,7 @@ export function attachCameraControls(renderer) {
       // Second finger switches to pinch + ground-plane pan; never select a body.
       if(renderer.drag)renderer.drag.moved=true;
       renderer.gesture=twoPointerGesture(renderer.pointers);
+      renderer.gestureOrigin=renderer.gesture;
     }
   });
   c.addEventListener('pointermove',e=>{
@@ -40,7 +41,14 @@ export function attachCameraControls(renderer) {
         if(dist!==renderer.camera.dist)renderer.markCameraMoved();
         renderer.camera.dist=dist;
         renderer.camera.desiredDist=dist;
-        renderer.panByPixels(next.x-prev.x,next.y-prev.y);
+        // Pinch zoom naturally moves the finger midpoint. While following,
+        // ignore that incidental translation; deliberate two-finger panning
+        // (midpoint moves much farther than pinch span) still cancels follow.
+        const origin=renderer.gestureOrigin||prev;
+        const centroidMove=Math.hypot(next.x-origin.x,next.y-origin.y);
+        const pinchMove=Math.abs(next.distance-origin.distance);
+        if(!renderer.followEnabled || (centroidMove>8 && centroidMove>pinchMove*.9+3))
+          renderer.panByPixels(next.x-prev.x,next.y-prev.y);
       }
       renderer.gesture=next;
       return;
@@ -59,6 +67,7 @@ export function attachCameraControls(renderer) {
     }
     renderer.pointers.delete(e.pointerId);
     renderer.gesture=twoPointerGesture(renderer.pointers);
+    if(renderer.pointers.size<2)renderer.gestureOrigin=null;
     if(renderer.pointers.size===1){
       const [id,point]=renderer.pointers.entries().next().value;
       // A remaining finger may rotate again, but must never trigger a tap.

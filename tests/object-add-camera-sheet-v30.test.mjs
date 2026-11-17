@@ -23,6 +23,6 @@ test('v30: camera control mirrors sheet height at every snap and during pointer 
   assert.match(sheet,/cameraActions\.inert=mobile\(\)&&next==='full'/);
   assert.match(sheet,/cameraActions\.classList\.add\('sheet-dragging'\)/);
   assert.match(sheet,/cameraActions\.classList\.remove\('sheet-dragging'\)/);
-  assert.match(css,/bottom:calc\(var\(--sheet-visible,52px\) \+ max\(12px,env\(safe-area-inset-bottom\)\)\)/);
+  assert.match(css,/bottom:calc\(var\(--sheet-visible,45px\) \+ max\(12px,env\(safe-area-inset-bottom\)\)\)/);
   assert.match(css,/\.viewport-actions\.sheet-dragging\{transition:none\}/);
 });
