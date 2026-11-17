@@ -135,7 +135,7 @@ test('v29: new toggles follow labels, expose states, and synchronize for each vi
     assert.match(html.slice(html.indexOf(`id="${id}"`)),/aria-label=/);
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\('click'`));
   }
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:188px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:166px/);
   const start=app.indexOf('function syncLightingControl(){');
   const end=app.indexOf('function changeLayers(next){',start);
   assert.ok(start>=0&&end>start);

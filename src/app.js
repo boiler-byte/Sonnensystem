@@ -141,21 +141,17 @@ async function loadSatellites(){
   }catch(e){updateStatus('celestrak','offline','Nicht erreichbar');console.info('CelesTrak:',e.message);}
 }
 const inFlightAsteroids=new Set();
-async function loadAsteroid(name,existing=null,addNew=false){
+async function loadAsteroid(name,existing=null){
   const q=existing?.sbdbQuery||name;
   if(inFlightAsteroids.has(q))return;
   inFlightAsteroids.add(q);updateStatus('sbdb','loading','Lädt ...');
-  if(addNew)notify(`Suche NASA/JPL: ${name}`);
   try{
     const data=await fetchAsteroid(q);
     const foundName=data.object?.shortname||data.object?.fullname||name;
     const id=existing?.id||('sbdb-'+clean(foundName).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
     const body=formatAsteroid(data,id,name,existing);
     mergeBodies([body]);updateStatus('sbdb','ok','Bahndaten geladen');
-    if(addNew){
-      selectBody(id,true);S.settings.layers=layerPreset('all',activeView());S.search='';$('search').value='';
-      syncLayers();updateCatalog();notify(`${name} wurde zum Atlas hinzugefügt`);
-    }else if(S.selected===id)updateDetail();
+    if(S.selected===id)updateDetail();
   }catch(e){updateStatus('sbdb','offline','Abfrage fehlgeschlagen');notify('JPL SBDB: '+e.message,true);}
   finally{inFlightAsteroids.delete(q);}
 }
@@ -236,11 +232,6 @@ function initControls(){
       if(target)selectBody(target,true);
     });
   }
-  $('asteroid-form').addEventListener('submit',e=>{
-    e.preventDefault();const name=$('asteroid-name').value.trim();if(!name)return;
-    if(name.length>56){notify('Name ist zu lang',true);return;}
-    loadAsteroid(name,null,true);$('asteroid-name').value='';
-  });
   for(const tab of document.querySelectorAll('[data-detail-tab]')){
     tab.addEventListener('click',()=>setDetailTab(tab.dataset.detailTab));
     tab.addEventListener('keydown',e=>{
@@ -316,7 +307,10 @@ function registerServiceWorker(){
 function loop(now){
   const d=Math.min(.12,Math.max(0,(now-(loop.prev||now))/1000));loop.prev=now;
   if(S.playing&&S.speed>0)S.time+=d*S.speed*86400000;
-  try{renderer.draw(S.time,S.selected,S.settings);}
+  try{
+    renderer.visibleFocusOffset=mobileSheets?.focusOffsetFor(renderer.canvas)??0;
+    renderer.draw(S.time,S.selected,S.settings);
+  }
   catch(e){console.error('Renderfehler:',e);$('canvas-error').hidden=false;return;}
   if(now-lastTimeReadoutAt>=250){lastTimeReadoutAt=now;updateTime();}
   requestAnimationFrame(loop);

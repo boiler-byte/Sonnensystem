@@ -18,10 +18,16 @@ export function panCameraByPixels(camera, dx, dy, viewportHeight) {
 }
 
 /** Smooth focus changes; manual pan remains immediate. */
-export function cameraView(camera, width, height) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
+export function cameraView(camera, width, height, focusOffsetY=0) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
   for(let i=0;i<3;i++)cam.target[i]=lerp(cam.target[i],cam.desiredTarget[i],.075);
   const r=cam.dist,phi=cam.phi,th=cam.theta;
   const eye=[cam.target[0]+r*Math.sin(phi)*Math.sin(th),cam.target[1]+r*Math.cos(phi),cam.target[2]+r*Math.sin(phi)*Math.cos(th)];
-  const vp=matMul(perspective(CAMERA_FOV,width/height,.1,350),lookAt(eye,cam.target));
+  // Shift the perspective's optical center upward when the mobile detail sheet
+  // covers the lower viewport. All scene objects, labels and picking use this VP.
+  // With focusOffsetY=.56, the camera target projects to 22% of canvas height:
+  // the center of the 44% of the canvas left visible above the sheet.
+  const projection=perspective(CAMERA_FOV,width/height,.1,350);
+  projection[9]=-clamp(focusOffsetY,0,1);
+  const vp=matMul(projection,lookAt(eye,cam.target));
   return {vp,eye};
  }

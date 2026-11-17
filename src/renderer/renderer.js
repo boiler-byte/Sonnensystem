@@ -28,6 +28,7 @@ export class SolarRenderer {
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(.013,.025,.058,1);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
+  this.focusedBodyId=null;this.focusOffsetY=0;
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
@@ -36,7 +37,7 @@ export class SolarRenderer {
  }
  attachEvents(){attachCameraControls(this);}
  panByPixels(dx,dy){if(dx || dy){this.markCameraMoved();panCameraByPixels(this.camera,dx,dy,this.height);}}
- markCameraMoved(){this.cameraManuallyMoved=true;}
+ markCameraMoved(){this.cameraManuallyMoved=true;this.focusedBodyId=null;}
  /** Next preset only while the active one has not been changed by the user. */
  cycleCameraPerspective(){
   if(this.planetId){this.reset();return;}
@@ -44,7 +45,7 @@ export class SolarRenderer {
   this.applyCameraPreset(index);
  }
  applyCameraPreset(index){
-  this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
+  this.cameraPresetIndex=index;this.cameraManuallyMoved=false;this.focusedBodyId=null;
   this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=47;
   this.camera.theta=.63;this.camera.phi=[.99,1.54,.16][index];
  }
@@ -71,8 +72,8 @@ export class SolarRenderer {
   this.calcPositions(this.simTime);
   return true;
  }
- setSelected(id,{focus=false}={}){this.selectedId=id;if(focus)this.focus(id);}
- focus(id){const b=this.byId.get(id);if(!b)return;this.markCameraMoved();
+ setSelected(id,{focus=false}={}){this.selectedId=id;if(focus)this.focus(id);else if(id!==this.focusedBodyId)this.focusedBodyId=null;}
+ focus(id){const b=this.byId.get(id);if(!b)return;this.markCameraMoved();this.focusedBodyId=id;
   if(this.planetId){
    if(id===this.planetId){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.planetFrameDistance();}
    else if(b.parentId===this.planetId){
@@ -100,7 +101,13 @@ export class SolarRenderer {
   return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
  }
  start(time,selected,settings){this.simTime=time;this.selectedId=selected;this.settings=settings;this.calcPositions(time);}
- makeVP(){this.updateKeyboard();return cameraView(this.camera,this.width,this.height);}
+  makeVP(visibleFocusOffset=this.visibleFocusOffset??0){this.updateKeyboard();
+    // Only automatic object focus is reframed. Manual rotation/pan/zoom restores
+    // the ordinary centered camera; desktop and closed sheet supply offset 0.
+    const offset=this.focusedBodyId!=null && this.focusedBodyId===this.selectedId?clamp(visibleFocusOffset,0,1):0;
+    this.focusOffsetY=lerp(this.focusOffsetY||0,offset,.14);
+    return cameraView(this.camera,this.width,this.height,this.focusOffsetY);
+  }
   useLineProgram(vp){const gl=this.gl,p=this.lineProgram;gl.useProgram(p);
   gl.uniformMatrix4fv(gl.getUniformLocation(p,'uVP'),false,vp);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.lineVB);

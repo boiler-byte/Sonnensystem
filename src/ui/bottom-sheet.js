@@ -1,9 +1,16 @@
 const $=id=>document.getElementById(id);
+/** Screen-space camera-center shift for the area remaining above an overlaid sheet. */
+export function visibleCanvasFocusOffset(sceneRect,sheetTop){
+  if(!sceneRect || sceneRect.height<=0)return 0;
+  const visibleHeight=Math.max(0,Math.min(sceneRect.bottom,sheetTop)-sceneRect.top);
+  return Math.max(0,1-Math.min(1,visibleHeight/sceneRect.height));
+}
 /** Shared catalog/detail tabs on desktop, moving the same panels into the mobile bottom sheet. */
 export function initMobileSheets() {
   const mq = window.matchMedia('(max-width: 770px)');
   const sheet = $('mobile-sheet'), header = $('sheet-header'), content = $('sheet-content');
   const scrim = $('mobile-sheet-scrim');
+  const cameraActions = $('reset-camera').parentElement;
   const panels = {catalog:$('catalog'),detail:$('detail')};
   const desktopTabs=[...$('sidebar').querySelectorAll('[data-sidebar-panel]')];
   const mobileTabs=[...sheet.querySelectorAll('[data-sheet-panel]')];
@@ -16,6 +23,32 @@ export function initMobileSheets() {
   let panel='catalog', snap='closed', isDragging=false, drag=null, suppressClickUntil=0;
   const mobile=()=>mq.matches;
   const clamp=(n,low,high)=>Math.max(low,Math.min(high,n));
+  // A temporary history entry makes Android/browser Back dismiss the sheet first.
+  // The token prevents unrelated history states from being mistaken for our entry.
+  const historyKey='__sonnensystemMobileSheet', historyToken=`${Date.now()}-${Math.random()}`;
+  let historyOpen=false,historyBackPending=false,reopenAfterBack=false;
+  const isSheetEntry=state=>state!==null&&typeof state==='object'&&state[historyKey]===historyToken;
+  function rememberOpen(){
+    if(!mobile())return;
+    if(historyBackPending){reopenAfterBack=true;return;}
+    if(historyOpen&&isSheetEntry(window.history?.state))return;
+    const history=window.history;
+    if(typeof history?.pushState!=='function')return;
+    try{
+      const previous=history.state;
+      const state=previous&&typeof previous==='object'&&!Array.isArray(previous)?{...previous}:{};
+      history.pushState({...state,[historyKey]:historyToken},''); // Same URL, no page load.
+      historyOpen=true;
+    }catch{historyOpen=false;} // Do not break the sheet if history access is restricted.
+  }
+  function rememberClose(){
+    reopenAfterBack=false;
+    if(!historyOpen||historyBackPending)return;
+    const history=window.history;
+    if(!isSheetEntry(history?.state)){historyOpen=false;return;}
+    try{historyBackPending=true;history.back();}
+    catch{historyBackPending=false;historyOpen=false;}
+  }
   function levels(){
     // The sheet's height follows the visible snap level, so derive the maximum
     // from the viewport rather than the current sheet height.
@@ -23,11 +56,24 @@ export function initMobileSheets() {
     const closed=header.getBoundingClientRect().height;
     return {closed,half:clamp(window.innerHeight*.56,Math.min(closed+105,full),full),full};
   }
-  function snapTo(next){
+  function setVisibleHeight(visible){
+    const height=`${visible}px`;
+    sheet.style.setProperty('--sheet-visible',height);
+    // The camera control is on the viewport, not inside the sheet: mirror its
+    // measured height so the button clears the sheet in closed/half positions.
+    cameraActions.style.setProperty('--sheet-visible',height);
+  }
+  function snapTo(next,{fromHistory=false}={}){
+    if(!fromHistory&&next!==snap){
+      if(snap==='closed'&&next!=='closed')rememberOpen();
+      else if(next==='closed')rememberClose();
+    }
     snap=next;
     sheet.dataset.snap=next;
     const visible=levels()[next];
-    sheet.style.setProperty('--sheet-visible',`${visible}px`);
+    setVisibleHeight(visible);
+    // A full-height sheet hides the whole scene. Avoid an offscreen tab stop.
+    cameraActions.inert=mobile()&&next==='full';
     const expanded=next!=='closed';
     header.setAttribute('aria-expanded',String(expanded));
     header.setAttribute('aria-label',expanded?'Menüleiste: Ziehen oder mit Eingabe weiter öffnen und schließen':'Menüleiste: Ziehen oder mit Eingabe öffnen');
@@ -75,12 +121,14 @@ export function initMobileSheets() {
       showPanel(panel);
       snapTo(snap);
     }else{
+      // A breakpoint change must not leave a stale sheet entry in browser history.
+      snapTo('closed');
       for(const [name,el] of Object.entries(panels)){
         anchors[name].parentNode.insertBefore(el,anchors[name].nextSibling);
         el.classList.remove('sheet-active');
       }
       showPanel(panel);
-      scrim.hidden=true;content.inert=false;
+      scrim.hidden=true;content.inert=false;cameraActions.inert=false;
     }
   }
   function nextTab(current,key){
@@ -132,18 +180,20 @@ export function initMobileSheets() {
       isDragging=true;
       header.setPointerCapture(e.pointerId);
       sheet.classList.add('dragging');
+      cameraActions.classList.add('sheet-dragging');
     }
     if(!isDragging)return;
     e.preventDefault();
     drag.delta=dy;
     const visible=clamp(drag.startVisible-dy,levels().closed,levels().full);
-    sheet.style.setProperty('--sheet-visible',`${visible}px`);
+    setVisibleHeight(visible);
   });
   function finishDrag(e){
     if(!drag||e.pointerId!==drag.id)return;
     const moved=isDragging, diff=drag.delta, prior=drag.startSnap;
     drag=null;isDragging=false;
     sheet.classList.remove('dragging');
+    cameraActions.classList.remove('sheet-dragging');
     if(!moved)return;
     const order=['closed','half','full'];
     let choice=prior;
@@ -159,10 +209,32 @@ export function initMobileSheets() {
   header.addEventListener('pointerup',finishDrag);
   header.addEventListener('pointercancel',e=>{
     if(!drag||e.pointerId!==drag.id)return;
-    drag=null;isDragging=false;sheet.classList.remove('dragging');snapTo(snap);
+    drag=null;isDragging=false;sheet.classList.remove('dragging');
+    cameraActions.classList.remove('sheet-dragging');snapTo(snap);
+  });
+  window.addEventListener('popstate',event=>{
+    const onSheetEntry=isSheetEntry(event.state);
+    historyBackPending=false;
+    historyOpen=onSheetEntry;
+    // The user may reopen the sheet before the asynchronous history.back() resolves.
+    // In that case, add the new entry only after the previous one has been removed.
+    if(reopenAfterBack){
+      reopenAfterBack=false;
+      if(mobile()&&snap!=='closed'&&!onSheetEntry)rememberOpen();
+      return;
+    }
+    if(onSheetEntry&&mobile()){
+      if(snap==='closed')snapTo('half',{fromHistory:true}); // Forward restores the sheet.
+    }else if(snap!=='closed')snapTo('closed',{fromHistory:true});
   });
   mq.addEventListener('change',applyLayout);
   window.addEventListener('resize',()=>{if(mobile()&&!isDragging)snapTo(snap);});
   applyLayout();
-  return {open,close,expand};
+  // Measure the rendered sheet edge each frame (not just the snap target):
+  // this stays correct during opening animations, dragging and screen rotation.
+  function focusOffsetFor(canvas){
+    if(!mobile() || snap!=='half' || !canvas)return 0;
+    return visibleCanvasFocusOffset(canvas.getBoundingClientRect(),sheet.getBoundingClientRect().top);
+  }
+  return {open,close,expand,focusOffsetFor};
 }

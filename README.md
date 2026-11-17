@@ -1,6 +1,38 @@
-# Sonnensystem – interaktiver 3D-Atlas v29.0
+# Sonnensystem – interaktiver 3D-Atlas v33.0
 
-**Aktueller Stand v29.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht. Das rahmenlose Control-Panel oben rechts ist **58 px** breit. Seine Dropdown-Auslöser für Layer und Zeit enthalten keine Pfeilindikatoren; das Layer-Menü ist seit v29 **188 px**, das Zeitmenü **116 px** breit. Die bestehenden Ansichts- und Objektfunktionen bleiben erhalten.
+**Aktueller Stand v33.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht und weicht mobil dem geöffneten Sheet nach oben aus. Das rahmenlose Control-Panel oben rechts ist **58 px** breit. Seine Dropdown-Auslöser für Layer und Zeit enthalten keine Pfeilindikatoren; das Layer-Menü ist seit v31 **166 px**, das Zeitmenü **116 px** breit. Die bestehenden Ansichts- und Objektfunktionen bleiben erhalten.
+
+## Mobiles Sheet mit Verlauf-Zurück schließen (v33)
+
+- Beim Öffnen des mobilen Sheets wird **genau ein temporärer Eintrag im Browser-Verlauf** angelegt, ohne die URL zu ändern. **Zurück** (Browser, Android oder PWA) schließt das halb oder vollständig geöffnete Sheet und bleibt auf der Sonnensystemseite.
+- Tabs und die drei Sheet-Positionen erzeugen keine zusätzlichen Verlaufseinträge.
+- Schließen per Sheet-Header, Wischgeste, Bildschirmabdeckung, Escape oder Kamera-Button entfernt auch den temporären Verlaufseintrag. **Vorwärts** kann das Sheet nach einem Zurück erneut öffnen.
+- Beim Wechsel zur Desktopansicht wird ein offenes mobiles Sheet ebenfalls geschlossen und sein temporärer Verlaufseintrag entfernt.
+
+Details: [Delta v33](docs/DELTA-V33.md).
+
+## Katalog: Kategoriepunkt und Objektfarben (v32)
+
+- Vor dem Objektnamen steht ein **vertikal zentrierter, 7 px großer Kategoriepunkt**. Seine Farbe entspricht der Objektkategorie (dieselbe Farbpalette wie für die Layer).
+- Das runde Objektsymbol links verwendet wieder die **individuelle Objektfarbe aus dem Katalog** statt die Kategorie-Farbe. Für Objekte ohne gültige Objektfarbe gilt ein neutraler, blaugrauer Ersatzwert.
+- Die Änderung gilt gleichermaßen für den Desktop-Katalog und den mobilen Katalog im Bottom-Sheet. Namen werden weiterhin bei Platzmangel mit Auslassungspunkten gekürzt; der Kategoriepunkt bleibt sichtbar.
+
+Details: [Delta v32](docs/DELTA-V32.md).
+
+## Layer-Dropdown und mobiler Objektfokus (v31)
+
+- Das **Layer-Popover ist 166 px breit** (bisher 188 px), sowohl am Desktop als auch mobil.
+- Bei der **Auswahl eines Objekts aus dem mobilen Katalog** fokussiert die Kamera den Mittelpunkt des sichtbaren 3D-Bereichs **oberhalb des halb geöffneten Bottom-Sheets** statt die verdeckte Mitte der gesamten Canvas. Die freie Fläche wird anhand der tatsächlichen Sheet-Kante bestimmt, auch bei Animation, Drag und Änderung der Fensterhöhe. Die Kamera verwendet dafür eine angepasste Perspektivprojektion; Zoom-Entfernung und 3D-Position des ausgewählten Objekts bleiben erhalten.
+- Bei geschlossenem Sheet, auf dem Desktop und nach manueller Kamerabewegung gilt die normale Bildmitte. Das Zurücksetzen und der Perspektivwechsel funktionieren wie zuvor.
+
+Details: [Delta v31](docs/DELTA-V31.md).
+
+## Objektdetails und mobiler Kamera-Button (v30)
+
+- Der Bereich **„Objekt hinzufügen“** samt NASA-Suchformular unter dem Objektkatalog ist in der Desktop-Seitenleiste und im mobilen Sheet entfernt. Die reguläre Katalogsuche bleibt erhalten. Bereits vorhandene Asteroiden können weiterhin beim Auswählen durch JPL SBDB aktualisiert werden.
+- Mobil steht der runde **Kamera-zurücksetzen**-Button **12 px (mindestens) oberhalb der jeweils sichtbaren Sheet-Kante**, sowohl bei geschlossenem als auch halb geöffnetem Sheet. Beim Hoch- und Runterziehen folgt der Button der Kante, und beim Einrasten animieren beide synchron. Bei voll geöffnetem Sheet liegt der Button außerhalb des sichtbaren Szenenbereichs und ist nicht fokussierbar. Desktop bleibt unverändert.
+
+Details: [Delta v30](docs/DELTA-V30.md).
 
 ## Beleuchtung und „4 Monde“ (v29)
 
@@ -25,7 +57,7 @@ Die Zwergplaneten- und Mondfunktionen von v26 bleiben erhalten. Anleitung: [docs
 
 ## Starten
 
-1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28 und v29 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
+1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32 und v33 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
 2. Node.js 20+ verwenden. Zusätzliche npm-Pakete sind nicht erforderlich.
 3. `npm start` im Workspace-Root aufrufen und `http://localhost:4173` öffnen.
 4. Die Anwendung kann auch von einem einfachen statischen Workspace-HTTP-Server geladen werden; dann fehlen die optionalen Live-API-Funktionen.
@@ -195,7 +227,7 @@ Die neuen Mondumlaufbahnen basieren auf **NASA/JPL – Planetary Satellite Mean 
 
 ## PWA und Updates
 
-`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v29-PWA verwendet den Cache `sonnensystem-shell-v29` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
+`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v33-PWA verwendet den Cache `sonnensystem-shell-v33` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
 
 ## Weiterarbeiten
 

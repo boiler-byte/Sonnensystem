@@ -48,7 +48,10 @@ export function renderCatalog(state,onSelect,{planetId=null}={}){
  const byId=id=>state.bodies.find(x=>x.id===id),list=filteredBodies(state,{planetId}),host=$('object-list');
  host.innerHTML=list.map(b=>{
   const active=b.id===state.selected,desc=b.type==='probe'?(b.targets||'Mission'):b.parentId?byId(b.parentId)?.name||b.parentId:'Zentrum des Systems';
-  return `<button class="object-row ${active?'selected':''}" role="option" aria-selected="${active}" data-id="${esc(b.id)}"><span class="object-symbol" style="--orb-color:${esc(CATEGORY_COLORS[b.type]||b.color)}"></span><span class="object-copy"><span class="object-name">${esc(b.name)}</span><span class="object-sub">${esc(TYPES[b.type]?.label||'Objekt')} <i>·</i> ${esc(desc)}</span></span><span class="row-arrow">↗</span></button>`;
+  // The large preview shows the object's own appearance; only the small dot encodes its category.
+  const objectColor=/^#[0-9a-f]{6}$/i.test(b.color||'')?b.color:'#9ba9bc';
+  const categoryColor=CATEGORY_COLORS[b.type]||'#E6EDF5';
+  return `<button class="object-row ${active?'selected':''}" role="option" aria-selected="${active}" data-id="${esc(b.id)}"><span class="object-symbol" aria-hidden="true" style="--orb-color:${objectColor}"></span><span class="object-copy"><span class="object-title"><span class="object-category-dot" aria-hidden="true" style="--category-color:${categoryColor}"></span><span class="object-name">${esc(b.name)}</span></span><span class="object-sub">${esc(TYPES[b.type]?.label||'Objekt')} <i>·</i> ${esc(desc)}</span></span><span class="row-arrow" aria-hidden="true">↗</span></button>`;
  }).join('') || '<div class="empty-results">Keine Objekte gefunden.<br>Suche oder Planetenfilter anpassen.</div>';
  $('object-count').textContent=String(list.length).padStart(2,'0');
  $('list-label').textContent='OBJEKTE IM ATLAS';
