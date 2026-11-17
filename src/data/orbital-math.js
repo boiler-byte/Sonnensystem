@@ -27,7 +27,7 @@ export function planetOrbitRadius(child, planet) {
   return clamp(2.4 + 2.05*Math.log10(ratio), 2.4, 11);
 }
 export function planetBodyRadius(body) {
-  if (body.type === 'planet') return 1.28;
+  if (body.type === 'planet' || body.type === 'dwarf') return 1.28;
   if (body.type === 'satellite') return .09;
   return clamp(renderRadius(body)*1.40, .14, .35);
 }

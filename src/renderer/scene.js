@@ -5,7 +5,7 @@ import { vadd } from './math.js';
 export function computePositions(renderer, timeMs) {renderer.positions.clear();
   if(renderer.planetId){
    const planet=renderer.byId.get(renderer.planetId);
-   if(planet?.type==='planet'){
+   if(['planet','dwarf'].includes(planet?.type)){
     renderer.positions.set(planet.id,[0,0,0]);
     const date=new Date(timeMs).toISOString().slice(0,10);
     for(const child of renderer.planetChildren()){

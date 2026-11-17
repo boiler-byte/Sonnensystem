@@ -56,7 +56,7 @@ test('v12: local time format uses process/browser timezone, not UTC',()=>{
 
 test('v12: three controls, icon-only play, no time heading or external texture fallback',async()=>{
   const html=await read('index.html');
-  const panel=html.split('id="time-panel"')[1].split('class="scene-tools"')[0];
+  const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
   assert.equal((panel.match(/<button\b/g)||[]).length,3);
   assert.match(panel,/<svg id="play-icon"/);
   assert.doesNotMatch(panel,/id="play-label"|ZEITREISE|timeline-heading/);

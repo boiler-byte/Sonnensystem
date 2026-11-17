@@ -1,9 +1,13 @@
 const $=id=>document.getElementById(id);
-export function syncSceneMode(state,renderer){const byId=id=>state.bodies.find(x=>x.id===id);
-  const planet=renderer?.planetId?byId(renderer.planetId):null;
-  $('view-mode-label').textContent=planet?`PLANETENSYSTEM · ${planet.name.toUpperCase()}`:'HELIOZENTRISCHE ANSICHT';
-  $('view-mode-select').value=planet?`planet:${planet.id}`:'solar';
-  $('view-mode-status').classList.toggle('planet-active',Boolean(planet));
-  $('reset-camera').setAttribute('aria-label',planet?'Zurück zur Sonnensystem-Übersicht':'Kamera zurücksetzen');
-  $('reset-camera').title=planet?'Zurück zum Sonnensystem':'Kamera zurücksetzen';
+/** The active scene is reflected in accessible control names, without a mode select. */
+export function syncSceneMode(state,renderer){
+  const center=renderer?.planetId?state.bodies.find(body=>body.id===renderer.planetId):null;
+  const panel=$('view-mode-status'),button=$('reset-camera');
+  panel.classList.toggle('planet-active',Boolean(center));
+  panel.setAttribute('aria-label',center
+    ? `Control-Panel · ${center.type==='dwarf'?'Zwergplanet':'Planet'} ${center.name}`
+    : 'Control-Panel · Sonnensystem');
+  // This is also the route back to the solar overview when a planet is open.
+  button.setAttribute('aria-label',center?'Zurück zur Sonnensystem-Übersicht':'Kamera zurücksetzen');
+  button.title=center?'Zurück zum Sonnensystem':'Kamera zurücksetzen';
 }

@@ -48,28 +48,30 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('planet-view-actions').hidden,false);
     assert.match(get('planet-view-subtitle').textContent,/1 Monde · 2 Satelliten/);
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'false');
-    assert.equal(get('view-mode-label').textContent,'HELIOZENTRISCHE ANSICHT');
+    assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('detail-name').textContent,'Erde');
     assert.ok(renderer.showPlanetSystem('earth'));
     syncSceneMode(state,renderer);renderDetail(state,renderer,select);
-    assert.equal(get('view-mode-label').textContent,'PLANETENSYSTEM · ERDE');
+    assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Planet Erde');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'true');
-    select('moon');assert.equal(get('planet-view-actions').hidden,true);
+    select('moon');assert.equal(get('planet-view-actions').hidden,false);
+    assert.match(get('planet-view-subtitle').textContent,/Erde · 1 Monde · 2 Satelliten/);
     renderer.reset();syncSceneMode(state,renderer);
-    assert.equal(get('view-mode-label').textContent,'HELIOZENTRISCHE ANSICHT');
+    assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('reset-camera').title,'Kamera zurücksetzen');
     changeStatus(state.status,'solar','offline','Startdaten');
     assert.match(get('source-status').innerHTML,/Startdaten/);
-    assert.match(get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026 \d{2}:\d{2}$/);
+    assert.match(get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026\n\d{2}:\d{2}$/);
   }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });
 
 test('App event wiring still exposes planet-view and overview actions',async()=>{
   const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
   assert.ok(app.includes("$('planet-view-btn').addEventListener('click'"));
-  assert.ok(app.includes('renderer?.showPlanetSystem(planet.id)'));
+  assert.ok(app.includes('openPlanetScene(center?.id)'));
+  assert.ok(app.includes("selected?.type==='moon'?byId(selected.parentId):selected"));
   assert.ok(app.includes("$('reset-camera').addEventListener('click'"));
-  assert.ok(app.includes('renderer?.reset();updateMode();updateDetail()'));
+  assert.ok(app.includes('renderer?.cycleCameraPerspective();updateMode();updateDetail()'));
   assert.ok(app.includes('initMobileSheets()'));
 });
 

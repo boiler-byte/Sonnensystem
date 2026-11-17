@@ -1,26 +1,25 @@
 const $=id=>document.getElementById(id);
-/** Mobile Bottom Sheet: shared controls move between the desktop stage and the third mobile tab. */
+/** Shared catalog/detail tabs on desktop, moving the same panels into the mobile bottom sheet. */
 export function initMobileSheets() {
   const mq = window.matchMedia('(max-width: 770px)');
   const sheet = $('mobile-sheet'), header = $('sheet-header'), content = $('sheet-content');
-  const scrim = $('mobile-sheet-scrim'), handle = $('sheet-handle');
-  const panels = {catalog:$('catalog'),detail:$('detail'),control:$('view-mode-status')};
+  const scrim = $('mobile-sheet-scrim');
+  const panels = {catalog:$('catalog'),detail:$('detail')};
+  const desktopTabs=[...$('sidebar').querySelectorAll('[data-sidebar-panel]')];
+  const mobileTabs=[...sheet.querySelectorAll('[data-sheet-panel]')];
+  const allTabs=[...desktopTabs,...mobileTabs];
   const anchors = Object.fromEntries(Object.entries(panels).map(([name,el])=>{
     const marker=document.createComment(`${name} desktop position`);
     el.parentNode.insertBefore(marker, el);
     return [name,marker];
   }));
-  // One and the same overview button lives in the panel on desktop and above
-  // the canvas on mobile. Moving it preserves all event listeners and state.
-  const overview=$('reset-camera'), mobileOverview=$('mobile-overview');
-  const desktopTools=$('toggle-orbits').parentNode;
-  const overviewAnchor=document.createComment('reset-camera desktop position');
-  desktopTools.insertBefore(overviewAnchor,overview);
-  let panel='detail', snap='closed', isDragging=false, drag=null, suppressClickUntil=0;
+  let panel='catalog', snap='closed', isDragging=false, drag=null, suppressClickUntil=0;
   const mobile=()=>mq.matches;
   const clamp=(n,low,high)=>Math.max(low,Math.min(high,n));
   function levels(){
-    const full=sheet.getBoundingClientRect().height;
+    // The sheet's height follows the visible snap level, so derive the maximum
+    // from the viewport rather than the current sheet height.
+    const full=window.innerHeight;
     const closed=header.getBoundingClientRect().height;
     return {closed,half:clamp(window.innerHeight*.56,Math.min(closed+105,full),full),full};
   }
@@ -29,10 +28,9 @@ export function initMobileSheets() {
     sheet.dataset.snap=next;
     const visible=levels()[next];
     sheet.style.setProperty('--sheet-visible',`${visible}px`);
-    mobileOverview.style.setProperty('--sheet-overlay-visible',`${visible}px`);
     const expanded=next!=='closed';
-    handle.setAttribute('aria-expanded',String(expanded));
-    handle.setAttribute('aria-label',expanded?'Menü schließen oder weiter hochziehen':'Menü hochziehen');
+    header.setAttribute('aria-expanded',String(expanded));
+    header.setAttribute('aria-label',expanded?'Menüleiste: Ziehen oder mit Eingabe weiter öffnen und schließen':'Menüleiste: Ziehen oder mit Eingabe öffnen');
     // Zum Schließen wieder auf die Bühne tippen: nur bei voller Ansicht abgedunkelt.
     scrim.hidden=!mobile()||next!=='full';
     content.inert=!expanded;
@@ -41,25 +39,32 @@ export function initMobileSheets() {
     if(!panels[next])return;
     panel=next;
     for(const [name,el] of Object.entries(panels)){
-      el.hidden=mobile()&&name!==next;
-      el.classList.toggle('sheet-active',name===next&&mobile());
+      const active=name===next;
+      el.hidden=!active;
+      el.classList.toggle('sheet-active',active&&mobile());
+      el.setAttribute('aria-labelledby',`${mobile()?'sheet':'sidebar'}-tab-${name}`);
     }
-    for(const btn of sheet.querySelectorAll('[data-sheet-panel]')){
-      const selected=btn.dataset.sheetPanel===next;
-      btn.classList.toggle('active',selected);
-      btn.setAttribute('aria-pressed',String(selected));
-    }
-    // A speed popover must not remain open behind another tab.
-    if(next!=='control'){
-      const popover=$('speed-popover'), trigger=$('speed-btn');
-      popover.hidden=true;trigger.setAttribute('aria-expanded','false');
-      $('layer-popover').hidden=true; $('layer-btn').setAttribute('aria-expanded','false');
+    for(const btn of allTabs){
+      const name=btn.dataset.sidebarPanel||btn.dataset.sheetPanel;
+      const active=name===next;
+      btn.classList.toggle('active',active);
+      btn.setAttribute('aria-selected',String(active));
+      btn.setAttribute('aria-pressed',String(active)); // keep the established mobile toggle state.
+      btn.tabIndex=active?0:-1;
     }
     content.scrollTop=0;
   }
+  function dismissScenePopovers(){
+    for(const [popover,button] of [['speed-popover','speed-btn'],['layer-popover','layer-btn']]){
+      $(popover).hidden=true;$(button).setAttribute('aria-expanded','false');
+    }
+  }
   function open(next='detail'){
-    if(!mobile())return;
+    if(!panels[next])return;
     showPanel(next);
+    if(!mobile())return;
+    // Only catalog and detail panels move into the sheet; scene controls stay visible.
+    dismissScenePopovers();
     if(snap==='closed')snapTo('half');
   }
   function close(){if(mobile())snapTo('closed');}
@@ -67,28 +72,51 @@ export function initMobileSheets() {
   function applyLayout(){
     if(mobile()){
       for(const el of Object.values(panels))content.append(el);
-      mobileOverview.append(overview);
       showPanel(panel);
       snapTo(snap);
     }else{
       for(const [name,el] of Object.entries(panels)){
         anchors[name].parentNode.insertBefore(el,anchors[name].nextSibling);
-        el.hidden=false;el.classList.remove('sheet-active');
+        el.classList.remove('sheet-active');
       }
-      overviewAnchor.parentNode.insertBefore(overview,overviewAnchor.nextSibling);
+      showPanel(panel);
       scrim.hidden=true;content.inert=false;
-      // Die Ansicht bleibt beim Wechsel zurück auf Desktop unberührt.
     }
   }
-  for(const btn of sheet.querySelectorAll('[data-sheet-panel]')){
+  function nextTab(current,key){
+    const names=['catalog','detail'];
+    const index=names.indexOf(current);
+    if(key==='Home')return names[0];
+    if(key==='End')return names.at(-1);
+    if(key==='ArrowRight')return names[(index+1)%names.length];
+    if(key==='ArrowLeft')return names[(index+names.length-1)%names.length];
+    return null;
+  }
+  for(const btn of allTabs){
+    const name=btn.dataset.sidebarPanel||btn.dataset.sheetPanel;
     btn.addEventListener('click',()=>{
-      if(performance.now()<suppressClickUntil)return;
-      open(btn.dataset.sheetPanel);
+      if(mobile()&&performance.now()<suppressClickUntil)return;
+      open(name);
+    });
+    btn.addEventListener('keydown',event=>{
+      const next=nextTab(name,event.key);
+      if(!next)return;
+      event.preventDefault();open(next);
+      const buttons=mobile()?mobileTabs:desktopTabs;
+      buttons.find(item=>(item.dataset.sidebarPanel||item.dataset.sheetPanel)===next)?.focus();
     });
   }
-  handle.addEventListener('click',()=>{
-    if(performance.now()<suppressClickUntil)return;
-    snapTo(snap==='closed'?'half':snap==='half'?'full':'closed');
+  const toggleSnap=()=>snapTo(snap==='closed'?'half':snap==='half'?'full':'closed');
+  // A tab selects content; tapping the rest of the header changes the snap level.
+  // The entire header, including both tabs, remains a swipe handle.
+  header.addEventListener('click',event=>{
+    if(!mobile()||performance.now()<suppressClickUntil)return;
+    if(event.target.closest?.('[data-sheet-panel]'))return;
+    toggleSnap();
+  });
+  header.addEventListener('keydown',event=>{
+    if(!mobile()||event.target!==header||!['Enter',' '].includes(event.key))return;
+    event.preventDefault();toggleSnap();
   });
   scrim.addEventListener('click',close);
 
@@ -104,21 +132,18 @@ export function initMobileSheets() {
       isDragging=true;
       header.setPointerCapture(e.pointerId);
       sheet.classList.add('dragging');
-      mobileOverview.classList.add('dragging');
     }
     if(!isDragging)return;
     e.preventDefault();
     drag.delta=dy;
     const visible=clamp(drag.startVisible-dy,levels().closed,levels().full);
     sheet.style.setProperty('--sheet-visible',`${visible}px`);
-    mobileOverview.style.setProperty('--sheet-overlay-visible',`${visible}px`);
   });
   function finishDrag(e){
     if(!drag||e.pointerId!==drag.id)return;
     const moved=isDragging, diff=drag.delta, prior=drag.startSnap;
     drag=null;isDragging=false;
     sheet.classList.remove('dragging');
-    mobileOverview.classList.remove('dragging');
     if(!moved)return;
     const order=['closed','half','full'];
     let choice=prior;
@@ -134,7 +159,7 @@ export function initMobileSheets() {
   header.addEventListener('pointerup',finishDrag);
   header.addEventListener('pointercancel',e=>{
     if(!drag||e.pointerId!==drag.id)return;
-    drag=null;isDragging=false;sheet.classList.remove('dragging');mobileOverview.classList.remove('dragging');snapTo(snap);
+    drag=null;isDragging=false;sheet.classList.remove('dragging');snapTo(snap);
   });
   mq.addEventListener('change',applyLayout);
   window.addEventListener('resize',()=>{if(mobile()&&!isDragging)snapTo(snap);});

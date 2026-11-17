@@ -1,9 +1,31 @@
-# Sonnensystem – interaktiver 3D-Atlas v16.0
+# Sonnensystem – interaktiver 3D-Atlas v29.0
 
-**Delta-Update auf v15.** V16 ergänzt die Sterne im Standard-Layer und ersetzt kollisionsbedingtes Flackern der Beschriftungen durch eine stabile maximale Labelzahl pro Bildschirmfeld. V15 reduzierte das Desktop-Control-Panel von 184 auf 110 px (rund 40 % schmaler), entfernt die sichtbare Ansicht-Beschriftung und bringt die Objektkategorien in ein Mehrfachauswahl-Dropdown „Layer“. Die Katalogsuche berücksichtigt zusätzlich Kategorien und direkte Elternobjekte. Layer bestimmen Katalog und 3D-Szene; alle Texturdateien bleiben unverändert.
+**Aktueller Stand v29.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht. Das rahmenlose Control-Panel oben rechts ist **58 px** breit. Seine Dropdown-Auslöser für Layer und Zeit enthalten keine Pfeilindikatoren; das Layer-Menü ist seit v29 **188 px**, das Zeitmenü **116 px** breit. Die bestehenden Ansichts- und Objektfunktionen bleiben erhalten.
+
+## Beleuchtung und „4 Monde“ (v29)
+
+Im Layer-Dropdown befinden sich direkt unter **Beschriftung** zwei zusätzliche Toggles:
+
+- **Beleuchtung:** **Optimiert** ist der neue Standard in beiden Ansichten (hellere unbeleuchtete Planetenseite). **Realistisch** bewahrt die bisherige v28-Beleuchtung unverändert. Die Sonne bleibt in beiden Modi selbstleuchtend.
+- **4 Monde:** zeigt höchstens die **vier größten natürlichen Monde pro Planet bzw. Zwergplanet** anhand des Katalogradius. Der Schalter ist in der Sonnensystemansicht standardmäßig **An**, in der isolierten Planetenansicht standardmäßig **Aus**. Bei „Aus“ werden alle Monde des aktivierten Mond-Layers gezeigt. Die Auswahl gilt auch für Objektkörper, Mond-Umlaufbahnen in der Planetenansicht, Anklickbarkeit und Labels. Katalogeinträge bleiben vollständig erhalten. Ein ausgeschalteter Mond-Layer bleibt durch „4 Monde“ ausgeschaltet.
+
+Die Beleuchtungs- und Mond-Einstellungen werden wie die anderen Ansichtsoptionen getrennt pro Szenentyp beibehalten. Details: [Delta v29](docs/DELTA-V29.md).
+
+## Kamera-Perspektiven (v28)
+
+Der Kamera-Button unten rechts zeigt jetzt vier nach außen weisende Pfeile. Bei unveränderter Ansicht schaltet er zyklisch zwischen **Schräg/oben** (Standard), **Von der Seite** und **Draufsicht**. Nach manuellem Drehen, Verschieben oder Zoomen führt der nächste Klick zuerst zurück zur **Schräg/oben**-Übersicht; erst danach wird weitergeschaltet. In einer isolierten Planetenansicht führt der Button zunächst wie bisher zur Sonnensystem-Übersicht.
+
+## Details-Navigation und mobiles Sheet (v27)
+
+Der Index im Kopf der **Objektdetails** hat jetzt zwei Pfeiltasten: vorheriges und nächstes Objekt **derselben Kategorie**. Die Auswahl springt am Ende wieder zum Anfang (und umgekehrt). Bei nur einem Objekt oder ohne Auswahl sind die Tasten deaktiviert; beim Wechsel werden Details und Szenenauswahl aktualisiert.
+
+Mobil entfällt der separate Sheet-Griff. Der **gesamte Header** mit den zwei Tabs lässt sich nach oben bzw. unten ziehen. Die Tabs bleiben einzeln auswählbar; ein Tipp in den freien Headerbereich oder Eingabe/Leertaste bei fokussiertem Header wechselt den Öffnungszustand. Das Sheet nimmt im halb geöffneten Zustand jetzt wirklich nur seine sichtbare Höhe ein; dadurch können Katalog und Details **bis ganz unten gescrollt** werden.
+
+Die Zwergplaneten- und Mondfunktionen von v26 bleiben erhalten. Anleitung: [docs/HILFE.md](docs/HILFE.md), Änderungen: [Delta v27](docs/DELTA-V27.md).
+
 ## Starten
 
-1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15 und v16 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
+1. **Zuerst das vollständige v8-ZIP** direkt ins Workspace-Root entpacken; danach **Delta v9.1, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28 und v29 in dieser Reihenfolge** in dasselbe Verzeichnis überlagern und vorhandene Dateien ersetzen. `index.html`, `sw.js`, `package.json`, `data/`, `src/`, `server/` müssen dort liegen. Keinen `public/`-Ordner erstellen.
 2. Node.js 20+ verwenden. Zusätzliche npm-Pakete sind nicht erforderlich.
 3. `npm start` im Workspace-Root aufrufen und `http://localhost:4173` öffnen.
 4. Die Anwendung kann auch von einem einfachen statischen Workspace-HTTP-Server geladen werden; dann fehlen die optionalen Live-API-Funktionen.
@@ -16,7 +38,7 @@ npm run check:data  # Struktur, IDs, Querverweise und Quellenlinks
 
 ## Objekt-Auswahl und Labels (v11)
 
-Ein kurzer Klick/Tipp **auf einen Himmelskörper** wählt ihn aus. Ein kurzer Klick/Tipp **in den freien 3D-Hintergrund** hebt die Auswahl auf, ohne die Kamera oder die aktuelle Ansicht zurückzusetzen. Das rechte Detailpanel zeigt danach den neutralen Zustand. Zieh-/Dreh- und Zwei-Finger-Gesten lösen keine Abwahl aus.
+Ein kurzer Klick/Tipp **auf einen Himmelskörper** wählt ihn aus. Ein kurzer Klick/Tipp **in den freien 3D-Hintergrund** hebt die Auswahl auf, ohne die Kamera oder die aktuelle Ansicht zurückzusetzen. Der Tab „Details“ zeigt danach den neutralen Zustand. Zieh-/Dreh- und Zwei-Finger-Gesten lösen keine Abwahl aus.
 
 **Das Label eines ausgewählten Objekts bleibt sichtbar**, auch wenn Satelliten vorbeifliegen, eine Kollision mit anderen Beschriftungen entsteht oder die Kamera kurz schnell schwenkt. Seine letzte passende Seite bleibt möglichst erhalten; andere Labels haben niedrigere Priorität. Nur ein manuelles Abschalten aller Labels oder ein nicht mehr projizierbares Objekt unterbindet die Beschriftung.
 
@@ -38,38 +60,81 @@ In beiden Ansichten werden Beschriftungen nach Bedeutung sortiert. **Statt Über
 
 Der separate Geschwindigkeitsfilter aus v9 bleibt erhalten: Normale Labels bei mehr als 220 Bildschirmpixeln/s werden vorübergehend unterdrückt und kehren nach einer Ruhephase zurück. Ausgewählte Labels sind hiervon ausgenommen. Das manuelle Ein-/Ausschalten der Namen bleibt unverändert.
 
-## Objektlayer und Katalogsuche (v15)
+## Objektlayer und Katalogsuche (historischer Stand v15; aktueller Stand siehe v25)
 
-Das Control-Panel oben rechts ist im Desktoplayout jetzt **110 px breit statt 184 px**. Der sichtbare Schriftzug „Ansicht“ über der Ansichtsauswahl entfällt (ein Screenreader-Label bleibt vorhanden). Beim mobilen Layout bleiben das Panel und die Layer-Auswahl im **dritten Tab „Steuerung“**.
+Im historischen v15-Stand war das Control-Panel oben rechts **110 px breit statt 184 px**; in v26 **100 px**, seit v27 **58 px** (rahmenlos). Der sichtbare Schriftzug „Ansicht“ über der Ansichtsauswahl entfällt (ein Screenreader-Label bleibt vorhanden). Auf Mobilgeräten bleibt das vollständige Control-Panel **dauerhaft oben rechts in der 3D-Szene**.
 
 Das neue **Layer-Dropdown** bietet zwei Voreinstellungen und eine freie Mehrfachauswahl:
 
-- **Standard (beim Start aktiv):** Planeten, natürliche Monde und Sterne.
+- **Standard (v25):** Sonnensystem: Sterne und Planeten. Planetenansicht: Planeten, Monde und Satelliten.
 - **Alle:** alle acht Objektkategorien (Planeten, Monde, Zwergplaneten, Asteroiden, Satelliten, Kometen, Raumsonden, Sterne).
-- **Individuell:** beliebige Kombinationen über Checkboxen, mindestens eine Kategorie bleibt aktiv. Bei exakt den Standard-/Alle-Kategorien wird der jeweilige Preset-Status automatisch angezeigt.
+- **Individuell:** beliebige Kombinationen über Checkboxen, mindestens eine Kategorie bleibt aktiv. Bei exakt den Standard-/Alle-Kategorien wird der jeweilige Preset-Status automatisch angezeigt. „Alle“ und „Standard“ liegen als zwei Segmente eines gemeinsamen Umschalters ohne Trennstrich zu den Checkboxen direkt nebeneinander.
 
-Die Layer-Auswahl filtert **gleichzeitig den Katalog und die WebGL-Objekte** in Sonnensystem- und Planetenansicht, einschließlich Bahnen, Labels und Anklickbarkeit. Die Sonne zählt zur Kategorie „Sterne“ und ist in „Standard“ sichtbar. Das Sternenfeld im Hintergrund bleibt als Szenendekoration bestehen. Raumsonden bleiben ohne Ephemeriden wie in v12 reine Katalogeinträge. Beim Ausblenden der ausgewählten Objektkategorie wird auch die Auswahl aufgehoben. Suchergebnisse sind immer auf die aktiven Layer beschränkt.
+**Seit v24 filtern die Layer ausschließlich den WebGL-Renderer**, einschließlich Körpern, Bahnen, Labels und Anklickbarkeit in der 3D-Ansicht. Der Katalog listet dagegen unabhängig von den Layern **alle geladenen Objekte**; eine bestehende Katalogauswahl wird beim Ausblenden der Renderer-Kategorie nicht aufgehoben. Seit v23 behalten Sonnensystem- und Planetenansicht **eigene** Layer-, Bahn- und Beschriftungseinstellungen. In der Planetenansicht zeigt „Standard“ den Planeten sowie seine vorhandenen Monde und Satelliten. Kategorien ohne direkt dem Planeten zugeordnete Objekte werden ausgeblendet. Die Sonne zählt zur Kategorie „Sterne“ und ist im Sonnensystem-Standard sichtbar. Das Sternenfeld im Hintergrund bleibt als Szenendekoration bestehen. Raumsonden bleiben ohne Ephemeriden wie in v12 reine Katalogeinträge.
 
-Der Katalog hat keine Filterchips mehr. Die Suche prüft zusätzlich zum Namen, zur Objekt-ID und zur Katalognummer die **deutsche Objektkategorie (Singular/Plural)** sowie den **Namen bzw. die ID des direkten übergeordneten Objekts**. Beispiel: „Jupiter“ findet Jupiter und seine Monde, „Satelliten“ findet bei aktivierter Satelliten-Ebene künstliche Erdsatelliten. Groß- und Kleinschreibung sowie Akzente werden normalisiert.
+Der Katalog hat keine Kategorie-Filterchips. Die Suche prüft zusätzlich zum Namen, zur Objekt-ID und zur Katalognummer die **deutsche Objektkategorie (Singular/Plural)** sowie den **Namen bzw. die ID des direkten übergeordneten Objekts**. Seit v24 werden Leerzeichen als UND-Verknüpfung behandelt; jedes Suchwort darf in einem anderen Feld vorkommen. Beispiel: `uranus c` findet die Uranus-Monde mit „c“ im Namen; `Monde Jupiter` findet Jupitermonde, unabhängig von der Wortreihenfolge. Groß- und Kleinschreibung sowie Akzente werden normalisiert. In der Planetenansicht erscheint rechts neben der Suche ein **Planetensymbol-Button** (anfangs aus); er zeigt auf Wunsch nur den aktiven Planeten und seine zugehörigen Objekte. In der Sonnenansicht ist dieser Schalter verborgen.
 
-## Control-Panel und Zeitleiste (v14)
+## Control-Panel und Zeitsteuerung (v21)
 
-Auf dem Desktop befindet sich oben rechts ein **schmales, vertikales Control-Panel** mit dem Ansicht-Dropdown (heliozentrische Darstellung oder Planetensysteme). **Play/Pause, Geschwindigkeitswert und Datumsbutton** stehen einzeln untereinander; **Bahnen, Namen und Übersicht** sind kompakte SVG-Icon-Buttons ohne sichtbaren Text, aber mit zugänglichen Beschriftungen. Der lokale Zeitpunkt wird als `DD.MM.YYYY hh:mm` im Datumsbutton angezeigt.
+Das schmale vertikale Control-Panel bleibt oben rechts. Seit v26 stehen darin **nur der Icon-Button für Objektlayer und das Zeit-Dropdown** (ohne Ansichtsauswahl). Sein zweizeiliges Label zeigt die aktuelle **Simulationsgeschwindigkeit** (z. B. `5 Tage / s`) und das **lokale Simulationsdatum** im Format `DD.MM.YYYY` (keine Uhrzeit). Die zwei Einzelknöpfe für Play/Pause und „Heute“ sind nicht mehr direkt im Panel sichtbar.
 
-Auf Smartphones und schmalen Tablets (bis 770 px) wird **das komplette Control-Panel ohne Duplikate** in den dritten Bottom-Sheet-Tab **„Steuerung“** verschoben. Dort stehen Ansicht, die drei Zeitbuttons sowie Bahnen und Namen bereit. **Nur Übersicht bleibt als einzelner SVG-Button auf der 3D-Bühne**, folgt der geöffneten Höhe des Bottom-Sheets und wandert bei einem Wechsel zum Desktop wieder an seinen Platz im Panel.
+Ein Klick auf den Zeitknopf öffnet ein **rechtsbündiges Menü direkt unter dem Knopf**. Seit v27 ist das Menü **116 px** breit, unabhängig von der **58 px** breiten Auslösertaste. Oben steht die Geschwindigkeit. Darunter befindet sich der vertikale 241-Stufen-Regler mit mittigem, kontrastreichem Griff und dynamisch gefüllter Spur (von unten bis zum aktuellen Wert). **Unter dem Slider** liegen Play/Pause und der auf ein Symbol reduzierte Heute-Button **nebeneinander**. Zuletzt folgen **Datum und Uhrzeit** in zwei Zeilen (`DD.MM.YYYY` / `hh:mm`). Der Heute-Button behält den zugänglichen Namen und die Zurücksetzfunktion. `Esc` schließt das Menü und setzt den Tastaturfokus auf den Auslöser; Klick außerhalb schließt es ebenfalls. Beim Öffnen der Objektlayer-Auswahl wird das Zeitmenü geschlossen.
 
-- **Play/Pause** startet oder stoppt die Simulation, ohne den eingestellten Wert zu verändern.
-- **Geschwindigkeitswert** öffnet einen **vertikalen Schieberegler mit 241 logarithmischen Stufen** (schneller nach oben); die ausgewählte Geschwindigkeit wird direkt angezeigt. Klick außerhalb bzw. Escape schließt den Regler. Auf Mobilgeräten befindet er sich im dritten Bottom-Sheet-Tab „Steuerung“; das Öffnen erweitert das Sheet automatisch, damit der Regler vollständig bedienbar bleibt.
-- **Datumsbutton** setzt nur das Simulationsdatum auf die tatsächliche aktuelle Uhrzeit zurück. Kameraposition, Ansicht, Geschwindigkeit und Play/Pause-Zustand bleiben erhalten.
+Auf Smartphones und Tablets bis 770 px befindet sich das vollständige Control-Panel **direkt über der 3D-Szene**. Layer und Zeit sind dort erreichbar; der separate runde Kamera-Reset sitzt rechts unten oberhalb der geschlossenen Sheet-Leiste. Beide Dropdowns öffnen rechtsbündig unter ihrem Auslöser; das Layer-Menü ist für kleine Bildschirme scrollbar. Das Bottom-Sheet hat nur die zwei Tabs **„Objekte“** und **„Details“**. Der Regler besitzt einen größeren, hellen Griff mit dunkler Umrandung und seit v21 eine zentrierte Position und eine füllende Farbspur.
+
+- **Play/Pause:** Stellt nur den Wiedergabestatus um und behält die Geschwindigkeit.
+- **Regler:** 241 Stufen logarithmisch; nach oben schneller. Die beiden Ansichten speichern die zuletzt gewählte Geschwindigkeit separat.
+- **Heute:** Setzt `S.time = Date.now()` in der lokalen Anzeige; Kameraposition, Ansicht, Geschwindigkeit und Play/Pause bleiben unverändert.
 
 | Ansicht | Minimum | Standard | Maximum |
 |---|---:|---:|---:|
-| Sonnensystem | 1 Stunde / s | 3 Stunden / s | 10 Jahre / s |
+| Sonnensystem | 1 Stunde / s | 5 Tage / s | 10 Jahre / s |
 | Planetenansicht | 1 Minute / s | 1 Stunde / s | 1 Jahr / s |
 
-Die Ansichten speichern ihre gewählten Geschwindigkeiten separat. Beim **ersten** Wechsel in eine Ansicht greift jeweils deren Standardwert; beim Zurückwechseln der zuletzt gewählte Wert.
+Der **Kamera-zurücksetzen**-Button sitzt seit v27 außerhalb des Panels unten rechts: in der Sonnensystemansicht wechselt er zwischen drei Kameraperspektiven (nach manueller Bewegung zuerst zurück zur Standardperspektive), in einer isolierten Ansicht führt er zur Sonnensystemübersicht. Der **Beschriftung**-Schalter liegt seit v20 im Objektlayer-Dropdown, zusammen mit den Bahneinstellungen; darunter stehen seit v29 **Beleuchtung** und **4 Monde**.
 
-## Objektdetails und Sidebar (v13)
+## Katalog unabhängig vom Renderer (v24)
+
+Unabhängig von den Renderer-Layern erscheinen alle Objekte in der Liste und bleiben durchsuchbar. Der optionale Planetensymbol-Filter neben dem Suchfeld ist nur in der Planetenansicht sichtbar, startet ausgeschaltet und begrenzt die Liste auf den aktuellen Planeten samt zugehörigen Begleitern. Beim Wechsel des Planeten folgt er dem neu gewählten System; beim Wechsel zur Sonnenansicht ist er ohne Wirkung. Die Suche kombiniert Suchwörter feldübergreifend, z. B. `uranus c`. Siehe [Delta v24](docs/DELTA-V24.md).
+
+## Kompaktes Objektlayer-Dropdown und neue Standards (v25)
+
+**Sonnensystem:** Standard = **Sterne + Planeten**; Monde, Zwergplaneten, Asteroiden, Satelliten, Kometen und Raumsonden sind zunächst aus. **Planetenansicht:** Standard = **Planeten + Monde + Satelliten**, soweit beim aktuellen Planeten vorhanden. Die Zustände beider Ansichten werden weiterhin unabhängig geführt; „Alle“ schaltet alle verfügbaren Kategorien ein, benutzerdefinierte Kombinationen bleiben möglich.
+
+Das Layer-Menü ist von **227 px auf 152 px** reduziert (ca. 33 %). „Alle“ und „Standard“ bilden einen gemeinsamen segmentierten Umschalter; die frühere Trennlinie zwischen diesem Umschalter und den Kategorie-Checkboxen entfällt. Die Überschriften „Objektlayer“, „Umlaufbahnen“ und „Beschriftung“ sowie der Textabsatz unter den Bahnschaltern wurden entfernt. **Umlaufbahn** bleibt als Hauptschalter erhalten; **Kontrast** und **Farben** sind leicht eingerückt. **Beschriftung** bleibt als eigenständiger Schalter sichtbar. Siehe [Delta v25](docs/DELTA-V25.md).
+
+## Getrennte Layer und Standardgeschwindigkeit (v23)
+
+Die Sonnensystemansicht startet mit **5 simulierten Tagen pro realer Sekunde** (Reglerstufe 101). Die Planetenansicht bleibt bei **1 Stunde/s**. Die beiden Geschwindigkeiten sind weiterhin unabhängig.
+
+**Objektlayer, Umlaufbahnen, Kontrast, Farben und Beschriftungen** werden getrennt für die beiden Ansichten gespeichert. Bei einem Szenenwechsel werden die Einstellungen der Zielansicht wiederhergestellt. In v23/v24 umfasste der Standard **Planeten, Monde und Satelliten** und in der Sonnenübersicht zusätzlich **Sterne**. Seit v25 startet die Sonnenübersicht dagegen ausschließlich mit **Sterne und Planeten**; die planetenzentrierte Voreinstellung bleibt unverändert. Bei einem ausgewählten Planeten erscheinen im Layer-Dropdown nur der Planetentyp und die tatsächlich im Katalog unter `parentId` dieses Planeten verzeichneten Kindkategorien. Bei Erde sind dies Planeten, Monde und Satelliten, bei Jupiter Planeten und Monde. In der Szene verbleiben immer mindestens eine aktivierte verfügbare Kategorie; verdeckte Kategorien bleiben als Status für andere Planeten erhalten. Details: [Delta v23](docs/DELTA-V23.md).
+
+## Vollständige Sonnenbahnen und Mondbeschriftungen (v22)
+
+In der Sonnensystemansicht erscheinen bei aktivierten Umlaufbahnen die Pfade **aller** Objekte mit Sonne als direktem Elternkörper, die einer aktiven Layer-Kategorie angehören und gültige Bahnparameter haben. Dies umfasst die nicht ausgewählten Zwergplaneten, Asteroiden und Kometen. Monde und Satelliten umkreisen stattdessen Planeten; ihre Bahnen werden unverändert in den Planetenansichten gezeichnet, nicht fälschlich als Kreise um die Sonne. Historisch (v22–v28) konkurrierten pro Planet nur die **vier größten Monde** um ein Label; ein ausgewählter kleinerer Mond konnte den viertgrößten Kandidaten ersetzen. **Seit v29** steuert der neue „4 Monde“-Toggle die tatsächliche Sichtbarkeit: Bei **An** sind nur die vier größten Monde samt Labels sichtbar, bei **Aus** alle aktiven Monde mit den üblichen Dichte- und Bewegungsfiltern.
+
+## Objektlayer mit Umlaufbahn- und Beschriftungseinstellungen (v20)
+
+Das Objektlayer-Dropdown öffnet direkt unter dem Layer-Button, rechtsbündig. Unterhalb der Kategorien enthält es die drei unabhängigen Umlaufbahn-Schalter: **Umlaufbahn** (anzeigen/ausblenden), **Kontrast** (breitere und stärker deckende Striche) und **Farben** (Kategoriefarben statt einheitlichem Graublau). Beim Start sind **Umlaufbahn an**, **Kontrast aus** und **Farben an**. Darunter gibt es den eigenen Schalter **Beschriftung** (beim Start an), der die Namen in der 3D-Szene ein- und ausschaltet. Bei deaktivierten Bahnen bleiben die beiden visuellen Einstellungen gespeichert. Ein Klick außerhalb, Escape oder der Wechsel zum Zeitmenü schließt die Layer-Auswahl. Mobil bleibt das Menü am Control-Panel der Szene. Es gibt keinen separaten Bahnen- oder Beschriftungs-Button im Panel.
+
+| Objekt / Umlaufbahn | Farbe |
+|---|---|
+| Planeten und Monde | `#E6EDF5` |
+| Erdumlaufbahn (Sonderfall) | `#4DA3FF` |
+| Zwergplaneten | `#B68CFF` |
+| Asteroiden | `#E9B44C` |
+| Kometen | `#FF7597` |
+| Künstliche Satelliten | `#A7D86D` |
+| Raumsonden | `#FF8B4A` |
+| Sterne | `#FFE5A0` |
+
+Raumsonden verfügen bislang über keine Ephemeriden und deshalb über keine 3D-Orbitbahnen. Ihre Kategoriefarbe wird im Katalog angezeigt. Die natürliche Oberflächenfarbgebung und lokalen Planetentexturen ändern sich nicht.
+
+## Gemeinsame linke Sidebar und Objektdetails (v22)
+
+Auf dem Desktop sind **Objekte** und **Details** jetzt zwei Tabs in einer gemeinsamen linken Seitenleiste. Eine rechte Detailspalte und die obere globale Leiste gibt es nicht mehr. Beim Start ist „Objekte“ geöffnet; eine gezielte Auswahl öffnet „Details“. Mobil bleiben diese zwei Tabs im Bottom-Sheet und das vollständige Control-Panel liegt weiterhin oben rechts über der Szene. Der runde Kamera-Reset mit nach außen weisenden Pfeilen ersetzt die frühere Hilfe (?)-Taste und liegt seit v27 unten rechts. Der mobile Menü-Button (☰) und der gesonderte Sheet-Griff entfallen; die gesamte Tab-Kopfleiste ist ziehbar. Siehe [Hilfe](docs/HILFE.md).
+
+## Objektdetails (v13)
 
 Die Überschrift der Details zeigt nun den **Objektnamen**; Typ und Herkunft stehen als Text im Schaubild (`hero-ref`). Mit **Wissen** wird die redaktionelle Darstellung angezeigt, mit **Daten** die astronomischen Werte, Orbit- und Quelleninformationen. Die Quellenliste befindet sich im scrollbaren Bereich statt als feststehender Footer. Im Katalog entfällt der bisherige Einleitungstext (`catalog-intro`), die Suche steht an erster Stelle. Die Kamera-Hinweise innerhalb der Ansicht wurden entfernt.
 
@@ -125,15 +190,15 @@ Die neuen Mondumlaufbahnen basieren auf **NASA/JPL – Planetary Satellite Mean 
 
 - **Desktop:** Links ziehen: umschauen. Mausrad: Zoom. Rechts ziehen oder Shift + links ziehen: bodenparallel bewegen. Pfeiltasten: bodenparallel bewegen.
 - **Mobil:** Ein Finger: umschauen. Zwei Finger spreizen/zusammenziehen: Zoom. Zwei Finger gemeinsam bewegen: bodenparallel verschieben.
-- **Planetenansicht:** In den Planetendetails „Planetenansicht öffnen“ wählen; „Übersicht“ kehrt zum Sonnensystem zurück.
+- **Planetenansicht:** In Planet-, Zwergplanet- oder Monddetails „Planetenansicht öffnen“ wählen. Bei Monden wird das übergeordnete Planeten-/Zwergplanetensystem geöffnet. Der runde Kamera-Reset rechts oben kehrt zur Sonnensystemübersicht zurück.
 - **Redaktion:** In den Objektdetails unter den Kennzahlen erscheinen Hintergrundabschnitte und direkte Quellenlinks (auf Mobilgeräten Detail-Panel erweitern).
 
 ## PWA und Updates
 
-`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v14-PWA verwendet den Cache `sonnensystem-shell-v14` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
+`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v29-PWA verwendet den Cache `sonnensystem-shell-v29` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
 
 ## Weiterarbeiten
 
 Astronomische Objekte werden nur in `data/catalog/` verwaltet; Texte, Status und Links nur in `data/editorial/`. Mehrere Dateien pro Kategorie und Sprache sind möglich, die Dateiübersicht steht im `manifest.json`. Beim Hinzufügen neuer Objekte auch `catalogVersion` und `CACHE_NAME` erhöhen. Ein Import-Job und ein visuelles CMS sind **nicht** Bestandteil dieser Version. Bei sehr viel größeren Katalogen werden Filter, Indexierung, stufenweises Laden und Renderer-Optimierungen erforderlich.
 
-**Dokumentation:** [Delta v14](docs/DELTA-V14.md), [Delta v13](docs/DELTA-V13.md), [Delta v12](docs/DELTA-V12.md), [Delta v11](docs/DELTA-V11.md), [Texturquellen](docs/TEXTURE-SOURCES.md), [Delta v10](docs/DELTA-V10.md), [Datenarchitektur](docs/DATA-ARCHITECTURE.md), [Architektur](docs/ARCHITECTURE.md), [Delta v9](docs/DELTA-V9.md), [Änderungen v8](docs/DELTA-V8.md).
+**Dokumentation:** [Delta v25](docs/DELTA-V25.md), [Delta v24](docs/DELTA-V24.md), [Delta v23](docs/DELTA-V23.md), [Delta v22](docs/DELTA-V22.md), [Hilfe](docs/HILFE.md), [Delta v21](docs/DELTA-V21.md), [Delta v20](docs/DELTA-V20.md), [Delta v19](docs/DELTA-V19.md), [Delta v18](docs/DELTA-V18.md), [Delta v17](docs/DELTA-V17.md), [Delta v16](docs/DELTA-V16.md), [Delta v14](docs/DELTA-V14.md), [Delta v13](docs/DELTA-V13.md), [Delta v12](docs/DELTA-V12.md), [Delta v11](docs/DELTA-V11.md), [Texturquellen](docs/TEXTURE-SOURCES.md), [Delta v10](docs/DELTA-V10.md), [Datenarchitektur](docs/DATA-ARCHITECTURE.md), [Architektur](docs/ARCHITECTURE.md), [Delta v9](docs/DELTA-V9.md), [Änderungen v8](docs/DELTA-V8.md).

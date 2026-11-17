@@ -11,24 +11,30 @@ function area(html, start, end) {
   return html.slice(a,b);
 }
 
-test('v13: no camera hints or catalog introduction; desktop control panel contains scene selection and all time actions',async()=>{
+test('v26: control panel has no view selector; the camera reset is separate and time controls remain in their dropdown',async()=>{
   const html=await read('index.html');
   assert.doesNotMatch(html,/class="camera-hints"|class="catalog-intro"/);
   const controls=area(html,'id="view-mode-status"','id="canvas-error"');
-  assert.match(controls,/id="view-mode-select"/);
-  assert.match(controls,/Heliozentrische Ansicht, nicht maßstabsgetreu/);
-  for(const planet of ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune'])
-    assert.match(controls,new RegExp(`value="planet:${planet}"`));
-  for(const id of ['play-btn','speed-btn','today-btn','toggle-orbits','toggle-labels','reset-camera'])
+  assert.doesNotMatch(html,/id="view-mode-select"|for="view-mode-select"/);
+  assert.doesNotMatch(controls,/id="reset-camera"/);
+  assert.match(html,/<div class="viewport-actions"[\s\S]*?<button class="icon-button camera-reset-button" id="reset-camera"/);
+  assert.match(html,/<path d="M9 9 4 4/);
+  assert.match(html,/<path d="M9 9 4 4/);
+  for(const id of ['play-btn','speed-btn','today-btn','orbit-visibility-btn','orbit-contrast-btn','orbit-colors-btn','toggle-labels'])
     assert.match(controls,new RegExp(`id="${id}"`));
-  const timeline=area(html,'id="time-panel"','class="scene-tools"');
+  const timeline=area(html,'id="time-panel"','id="canvas-error"');
   assert.equal((timeline.match(/<button\b/g)||[]).length,3);
-  assert.doesNotMatch(timeline,/>Heute\s*</);
-  assert.doesNotMatch(timeline,/>Geschwindigkeit\s*</);
+  const trigger=timeline.slice(0,timeline.indexOf('id="speed-popover"'));
+  assert.equal((trigger.match(/<button\b/g)||[]).length,1,'one closed control');
+  assert.doesNotMatch(trigger,/>Heute\s*</);
+  assert.doesNotMatch(trigger,/>Geschwindigkeit\s*</);
+  assert.match(timeline,/id="sim-date-label"/);
   assert.match(timeline,/id="sim-date-readout"/);
+  assert.match(timeline,/id="today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
+  assert.doesNotMatch(timeline,/<span>Heute<\/span>/);
   const css=await read('css/styles.css');
   assert.match(css,/\.viewport>\.control-panel\{position:absolute/);
-  assert.match(css,/\.control-panel \.scene-tools\{position:static/);
+  assert.match(css,/\.viewport>\.control-panel\{\s*width:58px!important/);
 });
 
 test('v13: detail name replaces section label, hero shows object type and origin, tabs separate knowledge/data',async()=>{
@@ -83,7 +89,7 @@ test('v13: detail tabs switch panels with correct ARIA selection and keyboard fo
   }finally{if(before===undefined)delete globalThis.document;else globalThis.document=before;}
 });
 
-test('v13: select menu stays in sync with actual planet-view mode',()=>{
+test('v26: scene mode synchronizes accessible panel and reset controls without a select',()=>{
   const before=globalThis.document;
   const elements=new Map();
   globalThis.document={getElementById:id=>{
@@ -93,8 +99,11 @@ test('v13: select menu stays in sync with actual planet-view mode',()=>{
   try{
     const bodies=[{id:'earth',type:'planet',name:'Erde'}], state={bodies};
     syncSceneMode(state,{planetId:'earth'});
-    assert.equal(elements.get('view-mode-select').value,'planet:earth');
+    assert.equal(elements.get('view-mode-status').attributes['aria-label'],'Control-Panel · Planet Erde');
+    assert.equal(elements.get('reset-camera').attributes['aria-label'],'Zurück zur Sonnensystem-Übersicht');
     syncSceneMode(state,{planetId:null});
-    assert.equal(elements.get('view-mode-select').value,'solar');
+    assert.equal(elements.get('view-mode-status').attributes['aria-label'],'Control-Panel · Sonnensystem');
+    assert.equal(elements.get('reset-camera').attributes['aria-label'],'Kamera zurücksetzen');
+    assert.equal(elements.has('view-mode-select'),false);
   }finally{if(before===undefined)delete globalThis.document;else globalThis.document=before;}
 });

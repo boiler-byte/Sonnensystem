@@ -1,7 +1,7 @@
 import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, model, hex, projected } from './math.js';
 import { renderRadius, planetBodyRadius, planetOrbitRadius, orbitalRadius, sceneRadius, keplerPosition } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
-import { layerEnabled } from '../data/layers.js';
+import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
 import { panCameraByPixels, cameraView } from './camera.js';
@@ -27,6 +27,7 @@ export class SolarRenderer {
   this.lineVB=gl.createBuffer();this.starVB=gl.createBuffer();this.starCount=2200;gl.bindBuffer(gl.ARRAY_BUFFER,this.starVB);gl.bufferData(gl.ARRAY_BUFFER,starGeometry(this.starCount),gl.STATIC_DRAW);
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(.013,.025,.058,1);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
+  this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
@@ -34,7 +35,19 @@ export class SolarRenderer {
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
  }
  attachEvents(){attachCameraControls(this);}
- panByPixels(dx,dy){panCameraByPixels(this.camera,dx,dy,this.height);}
+ panByPixels(dx,dy){if(dx || dy){this.markCameraMoved();panCameraByPixels(this.camera,dx,dy,this.height);}}
+ markCameraMoved(){this.cameraManuallyMoved=true;}
+ /** Next preset only while the active one has not been changed by the user. */
+ cycleCameraPerspective(){
+  if(this.planetId){this.reset();return;}
+  const index=this.cameraManuallyMoved?0:((this.cameraPresetIndex??0)+1)%3;
+  this.applyCameraPreset(index);
+ }
+ applyCameraPreset(index){
+  this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
+  this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=47;
+  this.camera.theta=.63;this.camera.phi=[.99,1.54,.16][index];
+ }
  updateKeyboard(now=performance.now()){moveCameraWithKeyboard(this,now);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();const w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));this.dpr=Math.min(window.devicePixelRatio||1,1.8);
   this.width=w;this.height=h;this.canvas.width=Math.round(w*this.dpr);this.canvas.height=Math.round(h*this.dpr);
@@ -44,13 +57,14 @@ export class SolarRenderer {
   this.textures?.setMobile(preferredMobileQuality());
  }
  setBodies(list){this.bodies=list;this.byId=new Map(list.map(o=>[o.id,o]));
-  if(this.planetId && this.byId.get(this.planetId)?.type!=='planet')this.reset();
+  this.fourMoonIds=largestMoonIds(list);
+  if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
  }
  /** The planet and its direct natural/artificial orbiters form an isolated scene. */
  planetChildren(id=this.planetId){return planetChildrenFor(this.bodies,id);}
  planetFrameDistance(id=this.planetId){return planetFrameDistance(this.width,this.height,this.byId.get(id),this.planetChildren(id));}
-  showPlanetSystem(id){if(this.byId.get(id)?.type!=='planet')return false;
-  this.planetId=id;
+  showPlanetSystem(id){if(!['planet','dwarf'].includes(this.byId.get(id)?.type))return false;
+  this.planetId=id;this.markCameraMoved();
   this.camera.theta=.63;this.camera.phi=.84;
   this.camera.target=[0,0,0];this.camera.desiredTarget=[0,0,0];
   this.camera.dist=this.camera.desiredDist=this.planetFrameDistance(id);
@@ -58,7 +72,7 @@ export class SolarRenderer {
   return true;
  }
  setSelected(id,{focus=false}={}){this.selectedId=id;if(focus)this.focus(id);}
- focus(id){const b=this.byId.get(id);if(!b)return;
+ focus(id){const b=this.byId.get(id);if(!b)return;this.markCameraMoved();
   if(this.planetId){
    if(id===this.planetId){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.planetFrameDistance();}
    else if(b.parentId===this.planetId){
@@ -73,8 +87,7 @@ export class SolarRenderer {
  }
  /** Overview always exits the isolated planet view and returns to the solar system. */
  reset(){const wasPlanet=Boolean(this.planetId);this.planetId=null;
-  this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=47;
-  this.camera.theta=.63;this.camera.phi=.99;
+  this.applyCameraPreset(0);
   if(wasPlanet){this.camera.target=[0,0,0];this.camera.dist=47;this.calcPositions(this.simTime);}
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});}
@@ -82,7 +95,8 @@ export class SolarRenderer {
   shouldDraw(b){
   if(!layerEnabled(this.settings?.layers,b.type))return false;
   // Categories are actual scene layers, not only catalog filters.
-  // All registered orbiters are eligible; labels still apply motion/collision rules.
+  // The four-moons cap affects actual spheres, labels, picking and orbit strokes.
+  if(b.type==='moon' && this.settings?.fourMoons===true && !this.fourMoonIds?.has(b.id))return false;
   return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
  }
  start(time,selected,settings){this.simTime=time;this.selectedId=selected;this.settings=settings;this.calcPositions(time);}
@@ -112,6 +126,7 @@ export class SolarRenderer {
   const color=hex(body.color);gl.uniform3f(gl.getUniformLocation(program,'uBase'),...color);
   const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));gl.uniform3f(gl.getUniformLocation(program,'uLight'),...light);
   gl.uniform1f(gl.getUniformLocation(program,'uStyle'),STYLES[body.style]??1);
+  gl.uniform1f(gl.getUniformLocation(program,'uOptimizedLighting'),this.settings?.lighting==='realistic'?0:1);
   let seed=0;for(let i=0;i<body.id.length;i++)seed+=body.id.charCodeAt(i)*.11;
   gl.uniform1f(gl.getUniformLocation(program,'uSeed'),seed);
   gl.uniform1f(gl.getUniformLocation(program,'uTime'),this.simTime/DAY);

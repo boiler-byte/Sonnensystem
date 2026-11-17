@@ -11,6 +11,31 @@ const VIEW_MARGIN = {left: 8, right: 8, top: 26, bottom: 24};
 export const LABEL_DENSITY = Object.freeze({cellWidth: 160, cellHeight: 110, maxPerCell: 2, edgeHoldPx: 18});
 const HALF_FOV_TANGENT = 2 * Math.tan(CAMERA_FOV / 2);
 
+/** The four largest moons of each planet can claim labels in the solar overview.
+ * Preserve the selected label by displacing the fourth-largest if necessary.
+ */
+export function solarMoonLabelIds(bodies, selectedId, maximum=4) {
+  const groups=new Map();
+  for(const body of bodies){
+    if(body.type!=='moon')continue;
+    const key=body.parentId||'_unassigned';
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push(body);
+  }
+  const allowed=new Set();
+  for(const moons of groups.values()){
+    moons.sort((a,b)=>Math.max(0,Number(b.radiusKm)||0)-Math.max(0,Number(a.radiusKm)||0) ||
+      a.id.localeCompare(b.id));
+    const largest=moons.slice(0,maximum);
+    const selected=moons.find(m=>m.id===selectedId);
+    if(selected && !largest.some(m=>m.id===selected.id) && largest.length){
+      largest[largest.length-1]=selected;
+    }
+    for(const moon of largest)allowed.add(moon.id);
+  }
+  return allowed;
+}
+
 function labelPriority(body, renderer, previouslyVisible) {
   if (body.id === renderer.selectedId) return 10000;
   if (renderer.planetId && body.id === renderer.planetId) return 9000;
@@ -91,8 +116,13 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     ? [...old.anchors].filter(([, anchor]) => now - anchor.seenAt < LABEL_STABILITY.retainMs)
     : []);
   const projectedBodies = [];
+  // The display switch limits actual moon bodies upstream; when off, do not
+  // retain the old unconditional four-label restriction.
+  const moonLabels = !renderer.planetId && renderer.settings?.fourMoons !== false
+    ? solarMoonLabelIds(renderer.rendered,renderer.settings?.fourMoons===true?null:renderer.selectedId) : null;
 
   for (const body of renderer.rendered) {
+    if (moonLabels && body.type==='moon' && !moonLabels.has(body.id)) continue;
     const pos = renderer.positions.get(body.id);
     if (!pos) continue;
     const p = projected(pos, vp, w, h);

@@ -1,19 +1,28 @@
 import { layerEnabled } from '../data/layers.js';
 import { projected, clamp } from './math.js';
 
+/** Real Sun-centered Kepler paths; moons and satellites remain planet-centered. */
+export function solarOrbitBodies(bodies, layers) {
+  const types=new Set(['planet','dwarf','asteroid','comet']);
+  return bodies.filter(body=>body.parentId==='sun' && types.has(body.type) &&
+    layerEnabled(layers,body.type) && Number(body.a)>0 && Number(body.periodDays)>0);
+}
+
 /** Full heliocentric overview, visually unchanged from v5. */
 export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const visible=b=>layerEnabled(settings.layers,b.type);
   const selected=renderer.byId.get(selectedId);
-  if(settings.orbits){gl.depthMask(false);
-   const primary=renderer.bodies.filter(b=>b.parentId==='sun'&&b.type==='planet'&&visible(b));
-   for(const b of primary)renderer.orbitLine(b,[0,0,0],vp,b.id===selectedId?.65:.20,b.id===selectedId);
-   for(const b of renderer.bodies.filter(b=>b.parentId==='sun'&&b.type==='dwarf'&&visible(b)&&(['pluto','ceres'].includes(b.id)||b.id===selectedId)))renderer.orbitLine(b,[0,0,0],vp,b.id===selectedId?.63:.12,b.id===selectedId);
-   if(selected && visible(selected) && (selected.type==='asteroid'||selected.type==='comet'))renderer.orbitLine(selected,[0,0,0],vp,.71,true);
-   const moons=renderer.bodies.filter(b=>b.type==='moon'&&visible(b)&&b.parentId&&(b.id===selectedId||b.parentId===selectedId||(selected?.parentId===b.parentId&&b.radiusKm>180)));
-   for(const b of moons.slice(0,24))renderer.orbitLine(b,renderer.positions.get(b.parentId)||[0,0,0],vp,b.id===selectedId?.64:.2,b.id===selectedId);
-   gl.depthMask(true);
+  if(settings.orbits){
+    gl.depthMask(false);
+    // Show every available heliocentric orbit for enabled layers, not just a
+    // selection/subset. Planet-centered trajectories belong in planet view.
+    for(const body of solarOrbitBodies(renderer.bodies,settings.layers)){
+      const selectedOrbit=body.id===selectedId;
+      const opacity=selectedOrbit?.70:body.type==='planet'?.20:.16;
+      renderer.orbitLine(body,[0,0,0],vp,opacity,selectedOrbit);
+    }
+    gl.depthMask(true);
   }
   renderer.rendered=renderer.bodies.filter(b=>renderer.shouldDraw(b)&&renderer.positions.has(b.id));
   renderer.rendered.sort((a,b)=>{

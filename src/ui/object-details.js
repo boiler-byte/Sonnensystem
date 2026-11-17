@@ -1,10 +1,28 @@
-import { TYPES, HORIZONS_IDS } from '../data/bodies.js';
+import { TYPES, HORIZONS_IDS, CATEGORY_COLORS } from '../data/bodies.js';
 import { esc, formatInt, formatDecimal, displayPeriod, displayA } from './formatters.js';
 const $=id=>document.getElementById(id);
 
+/** Sequence used by the visible detail index and its previous/next buttons. */
+export function detailNavigation(state){
+  const current=state.bodies.find(body=>body.id===state.selected);
+  if(!current)return {label:'— / —',previousId:null,nextId:null};
+  const peers=state.bodies.filter(body=>body.type===current.type);
+  const index=peers.findIndex(body=>body.id===current.id);
+  if(index<0)return {label:'— / —',previousId:null,nextId:null};
+  const enabled=peers.length>1;
+  return {
+    label:`${String(index+1).padStart(2,'0')} / ${String(peers.length).padStart(2,'0')}`,
+    previousId:enabled?peers[(index+peers.length-1)%peers.length].id:null,
+    nextId:enabled?peers[(index+1)%peers.length].id:null
+  };
+}
+
 export function renderDetail(state,renderer,selectBody){const byId=id=>state.bodies.find(x=>x.id===id);const b=byId(state.selected);
+  const navigation=detailNavigation(state);
+  $('detail-index').textContent=navigation.label;
+  $('detail-prev').disabled=!navigation.previousId;
+  $('detail-next').disabled=!navigation.nextId;
   if(!b){
-    $('detail-index').textContent='— / —';
     $('detail-type').textContent='KEINE AUSWAHL';
     $('detail-origin').textContent='SONNENSYSTEM';
     $('type-dot').style.background='transparent';
@@ -20,9 +38,7 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
     return;
   }
   if(b.type==='probe'){
-    const counts=state.bodies.filter(x=>x.type==='probe');
-    $('detail-index').textContent=`${String(counts.findIndex(x=>x.id===b.id)+1).padStart(2,'0')} / ${String(counts.length).padStart(2,'0')}`;
-    $('detail-type').textContent='RAUMSONDE';$('type-dot').style.background=b.color;
+    $('detail-type').textContent='RAUMSONDE';$('type-dot').style.background=CATEGORY_COLORS[b.type]||b.color;
     $('detail-origin').textContent='NASA / MISSIONSDATEN';
     $('detail-name').textContent=b.name;
     $('detail-description').textContent=b.description;
@@ -39,10 +55,8 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
     $('horizons-note').textContent='Kein Positionsmodell vorhanden. Historische und laufende Flugbahnen werden nicht erfunden.';
     return;
   }
-  const counts=state.bodies.filter(x=>x.type===b.type);const ordinal=Math.max(1,counts.findIndex(x=>x.id===b.id)+1);
-  $('detail-index').textContent=`${String(ordinal).padStart(2,'0')} / ${String(counts.length).padStart(2,'0')}`;
   $('detail-type').textContent=(TYPES[b.type]?.label||'Himmelskörper').toUpperCase();
-  $('type-dot').style.background=b.color;
+  $('type-dot').style.background=CATEGORY_COLORS[b.type]||b.color;
   $('detail-origin').textContent=b.parentId===null?'ZENTRALGESTIRN':b.type==='satellite'?'KÜNSTLICHES OBJEKT':'SONNENSYSTEM';
   $('detail-name').textContent=b.name;
   $('detail-description').textContent=b.description||'Astronomischer Himmelskörper.';
@@ -57,13 +71,20 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   extra.innerHTML=sections.map(s=>`<section class="editorial-section"><h3>${esc(s.heading)}</h3><p>${esc(s.text)}</p></section>`).join('')+
     (refs.length?`<div class="editorial-references"><strong>QUELLEN</strong>${refs.map(r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>`).join('')}</div>`:'');
   const planetActions=$('planet-view-actions'),planetButton=$('planet-view-btn');
-  planetActions.hidden=b.type!=='planet';
-  if(b.type==='planet'){
-    const active=renderer?.planetId===b.id;
-    const children=state.bodies.filter(x=>x.parentId===b.id && (x.type==='moon'||x.type==='satellite'));
+  // An orbital moon opens its parent system; dwarfs can themselves be the
+  // center of the isolated scene (e.g. Pluto with Charon and smaller moons).
+  const systemCenter=b.type==='moon'?byId(b.parentId):b;
+  const canOpenSystem=['planet','dwarf'].includes(systemCenter?.type);
+  planetActions.hidden=!canOpenSystem;
+  if(canOpenSystem){
+    const active=renderer?.planetId===systemCenter.id;
+    const children=state.bodies.filter(x=>x.parentId===systemCenter.id && (x.type==='moon'||x.type==='satellite'));
     const moons=children.filter(x=>x.type==='moon').length,satellites=children.length-moons;
-    $('planet-view-subtitle').textContent=`${moons} Monde · ${satellites} Satelliten`;
-    $('planet-view-title').textContent=active?'System zentrieren':'Planetenansicht öffnen';
+    $('planet-view-subtitle').textContent=b.type==='moon'
+      ? `${systemCenter.name} · ${moons} Monde · ${satellites} Satelliten`
+      : `${moons} Monde · ${satellites} Satelliten`;
+    $('planet-view-title').textContent=active&&b.type!=='moon'?'System zentrieren':'Planetenansicht öffnen';
+    planetButton.setAttribute('aria-label',`${systemCenter.name}: ${active?'Planetensystem zentrieren':'Planetenansicht öffnen'}`);
     planetButton.classList.toggle('active',active);
     planetButton.setAttribute('aria-pressed',String(active));
   }

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
+  <meta name="app-version" content="V29.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -16,99 +17,34 @@
 </head>
 <body>
   <div id="app">
-    <header class="topbar">
-      <div class="brand"><span class="brandmark"><i></i><i></i><b></b></span><div><strong>Sonnensystem<span class="brand-dot">.</span></strong><small>INTERAKTIVER 3D-ATLAS</small></div></div>
-      <div class="header-separator"></div>
-      <div class="header-meta"><span class="meta-spark">✦</span> INTERAKTIVES OBSERVATORIUM <span class="header-version">/ V16.0</span></div>
-      <div class="top-actions"><span class="live-pill"><span class="live-pulse"></span> WEBGL AKTIV</span><button class="icon-button" id="help-btn" aria-label="Bedienung anzeigen" title="Hilfe">?</button><button class="icon-button mobile-menu" id="mobile-menu" title="Objekte öffnen" aria-label="Objekte öffnen">☰</button></div>
-    </header>
     <main class="shell">
-      <aside class="catalog" id="catalog">
+      <aside class="sidebar" id="sidebar" aria-label="Objekte und Objektdetails">
+        <nav class="sidebar-tabs" role="tablist" aria-label="Linke Seitenleiste">
+          <button type="button" id="sidebar-tab-catalog" class="sidebar-tab active" data-sidebar-panel="catalog" role="tab" aria-controls="catalog" aria-selected="true" tabindex="0"><span class="sheet-tab-icon" aria-hidden="true">☷</span> Objekte</button>
+          <button type="button" id="sidebar-tab-detail" class="sidebar-tab" data-sidebar-panel="detail" role="tab" aria-controls="detail" aria-selected="false" tabindex="-1"><span class="sheet-tab-icon" aria-hidden="true">◉</span> Details</button>
+        </nav>
+        <div class="sidebar-content" id="sidebar-content">
+      <aside class="catalog" id="catalog" role="tabpanel" aria-labelledby="sidebar-tab-catalog">
         
-        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><span class="shortcut">/</span></div>
+        <div class="catalog-search-row">
+          <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><span class="shortcut">/</span></div>
+          <button class="catalog-planet-filter" id="catalog-planet-filter" type="button" aria-label="Nur Objekte des aktuellen Planeten anzeigen" aria-pressed="false" aria-controls="object-list" title="Nur Objekte des aktuellen Planeten anzeigen" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-24 12 12)"/></svg>
+          </button>
+        </div>
         <div class="list-header"><span id="list-label">OBJEKTE IM ATLAS</span><span id="object-count">—</span></div>
         <div id="object-list" class="object-list" role="listbox" aria-label="Himmelskörper"></div>
         <div class="catalog-bottom"><div class="section-label">OBJEKT HINZUFÜGEN <span>JPL SBDB</span></div><form id="asteroid-form" class="add-form"><input id="asteroid-name" type="text" maxlength="56" placeholder="z. B. 433 Eros" aria-label="Asteroid über NASA suchen"/><button type="submit" title="Asteroid laden">↗</button></form><div class="tiny-help">NASA-Kleinkörperdatenbank durchsuchen</div></div>
       </aside>
-      <section class="viewport" id="viewport" aria-label="Interaktive 3D-Darstellung des Sonnensystems">
-        <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: Pfeiltasten bewegen die Kamera parallel zur Bahnebene, Maus oder Touch steuern die Ansicht"></canvas>
-        <div class="space-glow" id="space-glow"></div>
-        <canvas id="labels-canvas" aria-hidden="true"></canvas>
-        <h1 class="sr-only">Sonnensystem</h1>
-        <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
-          <label class="control-label sr-only" for="view-mode-select">Ansicht wählen</label>
-          <select id="view-mode-select" class="view-mode-select" aria-label="Ansicht wählen">
-            <option value="solar">Heliozentrische Ansicht, nicht maßstabsgetreu</option>
-                <option value="planet:mercury">Planetensystem · Merkur</option>
-                <option value="planet:venus">Planetensystem · Venus</option>
-                <option value="planet:earth">Planetensystem · Erde</option>
-                <option value="planet:mars">Planetensystem · Mars</option>
-                <option value="planet:jupiter">Planetensystem · Jupiter</option>
-                <option value="planet:saturn">Planetensystem · Saturn</option>
-                <option value="planet:uranus">Planetensystem · Uranus</option>
-                <option value="planet:neptune">Planetensystem · Neptun</option>
-          </select>
-          <span class="sr-only" id="view-mode-label">HELIOZENTRISCHE ANSICHT</span>
-          <div class="layer-picker-wrap" id="layer-picker-wrap">
-            <button class="layer-button" id="layer-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="layer-popover" title="Objektlayer auswählen">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
-              <span id="layer-summary">Standard</span><span class="layer-chevron" aria-hidden="true">⌄</span>
-            </button>
-            <div class="layer-popover" id="layer-popover" role="group" aria-label="Objektlayer" hidden>
-              <div class="layer-popover-title">OBJEKTLAYER</div>
-              <div class="layer-presets" role="group" aria-label="Layer-Voreinstellungen">
-                <button type="button" class="layer-preset" data-layer-preset="all" aria-pressed="false">Alle</button>
-                <button type="button" class="layer-preset active" data-layer-preset="standard" aria-pressed="true">Standard</button>
-              </div>
-              <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">
-                <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="moon" checked/><span>Monde</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="dwarf"/><span>Zwergplaneten</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="asteroid"/><span>Asteroiden</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="star"/><span>Sterne</span></label>
-              </div>
-              <p class="layer-note">Standard: Planeten und Monde. Raumsonden erscheinen im Katalog, bis Positionsdaten verfügbar sind.</p>
-            </div>
-          </div>
-          <div class="time-panel" id="time-panel">
-            <div class="timeline-controls" role="group" aria-label="Zeitsteuerung">
-              <button class="timeline-button play-button" id="play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true"><svg id="play-icon" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false"><path id="play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z" fill="currentColor"/></svg></button>
-              <div class="speed-picker-wrap" id="speed-picker-wrap">
-                <button class="timeline-button speed-button" id="speed-btn" type="button" aria-expanded="false" aria-controls="speed-popover">
-                  <span class="speed-button-copy"><small id="speed-readout">3 Std. / s</small></span><span class="speed-chevron" aria-hidden="true">⌄</span>
-                </button>
-                <div class="speed-popover" id="speed-popover" role="group" aria-label="Simulationsgeschwindigkeit" hidden>
-                  <div class="speed-popover-header"><span>ZEITGESCHWINDIGKEIT</span><strong id="speed-popover-value">3 Std. / s</strong></div>
-                  <div class="vertical-speed-control"><span id="speed-max-label">10 Jahre / s</span>
-                    <input id="speed" type="range" min="0" max="240" step="1" value="23" aria-label="Geschwindigkeit in logarithmischen Stufen" aria-orientation="vertical" />
-                    <span id="speed-min-label">1 Std. / s</span></div>
-                  <p class="speed-hint">241 logarithmische Stufen · oben schneller</p>
-                </div>
-              </div>
-              <button class="timeline-button now-button" id="today-btn" type="button" aria-label="Simulation auf aktuelle Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit"><span aria-hidden="true">↺</span><time id="sim-date-readout" aria-live="off"></time></button>
-            </div>
-          </div>
-          <div class="scene-tools" role="group" aria-label="Szenensteuerung">
-            <button class="scene-tool active" id="toggle-orbits" type="button" title="Umlaufbahnen ein/aus" aria-label="Bahnen anzeigen oder ausblenden" aria-pressed="true">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="12" cy="12" rx="9" ry="5" transform="rotate(-30 12 12)"/><circle cx="12" cy="12" r="1.8"/><circle cx="19.5" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
-            </button>
-            <button class="scene-tool active" id="toggle-labels" type="button" title="Beschriftungen ein/aus" aria-label="Namen anzeigen oder ausblenden" aria-pressed="true">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M12 6v13M8 19h8"/></svg>
-            </button>
-            <button class="scene-tool" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 11a8.5 8.5 0 1 1 2.2 7.3"/><path d="M3.5 4.5V11H10"/><circle cx="12" cy="12" r="2.1"/></svg>
-            </button>
-          </div>
-        </section>
-        <!-- Der vorhandene Übersicht-Button wird auf Mobilgeräten hierher verschoben. -->
-        <div class="mobile-overview" id="mobile-overview" aria-label="Kameraübersicht"></div>
-        <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
-      </section>
-      <aside class="detail" id="detail">
-        <div class="detail-top"><h2 id="detail-name" class="detail-title">Erde</h2><span class="detail-index" id="detail-index">01 / 09</span></div>
+      <aside class="detail" id="detail" role="tabpanel" aria-labelledby="sidebar-tab-detail" hidden>
+        <div class="detail-top">
+          <h2 id="detail-name" class="detail-title">Erde</h2>
+          <nav class="detail-index-nav" aria-label="Objekte derselben Kategorie durchschalten">
+            <button class="detail-index-button" id="detail-prev" type="button" aria-label="Vorheriges Objekt derselben Kategorie" title="Vorheriges Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 5-7 7 7 7"/></svg></button>
+            <span class="detail-index" id="detail-index" aria-live="polite">01 / 09</span>
+            <button class="detail-index-button" id="detail-next" type="button" aria-label="Nächstes Objekt derselben Kategorie" title="Nächstes Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 5 7 7-7 7"/></svg></button>
+          </nav>
+        </div>
         <div class="detail-scroll">
           <div class="detail-hero">
             <div class="hero-orbit ring1"></div><div class="hero-orbit ring2"></div>
@@ -133,22 +69,98 @@
           </div>
         </div>
       </aside>
+        </div>
+      </aside>
+      <section class="viewport" id="viewport" aria-label="Interaktive 3D-Darstellung des Sonnensystems">
+        <div class="viewport-actions" role="group" aria-label="Kamerasteuerung">
+          <button class="icon-button camera-reset-button" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 9 4 4m0 5V4h5M15 9l5-5m-5 0h5v5M9 15l-5 5m0-5v5h5m6-5 5 5m-5 0h5v-5"/></svg>
+          </button>
+        </div>
+        <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: Pfeiltasten bewegen die Kamera parallel zur Bahnebene, Maus oder Touch steuern die Ansicht"></canvas>
+        <div class="space-glow" id="space-glow"></div>
+        <canvas id="labels-canvas" aria-hidden="true"></canvas>
+        <h1 class="sr-only">Sonnensystem</h1>
+        <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
+          <div class="layer-picker-wrap" id="layer-picker-wrap">
+            <button class="layer-button" id="layer-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="layer-popover" title="Objektlayer auswählen">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
+            </button>
+            <div class="layer-popover" id="layer-popover" role="group" aria-label="Objektlayer" hidden>
+              <div class="layer-presets" role="group" aria-label="Objektlayer-Voreinstellung">
+                <button type="button" class="layer-preset" data-layer-preset="all" aria-pressed="false">Alle</button>
+                <button type="button" class="layer-preset active" data-layer-preset="standard" aria-pressed="true">Standard</button>
+              </div>
+              <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">
+                <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="moon"/><span>Monde</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="dwarf"/><span>Zwergplaneten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="asteroid"/><span>Asteroiden</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="star" checked/><span>Sterne</span></label>
+              </div>
+              <section class="layer-orbit-section" aria-label="Umlaufbahn-Einstellungen">
+                <button class="orbit-option active" id="orbit-visibility-btn" type="button" aria-pressed="true"><span>Umlaufbahn</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
+                <button class="orbit-option orbit-suboption" id="orbit-contrast-btn" type="button" aria-pressed="false"><span>Kontrast</span><span class="orbit-toggle-indicator" aria-hidden="true">Aus</span></button>
+                <button class="orbit-option orbit-suboption active" id="orbit-colors-btn" type="button" aria-pressed="true"><span>Farben</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
+              </section>
+              <section class="layer-label-section" aria-label="Beschriftung-Einstellungen">
+                <button class="orbit-option active" id="toggle-labels" type="button" title="Beschriftungen ein/aus" aria-label="Beschriftungen anzeigen oder ausblenden" aria-pressed="true"><span>Beschriftung</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
+              </section>
+              <section class="layer-display-section" aria-label="Weitere Darstellungseinstellungen">
+                <button class="orbit-option active" id="toggle-lighting" type="button" title="Beleuchtungsmodus wechseln" aria-label="Optimierte Beleuchtung" aria-pressed="true"><span>Beleuchtung</span><span class="orbit-toggle-indicator" aria-hidden="true">Optimiert</span></button>
+                <button class="orbit-option active" id="toggle-four-moons" type="button" title="Nur die vier größten Monde je Planet anzeigen" aria-label="Nur die vier größten Monde je Planet anzeigen" aria-pressed="true"><span>4 Monde</span><span class="orbit-toggle-indicator" aria-hidden="true">An</span></button>
+              </section>
+              <p class="layer-note" id="layer-note">Standard: Sterne und Planeten.</p>
+            </div>
+          </div>
+          <div class="time-panel" id="time-panel">
+            <div class="speed-picker-wrap" id="speed-picker-wrap">
+              <button class="timeline-button speed-button time-trigger" id="speed-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="speed-popover" aria-label="Zeitsteuerung öffnen">
+                <span class="speed-button-copy">
+                  <small id="speed-readout">5 Tage / s</small>
+                  <time id="sim-date-label" aria-live="off"></time>
+                </span>
+              </button>
+              <div class="speed-popover" id="speed-popover" role="group" aria-label="Zeitsteuerung" hidden>
+                <div class="speed-popover-header">
+                  <strong id="speed-popover-value">5 Tage / s</strong>
+                </div>
+                <div class="time-popover-grid">
+                  <div class="vertical-speed-control">
+                    <span id="speed-max-label">10 Jahre / s</span>
+                    <div class="speed-slider-rail"><input id="speed" type="range" min="0" max="240" step="1" value="101" aria-label="Geschwindigkeit in logarithmischen Stufen" aria-orientation="vertical" /></div>
+                    <span id="speed-min-label">1 Std. / s</span>
+                  </div>
+                  <div class="time-popover-actions" role="group" aria-label="Wiedergabe und Datum">
+                    <div class="time-popover-buttons">
+                      <button class="timeline-button play-button" id="play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true"><svg id="play-icon" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false"><path id="play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z" fill="currentColor"/></svg></button>
+                      <button class="timeline-button now-button" id="today-btn" type="button" aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.34-5.66M4 4v5h5"/></svg></button>
+                    </div>
+                    <time id="sim-date-readout" class="time-popover-date" aria-live="off"></time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
+      </section>
     </main>
-    <!-- Auf Mobilgeräten werden Katalog, Details und das gesamte Control-Panel ohne Duplikate hierher verschoben. -->
+    <!-- Nur Katalog und Details wechseln ins mobile Sheet; das Control-Panel bleibt über der 3D-Szene. -->
     <div class="mobile-sheet-scrim" id="mobile-sheet-scrim" hidden></div>
-    <section class="mobile-sheet" id="mobile-sheet" data-snap="closed" aria-label="Menüs: Objekte, Details und Steuerung">
-      <div class="sheet-header" id="sheet-header">
-        <button class="sheet-handle" id="sheet-handle" type="button" aria-label="Menü hochziehen oder schließen" aria-controls="sheet-content" aria-expanded="false"><span class="sheet-grabber" aria-hidden="true"></span></button>
-        <nav class="sheet-tabs" aria-label="Mobile Menüs">
-          <button type="button" class="sheet-tab" data-sheet-panel="catalog" aria-controls="catalog" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">☷</span> Objekte</button>
-          <button type="button" class="sheet-tab active" data-sheet-panel="detail" aria-controls="detail" aria-pressed="true"><span class="sheet-tab-icon" aria-hidden="true">◉</span> Details</button>
-          <button type="button" class="sheet-tab" data-sheet-panel="control" aria-controls="view-mode-status" aria-pressed="false"><span class="sheet-tab-icon" aria-hidden="true">⚙</span> Steuerung</button>
+    <section class="mobile-sheet" id="mobile-sheet" data-snap="closed" aria-label="Menüs: Objekte und Details">
+      <div class="sheet-header" id="sheet-header" role="group" tabindex="0" aria-label="Menüleiste: Ziehen oder mit Eingabe öffnen und schließen">
+        <nav class="sheet-tabs" role="tablist" aria-label="Mobile Menüs">
+          <button type="button" class="sheet-tab active" id="sheet-tab-catalog" data-sheet-panel="catalog" role="tab" aria-controls="catalog" aria-selected="true" aria-pressed="true" tabindex="0"><span class="sheet-tab-icon" aria-hidden="true">☷</span> Objekte</button>
+          <button type="button" class="sheet-tab" id="sheet-tab-detail" data-sheet-panel="detail" role="tab" aria-controls="detail" aria-selected="false" aria-pressed="false" tabindex="-1"><span class="sheet-tab-icon" aria-hidden="true">◉</span> Details</button>
         </nav>
       </div>
       <div class="sheet-content" id="sheet-content"></div>
     </section>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div class="modal-backdrop" id="help-modal" hidden><div class="help-modal"><div class="modal-top"><span class="eyebrow">SONNENSYSTEM / ANLEITUNG</span><button id="help-close" class="icon-button" aria-label="Schließen">✕</button></div><h2>Dein Observatorium</h2><p>Steuere die 3D-Ansicht per Maus, Pfeiltasten oder Touch. Auf dem Smartphone lassen sich die Menüs vom unteren Rand hochziehen und zwischen Objekten, Details und Steuerung wechseln.</p><div class="help-grid"><div><b>01 — Navigation</b><span>Desktop: links ziehen = umschauen, Mausrad = zoomen, rechts oder mit Umschalttaste ziehen = direkt verschieben. Pfeiltasten = über die Bahnebene bewegen (unabhängig vom Neigungswinkel). Mobil: mit einem Finger umschauen, mit zwei Fingern spreizen/zusammenziehen = zoomen, mit zwei Fingern gemeinsam wischen = parallel zur Bahnebene verschieben.</span></div><div><b>02 — Zeitreise</b><span>Play/Pause hält die Simulation an oder startet sie. Über den dritten Tab „Steuerung“ startest oder pausierst du die Simulation, passt die Geschwindigkeit logarithmisch an und setzt mit dem Datumsknopf auf die lokale aktuelle Uhrzeit zurück.</span></div><div><b>03 — Live-Daten</b><span>Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizons laufen über den lokalen Server.</span></div><div><b>04 — Darstellung</b><span>In den Planetendetails öffnet „Planetenansicht“ nur den Planeten mit seinen Monden und künstlichen Satelliten. „Übersicht“ führt sofort zum Sonnensystem zurück. Größen und Abstände sind illustrativ skaliert; Satellitenpositionen sind nur angenähert.</span></div></div><button class="modal-confirm" id="help-confirm">Verstanden <span>↗</span></button></div></div>
   </div>
   <script type="module" src="src/app.js"></script>
 </body>

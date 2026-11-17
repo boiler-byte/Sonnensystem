@@ -6,10 +6,10 @@ import { SPEED_STEPS, SPEED_MODES, speedAtStep, stepForSpeed, formatSpeed, syncS
 const near = (actual, expected, context) =>
   assert.ok(Math.abs(actual - expected) / expected < 1e-10, `${context}: got ${actual}, expected ${expected}`);
 
-test('v10: solar system has 1h/s–10y/s logarithmic range and exact 3h/s default', () => {
+test('v23: solar system has 1h/s–10y/s logarithmic range and exact 5days/s default', () => {
   const r = SPEED_MODES.solar;
   near(r.min, 1/24, 'solar minimum');
-  near(r.defaultSpeed, 3/24, 'solar default');
+  near(r.defaultSpeed, 5, 'solar default');
   near(r.max, 10*365.25, 'solar maximum');
   near(speedAtStep('solar',0),r.min,'minimum slider step');
   near(speedAtStep('solar',r.pivot),r.defaultSpeed,'exact default slider step');
@@ -78,14 +78,14 @@ test('v10: controls update icon, pause state and speed-range labels in each scen
     return el.get(id);
   }};
   try {
-    const state={playing:true,time:Date.UTC(2026,10,16,23,17),speed:3/24,timelineMode:'solar'};
+    const state={playing:true,time:Date.UTC(2026,10,16,23,17),speed:5,timelineMode:'solar'};
     syncControls(state);
     assert.match(el.get('play-icon-path').attrs.d,/M7 5h4/);
     assert.equal(el.get('play-btn').attrs['aria-pressed'],'true');
-    assert.equal(el.get('speed-readout').textContent,'3 Std. / s');
-    assert.equal(el.get('speed').value,'23');
+    assert.equal(el.get('speed-readout').textContent,'5 Tage / s');
+    assert.equal(el.get('speed').value,'101');
     assert.equal(el.get('speed-max-label').textContent,'10 Jahre / s');
-    assert.match(el.get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026 \d{2}:\d{2}$/);
+    assert.match(el.get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026\n\d{2}:\d{2}$/);
     state.playing=false;
     state.timelineMode='planet';state.speed=1/24;
     syncControls(state);
@@ -97,21 +97,26 @@ test('v10: controls update icon, pause state and speed-range labels in each scen
   } finally {if(before===undefined)delete globalThis.document;else globalThis.document=before;}
 });
 
-test('v10: DOM has precisely Play, Geschwindigkeit and Heute; speed popup is vertical and dismissible',async()=>{
+test('v18: one compact time trigger contains Play, slider, and Heute in its popup',async()=>{
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
   const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
-  const panel=html.split('id="time-panel"')[1].split('class="scene-tools"')[0];
-  assert.equal((panel.match(/<button\b/g)||[]).length,3,'no date input or fourth time button');
+  const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
+  assert.equal((panel.match(/<button\b/g)||[]).length,3,'one time trigger and two popup actions');
+  const trigger=panel.slice(0,panel.indexOf('id="speed-popover"'));
+  assert.equal((trigger.match(/<button\b/g)||[]).length,1,'only dropdown trigger is visible when closed');
   for(const id of ['play-btn','speed-btn','today-btn'])assert.match(panel,new RegExp(`id="${id}"`));
+  assert.match(panel,/id="sim-date-label"/);
+  assert.match(panel,/id="today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
+  assert.doesNotMatch(panel,/<span>Heute<\/span>/);
   assert.doesNotMatch(panel,/type="date"/);
   assert.match(panel,/id="speed-popover"[^>]*hidden/);
   assert.match(panel,/id="speed"[^>]*type="range"[^>]*max="240"/);
   assert.match(panel,/aria-orientation="vertical"/);
   assert.match(css,/writing-mode:vertical-lr;direction:rtl/);
-  assert.match(app,/if\(syncSpeedMode\(S,renderer\?\.planetId\?'planet':'solar'\)\)/);
+  assert.match(app,/if\(syncSpeedMode\(S,view\)\)/);
   assert.match(app,/\$\('speed-btn'\)\.addEventListener\('click'/);
   assert.match(app,/\$\('today-btn'\)\.addEventListener\('click',\(\)=>\{S\.time=Date\.now\(\);updateTime\(\);updateDetail\(\);\}\)/);
-  assert.match(app,/if\(e\.key==='Escape'\)\{setLayerPopover\(false\);setSpeedPopover\(false\)/);
+  assert.match(app,/if\(e\.key==='Escape'\)\{/);
   assert.match(app,/!\$\('speed-picker-wrap'\)\.contains\(e\.target\)/);
 });

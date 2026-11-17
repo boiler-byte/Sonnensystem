@@ -12,11 +12,12 @@ function makeScene(planetId=null){
     rendered:bodies,positions:new Map(bodies.map(b=>[b.id,[0,0,0]]))};
 }
 
-test('v16: standard preset enables stars, planets and moons, not artificial satellites',()=>{
-  assert.deepEqual([...STANDARD_LAYERS],['planet','moon','star']);
+test('v25: solar Standard excludes moons and artificial satellites',()=>{
+  assert.deepEqual([...STANDARD_LAYERS],['star','planet']);
   const standard=layerPreset('standard');
-  for(const type of ['star','planet','moon']) assert.ok(layerEnabled(standard,type));
-  assert.ok(!layerEnabled(standard,'satellite'));
+  for(const type of ['star','planet']) assert.ok(layerEnabled(standard,type));
+  for(const type of ['moon','satellite']) assert.ok(!layerEnabled(standard,type));
+  assert.equal(layerEnabled(standard,'asteroid'),false);
 });
 
 test('v16: density cap holds in both views; selection is always visible',()=>{

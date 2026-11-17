@@ -19,6 +19,7 @@ export const BODY_FS = `
 precision highp float;
 varying vec3 vP; varying vec3 vN; varying vec2 vUV;
 uniform vec3 uBase; uniform vec3 uLight; uniform float uStyle; uniform float uSeed; uniform float uTime;
+uniform float uOptimizedLighting;
 uniform sampler2D uDiffuse; uniform float uHasTexture;
 float hash(vec3 p){p=fract(p*.1031);p+=dot(p,p.yxz+33.33);return fract((p.x+p.y)*p.z);}
 float noise3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
@@ -58,8 +59,10 @@ void main() {
  } else { // Pluto / Io
   col=mix(uBase*.74,vec3(.89,.77,.62),.38+.23*sin(vP.y*25.0+fine*7.0));
  }
- float light=clamp(.13+.89*max(dot(n,normalize(uLight)),0.0),.08,1.0);
- if (uStyle<.5) light=1.0;
+ float diffuse=max(dot(n,normalize(uLight)),0.0);
+ float light=clamp(.13+.89*diffuse,.08,1.0); // Realistisch: unchanged v28 lighting.
+ light=mix(light,.50+.50*diffuse,step(.5,uOptimizedLighting)); // Optimiert: visible night side.
+ if (uStyle<.5) light=1.0; // The Sun stays self-luminous in both modes.
  float rim=pow(1.0-abs(dot(n,normalize(vec3(.18,.20,1.0)))),3.0);
  col=col*light + (uStyle<.5 ? vec3(.12,.035,.0) : uBase*.05*rim);
  gl_FragColor=vec4(pow(max(col,0.0),vec3(.92)),1.0);

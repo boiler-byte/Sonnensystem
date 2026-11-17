@@ -41,7 +41,7 @@ test('All ES module imports are local, resolvable and precached', async()=>{
   assert.ok(modules.length>=20,'Modularized frontend has multiple components');
   const sw=await file('sw.js');
   const shell=JSON.parse(sw.match(/const SHELL=(\[[^;]+\]);/)[1]);
-  assert.match(sw,/sonnensystem-shell-v16/);
+  assert.match(sw,/sonnensystem-shell-v29/);
   assert.equal(new Set(shell).size,shell.length,'No duplicate precached files');
   for(const m of modules){
     const browserPath='./'+m.slice(root.length).replaceAll('\\','/');
@@ -63,7 +63,7 @@ test('All ES module imports are local, resolvable and precached', async()=>{
   const html=await file('index.html');
   assert.match(html,/src="src\/app\.js"/);
   assert.match(html,/href="css\/styles\.css"/);
-  assert.match(html,/V16/);
+  assert.match(html,/V29/);
   const manifest=JSON.parse(await file('manifest.webmanifest'));
   for(const item of manifest.icons)assert.ok((await stat(join(root,item.src))).size>10000);
 });

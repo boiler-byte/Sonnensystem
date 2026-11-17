@@ -37,6 +37,7 @@ export function attachCameraControls(renderer) {
       if(prev && next){
         // Pinch distance (not vertical finger motion) controls zoom immediately.
         const dist=clamp(renderer.camera.dist*prev.distance/next.distance,2.2,100);
+        if(dist!==renderer.camera.dist)renderer.markCameraMoved();
         renderer.camera.dist=dist;
         renderer.camera.desiredDist=dist;
         renderer.panByPixels(next.x-prev.x,next.y-prev.y);
@@ -47,7 +48,7 @@ export function attachCameraControls(renderer) {
     if(!renderer.drag || renderer.drag.id!==e.pointerId)return;
     if(Math.hypot(e.clientX-renderer.drag.startX,e.clientY-renderer.drag.startY)>3)renderer.drag.moved=true;
     if(renderer.drag.button===2 || e.shiftKey)renderer.panByPixels(dx,dy);
-    else{renderer.camera.theta-=dx*.0051;renderer.camera.phi=clamp(renderer.camera.phi+dy*.005,.16,1.55);}
+    else{if(dx || dy)renderer.markCameraMoved();renderer.camera.theta-=dx*.0051;renderer.camera.phi=clamp(renderer.camera.phi+dy*.005,.16,1.55);}
   });
   const finishPointer=(e,cancelled)=>{
     if(!renderer.pointers.has(e.pointerId))return;
@@ -68,7 +69,9 @@ export function attachCameraControls(renderer) {
   c.addEventListener('pointercancel',e=>finishPointer(e,true));
   c.addEventListener('wheel',e=>{
     e.preventDefault();
-    renderer.camera.desiredDist=clamp(renderer.camera.desiredDist*Math.exp(e.deltaY*.001),2.2,100);
+    const distance=clamp(renderer.camera.desiredDist*Math.exp(e.deltaY*.001),2.2,100);
+    if(distance!==renderer.camera.desiredDist)renderer.markCameraMoved();
+    renderer.camera.desiredDist=distance;
   },{passive:false});
 
   const arrows=new Set(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown']);

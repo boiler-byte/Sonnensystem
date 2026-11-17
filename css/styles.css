@@ -27,10 +27,7 @@
   .mobile-sheet{--sheet-visible:72px;display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:0;height:calc(100dvh - 68px - env(safe-area-inset-top));z-index:40;transform:translate3d(0,calc(100% - var(--sheet-visible)),0);transition:transform .28s cubic-bezier(.22,.82,.24,1);background:linear-gradient(155deg,#111b2b,#0a1220 85%);border:1px solid #334357;border-bottom:0;border-radius:19px 19px 0 0;box-shadow:0 -18px 48px #0008;overflow:hidden;will-change:transform}
   .mobile-sheet.dragging{transition:none}
   .sheet-header{flex:none;touch-action:none;user-select:none;position:relative;background:linear-gradient(110deg,#172438,#0f1828);border-bottom:1px solid #2d3d4e;padding-bottom:env(safe-area-inset-bottom)}
-  .sheet-handle{height:23px;width:100%;border:0;background:none;display:flex;align-items:center;justify-content:center;padding:0;touch-action:none;cursor:grab}
-  .sheet-handle:active{cursor:grabbing}
-  .sheet-grabber{height:4px;width:38px;border-radius:999px;background:#657c91;box-shadow:0 0 0 1px #132233}
-  .sheet-tabs{height:51px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 9px;gap:7px}
+  .sheet-tabs{height:51px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 9px;gap:7px}
   .sheet-tab{min-width:0;border:0;background:transparent;border-radius:9px 9px 0 0;color:#94a5b8;font-size:12px;font-weight:660;display:flex;align-items:center;justify-content:center;gap:7px;position:relative;touch-action:none}
   .sheet-tab.active{background:#203147;color:#e9c59a}
   .sheet-tab.active:after{content:"";position:absolute;bottom:0;left:21%;right:21%;height:2px;background:#d6ab76;border-radius:3px 3px 0 0}
@@ -102,7 +99,6 @@
 .planet-view-copy strong{font-size:12px;font-weight:700}
 .planet-view-copy small{font-size:10px;color:#a6abb2}
 .planet-view-btn .button-arrow{font-size:17px;flex:none}
-@media(max-width:550px){.viewport-topright.planet-active{display:flex;top:18px;right:13px;max-width:70%;text-align:right}.viewport-topright.planet-active .view-mode{font-size:8px;line-height:1.5}}
 
 /* v7: Structured, editorial content in the object details. */
 .editorial-content{margin:0 0 18px;display:grid;gap:14px}
@@ -230,7 +226,7 @@
   .sheet-content>.detail .detail-top{display:flex}
 }
 
-/* v14: narrow vertical control panel; the same controls move into mobile tab 3. */
+/* v14: narrow vertical desktop control panel. */
 @media(min-width:771px){
   .viewport>.control-panel{
     width:184px;max-width:calc(100% - 26px);right:15px;top:16px;
@@ -251,70 +247,10 @@
 .control-panel .scene-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding-top:9px}
 .control-panel .scene-tool{min-width:0;min-height:39px;padding:6px;gap:0}
 .scene-tool svg{display:block;width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.mobile-overview{display:none}
 @media(min-width:771px) and (max-width:1030px){
   .viewport>.control-panel{width:180px;top:12px;right:13px}
   .detail{top:395px}
 }
-@media(max-width:770px){
-  /* On mobile only the overview action remains over the 3D canvas. */
-  .viewport>.control-panel{display:none!important}
-  .mobile-overview{
-    display:flex;position:absolute;right:max(14px,env(safe-area-inset-right));
-    bottom:calc(var(--sheet-overlay-visible,72px) + 14px);z-index:10;pointer-events:auto;
-    transition:bottom .28s cubic-bezier(.22,.82,.24,1);
-  }
-  .mobile-overview.dragging{transition:none}
-  .mobile-overview .scene-tool{
-    width:46px;height:46px;min-height:46px;padding:0;
-    display:flex;align-items:center;justify-content:center;
-    background:#172437ed;border:1px solid #5b6d83;border-radius:11px;
-    color:#e5c498;box-shadow:0 7px 27px #0009;backdrop-filter:blur(12px);
-  }
-  .mobile-overview .scene-tool:hover{background:#26384b;color:#ffe1ad}
-  .sheet-content>.control-panel{
-    position:static!important;inset:auto!important;display:flex!important;
-    flex:1;flex-direction:column;align-items:stretch;gap:13px;
-    min-width:0;width:100%!important;max-width:none;height:auto;min-height:0;
-    overflow-y:auto;overscroll-behavior:contain;
-    padding:21px 19px calc(29px + env(safe-area-inset-bottom))!important;
-    margin:0;border:0;border-radius:0;background:none;box-shadow:none;
-    backdrop-filter:none;text-align:left;pointer-events:auto;
-  }
-  .sheet-content>.control-panel .view-mode-select{min-height:44px;font-size:12px}
-  .sheet-content>.control-panel .time-panel{
-    display:block!important;position:static!important;inset:auto!important;
-    width:100%;height:auto;min-width:0;min-height:0;overflow:visible;
-    margin:0!important;padding:0!important;background:none!important;border:0!important;
-    box-shadow:none!important;
-  }
-  .sheet-content>.control-panel .timeline-controls{
-    display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:0;
-  }
-  .sheet-content>.control-panel .timeline-button{
-    width:100%;height:46px;min-height:46px;justify-content:center;
-  }
-  .sheet-content>.control-panel .speed-picker-wrap{width:100%}
-  .sheet-content>.control-panel .speed-button{padding:0 14px;justify-content:space-between}
-  .sheet-content>.control-panel .now-button{justify-content:center;padding:0 10px;gap:9px}
-  .sheet-content>.control-panel .speed-popover{
-    position:relative;top:auto;left:auto;right:auto;bottom:auto;
-    transform:none;width:min(100%,250px);margin:11px auto 0;
-  }
-  .sheet-content>.control-panel .scene-tools{
-    display:grid;position:static;grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;padding-top:14px;border-top:1px solid #2b3c50;
-  }
-  .sheet-content>.control-panel .scene-tool{min-height:47px;justify-content:center}
-  .sheet-content>.control-panel .scene-tool svg{width:23px;height:23px}
-  /* Desktop overview is moved into the floating slot, never duplicated. */
-  .sheet-content>.control-panel #reset-camera{display:none!important}
-}
-@media(max-width:550px){
-  .mobile-overview{bottom:calc(var(--sheet-overlay-visible,72px) + 14px)}
-}
-
-
 /* v15: 40% narrower desktop toolbar, label-free view picker and accessible layer dropdown. */
 @media(min-width:771px){
   .viewport>.control-panel{width:110px;max-width:calc(100% - 24px);padding:8px;gap:8px;right:13px;top:14px}
@@ -339,28 +275,400 @@
 .layer-button:hover,.layer-button[aria-expanded="true"]{background:#26394c;border-color:#9e7b52}
 .layer-button>svg{height:14px;width:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .layer-button #layer-summary{font-size:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-weight:710}
-.layer-chevron{font-size:13px;flex:none;color:#a8b9cb;line-height:1}
-.layer-popover{position:absolute;z-index:35;top:0;right:calc(100% + 12px);width:227px;box-sizing:border-box;max-height:min(70vh,490px);overflow-y:auto;padding:14px;border:1px solid #455b72;border-radius:11px;background:#142134;box-shadow:0 18px 44px #000b;scrollbar-width:thin;scrollbar-color:#405875 transparent}
+/* v25: compact chooser and a contiguous segmented preset switch. */
+.layer-popover{position:absolute;z-index:35;top:0;right:calc(100% + 12px);width:152px;box-sizing:border-box;max-height:min(70vh,490px);overflow-y:auto;padding:10px 9px;border:1px solid #455b72;border-radius:11px;background:#142134;box-shadow:0 18px 44px #000b;scrollbar-width:thin;scrollbar-color:#405875 transparent}
 .layer-popover[hidden]{display:none!important}
-.layer-popover-title{font-size:10px;font-weight:760;letter-spacing:1.35px;color:#d9bc96;margin-bottom:12px}
-.layer-presets{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
-.layer-preset{min-height:36px;background:#172839;color:#a8b8c9;border:1px solid #3d4f63;border-radius:7px;font-size:11px;font-weight:690;cursor:pointer}
-.layer-preset.active{background:#453828;color:#f5d6a4;border-color:#a48054}
-.layer-options{display:grid;gap:3px;border-top:1px solid #304359;padding-top:9px}
-.layer-option{min-height:35px;display:flex;align-items:center;gap:10px;border-radius:6px;padding:4px 6px;color:#d0dbea;font-size:11px;cursor:pointer}
+.layer-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0 0 9px;padding:3px;border:1px solid #40546c;border-radius:9px;background:#0c1929}
+.layer-preset{min-width:0;min-height:32px;padding:4px 2px;background:transparent;color:#a8b8c9;border:0;border-radius:6px;font-size:10px;font-weight:690;cursor:pointer;transition:background .15s,color .15s}
+.layer-preset:hover,.layer-preset:focus-visible{color:#f4e1c4;background:#27394e}
+.layer-preset.active,.layer-preset.active:hover,.layer-preset.active:focus-visible{background:#5b4630;color:#ffdfac;box-shadow:0 1px 4px #0008}
+.layer-preset:focus-visible{outline:2px solid #e8b778;outline-offset:1px}
+.layer-options{display:grid;gap:3px}
+.layer-option{min-height:35px;display:flex;align-items:center;gap:6px;border-radius:6px;padding:4px 3px;color:#d0dbea;font-size:11px;cursor:pointer}
 .layer-option:hover,.layer-option:focus-within{background:#25384d}
 .layer-option input{accent-color:#d3a76a;width:16px;height:16px;flex:none;cursor:pointer}
 .layer-option span{flex:1}
 .layer-note{font-size:10px;line-height:1.5;color:#93a7ba;margin:10px 0 0}
 /* Category chips were removed from catalog; reclaim the space below search. */
 .catalog>.search{margin-bottom:9px}
-@media(max-width:770px){
-  .sheet-content>.control-panel .layer-button{min-height:46px;padding:9px 13px;justify-content:space-between}
-  .sheet-content>.control-panel .layer-button #layer-summary{font-size:12px}
-  .sheet-content>.control-panel .layer-popover{position:relative;top:auto;right:auto;width:100%;max-height:none;padding:14px;margin-top:10px;box-shadow:none;background:#142235}
-  .sheet-content>.control-panel .layer-option{min-height:39px;font-size:12px}
-  .sheet-content>.control-panel .layer-preset{min-height:42px;font-size:12px}
-}
-/* At tablet widths the popover must win over the floating details panel. */
 @media (min-width:771px){.viewport>.control-panel{z-index:22}}
 @media (min-width:771px) and (max-width:1030px){.detail{top:395px;bottom:13px}}
+
+/* The orbit toggles now belong to the layer chooser, not a separate scene icon. */
+.orbit-option{width:100%;min-height:39px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:5px 0;padding:6px 8px;background:#172739;border:1px solid #354a63;border-radius:7px;text-align:left;color:#c7d3e1;font-family:inherit;font-weight:600;font-size:11px;line-height:1.35;cursor:pointer}
+.orbit-option:hover,.orbit-option:focus-visible{background:#263b50;border-color:#7a94aa}
+.orbit-option.active{color:#ebf2fc;border-color:#547086;background:#1c3144}
+.orbit-toggle-indicator{font-family:inherit;font-weight:700;font-size:10px;line-height:1.3;border:1px solid #516276;border-radius:10px;padding:2px 7px;color:#9baaba;background:#0f1c2b}
+.orbit-option.active .orbit-toggle-indicator{color:#c6ecc7;border-color:#587b67;background:#234234}
+.layer-option span::before{content:"";width:6px;height:6px;display:inline-block;vertical-align:middle;margin:0 4px 2px 0;border-radius:50%;background:var(--category-color,#E6EDF5)}
+
+/* v18: single, two-line time trigger with all actions inside one compact menu. */
+.control-panel .time-panel .speed-picker-wrap{position:relative;min-width:0;width:100%}
+.control-panel .time-panel .time-trigger{
+  width:100%;min-width:0;min-height:55px;height:55px;
+  display:flex;align-items:center;justify-content:space-between;gap:4px;
+  padding:7px 5px;border-radius:8px;text-align:left;
+}
+.control-panel .time-panel .speed-button-copy{
+  display:flex;flex:1;flex-direction:column;gap:5px;min-width:0;
+}
+.control-panel .time-panel .speed-button-copy small{
+  display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-size:9px;line-height:1.1;color:#f0c68b;
+  font-weight:750;font-variant-numeric:tabular-nums;
+}
+.control-panel .time-panel #sim-date-label{
+  display:block;color:#cbd8e6;font-size:9px;letter-spacing:0;line-height:1.15;
+  font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.control-panel .time-panel .speed-popover{
+  position:absolute;top:0;right:calc(100% + 12px);bottom:auto;left:auto;
+  transform:none;margin:0;width:216px;box-sizing:border-box;
+  padding:13px 13px 12px;z-index:35;
+}
+.control-panel .time-panel .speed-popover-header{gap:5px}
+.control-panel .time-panel .speed-popover-header>span{font-size:9px}
+.control-panel .time-panel .speed-popover-header strong{font-size:14px}
+.control-panel .time-panel #sim-date-readout{
+  display:block;font-size:10px;font-weight:550;color:#b3c4d7;
+  font-variant-numeric:tabular-nums;
+}
+.control-panel .time-panel .vertical-speed-control{
+  height:196px;gap:7px;margin:12px 0 0;
+}
+.control-panel .time-panel .vertical-speed-control #speed{
+  width:42px;max-width:42px;min-height:0;height:158px;
+  writing-mode:vertical-lr;direction:rtl;touch-action:none;
+}
+.control-panel .time-panel .time-popover-actions{
+  display:grid;grid-template-columns:56px minmax(0,1fr);gap:9px;
+  align-items:stretch;border-top:1px solid #33465b;
+  padding-top:11px;margin-top:12px;
+}
+.control-panel .time-panel .time-popover-actions .timeline-button{
+  min-width:0;min-height:41px;height:41px;padding:6px 8px;
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+}
+.control-panel .time-panel .time-popover-actions .play-button{width:100%}
+.control-panel .time-panel .time-popover-actions .now-button{
+  flex-direction:row;flex-wrap:nowrap;gap:7px;white-space:nowrap;
+  padding:6px 10px;border:1px solid #4b6075;color:#e6eefa;
+  background:#1e3045;font-size:11px;font-weight:690;
+}
+.control-panel .time-panel .time-popover-actions .now-button:hover{background:#30445a;border-color:#b08c62}
+.control-panel .time-panel .time-popover-actions .now-button span{font-size:11px;line-height:1.3}
+.control-panel .time-panel .time-popover-actions .now-button svg{
+  display:block;width:17px;height:17px;flex:none;fill:none;
+  stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* v19: both menus are right-aligned immediately below their own buttons. */
+.control-panel .layer-picker-wrap,.control-panel .time-panel .speed-picker-wrap{position:relative;min-width:0}
+.control-panel .layer-popover{
+  top:calc(100% + 7px);right:0;left:auto;bottom:auto;
+  width:152px;max-width:calc(100vw - 30px);max-height:min(69vh,570px);
+  z-index:45;transform:none;
+}
+.layer-orbit-section{margin-top:10px;padding-top:9px;border-top:1px solid #34485d}
+.layer-orbit-section .orbit-option{min-height:34px;margin:4px 0;padding:5px 6px;gap:5px}
+/* Contrast and colours are dependent on the orbit toggle, so they are nested. */
+.layer-orbit-section .orbit-option.orbit-suboption{margin-left:9px;width:calc(100% - 9px);padding:5px 5px}
+.control-panel .scene-tools{grid-template-columns:minmax(0,1fr)}
+/* v21: the time menu is exactly the width of its trigger and stacks its controls. */
+.control-panel .time-panel .speed-popover{
+  position:absolute;top:calc(100% + 7px);right:0;left:auto;bottom:auto;
+  width:100%;min-width:0;max-width:none;box-sizing:border-box;
+  padding:9px 7px 10px;transform:none;z-index:45;
+  max-height:calc(100dvh - 220px);overflow-y:auto;overscroll-behavior:contain;
+}
+.control-panel .time-panel .speed-popover-header{
+  display:flex;align-items:center;justify-content:center;
+  margin:0 0 9px;padding:0 0 8px;border-bottom:1px solid #33465b;
+}
+.control-panel .time-panel .speed-popover-header strong{
+  font-size:10px;line-height:1.25;text-align:center;white-space:nowrap;
+}
+.control-panel .time-panel .time-popover-grid{
+  display:flex;flex-direction:column;align-items:stretch;gap:10px;
+}
+.control-panel .time-panel .vertical-speed-control{
+  height:auto;min-width:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:8px;margin:0;
+}
+.control-panel .time-panel .vertical-speed-control>span{
+  font-size:9px;line-height:1.15;text-align:center;white-space:normal;
+}
+/* A horizontal native range rotated -90deg gives a centered thumb on every engine. */
+.control-panel .time-panel .speed-slider-rail{
+  position:relative;width:44px;height:150px;flex:none;
+}
+.control-panel .time-panel .vertical-speed-control #speed{
+  position:absolute;top:50%;left:50%;display:block;
+  width:132px;min-width:132px;max-width:132px;
+  height:44px;min-height:44px;max-height:44px;
+  margin:0;padding:0;border:0;background:transparent;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  writing-mode:horizontal-tb;direction:ltr;touch-action:none;
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+}
+.control-panel .time-panel .time-popover-actions{
+  display:flex;flex-direction:column;align-items:stretch;
+  min-width:0;gap:8px;margin:0;padding:0;border:0;
+}
+.control-panel .time-panel .time-popover-buttons{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;
+}
+.control-panel .time-panel .time-popover-actions .timeline-button{
+  min-width:0;min-height:36px;height:36px;width:100%;padding:5px 2px;
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+}
+.control-panel .time-panel .time-popover-actions .now-button{
+  flex-direction:row;flex-wrap:nowrap;gap:0;padding:5px 2px;
+}
+.control-panel .time-panel .time-popover-actions .now-button svg{
+  display:block;width:17px;height:17px;flex:none;
+}
+.control-panel .time-panel .time-popover-date{
+  display:block;margin:0;padding:8px 0 0;border-top:1px solid #33465b;
+  text-align:center;font-size:10px;font-weight:600;line-height:1.6;
+  color:#c3d2e3;font-variant-numeric:tabular-nums;white-space:pre-line;
+}
+@media(max-height:690px){
+  .control-panel .time-panel .speed-slider-rail{height:116px}
+  .control-panel .time-panel .vertical-speed-control #speed{width:98px;min-width:98px;max-width:98px}
+  .control-panel .time-panel .speed-popover{max-height:calc(100dvh - 230px)}
+}
+
+/* v20: scene controls stay in the mobile viewport; only catalog/details use the sheet. */
+@media(max-width:770px){
+  .viewport>.control-panel{
+    display:flex!important;top:11px;right:max(10px,env(safe-area-inset-right));
+    width:132px;max-width:calc(100% - 20px);padding:9px;gap:8px;
+    z-index:22;align-items:stretch;
+  }
+  .viewport>.control-panel .view-mode-select{min-height:43px;font-size:10px;padding:7px 23px 7px 7px}
+  .viewport>.control-panel .layer-button{min-height:43px;padding:6px 7px}
+  .viewport>.control-panel .layer-button #layer-summary{font-size:10px}
+  .viewport>.control-panel .time-panel .time-trigger{height:54px;min-height:54px;padding:7px}
+  .viewport>.control-panel .time-panel .speed-button-copy small{font-size:10px}
+  .viewport>.control-panel .time-panel #sim-date-label{font-size:10px}
+  .viewport>.control-panel .scene-tools{grid-template-columns:minmax(0,1fr);padding-top:8px}
+  .viewport>.control-panel .scene-tool{min-height:43px;justify-content:center}
+  .viewport>.control-panel .layer-popover{
+    max-height:min(57dvh,calc(100dvh - 255px));
+    overflow-y:auto;overscroll-behavior:contain;
+  }
+}
+@media(max-width:550px){
+  .viewport>.control-panel{display:flex!important;top:10px;right:max(9px,env(safe-area-inset-right))}
+}
+/* v21: filled track follows the range value; the thumb is centered on the track. */
+.control-panel .time-panel .vertical-speed-control #speed{
+  --speed-fill:#dab173;--speed-empty:#40536a;--speed-progress:9.583333%;
+}
+.control-panel .time-panel .vertical-speed-control #speed::-webkit-slider-runnable-track{
+  height:6px;border:1px solid #8092a7;border-radius:999px;
+  background:linear-gradient(to right,
+    var(--speed-fill) 0%,var(--speed-fill) var(--speed-progress),
+    var(--speed-empty) var(--speed-progress),var(--speed-empty) 100%);
+}
+.control-panel .time-panel .vertical-speed-control #speed::-moz-range-track{
+  height:6px;border:1px solid #8092a7;border-radius:999px;
+  background:linear-gradient(to right,
+    var(--speed-fill) 0%,var(--speed-fill) var(--speed-progress),
+    var(--speed-empty) var(--speed-progress),var(--speed-empty) 100%);
+}
+.control-panel .time-panel .vertical-speed-control #speed::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:26px;height:26px;
+  margin-top:-11px;border-radius:50%;border:3px solid #453221;background:#ffedc7;
+  box-shadow:0 0 0 2px #172437,0 0 0 4px #e3b773,0 3px 9px #000b;
+}
+.control-panel .time-panel .vertical-speed-control #speed::-moz-range-thumb{
+  width:26px;height:26px;border-radius:50%;border:3px solid #453221;
+  background:#ffedc7;box-sizing:border-box;
+  box-shadow:0 0 0 2px #172437,0 0 0 4px #e3b773,0 3px 9px #000b;
+}
+.control-panel .time-panel .vertical-speed-control #speed:focus-visible{
+  outline:2px solid #f3d8a1;outline-offset:2px;border-radius:12px;
+}
+/* v20: the label switch shares the look and status semantics of the orbit switches. */
+.layer-label-section{margin-top:11px;padding-top:10px;border-top:1px solid #34485d}
+.layer-label-section .orbit-option,.layer-display-section .orbit-option{min-height:37px;margin:4px 0;padding:5px 7px}
+.layer-display-section{margin-top:2px}
+/* v29: extended display toggles keep both lighting names readable. */
+.viewport>.control-panel .layer-popover{width:188px;max-height:min(85dvh,calc(100dvh - 78px))}
+@media(max-width:770px){
+  .viewport>.control-panel .layer-popover{max-height:min(80dvh,calc(100dvh - 150px))}
+}
+.layer-display-section .orbit-toggle-indicator{flex:none;padding:2px 5px}
+.layer-display-section .orbit-option>span:first-child{min-width:0}
+
+
+/* v22: full-height atlas without a topbar; shared desktop/mobile object and details tabs. */
+#app{min-height:0}
+.shell{grid-template-columns:minmax(286px,330px) minmax(0,1fr)}
+.sidebar{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;
+  z-index:12;background:linear-gradient(165deg,#0e1624,#0b1220);border-right:1px solid var(--line)}
+.sidebar-tabs{height:60px;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;padding:9px 11px 0;border-bottom:1px solid #29384b;background:#101a2a}
+.sidebar-tab{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  color:#93a5ba;background:transparent;border:0;border-radius:9px 9px 0 0;
+  font-size:12px;font-weight:680;transition:background .15s,color .15s}
+.sidebar-tab:hover{background:#1a293e;color:#e4ebf3}
+.sidebar-tab.active{background:#203147;color:#e9c59a}
+.sidebar-tab.active:after{content:"";position:absolute;bottom:0;left:20%;right:20%;height:2px;
+  background:#d6ab76;border-radius:3px 3px 0 0}
+.sidebar-tab .sheet-tab-icon{font-size:18px;line-height:1;color:#a4b6c8}
+.sidebar-tab.active .sheet-tab-icon{color:#d6ab76}
+.sidebar-tab:focus-visible,.sheet-tab:focus-visible{outline:2px solid #dbb77d;outline-offset:-2px}
+.sidebar-content{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;overflow:hidden}
+.sidebar-content>[hidden]{display:none!important}
+.sidebar-content>.catalog,.sidebar-content>.detail{display:flex;flex:1;position:relative!important;
+  inset:auto!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;
+  width:100%!important;height:auto!important;max-width:none!important;min-height:0;
+  transform:none!important;border:0;border-radius:0;box-shadow:none;overflow:hidden;z-index:auto}
+.sidebar-content>.catalog{flex-direction:column;background:transparent}
+.sidebar-content>.detail{flex-direction:column;background:linear-gradient(165deg,#10192a,#0b1421 80%)}
+.viewport-actions{position:absolute;top:14px;left:14px;z-index:23;display:flex;align-items:center;gap:7px}
+.viewport-actions .icon-button{width:34px;height:34px;background:#132035ed;border:1px solid #41536d;
+  box-shadow:0 5px 19px #0005;color:#cbd6e3;backdrop-filter:blur(10px)}
+.viewport-actions .icon-button:hover{border-color:#cba36d;color:#fff}
+.viewport-actions .mobile-menu{display:none}
+@media(min-width:771px){
+  .shell{grid-template-columns:clamp(286px,25vw,340px) minmax(0,1fr)!important}
+}
+@media(max-width:770px){
+  .shell{display:flex;min-height:0}
+  .shell>.sidebar{display:none!important}
+  .shell>.viewport{flex:1;min-width:0;width:100%}
+  .viewport-actions{top:max(11px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left))}
+  .viewport-actions .mobile-menu{display:grid}
+  .mobile-sheet{height:100dvh}
+}
+@media(max-width:550px){
+  .mobile-sheet{height:100dvh}
+}
+
+/* v23: only categories available for the active planet appear in the layer picker. */
+.layer-option[hidden]{display:none!important}
+
+/* v24: catalog search and optional planet-only filter share a single responsive row. */
+.catalog-search-row{display:flex;align-items:stretch;gap:8px;margin:22px 17px 9px;min-width:0}
+.catalog-search-row .search{margin:0;flex:1;min-width:0}
+.catalog-planet-filter{width:41px;height:41px;flex:none;display:grid;place-items:center;
+  border:1px solid #354b64;border-radius:8px;background:#152437;color:#9fb5c9;
+  transition:background .15s,border-color .15s,color .15s}
+.catalog-planet-filter svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round}
+.catalog-planet-filter:hover{background:#263a4e;border-color:#728da8;color:#e5eef9}
+.catalog-planet-filter.active{background:#3b3329;border-color:#b8915c;color:#f2d1a0}
+.catalog-planet-filter:focus-visible{outline:2px solid #d9b587;outline-offset:2px}
+.catalog-planet-filter[hidden]{display:none!important}
+
+/* v26: top-right circular zoom-out reset, with a fixed 100px, two-control panel. */
+.viewport-actions{
+  z-index:36;left:auto;right:max(15px,env(safe-area-inset-right));
+  top:max(14px,env(safe-area-inset-top));
+}
+.viewport-actions .camera-reset-button{
+  width:40px;height:40px;flex:none;border:1px solid #71859c;
+  border-radius:50%;background:#132238ed;color:#e5edf7;
+  box-shadow:0 5px 20px #0009;backdrop-filter:blur(12px);
+}
+.viewport-actions .camera-reset-button:hover{
+  border-color:#d7b37c;background:#25394f;color:#fff;
+}
+.viewport-actions .camera-reset-button:focus-visible{
+  outline:2px solid #dfb77d;outline-offset:3px;
+}
+.viewport-actions .camera-reset-button svg{
+  width:23px;height:23px;display:block;fill:none;stroke:currentColor;
+  stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
+}
+.viewport>.control-panel{
+  width:100px!important;max-width:calc(100% - 24px);
+  right:max(15px,env(safe-area-inset-right));
+  top:calc(max(14px,env(safe-area-inset-top)) + 52px);
+  padding:8px;gap:8px;
+}
+.viewport>.control-panel .layer-button{
+  position:relative;min-height:40px;padding:6px 14px;justify-content:center;
+}
+.viewport>.control-panel .layer-button>svg{width:19px;height:19px}
+@media(max-width:770px){
+  .viewport-actions{right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top))}
+  .viewport>.control-panel{
+    width:100px!important;right:max(10px,env(safe-area-inset-right));
+    top:calc(max(10px,env(safe-area-inset-top)) + 52px);padding:8px;gap:8px;
+  }
+  .viewport>.control-panel .layer-button{min-height:42px;padding:6px 14px}
+  .viewport>.control-panel .time-panel .time-trigger{min-height:50px;height:50px;padding:5px}
+  .viewport>.control-panel .time-panel .speed-button-copy small{font-size:9px}
+  .viewport>.control-panel .time-panel #sim-date-label{font-size:9px}
+}
+
+/* v27: floating icon stack without a panel frame; reset is at viewport bottom-right. */
+.viewport>.control-panel{
+  width:58px!important;max-width:calc(100% - 20px);
+  padding:0!important;border:0!important;background:none!important;
+  box-shadow:none!important;backdrop-filter:none!important;
+  right:max(15px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));
+}
+.viewport-actions{
+  top:auto!important;bottom:max(16px,env(safe-area-inset-bottom));
+  right:max(15px,env(safe-area-inset-right));left:auto;
+}
+.viewport>.control-panel .layer-button{min-height:43px;padding:6px;justify-content:center}
+.viewport>.control-panel .time-panel .time-trigger{
+  min-height:54px;height:54px;justify-content:center;text-align:center;padding:6px 2px;
+}
+.viewport>.control-panel .time-panel .speed-button-copy{align-items:center;gap:5px}
+.viewport>.control-panel .time-panel .speed-button-copy small{font-size:9px}
+.viewport>.control-panel .time-panel #sim-date-label{font-size:7.7px;letter-spacing:-.25px}
+/* Popover may exceed the 58px trigger; its buttons and date must remain usable. */
+.viewport>.control-panel .time-panel .speed-popover{width:116px;min-width:116px;max-width:calc(100vw - 20px)}
+/* Detail position is a live, category-local previous/next navigation. */
+.detail-top .detail-title{flex:1;min-width:0}
+.detail-index-nav{display:flex;align-items:center;gap:3px;flex:none;margin-left:7px}
+.detail-top .detail-index-nav .detail-index{
+  flex:none;margin:0;min-width:49px;text-align:center;white-space:nowrap;
+  font-size:10px;letter-spacing:.25px;color:#afc0d1;font-variant-numeric:tabular-nums;
+}
+.detail-index-button{
+  width:25px;height:29px;flex:none;display:grid;place-items:center;padding:0;
+  border:1px solid #344b62;border-radius:6px;background:#18283a;color:#bed0e1;
+}
+.detail-index-button svg{
+  width:14px;height:14px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+}
+.detail-index-button:hover:not(:disabled){border-color:#b5956c;background:#30435b;color:#fff}
+.detail-index-button:disabled{opacity:.3;cursor:default}
+.detail-index-button:focus-visible{outline:2px solid #d9b587;outline-offset:2px}
+/* Half-open sheet has a half-height scrollport, not a hidden full-height scrollport. */
+@media(max-width:770px){
+  .viewport>.control-panel{
+    width:58px!important;padding:0!important;border:0!important;background:none!important;
+    right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));
+  }
+  .viewport-actions{
+    top:auto!important;bottom:calc(52px + max(12px,env(safe-area-inset-bottom)));
+    right:max(10px,env(safe-area-inset-right));
+  }
+  .mobile-sheet{
+    height:var(--sheet-visible,52px)!important;transform:none!important;
+    transition:height .28s cubic-bezier(.22,.82,.24,1);
+    will-change:height;
+  }
+  .mobile-sheet.dragging{transition:none}
+  .sheet-header{
+    padding-bottom:0;touch-action:none;cursor:grab;user-select:none;
+  }
+  .sheet-header:active{cursor:grabbing}
+  .sheet-header:focus-visible{outline:2px solid #d9b587;outline-offset:-2px}
+  .sheet-content{flex:1;min-height:0;overflow:hidden}
+  .sheet-content>.catalog .object-list,.sheet-content>.detail .detail-scroll{
+    min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  }
+  .sheet-content>.catalog .catalog-bottom{flex:none}
+}
+@media(prefers-reduced-motion:reduce){.mobile-sheet{transition:none}}

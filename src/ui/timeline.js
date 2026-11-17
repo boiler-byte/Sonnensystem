@@ -7,7 +7,7 @@ const YEAR = 365.25;
 // logarithmic range; the exact default is an integer slider step.
 export const SPEED_STEPS = 240;
 export const SPEED_MODES = Object.freeze({
-  solar: Object.freeze({min: HOUR, defaultSpeed: 3 * HOUR, max: 10 * YEAR, pivot: 23}),
+  solar: Object.freeze({min: HOUR, defaultSpeed: 5, max: 10 * YEAR, pivot: 101}),
   planet: Object.freeze({min: MINUTE, defaultSpeed: HOUR, max: YEAR, pivot: 75})
 });
 
@@ -58,9 +58,20 @@ export function formatLocalDateTime(value) {
   return `${two(d.getDate())}.${two(d.getMonth()+1)}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`;
 }
 
+/** Date-only label for the compact trigger; time stays in the open menu. */
+export function formatLocalDate(value) {
+  return formatLocalDateTime(value).slice(0, 10);
+}
+
 export function syncControls(state) {
   const date=formatLocalDateTime(state.time);
-  if($('sim-date-readout').textContent!==date)$('sim-date-readout').textContent=date;
+  const dateOnly=formatLocalDate(state.time);
+  if($('sim-date-label').textContent!==dateOnly)$('sim-date-label').textContent=dateOnly;
+  const localDate=new Date(state.time);
+  const pad=n=>String(n).padStart(2,'0');
+  $('sim-date-label').setAttribute('datetime',`${localDate.getFullYear()}-${pad(localDate.getMonth()+1)}-${pad(localDate.getDate())}`);
+  const stackedDate=date.replace(' ', '\n'); // Two lines: local date, then local time.
+  if($('sim-date-readout').textContent!==stackedDate)$('sim-date-readout').textContent=stackedDate;
   $('sim-date-readout').setAttribute('datetime',new Date(state.time).toISOString());
   $('play-icon-path').setAttribute('d',state.playing?'M7 5h4v14H7z M14 5h4v14h-4z':'M7 4v16l13-8z');
   $('play-btn').setAttribute('aria-label',state.playing?'Simulation pausieren':'Simulation starten');
@@ -69,9 +80,12 @@ export function syncControls(state) {
   const speed=formatSpeed(state.speed);
   $('speed-readout').textContent=speed;
   $('speed-popover-value').textContent=speed;
-  $('speed').value=String(stepForSpeed(mode,state.speed));
-  $('speed').setAttribute('aria-valuetext',speed);
+  const step=stepForSpeed(mode,state.speed);
+  const slider=$('speed');
+  slider.value=String(step);
+  slider.setAttribute('style',`--speed-progress:${100*step/SPEED_STEPS}%`);
+  slider.setAttribute('aria-valuetext',speed);
   $('speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
   $('speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
-  $('speed-btn').setAttribute('aria-label',`Geschwindigkeit: ${speed}. Regler öffnen`);
+  $('speed-btn').setAttribute('aria-label',`Zeitsteuerung: ${speed}, ${dateOnly}. ${state.playing?'Läuft':'Pausiert'}. Menü öffnen`);
 }
