@@ -1,3 +1,17 @@
+## Erweiterung v56 – Doppelasteroiden, neun Monde und sieben Erdsatelliten
+
+Das Manifest enthält jetzt **23 Kategoriedateien** und **5 deutsche Redaktionsdateien** (`catalogVersion: 10.0.0`). Drei zusätzliche, unverändert validierbare JSON-Kategoriedateien und ein Redaktionspaket ergänzen den bestehenden Katalog um **18 Objekte** auf insgesamt **192**. Das Schema (`schemaVersion: 1`) wurde nicht geändert.
+
+| Datenquelle | Typ | Neue IDs | Genauigkeitsgrenze |
+|---|---|---|---|
+| `data/catalog/binary-asteroids-v56.json` | `binary` | `didymos`, `dimorphos` | Didymos: historische Sonnenbahn; Dimorphos: **vereinfachte Post-DART-Relativbahn** (Halbachse in km) |
+| `data/catalog/moons-additions-v56.json` | `moon` | S/2003 J 2, S/2003 J 4, S/2018 J 2, Loge, Skoll, Greip, Tarqeq, S/2002 N 5, S/2021 N 1 | NASA/JPL mittlere Elemente, nicht präzise Ephemeriden; unbekannte Größen explizit null |
+| `data/catalog/satellites-additions-v56.json` | `satellite` | NORAD 48274, 39741, 40730, 43013, 54234, 41866, 51850 | CelesTrak-Katalogreferenz: charakteristische Bahnhöhen/Perioden; Knoten, Perizentrum und Phase bewusst schematisch, **kein aktuelles TLE** |
+
+Die neue Oberkategorie `binary` wird in `src/data/bodies.js` und `src/data/layers.js` geführt. Die Relativbahn von **Dimorphos** ist mit `parentId: didymos` an Didymos gebunden. Der Orbitalrechner verwendet für dessen Abstände Kilometereinheiten; für Didymos selbst, dessen `parentId: sun` lautet, gelten Astronomische Einheiten. Die Formate der Detailansicht zeigen Größen unter einem Kilometer in Metern an. Ein Radius von `0` bedeutet weiterhin **unbekannt**, nicht einen punktförmigen Körper.
+
+**Quellen:** [NASA – Didymos](https://science.nasa.gov/solar-system/asteroids/didymos/), [JPL – Bahnänderung durch DART](https://www.jpl.nasa.gov/news/nasa-study-asteroids-orbit-shape-changed-after-dart-impact/), [NASA/JPL – Planetary Satellite Mean Elements](https://ssd.jpl.nasa.gov/sats/elem/), [CelesTrak – NORAD Orbital Elements](https://celestrak.org/NORAD/elements/). Die Angaben werden nicht laufend synchronisiert.
+
 # Datenmodell und redaktionelle Inhalte – v9.0 (App v52)
 
 ## Erweiterung v52: 14 neue Objekte

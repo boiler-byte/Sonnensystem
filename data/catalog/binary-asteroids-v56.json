@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "type": "binary",
+  "provenance": {
+    "source": "NASA/JPL, NASA DART und veröffentlichte Bahndaten",
+    "sourceUrl": "https://science.nasa.gov/solar-system/asteroids/didymos/",
+    "reviewStatus": "source-reviewed",
+    "note": "Didymos: historische heliozentrische Kepler-Elemente; Dimorphos: schematische Post-DART-Relativbahn. Darstellungen sind keine Ephemeriden."
+  },
+  "objects": [
+    {
+      "id": "didymos",
+      "name": "(65803) Didymos",
+      "parentId": "sun",
+      "aliases": [
+        "Didymos",
+        "Didymos A"
+      ],
+      "physical": {
+        "radiusKm": 0.4025
+      },
+      "orbit": {
+        "semiMajorAxis": 1.6443941966,
+        "unit": "AU",
+        "periodDays": 770.206767,
+        "eccentricity": 0.38369748,
+        "inclinationDeg": 3.4077057,
+        "ascendingNodeDeg": 73.199435,
+        "periapsisDeg": 319.318868,
+        "meanAnomalyDeg": 136.65023,
+        "epoch": "2021-07-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-sample"
+      },
+      "appearance": {
+        "color": "#b39c8a",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "dimorphos",
+      "name": "Dimorphos",
+      "parentId": "didymos",
+      "aliases": [
+        "Didymos B"
+      ],
+      "physical": {
+        "radiusKm": 0.085
+      },
+      "orbit": {
+        "semiMajorAxis": 1.152,
+        "unit": "km",
+        "periodDays": 0.4736458333333333,
+        "eccentricity": 0.025,
+        "inclinationDeg": 0,
+        "ascendingNodeDeg": 0,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 120,
+        "epoch": "2024-01-01T00:00:00.000Z",
+        "referenceFrame": "illustrative binary orbit",
+        "model": "schematic-binary-postdart"
+      },
+      "appearance": {
+        "color": "#9e8e83",
+        "style": "rock"
+      }
+    }
+  ]
+}

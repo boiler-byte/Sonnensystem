@@ -62,8 +62,8 @@ test('v55: Layers and Time popovers switch directly while scale toggles stay in 
 
 test('v41: version and offline cache move together',async()=>{
   const [html,pkg,sw]=await Promise.all([read('index.html'),read('package.json'),read('sw.js')]);
-  assert.match(html,/<meta name="app-version" content="V55\.0"/);
-  assert.equal(JSON.parse(pkg).version,'55.0.0');
-  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v55'/);
+  assert.match(html,/<meta name="app-version" content="V56\.0"/);
+  assert.equal(JSON.parse(pkg).version,'56.0.0');
+  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v56'/);
   assert.doesNotMatch(sw,/sonnensystem-shell-v39/);
 });

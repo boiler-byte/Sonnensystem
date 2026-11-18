@@ -2,7 +2,8 @@ import { TYPES, FEATURED_IDS, CATEGORY_COLORS } from '../data/bodies.js';
 import { clean } from '../data/normalization.js';
 import { esc } from './formatters.js';
 const $=id=>document.getElementById(id);
-const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','comet','satellite','probe'];
+const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','binary','comet','satellite','probe'];
+const TYPE_ORDER = new Map(['planet','dwarf','moon','star','tno','asteroid','binary','comet','satellite','probe'].map((type,index)=>[type,index]));
 
 /** Each whitespace-separated word must match an object's own or its parent's metadata.
  * Thus "uranus c" matches Uranus moons with "c" in their name, irrespective of word order.
@@ -16,6 +17,28 @@ export function catalogMatches(body, query, byId) {
     parent?.name, parent?.id, body.parentId]
     .filter(value=>value!=null).map(clean);
   return words.every(word=>searchable.some(field=>field.includes(word)));
+}
+
+/** Rank an already matching item by the best match to the complete query.
+ * Name/alias/ID and category exact matches always precede prefix and substring
+ * matches. Parent metadata remains searchable without outranking the object itself.
+ */
+export function catalogSearchRank(body, query, byId) {
+  const phrase=clean(query).replace(/\s+/g,' ').trim();
+  if(!phrase)return 0;
+  const parent=body.parentId&&byId.get(body.parentId);
+  const own=[body.name,...(body.aliases||[]),body.id,body.catalog].filter(v=>v!=null).map(clean);
+  const category=[TYPES[body.type]?.label,TYPES[body.type]?.plural].filter(Boolean).map(clean);
+  const related=[parent?.name,parent?.id,body.parentId].filter(Boolean).map(clean);
+  if(own.some(field=>field===phrase))return 0;
+  if(category.some(field=>field===phrase))return 1;
+  if(own.some(field=>field.startsWith(phrase)))return 2;
+  if(category.some(field=>field.startsWith(phrase)))return 3;
+  if(related.some(field=>field===phrase))return 4;
+  if(own.some(field=>field.includes(phrase)))return 5;
+  if(category.some(field=>field.includes(phrase)))return 6;
+  if(related.some(field=>field.includes(phrase)))return 7;
+  return 8; // individual query terms may span different fields
 }
 
 /** The catalog is independent of renderer layers. Planet isolation is an optional UI filter. */
@@ -41,7 +64,9 @@ export function filteredBodies(state,{planetId=null}={}) {
     list.sort((a,b)=>{const ia=FEATURED_IDS.indexOf(a.id),ib=FEATURED_IDS.indexOf(b.id);
       if(ia!==-1||ib!==-1)return ia===-1?1:ib===-1?-1:ia-ib;
       return MAIN_TYPES.indexOf(a.type)-MAIN_TYPES.indexOf(b.type)||a.name.localeCompare(b.name,'de');});
-  }else list.sort((a,b)=>a.name.localeCompare(b.name,'de'));
+  }else list.sort((a,b)=>catalogSearchRank(a,query,byId)-catalogSearchRank(b,query,byId)
+    || (TYPE_ORDER.get(a.type)??99)-(TYPE_ORDER.get(b.type)??99)
+    || a.name.localeCompare(b.name,'de') || a.id.localeCompare(b.id));
   return list;
 }
 export function renderCatalog(state,onSelect,{planetId=null}={}){

@@ -37,7 +37,7 @@ for(const planet of bodies.filter(b=>b.type==='planet')){
 {
  const r=makeRenderer();assert.equal(r.showPlanetSystem('earth'),true);
  const ids=[...r.positions.keys()].sort();
- assert.deepEqual(ids,['earth','moon','sat-20580','sat-25544'].sort(),'Earth has Moon, ISS, Hubble');
+ assert.deepEqual(ids,['earth',...bodies.filter(b=>b.parentId==='earth').map(b=>b.id)].sort(),'Earth has the Moon, ISS, Hubble and v56 satellites');
  assert.ok(planetOrbitRadius(byId('moon'),byId('earth'))>planetOrbitRadius(byId('sat-25544'),byId('earth')),'Moon orbits farther out than ISS');
  assert.ok(planetBodyRadius(byId('earth'))>planetBodyRadius(byId('moon')),'Planet prominently larger than moon');
  assert.ok(orbitalRadius(byId('moon'),byId('earth'))!==planetOrbitRadius(byId('moon'),byId('earth')),'Solar scaling untouched');
@@ -64,7 +64,7 @@ for(const planet of bodies.filter(b=>b.type==='planet')){
  const dynamic={...byId('moon'),id:'other-earth-moon',name:'Neuer Mond',a:800000};
  r.setBodies([...bodies,dynamic]);r.calcPositions(at);
  assert.ok(r.positions.has(dynamic.id),'Newly loaded moons join planet mode automatically');
- const all=[...r.positions.keys()];assert.equal(all.length,5,'Only Earth and four companions');
+ const all=[...r.positions.keys()];assert.equal(all.length,2+bodies.filter(b=>b.parentId==='earth').length,'Only Earth and cataloged orbiters plus the new moon');
  r.showPlanetSystem('mars');assert.deepEqual([...r.positions.keys()].sort(),['mars','phobos','deimos'].sort(),'Changing planet changes local system');
  assert.equal(r.planetId,'mars');
  r.setBodies(bodies.filter(b=>b.id!=='mars'));assert.equal(r.planetId,null,'Removed parent exits scene');
@@ -77,8 +77,8 @@ for(const planet of bodies.filter(b=>b.type==='planet')){
  r.drawRings=()=>calls.push(['rings']);
  r.drawLabels=()=>{};
  r.draw(at,'earth',{orbits:true,labels:true});
- assert.deepEqual(calls.filter(x=>x[0]==='sphere').map(x=>x[1]),['earth','moon','sat-25544','sat-20580'],'Only system rendered, including artificial orbiters');
- assert.deepEqual(calls.filter(x=>x[0]==='orbit').map(x=>x[1]).sort(),['moon','sat-25544','sat-20580'].sort(),'All three child orbits rendered');
+ assert.deepEqual(calls.filter(x=>x[0]==='sphere').map(x=>x[1]),['earth',...bodies.filter(b=>b.parentId==='earth').map(b=>b.id)],'Only local system rendered, including artificial orbiters');
+ assert.deepEqual(calls.filter(x=>x[0]==='orbit').map(x=>x[1]).sort(),bodies.filter(b=>b.parentId==='earth').map(b=>b.id).sort(),'All cataloged child orbits rendered');
  assert.equal(r.glow.style.opacity,'0','Sun glow removed from isolated scene');
  calls.length=0;r.draw(at,'earth',{orbits:false,labels:false});
  assert.equal(calls.some(x=>x[0]==='orbit'),false,'Orbit toggle also works in planet scene');
@@ -91,6 +91,6 @@ for(const planet of bodies.filter(b=>b.type==='planet')){
  r.setBodies([...bodies,...extra]);r.showPlanetSystem('earth');
  r.orbitLine=()=>{};const drawn=[];r.drawSphere=b=>drawn.push(b.id);r.drawLabels=()=>{};
  r.draw(at,'earth',{orbits:true,labels:true});
- assert.equal(drawn.length,4+130,'All cataloged orbiters rendered even when orbit lines capped');
+ assert.equal(drawn.length,1+bodies.filter(b=>b.parentId==='earth').length+130,'All cataloged orbiters rendered even when orbit lines capped');
 }
 console.log('✓ v5 planet-mode engine regression: geometry, selection, camera, rendering and dynamic satellites');

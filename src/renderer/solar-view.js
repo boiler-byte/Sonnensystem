@@ -3,7 +3,7 @@ import { projected, clamp } from './math.js';
 
 /** Real Sun-centered Kepler paths; moons and satellites remain planet-centered. */
 export function solarOrbitBodies(bodies, layers) {
-  const types=new Set(['planet','dwarf','tno','asteroid','comet']);
+  const types=new Set(['planet','dwarf','tno','asteroid','binary','comet']);
   return bodies.filter(body=>body.parentId==='sun' && types.has(body.type) &&
     layerEnabled(layers,body.type) && Number(body.a)>0 && Number(body.periodDays)>0);
 }
@@ -23,11 +23,18 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
       const opacity=selectedOrbit?.70:body.type==='planet'?.20:.16;
       renderer.orbitLine(body,animatedCenter,vp,opacity,selectedOrbit);
     }
+    // Binary minor-planet companions have their own parent-centered km orbits.
+    for (const body of renderer.bodies) {
+      const parent=renderer.byId.get(body.parentId);
+      if (body.type!=='binary' || parent?.type!=='binary' || !visible(body) || !renderer.shouldDraw(body)) continue;
+      const center=renderer.positions.get(parent.id);
+      if(center)renderer.orbitLine(body,center,vp,body.id===selectedId?.70:.22,body.id===selectedId);
+    }
     gl.depthMask(true);
   }
   renderer.rendered=renderer.bodies.filter(b=>renderer.shouldDraw(b)&&renderer.positions.has(b.id));
   renderer.rendered.sort((a,b)=>{
-    const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,comet:4,moon:5,satellite:6};return order[a.type]-order[b.type];
+    const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,binary:4,comet:4,moon:5,satellite:6};return order[a.type]-order[b.type];
   });
   for(const b of renderer.rendered){const p=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(p,vp);renderer.drawSphere(b,p,vp);}
   renderer.drawLabels(vp);

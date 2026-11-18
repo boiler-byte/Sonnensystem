@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "type": "satellite",
+  "provenance": {
+    "source": "CelesTrak – NORAD Stations / GPS Operational / NOAA / GOES",
+    "sourceUrl": "https://celestrak.org/NORAD/elements/",
+    "reviewStatus": "source-reviewed",
+    "note": "Ausgewählte NORAD-IDs, typische Bahnhöhen und Neigungen laut CelesTrak; Bahnorientierung und Phase sind beispielhaft. Kein Live-TLE, keine Echtzeitposition."
+  },
+  "objects": [
+    {
+      "id": "sat-48274",
+      "name": "Tiangong (Tianhe)",
+      "parentId": "earth",
+      "aliases": [
+        "Tiangong",
+        "Tianhe",
+        "Chinesische Raumstation",
+        "CSS (TIANHE)"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 6757,
+        "unit": "km",
+        "periodDays": 0.06407638888888889,
+        "eccentricity": 0.00049,
+        "inclinationDeg": 41.47,
+        "ascendingNodeDeg": 95,
+        "periapsisDeg": 40,
+        "meanAnomalyDeg": 130,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#86ddca",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 48274
+      }
+    },
+    {
+      "id": "sat-39741",
+      "name": "GPS BIIF-6 (PRN 06)",
+      "parentId": "earth",
+      "aliases": [
+        "GPS IIF-6",
+        "GPS PRN 06",
+        "GPS Satellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 26555,
+        "unit": "km",
+        "periodDays": 0.4986319444444444,
+        "eccentricity": 0.00416,
+        "inclinationDeg": 56.41,
+        "ascendingNodeDeg": 30,
+        "periapsisDeg": 75,
+        "meanAnomalyDeg": 125,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#9ccf7e",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 39741
+      }
+    },
+    {
+      "id": "sat-40730",
+      "name": "GPS BIIF-10 (PRN 08)",
+      "parentId": "earth",
+      "aliases": [
+        "GPS IIF-10",
+        "GPS PRN 08",
+        "GPS Satellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 26553,
+        "unit": "km",
+        "periodDays": 0.4985694444444445,
+        "eccentricity": 0.01218,
+        "inclinationDeg": 53.87,
+        "ascendingNodeDeg": 145,
+        "periapsisDeg": 10,
+        "meanAnomalyDeg": 220,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#9ccf7e",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 40730
+      }
+    },
+    {
+      "id": "sat-43013",
+      "name": "NOAA-20 (JPSS-1)",
+      "parentId": "earth",
+      "aliases": [
+        "NOAA 20",
+        "JPSS-1",
+        "Wettersatellit",
+        "Meteorologiesatellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 7198,
+        "unit": "km",
+        "periodDays": 0.07044444444444445,
+        "eccentricity": 0.0002,
+        "inclinationDeg": 98.77,
+        "ascendingNodeDeg": 215,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 100,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#80ced2",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 43013
+      }
+    },
+    {
+      "id": "sat-54234",
+      "name": "NOAA-21 (JPSS-2)",
+      "parentId": "earth",
+      "aliases": [
+        "NOAA 21",
+        "JPSS-2",
+        "Wettersatellit",
+        "Meteorologiesatellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 7198,
+        "unit": "km",
+        "periodDays": 0.07044444444444445,
+        "eccentricity": 0.00027,
+        "inclinationDeg": 98.76,
+        "ascendingNodeDeg": 255,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 200,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#80ced2",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 54234
+      }
+    },
+    {
+      "id": "sat-41866",
+      "name": "GOES-16",
+      "parentId": "earth",
+      "aliases": [
+        "GOES 16",
+        "Wettersatellit",
+        "Geostationärer Wettersatellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 42158,
+        "unit": "km",
+        "periodDays": 0.9972916666666666,
+        "eccentricity": 0.00026,
+        "inclinationDeg": 0.72,
+        "ascendingNodeDeg": 40,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 45,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#83c7cb",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 41866
+      }
+    },
+    {
+      "id": "sat-51850",
+      "name": "GOES-18",
+      "parentId": "earth",
+      "aliases": [
+        "GOES 18",
+        "Wettersatellit",
+        "Geostationärer Wettersatellit"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 42157,
+        "unit": "km",
+        "periodDays": 0.9972916666666666,
+        "eccentricity": 5e-05,
+        "inclinationDeg": 0.01,
+        "ascendingNodeDeg": 240,
+        "periapsisDeg": 0,
+        "meanAnomalyDeg": 180,
+        "epoch": "2026-11-18T00:00:00.000Z",
+        "referenceFrame": "illustrative orientation",
+        "model": "illustrative-catalog-orbit"
+      },
+      "appearance": {
+        "color": "#83c7cb",
+        "style": "rock"
+      },
+      "externalIds": {
+        "norad": 51850
+      }
+    }
+  ]
+}

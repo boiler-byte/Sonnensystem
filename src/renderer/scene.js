@@ -32,8 +32,8 @@ export function computePositions(renderer, timeMs) {renderer.positions.clear();
     const date=new Date(timeMs).toISOString().slice(0,10),ov=renderer.overrides.get(id);
     if(ov&&ov.date===date){const [x,y,z]=ov.vector;const length=Math.hypot(x,y,z)||1;
       const scale=renderer.settings?.scaleOrbits
-        ? ((b.type==='moon'||b.type==='satellite') ? SOLAR_UNITS_PER_KM : 3.4/AU_KM)
-        : (b.type==='moon' ? orbitalRadius(b,parent)/length : sceneRadius(length/AU_KM)/length)
+        ? ((b.type==='moon'||b.type==='satellite'||(b.type==='binary'&&b.parentId!=='sun')) ? SOLAR_UNITS_PER_KM : 3.4/AU_KM)
+        : (b.type==='moon'||(b.type==='binary'&&b.parentId!=='sun') ? orbitalRadius(b,parent)/length : sceneRadius(length/AU_KM)/length)
           * (optimizedSolarMode(renderer.settings) ? OPTIMIZED_ORBIT_FACTOR : 1);
       // JPL reference ECLIPTIC: x,y are ecliptic plane; z is latitude.
       rel=[x*scale,z*scale,y*scale];

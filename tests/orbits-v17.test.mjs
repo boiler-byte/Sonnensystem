@@ -27,7 +27,7 @@ test('v25: solar Standard includes only Sun and planets',()=>{
 
 test('v17: all category colors and the Earth-orbit exception are exact',()=>{
   assert.deepEqual(CATEGORY_COLORS,{
-    planet:'#E6EDF5', moon:'#E6EDF5', dwarf:'#B68CFF', tno:'#7BB6CF', asteroid:'#E9B44C',
+    planet:'#E6EDF5', moon:'#E6EDF5', dwarf:'#B68CFF', tno:'#7BB6CF', asteroid:'#E9B44C', binary:'#CEAB78',
     comet:'#FF7597', satellite:'#A7D86D', probe:'#FF8B4A', star:'#FFE5A0'
   });
   assert.equal(EARTH_ORBIT_COLOR,'#4DA3FF');

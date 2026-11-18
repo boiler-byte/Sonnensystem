@@ -11,18 +11,18 @@ const editorialEntries=manifest.editorial.filter(e=>e.locale===manifest.defaultL
 const editorialDocs=await Promise.all(editorialEntries.map(x=>readJSON(x.path)));
 const clone=x=>structuredClone(x);
 
-const groupCounts={star:1,planet:8,moon:136,dwarf:5,asteroid:11,satellite:2,comet:6,tno:5};
-test('v8 imports 123 documented original objects, retains 37 legacy objects, and incorporates all 14 new v52 objects',async()=>{
+const groupCounts={star:1,planet:8,moon:145,dwarf:5,asteroid:11,binary:2,satellite:9,comet:6,tno:5};
+test('v56 catalog retains prior objects and imports 18 additional v56 objects',async()=>{
   const catalog=await loadCatalog(readJSON);
-  assert.equal(catalog.version,'9.0.0');
-  assert.equal(catalog.bodies.length,174);
-  assert.equal(catalog.articles.size,174);
-  assert.equal(editorialEntries.length,4);
+  assert.equal(catalog.version,'10.0.0');
+  assert.equal(catalog.bodies.length,192);
+  assert.equal(catalog.articles.size,192);
+  assert.equal(editorialEntries.length,5);
   for(const [type,n] of Object.entries(groupCounts))assert.equal(catalog.bodies.filter(b=>b.type===type).length,n,type);
-  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='jupiter').length,42);
-  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='saturn').length,45);
+  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='jupiter').length,45);
+  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='saturn').length,49);
   assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='uranus').length,27);
-  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='neptune').length,14);
+  assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='neptune').length,16);
   assert.equal(catalog.bodies.filter(b=>b.type==='moon'&&b.parentId==='pluto').length,5);
   const ids=new Set();
   for(const b of catalog.bodies){
@@ -69,7 +69,7 @@ test('v8 rejects duplicate editorial IDs across different files and preserves dr
   const missing=clone(editorialDocs);
   missing[1].articles=missing[1].articles.filter(a=>a.id!=='amalthea');
   const noArticle=assembleCatalog(manifest,categoryDocs,missing);
-  assert.equal(noArticle.bodies.length,174);
+  assert.equal(noArticle.bodies.length,192);
   assert.equal(noArticle.bodies.find(b=>b.id==='amalthea').editorial,undefined);
   const withDraft=clone(editorialDocs);
   withDraft[1].articles.find(a=>a.id==='amalthea').status='draft';
@@ -79,10 +79,10 @@ test('v8 rejects duplicate editorial IDs across different files and preserves dr
 test('v8 PWA manifests every imported JSON file and shows approximate-model note',async()=>{
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
   const details=await readFile(new URL('../src/ui/object-details.js',import.meta.url),'utf8');
-  assert.match(sw,/sonnensystem-shell-v55/);
+  assert.match(sw,/sonnensystem-shell-v56/);
   assert.match(sw,/manifest\.categories,\.\.\.manifest\.editorial/);
   assert.match(details,/Mittlere Elemente · schematisch/);
   assert.match(details,/Historische Beispielbahn/);
-  assert.equal(manifest.categories.length,20);
+  assert.equal(manifest.categories.length,23);
   for(const entry of [...manifest.categories,...manifest.editorial])assert.ok((await readJSON(entry.path)).schemaVersion===1);
 });

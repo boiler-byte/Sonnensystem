@@ -1,6 +1,16 @@
-# Sonnensystem – interaktiver 3D-Atlas v55.0
+# Sonnensystem – interaktiver 3D-Atlas v56.0
 
-**Aktueller Stand v55.** **Objekt**, **Bahn** und **Reihe** sind jetzt immer direkt im Control Panel sichtbar – ohne separates Maßstab-Dropdown. Die Anzeigeoptionen **Beschriftung**, **Beleuchtung**, **Alle Monde**, **Umlaufbahn** und **Kontrast** befinden sich im **Layer-Dropdown** oberhalb der Objektkategorien. Die Cinema-Kamerafahrt und alle Anzeigezustände aus v54 bleiben erhalten.
+**Aktueller Stand v56.** Der Objektkatalog enthält **192 Himmelskörper**. Neu sind das Doppelasteroiden-System **Didymos und Dimorphos** (eigene Layer-Kategorie), **neun kleine Jupiter-, Saturn- und Neptunmonde** und **sieben künstliche Erdsatelliten** einschließlich Tiangong, GPS und Wetterbeobachtung. Die Suche sortiert nun nach **exaktem Namen oder Alias**, **exakter Objektkategorie**, **Präfix** und erst danach **Teiltreffern**. Bei vergleichbarer Treffergüte erhalten Planeten Vorrang vor Zwergplaneten, Monden und anderen Objekten. Die Bedienung aus v55 bleibt unverändert.
+
+## Neue Körper und priorisierte Suche (v56)
+
+- **Doppelasteroiden (2):** (65803) Didymos auf einer Sonnenbahn und sein Begleiter **Dimorphos** mit separater, vereinfacht dargestellter Relativbahn. Die Kategorie **Doppelasteroiden** kann im Layer-Dropdown ein- und ausgeschaltet werden.
+- **Weitere natürliche Monde (9):** bei **Jupiter** S/2003 J 2, S/2003 J 4, S/2018 J 2; bei **Saturn** Loge, Skoll, Greip, Tarqeq; bei **Neptun** S/2002 N 5, S/2021 N 1.
+- **Künstliche Erdsatelliten (7):** Tiangong (Tianhe), GPS BIIF-6 (PRN 06), GPS BIIF-10 (PRN 08), NOAA-20 (JPSS-1), NOAA-21 (JPSS-2), GOES-16 und GOES-18. Die NORAD-Nummern sind im Katalog hinterlegt.
+- **Suche:** Die Eingabe `Saturn` zeigt **Saturn selbst zuerst**, vor passenden Namenspräfixen, Einträgen mit Saturn als Zentralplanet und Einträgen, die den Begriff nur mitten im Namen tragen. Bei `Planeten`, `Zwergplaneten`, `Monde` usw. stehen **exakte Kategorietreffer** vor nur teilweise passenden Namen. Bei gleicher Trefferklasse: **Planeten → Zwergplaneten → Monde → weitere Typen**. Mehrere Suchwörter, Kategorie-/Alias-Suche und Planet-Filter funktionieren weiter.
+- **Datengenauigkeit:** Die neuen Bahnkurven sind lokale Kepler- oder schematische Modellbahnen. Besonders die Positionen von Tiangong, GPS- und Wettersatelliten sind **keine Live-Orbits** und dürfen nicht als TLE oder Echtzeitstandorte interpretiert werden. Unbekannte Größen kleiner Monde/Satelliten bleiben im Datensatz `0` statt erfundener Radien. Redaktionelle Beschreibungen enthalten Quellenlinks.
+
+**Installation:** `Sonnensystem-Delta-v56.zip` ist ein **inkrementelles Update für v55**. Den ZIP-Inhalt über das Projektroot von v55 entpacken und alte Dateien überschreiben. App-Version **56.0.0**, PWA-Cache `sonnensystem-shell-v56`. Änderungsprotokoll: [Delta v56](docs/DELTA-V56.md).
 
 ## Direktwahlschalter und Layer-Darstellung (v55)
 

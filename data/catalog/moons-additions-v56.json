@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "type": "moon",
+  "provenance": {
+    "source": "NASA/JPL – Planetary Satellite Mean Elements",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/sats/elem/",
+    "reviewStatus": "source-reviewed",
+    "note": "Tabellierte mittlere Bahnelemente mit dokumentiertem Epochenschnappschuss; Radius 0 = nicht verlässlich angegeben. Nicht für Ephemeriden geeignet."
+  },
+  "objects": [
+    {
+      "id": "s2003-j2",
+      "name": "S/2003 J 2",
+      "parentId": "jupiter",
+      "aliases": [
+        "S2003_J_2",
+        "S/2003 J2"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 20992900,
+        "unit": "km",
+        "periodDays": 621.4715,
+        "eccentricity": 0.225,
+        "inclinationDeg": 150.1,
+        "ascendingNodeDeg": 348.4,
+        "periapsisDeg": 170.6,
+        "meanAnomalyDeg": 42.3,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b4b4ba",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "s2003-j4",
+      "name": "S/2003 J 4",
+      "parentId": "jupiter",
+      "aliases": [
+        "S2003_J_4",
+        "S/2003 J4"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 22922300,
+        "unit": "km",
+        "periodDays": 709.1229,
+        "eccentricity": 0.327,
+        "inclinationDeg": 148.3,
+        "ascendingNodeDeg": 175.4,
+        "periapsisDeg": 208.8,
+        "meanAnomalyDeg": 216.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b4b4ba",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "s2018-j2",
+      "name": "S/2018 J 2",
+      "parentId": "jupiter",
+      "aliases": [
+        "S2018_J_2",
+        "S/2018 J2"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 11419700,
+        "unit": "km",
+        "periodDays": 249.275,
+        "eccentricity": 0.152,
+        "inclinationDeg": 28.3,
+        "ascendingNodeDeg": 91.8,
+        "periapsisDeg": 288.6,
+        "meanAnomalyDeg": 115.5,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#b4b4ba",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "loge",
+      "name": "Loge",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 22919200,
+        "unit": "km",
+        "periodDays": 1295.5243,
+        "eccentricity": 0.191,
+        "inclinationDeg": 168.1,
+        "ascendingNodeDeg": 333,
+        "periapsisDeg": 20.5,
+        "meanAnomalyDeg": 32.1,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#9eabb2",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "skoll",
+      "name": "Skoll",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 17623400,
+        "unit": "km",
+        "periodDays": 873.5736,
+        "eccentricity": 0.463,
+        "inclinationDeg": 159.4,
+        "ascendingNodeDeg": 294,
+        "periapsisDeg": 186.1,
+        "meanAnomalyDeg": 181.2,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#9eabb2",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "greip",
+      "name": "Greip",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 18380000,
+        "unit": "km",
+        "periodDays": 930.4389,
+        "eccentricity": 0.317,
+        "inclinationDeg": 174.2,
+        "ascendingNodeDeg": 335.8,
+        "periapsisDeg": 146.2,
+        "meanAnomalyDeg": 355.9,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#9eabb2",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "tarqeq",
+      "name": "Tarqeq",
+      "parentId": "saturn",
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 17751000,
+        "unit": "km",
+        "periodDays": 882.8514,
+        "eccentricity": 0.144,
+        "inclinationDeg": 48.7,
+        "ascendingNodeDeg": 93.3,
+        "periapsisDeg": 72.2,
+        "meanAnomalyDeg": 292.8,
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#9eabb2",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "s2002-n5",
+      "name": "S/2002 N 5",
+      "parentId": "neptune",
+      "aliases": [
+        "S2002_N5",
+        "S/2002 N5"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 23414700,
+        "unit": "km",
+        "periodDays": 3151,
+        "eccentricity": 0.433,
+        "inclinationDeg": 46.3,
+        "ascendingNodeDeg": 258.3,
+        "periapsisDeg": 59.1,
+        "meanAnomalyDeg": 303.2,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#91abb9",
+        "style": "moon"
+      }
+    },
+    {
+      "id": "s2021-n1",
+      "name": "S/2021 N 1",
+      "parentId": "neptune",
+      "aliases": [
+        "S2021_N1",
+        "S/2021 N1"
+      ],
+      "physical": {
+        "radiusKm": 0
+      },
+      "orbit": {
+        "semiMajorAxis": 50700200,
+        "unit": "km",
+        "periodDays": 10043,
+        "eccentricity": 0.503,
+        "inclinationDeg": 135.2,
+        "ascendingNodeDeg": 258.9,
+        "periapsisDeg": 90.4,
+        "meanAnomalyDeg": 237.1,
+        "epoch": "2020-01-01T00:00:00.000Z",
+        "referenceFrame": "ecliptic",
+        "model": "mean-elements"
+      },
+      "appearance": {
+        "color": "#91abb9",
+        "style": "moon"
+      }
+    }
+  ]
+}

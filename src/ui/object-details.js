@@ -97,7 +97,7 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
     planetButton.setAttribute('aria-pressed',String(active));
   }
   const orb=$('hero-body');orb.className='hero-body '+(b.style||'rock');orb.style.setProperty('--planet-color',b.color);
-  const stats=[ ['RADIUS',b.radiusKm?`${formatInt(b.radiusKm)} km`:'—'],
+  const stats=[ ['RADIUS',b.radiusKm?(b.radiusKm<1?`${formatInt(b.radiusKm*1000)} m`:`${formatInt(b.radiusKm)} km`):'—'],
     [b.type==='satellite'?'HÖHE (ca.)':'GR. HALBACHSE',b.type==='satellite'&&b.a?`${formatInt(Math.max(0,b.a-6371))} km`:displayA(b)],
     ['UMLAUFZEIT',displayPeriod(b.periodDays)],
     ['EXZENTRIZITÄT',Number.isFinite(Number(b.e))?formatDecimal(b.e,4):'—'] ];
@@ -106,6 +106,8 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   const parent=byId(b.parentId),incl=Number.isFinite(Number(b.i))?formatDecimal(b.i,2)+'°':'—';
   const orbitModelLabel={
     'mean-elements':'Mittlere Elemente · schematisch',
+    'illustrative-catalog-orbit':'Katalogreferenz · Modellbahn',
+    'schematic-binary-postdart':'Post-DART · schematische Begleiterbahn',
     'osculating-sample':'Historische Beispielbahn',
     'osculating-snapshot':'Oskulierende Elemente · schematische Bahn',
     'historical-perihelion':b.type==='comet'?'Historische Kometenbahn':'Historische Bahnelemente · schematisch'

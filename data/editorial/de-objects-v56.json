@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "revision": 1,
+  "articles": [
+    {
+      "id": "didymos",
+      "status": "imported",
+      "revision": 1,
+      "title": "(65803) Didymos",
+      "summary": "(65803) Didymos ist ein erdnaher Doppelasteroid, der die Sonne in rund 770 Tagen umrundet. Sein Begleiter heißt Dimorphos.",
+      "sections": [
+        {
+          "heading": "Doppelasteroid",
+          "text": "Didymos ist der größere Körper des binären Systems; Dimorphos umkreist ihn. NASA DART traf Dimorphos am 26. September 2022."
+        },
+        {
+          "heading": "Vereinfachte Bahn",
+          "text": "Die dargestellte Sonnenbahn nutzt eine historische Katalogepoche und ein Zweikörpermodell, keine aktuelle Ephemeride. Der mittlere Körperradius ist auf etwa 0,4 km gerundet."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA – Didymos und Dimorphos",
+          "url": "https://science.nasa.gov/solar-system/asteroids/didymos/"
+        },
+        {
+          "title": "Bahnelemente des Didymos-Systems (historische Zusammenstellung)",
+          "url": "https://www.johnstonsarchive.net/astro/astmoons/am-65803.html"
+        }
+      ]
+    },
+    {
+      "id": "dimorphos",
+      "status": "imported",
+      "revision": 1,
+      "title": "Dimorphos",
+      "summary": "Dimorphos ist der kleine Begleiter des Doppelasteroiden Didymos. Nach dem DART-Einschlag beträgt seine Umlaufzeit etwa 11 Stunden 22 Minuten.",
+      "sections": [
+        {
+          "heading": "DART: geänderte Umlaufbahn",
+          "text": "Der Einschlag 2022 verkürzte die Umlaufzeit um ungefähr 33 Minuten. Als mittlerer Abstand dienen rund 1,15 km; die dargestellte Bahnebene und Phase sind nur schematisch."
+        },
+        {
+          "heading": "Größe und Genauigkeit",
+          "text": "Dimorphos ist etwa 170 Meter im Durchmesser. Die gekoppelte Bewegung um Didymos wird vereinfacht als Keplerellipse visualisiert, nicht als genaue Zweikörper-/Störungsrechnung."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Bahnentwicklung nach DART",
+          "url": "https://www.jpl.nasa.gov/news/nasa-study-asteroids-orbit-shape-changed-after-dart-impact/"
+        },
+        {
+          "title": "NASA – Didymos und Dimorphos",
+          "url": "https://science.nasa.gov/solar-system/asteroids/didymos/"
+        }
+      ]
+    },
+    {
+      "id": "s2003-j2",
+      "status": "imported",
+      "revision": 1,
+      "title": "S/2003 J 2",
+      "summary": "S/2003 J 2 ist ein kleiner natürlicher Mond von Jupiter. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 20.992.900 km; die Umlaufzeit rund 621.5 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "S/2003 J 2 umkreist Jupiter. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "s2003-j4",
+      "status": "imported",
+      "revision": 1,
+      "title": "S/2003 J 4",
+      "summary": "S/2003 J 4 ist ein kleiner natürlicher Mond von Jupiter. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 22.922.300 km; die Umlaufzeit rund 709.1 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "S/2003 J 4 umkreist Jupiter. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "s2018-j2",
+      "status": "imported",
+      "revision": 1,
+      "title": "S/2018 J 2",
+      "summary": "S/2018 J 2 ist ein kleiner natürlicher Mond von Jupiter. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 11.419.700 km; die Umlaufzeit rund 249.3 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "S/2018 J 2 umkreist Jupiter. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "loge",
+      "status": "imported",
+      "revision": 1,
+      "title": "Loge",
+      "summary": "Loge ist ein kleiner natürlicher Mond von Saturn. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 22.919.200 km; die Umlaufzeit rund 1.295.5 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "Loge umkreist Saturn. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "skoll",
+      "status": "imported",
+      "revision": 1,
+      "title": "Skoll",
+      "summary": "Skoll ist ein kleiner natürlicher Mond von Saturn. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 17.623.400 km; die Umlaufzeit rund 873.6 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "Skoll umkreist Saturn. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "greip",
+      "status": "imported",
+      "revision": 1,
+      "title": "Greip",
+      "summary": "Greip ist ein kleiner natürlicher Mond von Saturn. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 18.380.000 km; die Umlaufzeit rund 930.4 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "Greip umkreist Saturn. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "tarqeq",
+      "status": "imported",
+      "revision": 1,
+      "title": "Tarqeq",
+      "summary": "Tarqeq ist ein kleiner natürlicher Mond von Saturn. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 17.751.000 km; die Umlaufzeit rund 882.9 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "Tarqeq umkreist Saturn. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "s2002-n5",
+      "status": "imported",
+      "revision": 1,
+      "title": "S/2002 N 5",
+      "summary": "S/2002 N 5 ist ein kleiner natürlicher Mond von Neptun. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 23.414.700 km; die Umlaufzeit rund 3.151.0 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "S/2002 N 5 umkreist Neptun. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "s2021-n1",
+      "status": "imported",
+      "revision": 1,
+      "title": "S/2021 N 1",
+      "summary": "S/2021 N 1 ist ein kleiner natürlicher Mond von Neptun. Die mittlere große Halbachse beträgt laut NASA/JPL etwa 50.700.200 km; die Umlaufzeit rund 10.043.0 Tage.",
+      "sections": [
+        {
+          "heading": "Bahn und Zugehörigkeit",
+          "text": "S/2021 N 1 umkreist Neptun. Die JPL-Bahntabelle führt mittlere Elemente für eine Referenzepoche und einen zugehörigen Bezugsrahmen auf. Der Orbit ist hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Größe und Datengrenzen",
+          "text": "Für diesen kleinen Mond ist im verwendeten Datensatz kein ausreichend gesicherter mittlerer Radius angegeben; der Wert wird mit 0 (unbekannt) gespeichert und nicht geschätzt. Mittlere Bahnelemente sind nicht für eine genaue Ephemeridenberechnung vorgesehen."
+        }
+      ],
+      "references": [
+        {
+          "title": "NASA/JPL – Mittlere Bahnelemente der Planetenmonde",
+          "url": "https://ssd.jpl.nasa.gov/sats/elem/"
+        }
+      ]
+    },
+    {
+      "id": "sat-48274",
+      "status": "imported",
+      "revision": 1,
+      "title": "Tiangong (Tianhe)",
+      "summary": "Tiangong (Tianhe) ist ein künstlicher Erdsatellit (Raumstation; NORAD 48274). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "Tiangong (Tianhe) ist unter der NORAD-Katalognummer 48274 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=stations"
+        }
+      ]
+    },
+    {
+      "id": "sat-39741",
+      "status": "imported",
+      "revision": 1,
+      "title": "GPS BIIF-6 (PRN 06)",
+      "summary": "GPS BIIF-6 (PRN 06) ist ein künstlicher Erdsatellit (GPS-Navigationssatellit; NORAD 39741). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "GPS BIIF-6 (PRN 06) ist unter der NORAD-Katalognummer 39741 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=gps-ops"
+        }
+      ]
+    },
+    {
+      "id": "sat-40730",
+      "status": "imported",
+      "revision": 1,
+      "title": "GPS BIIF-10 (PRN 08)",
+      "summary": "GPS BIIF-10 (PRN 08) ist ein künstlicher Erdsatellit (GPS-Navigationssatellit; NORAD 40730). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "GPS BIIF-10 (PRN 08) ist unter der NORAD-Katalognummer 40730 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=gps-ops"
+        }
+      ]
+    },
+    {
+      "id": "sat-43013",
+      "status": "imported",
+      "revision": 1,
+      "title": "NOAA-20 (JPSS-1)",
+      "summary": "NOAA-20 (JPSS-1) ist ein künstlicher Erdsatellit (Wettersatellit; NORAD 43013). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "NOAA-20 (JPSS-1) ist unter der NORAD-Katalognummer 43013 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=noaa"
+        }
+      ]
+    },
+    {
+      "id": "sat-54234",
+      "status": "imported",
+      "revision": 1,
+      "title": "NOAA-21 (JPSS-2)",
+      "summary": "NOAA-21 (JPSS-2) ist ein künstlicher Erdsatellit (Wettersatellit; NORAD 54234). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "NOAA-21 (JPSS-2) ist unter der NORAD-Katalognummer 54234 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=noaa"
+        }
+      ]
+    },
+    {
+      "id": "sat-41866",
+      "status": "imported",
+      "revision": 1,
+      "title": "GOES-16",
+      "summary": "GOES-16 ist ein künstlicher Erdsatellit (Wettersatellit; NORAD 41866). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "GOES-16 ist unter der NORAD-Katalognummer 41866 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=goes"
+        }
+      ]
+    },
+    {
+      "id": "sat-51850",
+      "status": "imported",
+      "revision": 1,
+      "title": "GOES-18",
+      "summary": "GOES-18 ist ein künstlicher Erdsatellit (Wettersatellit; NORAD 51850). Der Katalog zeigt eine schematische Bahn auf Grundlage typischer Bahndaten.",
+      "sections": [
+        {
+          "heading": "Einordnung",
+          "text": "GOES-18 ist unter der NORAD-Katalognummer 51850 geführt. Die Bahnform und mittlere Umlaufzeit orientieren sich an CelesTrak-Daten."
+        },
+        {
+          "heading": "Modellgrenzen",
+          "text": "Die vorliegende lokale Bahn ist ein Illustrationsmodell: Knotenlänge, Perizentrumswinkel und Anfangsphase sind schematisch gesetzt. Es wird keine aktuelle TLE/GP-Ephemeride gespeichert; wirkliche Positionen können deutlich abweichen. Der physikalische Radius bleibt unbekannt (0)."
+        }
+      ],
+      "references": [
+        {
+          "title": "CelesTrak – zugehörige Satellitengruppe",
+          "url": "https://celestrak.org/NORAD/elements/table.php?GROUP=goes"
+        }
+      ]
+    }
+  ]
+}

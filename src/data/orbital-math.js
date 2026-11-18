@@ -38,20 +38,23 @@ export function displayOrbitRadius(body, parent, settings = {}, center = null) {
   }
   const a = Math.max(0, Number(body?.a) || 0);
   if (center) return a * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
-  return body?.type === 'moon' || body?.type === 'satellite'
+  return body?.type === 'moon' || body?.type === 'satellite' || (body?.type === 'binary' && body?.parentId !== 'sun')
     ? a * SOLAR_UNITS_PER_KM : a * SOLAR_UNITS_PER_AU;
 }
 export function renderRadius(body) {
   if (!body) return 0;
   if (body.id === 'sun' || body.type === 'star') return 1.13;
   if (body.type === 'satellite') return .060;
-  if (body.type === 'asteroid' || body.type === 'comet') return .11;
+  if (body.type === 'asteroid' || body.type === 'binary' || body.type === 'comet') return .11;
   if (body.type === 'moon') return clamp(.115+Math.log10(Math.max(1,body.radiusKm)/1000)*.055, .075,.235);
   if (body.type === 'dwarf') return .18;
   if (body.type === 'tno') return .16;
   return clamp(.19+.48*Math.pow(Math.max(0,body.radiusKm)/69911,.39),.19,.67);
 }
 export function orbitalRadius(body, parent) {
+  if (body.type === 'binary' && body.parentId !== 'sun') {
+    return renderRadius(parent)+.38+clamp(Math.log10(Math.max(.01,body.a)/1.152)*.13,-.1,.3);
+  }
   if (body.type === 'moon') {
     return renderRadius(parent)+.68+clamp(Math.log10(Math.max(10,body.a)/384400)*.36,-.26,.9);
   }

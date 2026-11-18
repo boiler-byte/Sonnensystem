@@ -36,7 +36,7 @@ test('v22: the solar overview draws every enabled Sun-centered orbit, not only s
   assert.ok(standard.every(x=>x.type==='planet'));
   const all=solarOrbitBodies(INITIAL_BODIES,layerPreset('all'));
   const eligible=INITIAL_BODIES.filter(b=>b.parentId==='sun' &&
-    ['planet','dwarf','tno','asteroid','comet'].includes(b.type) && b.a>0 && b.periodDays>0);
+    ['planet','dwarf','tno','asteroid','binary','comet'].includes(b.type) && b.a>0 && b.periodDays>0);
   assert.deepEqual(all.map(b=>b.id),eligible.map(b=>b.id));
   assert.ok(all.some(b=>b.id==='eris'),'distant nonselected dwarf orbit is included');
   assert.ok(all.some(b=>b.id==='juno'),'unselected asteroid orbit is included');
@@ -57,7 +57,7 @@ test('v22: the solar overview draws every enabled Sun-centered orbit, not only s
   };
   renderer.settings={orbits:true,layers:layerPreset('all')};
   drawSolarSystemScene(renderer,'earth',renderer.settings,IDENTITY);
-  assert.deepEqual(calls.map(c=>c.id),all.map(b=>b.id));
+  assert.deepEqual(calls.map(c=>c.id),[...all.map(b=>b.id),'dimorphos']);
   assert.ok(calls.every(c=>c.center.every(n=>n===0)), 'all overview orbit origins are solar');
   assert.ok(calls.find(c=>c.id==='earth').selected);
   calls.length=0;

@@ -1,3 +1,11 @@
+## Erweiterung v56 – zwei Hierarchieebenen im Doppelasteroiden-System, weitere Kataloggruppen, Trefferpriorität
+
+- **Daten:** `data/catalog/manifest.json` (`catalogVersion: 10.0.0`) integriert `binary-asteroids-v56.json` (2), `moons-additions-v56.json` (9), `satellites-additions-v56.json` (7) sowie `data/editorial/de-objects-v56.json`. Insgesamt **192 Objekte** mit 192 redaktionellen Einträgen. Keiner der vorherigen Katalogdatensätze wird entfernt oder überschrieben.
+- **Objekttyp `binary`:** `TYPES.binary`, `CATEGORY_COLORS.binary`, `LAYER_TYPES`, eigenes Checkbox-Element `data-layer-type="binary"`; `solarOrbitBodies` berücksichtigt nur sonnenzentrierte Doppelasteroiden-Bahnen, während die Dimorphos-Relativbahn um Didymos separat gezeichnet wird. `computePositions` berechnet die Hierarchie rekursiv. `displayOrbitRadius` und `displayA` interpretieren die relative Bahn in **km**, die Sonnenbahn in **AE**.
+- **Suche:** `catalogSearchRank()` in `src/ui/object-list.js` unterscheidet exakte eigene Felder, exakte Typnamen, Namenspräfixe, Kategoriepräfixe, exakte Elternreferenz, weitere Teiltreffer und Mehrwortkombinationen. `filteredBodies()` sortiert anschließend bei Gleichstand nach Planet, Zwergplanet, Mond und den restlichen Typen, dann nach deutschem Namen. Kategorie- und Elternsuche bleibt auch bei ausgeschalteten Szenen-Layern möglich; ohne Suchtext bleibt die kuratierte Katalogreihenfolge bestehen.
+- **Offline:** Service Worker `sonnensystem-shell-v56`; sämtliche referenzierten Katalog-/Redaktionsdateien werden weiterhin aus dem Manifest in den Offline-Cache aufgenommen. Für künstliche Satelliten erfolgt kein automatischer TLE/GP-Abruf.
+- **Tests:** `tests/catalog-search-v56.test.mjs` deckt Datenintegrität, Hierarchie, km/AE, NORAD-Kennungen, Ebenenfilter, Sortierprioritäten, Satelliten-Einträge und Service-Worker-Referenzen ab.
+
 # Architektur – Sonnensystem v55.0
 
 ## Erweiterung v55 – direkte Maßstab-Schalter und Darstellungsoptionen im Layer-Menü

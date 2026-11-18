@@ -1,3 +1,11 @@
+### Neue Katalogeinträge und Trefferreihenfolge (v56)
+
+Im Objektkatalog sind **Didymos und Dimorphos** (neue Layer-Kategorie **Doppelasteroiden**), **neun weitere kleine natürliche Monde** bei Jupiter, Saturn und Neptun sowie **sieben künstliche Erdsatelliten** verfügbar: Tiangong (Tianhe), zwei GPS-, zwei NOAA- und zwei GOES-Satelliten. Sie können die Objekte über Namen oder Alias suchen und im Detailbereich ihre Bahnangaben und Quellen öffnen.
+
+**Exakte Treffer stehen oben:** `Saturn` liefert zuerst den Planeten Saturn. Auch eine vollständige Objektkategorie wie `Monde`, `Planeten` oder `Doppelasteroiden` wird vor nur teilweise passenden Namen behandelt. Es folgen Namensanfänge, Bezug zum Zentralobjekt und am Ende reine Teiltreffer im Namen. Bei gleichwertigen Trefferarten gilt **Planeten vor Zwergplaneten vor Monden vor allen anderen Typen**. Die bisherige Suche über mehrere Wörter bleibt erhalten.
+
+**Darstellung:** Die neue Kategorie **Doppelasteroiden** kann im Layer-Dropdown separat aktiviert werden. Für die neu aufgenommenen kleinen Monde liegen überwiegend mittlere Bahnelemente vor; neue künstliche Satelliten besitzen schematische Umlaufbahnen auf Basis typischer Bahndaten. Besonders GPS- und Wettersatelliten werden **nicht in Echtzeit** verfolgt. Bei unbekanntem Radius steht im Katalog `—`; es wird kein Wert geschätzt.
+
 # Hilfe – Sonnensystem (v55)
 
 ### Control Panel und Layer-Dropdown (v55)

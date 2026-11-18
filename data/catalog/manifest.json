@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "9.0.0",
+  "catalogVersion": "10.0.0",
   "defaultLocale": "de",
   "categories": [
     {
@@ -22,6 +22,10 @@
     {
       "type": "asteroid",
       "path": "./data/catalog/asteroids.json"
+    },
+    {
+      "type": "binary",
+      "path": "./data/catalog/binary-asteroids-v56.json"
     },
     {
       "type": "satellite",
@@ -82,6 +86,14 @@
     {
       "type": "comet",
       "path": "./data/catalog/comets-v52.json"
+    },
+    {
+      "type": "moon",
+      "path": "./data/catalog/moons-additions-v56.json"
+    },
+    {
+      "type": "satellite",
+      "path": "./data/catalog/satellites-additions-v56.json"
     }
   ],
   "editorial": [
@@ -100,6 +112,10 @@
     {
       "locale": "de",
       "path": "./data/editorial/de-objects-v52.json"
+    },
+    {
+      "locale": "de",
+      "path": "./data/editorial/de-objects-v56.json"
     }
   ]
 }

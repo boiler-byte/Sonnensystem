@@ -35,9 +35,9 @@ test('v52: the first Layer-Dropdown category is Sterne, in model and DOM',async(
 
 test('v52: fourteen specifically named bodies are added to three catalog groups',async()=>{
   const {bodies,articles,version}=await catalogPromise;
-  assert.equal(version,'9.0.0');
-  assert.equal(bodies.length,174);
-  assert.equal(articles.size,174);
+  assert.equal(version,'10.0.0');
+  assert.equal(bodies.length,192);
+  assert.equal(articles.size,192);
   const byId=new Map(bodies.map(b=>[b.id,b]));
   assert.equal(byId.size,bodies.length);
   for(const [type,group] of Object.entries(newGroups)){
@@ -111,9 +111,9 @@ test('v52: search matches German catalog categories and international comet alia
 
 test('v52: new data paths, source provenance and editorial files are fully manifest-driven',async()=>{
   const manifest=await readJson('data/catalog/manifest.json');
-  assert.equal(manifest.catalogVersion,'9.0.0');
-  assert.equal(manifest.categories.length,20);
-  assert.equal(manifest.editorial.length,4);
+  assert.equal(manifest.catalogVersion,'10.0.0');
+  assert.equal(manifest.categories.length,23);
+  assert.equal(manifest.editorial.length,5);
   for(const [type,file] of [ ['asteroid','asteroids-v52'], ['comet','comets-v52'], ['tno','transneptunian-v52'] ]){
     assert.ok(manifest.categories.some(c=>c.type===type&&c.path===`./data/catalog/${file}.json`));
     const doc=await readJson(`data/catalog/${file}.json`);
@@ -135,7 +135,7 @@ test('v52: malformed aliases are rejected instead of breaking catalog search',as
 });
 
 test('v52: release and offline shell version match the added data',async()=>{
-  assert.equal((await readJson('package.json')).version,'55.0.0');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v55/);
+  assert.equal((await readJson('package.json')).version,'56.0.0');
+  assert.match(await read('sw.js'),/sonnensystem-shell-v56/);
   assert.match(await read('src/ui/object-details.js'),/Oskulierende Elemente · schematische Bahn/);
 });

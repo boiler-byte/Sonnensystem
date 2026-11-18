@@ -8,6 +8,7 @@ export const CATEGORY_COLORS = Object.freeze({
   dwarf: '#B68CFF',
   tno: '#7BB6CF',
   asteroid: '#E9B44C',
+  binary: '#CEAB78',
   comet: '#FF7597',
   satellite: '#A7D86D',
   probe: '#FF8B4A',
@@ -22,6 +23,7 @@ export const TYPES = Object.freeze({
   dwarf: { label: 'Zwergplanet', plural: 'Zwergplaneten', color: CATEGORY_COLORS.dwarf },
   tno: { label: 'Transneptunisches Objekt', plural: 'Transneptunische Objekte', color: CATEGORY_COLORS.tno },
   asteroid: { label: 'Asteroid', plural: 'Asteroiden', color: CATEGORY_COLORS.asteroid },
+  binary: { label: 'Doppelasteroid', plural: 'Doppelasteroiden', color: CATEGORY_COLORS.binary },
   comet: { label: 'Komet', plural: 'Kometen', color: CATEGORY_COLORS.comet },
   probe: { label: 'Raumsonde', plural: 'Raumsonden', color: CATEGORY_COLORS.probe },
   satellite: { label: 'Satellit', plural: 'Satelliten', color: CATEGORY_COLORS.satellite }

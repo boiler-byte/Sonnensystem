@@ -12,9 +12,9 @@ const clone=x=>structuredClone(x);
 
 test('v52 catalog extends split category/editorial files and retains all 37 legacy bodies',async()=>{
   const {bodies,articles,version}=await loadCatalog(readJSON);
-  assert.equal(version,'9.0.0');
-  assert.equal(bodies.length,174);
-  assert.equal(articles.size,174);
+  assert.equal(version,'10.0.0');
+  assert.equal(bodies.length,192);
+  assert.equal(articles.size,192);
   assert.equal(bodies.filter(b=>b.type==='planet').length,8);
   const earth=bodies.find(x=>x.id==='earth');
   assert.equal(earth.radiusKm,6371);
@@ -22,7 +22,7 @@ test('v52 catalog extends split category/editorial files and retains all 37 lega
   assert.equal(earth.editorial.status,'imported');
   assert.match(earth.description,/Heimatwelt/);
   assert.equal(bodies.find(b=>b.id==='moon').parentId,'earth');
-  assert.deepEqual(bodies.filter(b=>b.parentId==='earth').map(b=>b.id).sort(),['moon','sat-20580','sat-25544']);
+  assert.deepEqual(bodies.filter(b=>b.parentId==='earth').map(b=>b.id).sort(),['moon','sat-20580','sat-25544','sat-48274','sat-39741','sat-40730','sat-43013','sat-54234','sat-41866','sat-51850'].sort());
   const planets=bodies.filter(b=>b.type==='planet');
   for(const planet of planets)assert.ok(keplerPosition(planet,bodies[0],Date.now()).every(Number.isFinite));
   assert.equal(manifest.categories.find(e=>e.type==='comet').path,'./data/catalog/comets.json');
@@ -69,7 +69,7 @@ test('Editorial drafts stay hidden, published sections and HTTPS references are 
   e.articles.push(clone(article));
   assert.throws(()=>assembleCatalog(manifest,categoryDocs,e),/doppelte ID/);
   const omitted=clone(editorial);omitted.articles.pop();
-  assert.equal(assembleCatalog(manifest,categoryDocs,omitted).bodies.length,174,'Missing article does not delete astronomical body');
+  assert.equal(assembleCatalog(manifest,categoryDocs,omitted).bodies.length,192,'Missing article does not delete astronomical body');
 });
 
 test('Live data enrich orbital fields but never overwrites curated copy',()=>{
@@ -82,6 +82,6 @@ test('Live data enrich orbital fields but never overwrites curated copy',()=>{
   assert.equal(updated.source,'Solar System OpenData');
   assert.equal(updated.description,earth.description);
   assert.equal(updated.editorial,earth.editorial);
-  assert.equal(result.length,175);
-  assert.equal(bodies.length,174,'Original catalog remains unchanged');
+  assert.equal(result.length,193);
+  assert.equal(bodies.length,192,'Original catalog remains unchanged');
 });
