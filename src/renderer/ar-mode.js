@@ -96,8 +96,8 @@ export function supportsARLook(win=globalThis.window,nav=globalThis.navigator){
  * Permission request is made synchronously from the AR click, before any await.
  * A valid first sensor event is required before the button becomes active.
  */
-export function createARMode(renderer,button,{win=globalThis.window,nav=globalThis.navigator,doc=globalThis.document,notify=()=>{},schedule=setTimeout,cancel=clearTimeout}={}){
- let active=false,pending=false,disposed=false,reference=null,basis=null,timeout=null,session=0;
+export function createARMode(renderer,button,{win=globalThis.window,nav=globalThis.navigator,doc=globalThis.document,notify=()=>{},onStateChange=()=>{},schedule=setTimeout,cancel=clearTimeout}={}){
+ let active=false,pending=false,disposed=false,reference=null,latestOrientation=null,basis=null,timeout=null,session=0;
  const available=supportsARLook(win,nav);
  const sync=()=>{
   button.hidden=!available;
@@ -107,13 +107,14 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   button.setAttribute('aria-busy',String(pending));
   button.title=active?'AR-Modus: An – zum Ausschalten tippen':pending?'AR-Modus: wartet auf Bewegungsdaten':'AR-Modus: Umsehen durch Bewegung des Smartphones';
   button.parentElement?.classList.toggle('ar-available',available);
+  onStateChange(active);
  };
  const stop=(message)=>{
   session++;
   if(timeout!==null){cancel(timeout);timeout=null;}
   win?.removeEventListener?.('deviceorientation',onOrientation);
   const wasOn=active;
-  active=false;pending=false;reference=null;basis=null;
+  active=false;pending=false;reference=null;latestOrientation=null;basis=null;
   if(renderer?.camera?.arView){
    restoreOrbitFromDeviceLook(renderer.camera);
    renderer.markCameraMoved?.({positionChanged:true});
@@ -127,6 +128,7 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   const angle=Number(win?.screen?.orientation?.angle ?? win?.orientation ?? 0);
   const current=deviceOrientationQuaternion(event.alpha,event.beta,event.gamma,angle);
   if(!current)return;
+  latestOrientation=current;
   if(!reference){
    reference=current;basis=cameraLookBasis(renderer.camera);
    // Start at the current view, never snap to a compass heading.
@@ -140,6 +142,17 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   }
   const next=relativeDeviceLook(reference,current,basis);
   renderer.camera.arView=smoothLook(renderer.camera.arView,next);
+ };
+ /** Re-anchor the phone's present attitude to the current scene-camera direction. */
+ const recenter=()=>{
+  if(!active||disposed||!latestOrientation||!renderer?.camera)return false;
+  reference=latestOrientation;
+  basis=cameraLookBasis(renderer.camera);
+  // Make the alignment visible immediately. Smoothing the old AR direction
+  // would otherwise pull the newly centered view away from its target.
+  renderer.camera.arView={forward:basis.forward.slice(),up:basis.up.slice()};
+  notify('AR-Perspektive neu ausgerichtet');
+  return true;
  };
  const activate=async()=>{
   if(!available||disposed||pending||active)return false;
@@ -174,7 +187,7 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
  sync();
  return {
   get available(){return available;},get active(){return active;},get pending(){return pending;},
-  activate,stop,toggle,
+  activate,stop,toggle,recenter,
   dispose(){
    if(disposed)return;
    stop();disposed=true;

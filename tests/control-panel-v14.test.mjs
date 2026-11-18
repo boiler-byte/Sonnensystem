@@ -49,8 +49,8 @@ test('v14: renderer and timeline retain existing behavior and cache is invalidat
   const app=await read('src/app.js');
   const sw=await read('sw.js');
   const pkg=JSON.parse(await read('package.json'));
-  assert.equal(pkg.version,'49.0.0');
-  assert.match(sw,/sonnensystem-shell-v49/);
+  assert.equal(pkg.version,'50.0.0');
+  assert.match(sw,/sonnensystem-shell-v50/);
   for(const id of ['toggle-labels','reset-camera','play-btn','speed-btn','today-btn'])
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\(`));
   assert.match(app,/mobileSheets\?\.close\(\)/);

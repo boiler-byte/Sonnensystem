@@ -1,4 +1,10 @@
-# Hilfe – Sonnensystem (v49)
+# Hilfe – Sonnensystem (v50)
+
+### Kamera zurücksetzen bei aktivem AR (v50)
+
+Wenn der AR-Modus **an** ist, richtet der Button **Kamera zurücksetzen** unten rechts die AR-Perspektive neu aus: Das Smartphone in die gewünschte neue Neutralhaltung bringen und den Reset-Button antippen. Der aktuelle Sensorwinkel wird als neuer Nullpunkt übernommen; der Blick wird auf die aktuelle Kamera-Grundausrichtung dieser Szene ausgerichtet. Es gibt **keinen** Wechsel zwischen Kamera-Presets und **keinen** Szenenwechsel. AR bleibt aktiv, und eine Statusmeldung bestätigt die Neukalibrierung. Die Augenposition und der Zoom bleiben erhalten. Wiederholtes Antippen ist möglich.
+
+Bei **ausgeschaltetem AR** arbeitet derselbe Button wie gewohnt (in der Sonnensystemansicht die Perspektiven wechseln, in der Planetenansicht zur Übersicht zurückkehren).
 
 ### Control Panel und Reihenansicht (v49)
 

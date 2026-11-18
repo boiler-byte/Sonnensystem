@@ -46,7 +46,7 @@ test('v27: reset is a single framed zoom-out icon separate from the panel and mo
   assert.doesNotMatch(app,/\$\('help-btn'\)|\$\('mobile-menu'\)|\$\('view-mode-select'\)/);
   assert.match(css,/\.viewport-actions \.camera-reset-button\{[\s\S]*?border-radius:50%/);
   assert.match(css,/\.viewport>\.control-panel\{\s*width:58px!important/);
-  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[^\n]*renderer\?\.cycleCameraPerspective\(\)/);
+  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?if\(arMode\?\.active\)\{arMode\.recenter\(\);return;\}[\s\S]*?renderer\?\.cycleCameraPerspective\(\)/);
 });
 
 test('v26: layer trigger is icon-only and keeps an accessible, state-dependent name',async()=>{

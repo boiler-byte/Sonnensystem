@@ -14,7 +14,7 @@ test('v31: layer popover is 166px for the final desktop/mobile rule',async()=>{
   const css=await read('css/styles.css');
   assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:145px;max-height:/);
   assert.doesNotMatch(css,/\.viewport>\.control-panel \.layer-popover\{width:188px/);
-  assert.match(await read('sw.js'),/sonnensystem-shell-v49/);
+  assert.match(await read('sw.js'),/sonnensystem-shell-v50/);
 });
 
 test('v31: visible camera area uses the real sheet top and canvas rectangle',()=>{

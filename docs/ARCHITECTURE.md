@@ -1,3 +1,9 @@
+## Erweiterung v50 – AR-Kamera neu ausrichten
+
+- `src/renderer/ar-mode.js`: `createARMode()` speichert die letzte gültige Geräteorientierung. Die neue Methode `recenter()` ist nur bei aktivem AR verfügbar, übernimmt den aktuellen Sensorwinkel als Referenz und stellt die Blickbasis auf die aktuelle Orbit-Kamera-Grundausrichtung. `camera.arView` wird ohne Glättungsverzögerung neu gesetzt; Augenposition, Kameradistanz, Szenenmodus und Sensorlistener bleiben unverändert. Ungültige Sensormessungen werden ignoriert. Der AR-Zustand wird über `onStateChange` an die UI gemeldet; `syncSceneMode` erhält daraus die AR-spezifische Reset-Beschriftung und stellt außerhalb von AR die szenenabhängige Beschriftung wieder her.
+- `src/app.js`, `src/ui/scene-mode.js`: Der bestehende Reset-Button führt bei aktivem AR `arMode.recenter()` aus und verlässt danach den Handler. Außerhalb des AR-Modus bleibt `cycleCameraPerspective() + updateMode()` mit dem bisherigen Verhalten aktiv. Die UI bestimmt Tooltip und Screenreader-Label passend zu AR-Modus und Planeten-/Sonnensystemansicht.
+- `tests/ar-reset-v50.test.mjs`: Prüft wiederholtes Rezentrieren, gesperrte Zustände, Kameraposition, Sensorbewegung nach Reset, zugängliche Beschriftung, Beibehalten der Session und Anwendungseinbindung. Release `50.0.0`, PWA-Cache `sonnensystem-shell-v50`.
+
 ## Erweiterung v49 – kompakte Control-Panel-Buttons und ringbewusste Reihenlabels
 
 - CSS `css/styles.css`: `--control-icon-width` = `--control-trigger-width - 9px` (typisch 49 statt 58 px) für AR/Scale/Layer; Zeit 58 px. Die Panelbreite ist für 3/4 Buttons aus einzelnen Flex-Breiten zusammengesetzt. Für das Maßstab-Dropdown wird die gemeinsame rechte Viewportkante durch Neuberechnung des Versatzes erhalten; Layer/Time bleiben unverändert.

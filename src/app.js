@@ -46,7 +46,7 @@ const updateMode=()=>{
   S.settings=S.viewSettings[view]; // Distinct layer, orbit and label preferences per scene.
   if(renderer)renderer.settings=S.settings;
   S.settings.layers=ensureAvailableSelection(S.settings.layers,availableLayerTypes(S.bodies,view,renderer?.planetId),view);
-  syncSceneMode(S,renderer);
+  syncSceneMode(S,renderer,arMode?.active);
   if(syncSpeedMode(S,view)) {
     setSpeedPopover(false);
     updateTime();
@@ -370,7 +370,10 @@ function initControls(){
     renderer.follow(body.id); // Global An/Aus: follow stays on across selections.
     updateDetail();
   });
-  $('reset-camera').addEventListener('click',()=>{renderer?.cycleCameraPerspective();updateMode();updateDetail();mobileSheets?.close();});
+  $('reset-camera').addEventListener('click',()=>{
+    if(arMode?.active){arMode.recenter();return;} // AR: calibrate to the current phone direction, not orbit presets.
+    renderer?.cycleCameraPerspective();updateMode();updateDetail();mobileSheets?.close();
+  });
   $('planet-view-btn').addEventListener('click',()=>{
     const selected=byId(S.selected);
     // Moons open the parent planet (or dwarf-planet) system, not a moon-only scene.
@@ -452,7 +455,7 @@ async function init(){
   }
   try{
     renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail()});
-    arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle});
+    arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle,onStateChange:active=>syncSceneMode(S,renderer,active)});
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);
   }catch(e){
     console.error(e);$('canvas-error').hidden=false;

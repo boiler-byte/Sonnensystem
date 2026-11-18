@@ -148,7 +148,7 @@ test('v11: browser PWA preloads the texture modules and caches maps only on dema
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
   const server=await readFile(new URL('../server/server.mjs',import.meta.url),'utf8');
-  assert.match(sw,/sonnensystem-shell-v49/);
+  assert.match(sw,/sonnensystem-shell-v50/);
   assert.match(sw,/\.\/src\/renderer\/textures\.js/);
   assert.match(sw,/textures\\\//);
   assert.match(html,/id="texture-credit"/);

@@ -1,5 +1,5 @@
-/* Sonnensystem v49: application shell + manifest-driven offline data set. */
-const CACHE_NAME='sonnensystem-shell-v49';
+/* Sonnensystem v50: application shell + manifest-driven offline data set. */
+const CACHE_NAME='sonnensystem-shell-v50';
 const SHELL=["./","./index.html","./css/styles.css","./favicon.svg","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-180.png","./src/app.js","./src/data/bodies.js","./src/data/layers.js","./src/data/catalog.js","./src/data/normalization.js","./src/data/orbital-math.js","./data/catalog/probes.json","./src/renderer/ar-mode.js","./src/renderer/camera.js","./src/renderer/controls.js","./src/renderer/geometry.js","./src/renderer/index.js","./src/renderer/labels.js","./src/renderer/math.js","./src/renderer/orbits.js","./src/renderer/planet-view.js","./src/renderer/renderer.js","./src/renderer/transitions.js","./src/renderer/scene.js","./src/renderer/shaders.js","./src/renderer/solar-view.js","./src/renderer/texture-sources.js","./src/renderer/textures.js","./src/services/api.js","./src/services/celestrak-api.js","./src/services/nasa-api.js","./src/services/solar-api.js","./src/ui/bottom-sheet.js","./src/ui/formatters.js","./src/ui/object-details.js","./src/ui/object-list.js","./src/ui/scene-mode.js","./src/ui/status.js","./src/ui/timeline.js"];
 const DATA_MANIFEST='./data/catalog/manifest.json';
 const dataPath=/^\.\/data\/(catalog|editorial)\/[a-z0-9-]+\.json$/;

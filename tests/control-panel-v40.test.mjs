@@ -71,8 +71,8 @@ test('v41: all three triggers switch directly; only one popover stays open',asyn
 
 test('v41: version and offline cache move together',async()=>{
   const [html,pkg,sw]=await Promise.all([read('index.html'),read('package.json'),read('sw.js')]);
-  assert.match(html,/<meta name="app-version" content="V49\.0"/);
-  assert.equal(JSON.parse(pkg).version,'49.0.0');
-  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v49'/);
+  assert.match(html,/<meta name="app-version" content="V50\.0"/);
+  assert.equal(JSON.parse(pkg).version,'50.0.0');
+  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v50'/);
   assert.doesNotMatch(sw,/sonnensystem-shell-v39/);
 });

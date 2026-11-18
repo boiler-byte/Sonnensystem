@@ -1,6 +1,10 @@
-# Sonnensystem – interaktiver 3D-Atlas v49.0
+# Sonnensystem – interaktiver 3D-Atlas v50.0
 
-**Aktueller Stand v49.** Das rahmenlose Control-Panel zeigt oben rechts regulär drei Buttons (mit Smartphone-AR optional vier) in der Reihenfolge **Maßstab → Objektlayer → Zeitsteuerung**. Die Icon-Buttons sind **49 px**, die Zeitsteuerung unverändert **58 px** breit. Die drei Dropdowns schließen bündig an derselben rechten Viewportkante ab (Maßstab **192 px**, Layer **145 px**, Zeit **120 px**). Der Kamera-Reset bleibt unten rechts.
+**Aktueller Stand v50.** Das rahmenlose Control-Panel zeigt oben rechts regulär drei Buttons (mit Smartphone-AR optional vier) in der Reihenfolge **Maßstab → Objektlayer → Zeitsteuerung**. Die Icon-Buttons sind **49 px**, die Zeitsteuerung unverändert **58 px** breit. Die drei Dropdowns schließen bündig an derselben rechten Viewportkante ab (Maßstab **192 px**, Layer **145 px**, Zeit **120 px**). Der Kamera-Reset bleibt unten rechts.
+
+## Kamera neu ausrichten im AR-Modus (v50)
+
+Bei aktivem AR-Modus dient **Kamera zurücksetzen** (unten rechts) zur **Neuausrichtung des AR-Blicks**: Die aktuelle Haltung des Smartphones wird als neue Referenz übernommen und die Blickrichtung auf die aktuelle Standardausrichtung der Szene gesetzt. Die Kamera bleibt am selben Standort, AR läuft ohne erneute Berechtigungsabfrage weiter, und eine kurze Meldung bestätigt die Neuausrichtung. Bei deaktiviertem AR bleibt die bisherige Funktion des Buttons unverändert (Kameraperspektiven umschalten bzw. Planetenansicht verlassen). Während auf die erste Sensorprobe gewartet wird, gilt weiterhin die normale Reset-Funktion. [Delta v50](docs/DELTA-V50.md).
 
 ## Kompakte Icon-Leiste und lesbare Reihe (v49)
 
@@ -224,7 +228,7 @@ Auf Smartphones und Tablets bis 770 px befindet sich das vollständige Control-P
 | Sonnensystem | 1 Stunde / s | 5 Tage / s | 10 Jahre / s |
 | Planetenansicht | 1 Minute / s | 1 Stunde / s | 1 Jahr / s |
 
-Der **Kamera-zurücksetzen**-Button sitzt seit v27 außerhalb des Panels unten rechts: in der Sonnensystemansicht wechselt er zwischen drei Kameraperspektiven (nach manueller Bewegung zuerst zurück zur Standardperspektive), in einer isolierten Ansicht führt er zur Sonnensystemübersicht. Der **Beschriftung**-Schalter liegt seit v20 im Objektlayer-Dropdown, zusammen mit den Bahneinstellungen; darunter stehen seit v29 **Beleuchtung** und **4 Monde**.
+Der **Kamera-zurücksetzen**-Button sitzt seit v27 außerhalb des Panels unten rechts: in der Sonnensystemansicht wechselt er zwischen drei Kameraperspektiven (nach manueller Bewegung zuerst zurück zur Standardperspektive), in einer isolierten Ansicht führt er zur Sonnensystemübersicht. **Bei aktivem AR** kalibriert derselbe Button stattdessen die Blickrichtung neu. Der **Beschriftung**-Schalter liegt seit v20 im Objektlayer-Dropdown, zusammen mit den Bahneinstellungen; darunter stehen seit v29 **Beleuchtung** und **4 Monde**.
 
 ## Katalog unabhängig vom Renderer (v24)
 
