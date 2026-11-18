@@ -285,7 +285,7 @@
 .layer-option{min-height:35px;display:flex;align-items:center;gap:6px;border-radius:6px;padding:4px 3px;color:#d0dbea;font-size:11px;cursor:pointer}
 .layer-option:hover,.layer-option:focus-within{background:#25384d}
 .layer-option input{accent-color:#d3a76a;width:16px;height:16px;flex:none;cursor:pointer}
-.layer-option span{flex:1}
+.layer-option span{flex:1;min-width:0;overflow-wrap:anywhere;hyphens:auto}
 .layer-note{font-size:10px;line-height:1.5;color:#93a7ba;margin:10px 0 0}
 /* Category chips were removed from catalog; reclaim the space below search. */
 .catalog>.search{margin-bottom:9px}
@@ -861,7 +861,7 @@
   display:block;width:23px;height:23px;flex:none;fill:none;stroke:currentColor;
   stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
 }
-.scale-tool-toggle .four-moons-icon circle{fill:currentColor;stroke:none}
+.scale-tool-toggle .nine-moons-icon circle{fill:currentColor;stroke:none}
 
 /* Toggle status feedback does not obscure the camera control or mobile sheet tab. */
 .toggle-toast{
@@ -882,9 +882,9 @@
   .toggle-toast{transition:none}
 }
 
-/* v45: Reihe joins the orbit controls as a full-width icon below orbit/contrast. */
+/* v45: Row mode remains visible in the scale trigger active state. */
 .viewport>.control-panel .scale-button.row-active{color:#ffe0b2;border-color:#b78f5e}
-.scale-secondary-options .scale-row-toggle{grid-column:1 / -1}
+.scale-option .row-order-icon circle{fill:currentColor;stroke:none}
 .scale-tool-toggle .row-order-icon circle{fill:currentColor;stroke:none}
 @media (prefers-reduced-motion: reduce){.scale-tool-toggle{transition:none}}
 
@@ -932,3 +932,157 @@
 }
 /* Layer and time offsets are unchanged: both sit immediately to the left
    of the 58px time trigger / directly on the viewport-right edge. */
+
+
+/* v53: contextual Cinema transport in the existing floating control panel. */
+.viewport>.control-panel .cinema-button[hidden],.viewport>.cinema-timeline[hidden]{display:none!important}
+.viewport>.control-panel .cinema-button{
+  flex:0 0 var(--control-icon-width);width:var(--control-icon-width);
+  height:54px;min-height:54px;display:flex;align-items:center;justify-content:center;
+  padding:6px;color:#dec199;background:#172739;border:1px solid #405269;
+  border-radius:7px;font:inherit;cursor:pointer;
+}
+.viewport>.control-panel .cinema-button:hover{background:#26394c;border-color:#9e7b52}
+.viewport>.control-panel .cinema-button.active{background:#3a2828;color:#ffc2b4;border-color:#bd7867}
+.viewport>.control-panel .cinema-button:focus-visible{outline:2px solid #e8b778;outline-offset:2px}
+.viewport>.control-panel .cinema-button svg{width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linejoin:round;pointer-events:none}
+.viewport>.control-panel .cinema-button .cinema-icon-play{fill:currentColor;stroke:none}
+.viewport>.control-panel .cinema-button .cinema-icon-stop{display:none}
+.viewport>.control-panel .cinema-button.active .cinema-icon-play{display:none}
+.viewport>.control-panel .cinema-button.active .cinema-icon-stop{display:block;fill:currentColor;stroke:none}
+.viewport>.control-panel.cinema-available{
+  width:calc(3 * var(--control-icon-width) + var(--control-trigger-width) + 3 * var(--control-trigger-gap))!important;
+}
+.viewport>.control-panel.cinema-available.ar-available{
+  width:calc(4 * var(--control-icon-width) + var(--control-trigger-width) + 4 * var(--control-trigger-gap))!important;
+}
+.viewport>.cinema-timeline{
+  position:absolute;z-index:12;left:clamp(12px,8%,100px);right:clamp(12px,8%,100px);
+  bottom:calc(20px + env(safe-area-inset-bottom));
+  padding:10px 15px 12px;border:1px solid #647993;border-radius:12px;
+  background:#0d1b2af2;box-shadow:0 14px 32px #000a;backdrop-filter:blur(12px);
+  pointer-events:auto;max-width:100%;
+}
+.cinema-timeline-header,.cinema-timeline-ends{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.cinema-timeline-header{font-size:12px;font-weight:690;color:#f3dab5;margin-bottom:9px}
+.cinema-timeline-header span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cinema-timeline-header output{font-variant-numeric:tabular-nums;white-space:nowrap;color:#d3deed;font-size:11px}
+.viewport>.cinema-timeline input[type="range"]{display:block;width:100%;height:24px;margin:0;accent-color:#d8b48a;cursor:grab;touch-action:pan-x}
+.viewport>.cinema-timeline input[type="range"]:active{cursor:grabbing}
+.cinema-timeline-ends{font-size:10px;color:#9bacc2;margin-top:3px;letter-spacing:.2px}
+@media(max-width:770px){
+ .viewport>.cinema-timeline{left:12px;right:12px;bottom:calc(131px + env(safe-area-inset-bottom));padding:9px 12px 10px}
+}
+@media(prefers-reduced-motion:reduce){.viewport>.cinema-timeline{backdrop-filter:none}}
+
+/* v54: three primary modes in a single row, including the labeled Reihe
+   button. The small options stay below Objekt and Bahn. */
+.viewport>.control-panel .scale-popover{width:290px}
+.viewport>.control-panel .scale-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.viewport>.control-panel .scale-row-column>.scale-row-toggle{width:100%;min-height:68px}
+.viewport>.control-panel .scale-row-toggle .row-order-icon circle{fill:currentColor;stroke:none}
+@media(max-width:340px){
+ .viewport>.control-panel .scale-popover{width:calc(100vw - 20px)}
+ .viewport>.control-panel .scale-options{gap:4px}
+}
+
+/* v55: The scale popover is removed. Objekt / Bahn / Reihe are direct,
+   persistent top-bar toggles alongside Layers and Time. On narrow phones the
+   bar wraps instead of overflowing the viewport. */
+.viewport>.control-panel,
+.viewport>.control-panel.ar-available,
+.viewport>.control-panel.cinema-available,
+.viewport>.control-panel.cinema-available.ar-available{
+  --control-trigger-gap:5px;
+  --control-main-scale-width:46px;
+  --control-main-scale-gap:4px;
+  --control-icon-width:43px;
+  --control-trigger-width:55px;
+  width:max-content!important;
+  max-width:calc(100% - var(--control-right-inset) - 8px)!important;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  align-content:flex-start;
+  gap:var(--control-trigger-gap);
+}
+.viewport>.control-panel .scale-main-controls{
+  display:flex;align-items:stretch;gap:var(--control-main-scale-gap);
+  flex:0 0 auto;min-width:0;
+}
+.viewport>.control-panel .scale-main-controls .scale-option{
+  width:var(--control-main-scale-width);height:54px;min-height:54px;
+  padding:5px 2px;gap:3px;box-sizing:border-box;
+  background:#172739;border-color:#405269;border-radius:7px;
+  color:#c5d1e1;
+}
+.viewport>.control-panel .scale-main-controls .scale-option svg{width:20px;height:20px}
+.viewport>.control-panel .scale-main-controls .scale-option-label{font-size:9px}
+.viewport>.control-panel .scale-main-controls .scale-option:hover{
+  background:#26394c;border-color:#9e7b52;
+}
+.viewport>.control-panel .scale-main-controls .scale-option.active{
+  background:#3b342a;border-color:#b78f5e;color:#ffe0b2;
+}
+.viewport>.control-panel .scale-main-controls .scale-option:focus-visible{
+  outline:2px solid #e8b778;outline-offset:2px;
+}
+.viewport>.control-panel .layer-picker-wrap,
+.viewport>.control-panel .time-panel{
+  width:var(--control-icon-width);flex:0 0 var(--control-icon-width);
+}
+.viewport>.control-panel .time-panel{
+  width:var(--control-trigger-width);flex-basis:var(--control-trigger-width);
+}
+.viewport>.control-panel .ar-mode-button,
+.viewport>.control-panel .cinema-button{
+  width:var(--control-icon-width);flex:0 0 var(--control-icon-width);
+}
+.viewport>.control-panel .layer-picker-wrap,
+.viewport>.control-panel .time-panel .speed-picker-wrap{
+  position:static;
+}
+/* Popovers are anchored to the whole bar, not to individual cells. This also
+   keeps them below the bottom row after responsive wrapping. */
+.viewport>.control-panel .layer-popover,
+.viewport>.control-panel .time-panel .speed-popover{
+  position:absolute;top:calc(100% + 7px);right:0;left:auto;bottom:auto;
+  max-height:min(75dvh,calc(100dvh - 140px));
+  overflow-y:auto;overscroll-behavior:contain;
+}
+.viewport>.control-panel .layer-popover{
+  width:232px;max-width:calc(100vw - 20px);
+}
+.viewport>.control-panel .layer-display-controls{
+  margin:0 0 9px;padding:0 0 10px;border-bottom:1px solid #34485d;
+}
+.viewport>.control-panel .layer-display-heading{
+  display:block;margin:0 0 7px;color:#9bafc6;
+  font-size:10px;font-weight:710;letter-spacing:.35px;
+}
+.viewport>.control-panel .layer-display-toggles{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;
+}
+.viewport>.control-panel .layer-display-toggles .scale-tool-toggle{
+  width:100%;min-width:0;min-height:40px;padding:5px 0;
+}
+.viewport>.control-panel .layer-display-toggles .scale-tool-toggle svg{
+  width:21px;height:21px;
+}
+@media(max-width:770px){
+ .viewport>.control-panel,
+ .viewport>.control-panel.ar-available,
+ .viewport>.control-panel.cinema-available,
+ .viewport>.control-panel.cinema-available.ar-available{
+   --control-trigger-gap:4px;
+   --control-main-scale-width:43px;
+   --control-main-scale-gap:3px;
+   --control-icon-width:41px;
+   --control-trigger-width:53px;
+ }
+ .viewport>.control-panel .layer-popover,
+ .viewport>.control-panel .time-panel .speed-popover{
+   max-height:min(75dvh,calc(100dvh - 230px));
+ }
+}
+/* Override v43's full-width moon cell when all five display toggles share a row. */
+.viewport>.control-panel .layer-display-toggles #toggle-four-moons{grid-column:auto}

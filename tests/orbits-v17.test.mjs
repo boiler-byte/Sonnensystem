@@ -27,7 +27,7 @@ test('v25: solar Standard includes only Sun and planets',()=>{
 
 test('v17: all category colors and the Earth-orbit exception are exact',()=>{
   assert.deepEqual(CATEGORY_COLORS,{
-    planet:'#E6EDF5', moon:'#E6EDF5', dwarf:'#B68CFF', asteroid:'#E9B44C',
+    planet:'#E6EDF5', moon:'#E6EDF5', dwarf:'#B68CFF', tno:'#7BB6CF', asteroid:'#E9B44C',
     comet:'#FF7597', satellite:'#A7D86D', probe:'#FF8B4A', star:'#FFE5A0'
   });
   assert.equal(EARTH_ORBIT_COLOR,'#4DA3FF');
@@ -103,21 +103,18 @@ test('v17: orbital draw switches GL_TRIANGLES/GL_LINE_STRIP without touching obj
   assert.equal(captured.find(x=>x[0]==='vp')[1],vp);
 });
 
-test('v42: orbit switches are inside the scale popover, without their own dropdown',async()=>{
-  const html=await read('index.html'),app=await read('src/app.js'),mobile=await read('src/ui/bottom-sheet.js');
-  const css=await read('css/styles.css');
-  const start=html.indexOf('id="scale-popover"');
-  const end=html.indexOf('id="layer-picker-wrap"',start);
-  const scale=html.slice(start,end);
-  assert.match(scale,/class="scale-secondary-options" role="group" aria-label="Bahndarstellung"/);
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn']) {
-    assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
-    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
-    assert.match(app,new RegExp(`\\$\\(id\\)\\.addEventListener\\('click'`));
-  }
-  assert.doesNotMatch(html,/id="orbit-popover"|id="toggle-orbits"|id="orbit-picker-wrap"/);
-  assert.doesNotMatch(app,/setOrbitPopover|toggle-orbits|orbit-popover/);
-  assert.doesNotMatch(mobile,/orbit-popover|toggle-orbits/);
-  assert.match(css,/\.scale-secondary-options\{/);
-  assert.match(html,/Standard: Sterne und Planeten/);
+test('v55: orbit switches are in Layer appearance controls without a separate menu',async()=>{
+ const html=await read('index.html'),app=await read('src/app.js'),mobile=await read('src/ui/bottom-sheet.js');
+ const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="time-panel"'));
+ assert.match(layer,/class="layer-display-toggles"/);
+ for(const id of ['orbit-visibility-btn','orbit-contrast-btn']){
+   assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
+   assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
+   assert.match(app,/\$\(id\)\.addEventListener\('click'/);
+ }
+ assert.doesNotMatch(html,/id="orbit-popover"|id="toggle-orbits"|id="orbit-picker-wrap"/);
+ assert.doesNotMatch(app,/setOrbitPopover|toggle-orbits|orbit-popover/);
+ assert.doesNotMatch(mobile,/orbit-popover|toggle-orbits/);
+ assert.match(html,/Standard: Sterne und Planeten/);
 });
+

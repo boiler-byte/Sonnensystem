@@ -1,4 +1,10 @@
-# Datenmodell und redaktionelle Inhalte – v8.0
+# Datenmodell und redaktionelle Inhalte – v9.0 (App v52)
+
+## Erweiterung v52: 14 neue Objekte
+
+Der Katalog wurde von **160 auf 174** Datensätze und von drei auf vier deutsche Redaktionsdateien erweitert. Die Katalogversion ist **9.0.0**; das Schema bleibt **1**. Die neuen Astronomie-Dateien enthalten fünf Asteroiden (`asteroids-v52.json`), vier Kometen (`comets-v52.json`) und fünf transneptunische Objekte (`transneptunian-v52.json`, Typ `tno`). Dazu passt die vierte redaktionelle Datei `de-objects-v52.json`. Alle werden über `data/catalog/manifest.json` geladen und für Offline-Verfügbarkeit vorgemerkt. Freiwillige `aliases` sind geprüfte Namenslisten und werden in der Katalogsuche berücksichtigt.
+
+**Bahninterpretation:** Die angegebenen oskulierenden Elemente beziehen sich auf jeweils benannte Epochen. Für Arrokoth liegt eine vereinfachte historische Abschätzung vor. Der Renderer integriert keine Störungen oder nichtgravitativen Kräfte; die Positionen sind Modellpositionen und keine tagesaktuellen Ephemeriden.
 
 ## Prinzip und Quellen
 

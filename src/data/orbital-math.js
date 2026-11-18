@@ -48,6 +48,7 @@ export function renderRadius(body) {
   if (body.type === 'asteroid' || body.type === 'comet') return .11;
   if (body.type === 'moon') return clamp(.115+Math.log10(Math.max(1,body.radiusKm)/1000)*.055, .075,.235);
   if (body.type === 'dwarf') return .18;
+  if (body.type === 'tno') return .16;
   return clamp(.19+.48*Math.pow(Math.max(0,body.radiusKm)/69911,.39),.19,.67);
 }
 export function orbitalRadius(body, parent) {

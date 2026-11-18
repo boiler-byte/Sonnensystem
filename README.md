@@ -1,6 +1,57 @@
-# Sonnensystem – interaktiver 3D-Atlas v50.0
+# Sonnensystem – interaktiver 3D-Atlas v55.0
 
-**Aktueller Stand v50.** Das rahmenlose Control-Panel zeigt oben rechts regulär drei Buttons (mit Smartphone-AR optional vier) in der Reihenfolge **Maßstab → Objektlayer → Zeitsteuerung**. Die Icon-Buttons sind **49 px**, die Zeitsteuerung unverändert **58 px** breit. Die drei Dropdowns schließen bündig an derselben rechten Viewportkante ab (Maßstab **192 px**, Layer **145 px**, Zeit **120 px**). Der Kamera-Reset bleibt unten rechts.
+**Aktueller Stand v55.** **Objekt**, **Bahn** und **Reihe** sind jetzt immer direkt im Control Panel sichtbar – ohne separates Maßstab-Dropdown. Die Anzeigeoptionen **Beschriftung**, **Beleuchtung**, **Alle Monde**, **Umlaufbahn** und **Kontrast** befinden sich im **Layer-Dropdown** oberhalb der Objektkategorien. Die Cinema-Kamerafahrt und alle Anzeigezustände aus v54 bleiben erhalten.
+
+## Direktwahlschalter und Layer-Darstellung (v55)
+
+- **Hauptleiste:** Die drei eigenständigen Toggle-Buttons **Objekt**, **Bahn** und **Reihe** (je mit Icon und Text) stehen unmittelbar neben dem Layer- und Zeitsteuerungsbutton. Ein Maßstab-Trigger und das Maßstab-Popover existieren nicht mehr. Auf schmalen Bildschirmen kann sich die Leiste über zwei Zeilen verteilen.
+- **Layer-Dropdown:** Unter den Presets **Alle** und **Standard** folgt eine Gruppe **Darstellung** mit den fünf bisherigen Schaltern **Beschriftung**, **Beleuchtung**, **Alle Monde** (neun Kreis-Punkte), **Umlaufbahn**, **Kontrast**. Darunter bleiben die einzeln wählbaren Objektkategorien in der bisherigen Reihenfolge, beginnend mit **Sterne**.
+- **Unveränderte Schalterwirkung:** Anzeige- und Maßstabszustände bleiben erhalten; die Cinema-Startbedingung lautet weiterhin **Reihe An / Objekt An / Bahn Aus**. Für **Alle Monde** gilt **Aus = höchstens vier Monde je Planet**, **An = alle Monde**. Die getrennten Szenenoptionen werden weiter berücksichtigt.
+- **Kompatibilität:** Die bisherigen Schalter-IDs und Ereignisverknüpfungen bleiben bestehen; nur der Menü-Auslöser Maßstab und dessen Öffnungslogik wurden entfernt.
+
+**Installation:** `Sonnensystem-Delta-v55.zip` über eine vollständige **v54-Installation** entpacken und vorhandene Dateien ersetzen. App-Version **55.0.0**, Offline-Cache `sonnensystem-shell-v55`. Siehe [Delta v55](docs/DELTA-V55.md).
+
+## Bisherige Neuerungen v54 (unverändert)
+
+**Stand v54.** Cinema erscheint in der Reihenansicht bei **Objekt An / Bahn Aus**. Die Kamerafahrt zoomt für jeden Himmelskörper passend zu seinem Größenmaßstab und hält ungefähr **1,5 Sekunden**. Die Maßstab-Einstellungen sind in drei Spalten angeordnet; der Mond-Schalter zeigt nun **neun kreisförmige Punkte** und bedeutet bei **Aus** eine Grenze von vier Monden. Der Objektkatalog bleibt unverändert.
+
+## Cinema-Kamerafahrt und Maßstab-Panel (historischer Stand v54; Bedienposition in v55 geändert)
+
+- **Play-Bedingung:** Reihe **An**, Objektmaßstab **An**, Bahnabstände **Aus**. Die standardmäßige Aktivierung des Objektmaßstabs beim Betreten der Reihe erlaubt es, Cinema direkt zu starten, solange „Bahn“ ausgeschaltet ist.
+- **Kamerafahrt:** Der Film sortiert nur die in der Szene sichtbaren Objekte nach ihren Katalogradien aufsteigend. Die tatsächlichen Objektgrößen bleiben proportional. Für jedes Objekt wird ein neuer Kameraabstand anhand der sichtbaren Kugel- bzw. Ringausdehnung und des Bildschirmformats gewählt; zwischen den Objekten erfolgt ein sanfter, logarithmischer Zoom und eine Fahrt nach rechts. **1.500 ms Haltezeit** pro Objekt und etwa **1.300 ms Überfahrt** zum nächsten Objekt. Eine kurze Anfahrt (1.100 ms) geht dem Film voraus. Die Gesamtdauer wächst mit der Anzahl sichtbarer Objekte.
+- **Zeitleiste und Stop:** Die Zeitleiste lässt sich weiterhin ziehen. Beim Stoppen und am Ende werden Reihenfolge (groß nach klein), Kameraposition und Zoom wiederhergestellt. Größenmaßstabs- oder Layerwechsel und Änderungen der Mondanzahl beenden eine laufende Fahrt.
+- **Control Panel:** Im Maßstab-Dropdown stehen **Objekt**, **Bahn** und **Reihe** in einer horizontalen Zeile. Der dritte Button besitzt nun die sichtbare Beschriftung **Reihe**. Die übrigen Optionen bleiben unter Objekt bzw. Bahn.
+- **Monde:** Der Schalter mit **neun Punkten auf einem Kreis** ist nun als „Alle Monde“ beschriftet (Tooltip und Barrierefreiheitsname). **Aus = höchstens vier größte Monde pro Planet**, **An = alle natürlichen Monde des eingeschalteten Mond-Layers**. Die ursprünglichen inhaltlichen Voreinstellungen bleiben erhalten: Sonnensystem Aus (max. vier), Planetenansicht An (alle).
+
+**Installation:** `Sonnensystem-Delta-v54.zip` über den vollständigen **v53-Stand** entpacken; vorhandene Dateien ersetzen. App-Version **54.0.0**, Offline-Cache `sonnensystem-shell-v54`. Weitere Details: [Delta v54](docs/DELTA-V54.md).
+
+## Objekt-Reihen-Darstellung: Cinema-Modus (historischer Stand v53, in v54 ersetzt)
+
+1. **Reihe** im Maßstab-Dropdown einschalten. Aus v51 wird der Größen-Toggle **Objekt** hierbei zunächst automatisch auf „maßstabsgetreu“ geschaltet.
+2. **Objekt** und **Bahn** beide auf **schematisch / Aus** stellen. Nur in diesem Zustand erscheint im Control Panel ein zusätzlicher **Cinema-Play-Button**. Alle anderen Maßstabs- und Ansichtsmodi bleiben unverändert.
+3. **Play** startet einen Größenvergleich der im aktuellen Layer sichtbaren Himmelskörper **von klein nach groß**, anhand ihres echten Katalogradius. Dabei sind die *angezeigten* Kugelgrößen absichtlich **schematisch**, nicht physikalisch proportional (beide Maßstabs-Toggles sind aus). Die Kamera fährt entlang der Reihe von links nach rechts. Ein neuer Abschnitt erhält jeweils ungefähr seinen eigenen Zeitanteil; die Gesamtdauer richtet sich nach der Zahl der sichtbaren Objekte (ca. 18–150 s).
+4. Eine **Zeitleiste am unteren Bildschirmrand** zeigt Objektname, Fortschrittsposition und Zeit. Ihre Position lässt sich mit Maus, Touch oder Tastatur verändern. Während des Ziehens pausiert der automatische Fortschritt; danach geht die Kamerafahrt ab dieser Stelle weiter.
+5. Während Cinema läuft, wird **Play** zu **Stop**. Stop setzt die gewöhnliche Reihenfolge **groß → klein** wieder ein und fährt die Kamera sanft zur **gespeicherten Position, Zoomstufe und Blickrichtung** zurück. Nach dem letzten Objekt endet die Fahrt automatisch. Ein Ansichts-/Maßstabswechsel, eine neue Auswahl oder manuelle Kamerabewegung beendet sie ebenfalls; der Reset-Button und `Esc` können die Fahrt abbrechen.
+
+Die Funktionen gelten für Sonnensystem- und Planetenansicht und funktionieren ohne Videodateien, externe Aufrufe oder Medienrechte. Der Inspirationslink [Star Size Comparison](https://www.youtube.com/watch?v=HEheh1BH34Q) dient nur als visuelle Referenz; die 3D-Fahrt ist eine eigene Darstellung. Bei Verwendung des AR-Sensorblicks wird dieser vor Cinema abgeschaltet, damit er die Kamerafahrt nicht überschreibt.
+
+**Installation:** `Sonnensystem-Delta-v53.zip` über den vollständigen **v52-Stand** entpacken; vorhandene Dateien ersetzen. App-Version **53.0.0**, PWA-Cache `sonnensystem-shell-v53`. Die Release-Änderungen und Testhinweise stehen unter [Delta v53](docs/DELTA-V53.md).
+
+## Neues Layer-Dropdown und 14 weitere Himmelskörper (v52)
+
+- **Layer-Reihenfolge:** **Sterne** steht als erste Objektkategorie, gefolgt von Planeten, Monden, Zwergplaneten, transneptunischen Objekten, Asteroiden, Satelliten, Kometen und Raumsonden.
+- **Asteroiden:** (16) Psyche, (10) Hygiea, (162173) Ryugu, (25143) Itokawa, (243) Ida.
+- **Kometen:** 67P/Tschurjumow-Gerassimenko, 9P/Tempel 1, 103P/Hartley 2, 81P/Wild 2.
+- **Transneptunische Objekte:** Quaoar, Orcus, Gonggong, Sedna, Arrokoth. Diese fünf Objekte lassen sich über den neuen Layer gemeinsam anzeigen/verbergen.
+- Jeder Neuzugang besitzt einen Katalogeintrag, ein vereinfachtes Kepler-Bahnmodell und redaktionelle Detailinformationen mit Quellenlinks. Internationale Bezeichnungen sind auch über die Katalogsuche auffindbar.
+- Die Auswahl **Standard** zeigt weiterhin nur Sonne und Planeten, **Alle** aktiviert auch die neuen Objekte. In der Planetenansicht bleiben die passenden lokalen Layer sichtbar.
+
+**Installation:** `Sonnensystem-Delta-v52.zip` über eine vollständige **v51-Installation** entpacken; vorhandene Dateien ersetzen. Version **52.0.0**, neuer Offline-Cache `sonnensystem-shell-v52`. Die Bahnen sind schematische Kepler-Fortschreibungen katalogisierter Elemente und **keine hochpräzisen Ephemeriden**. Details und Quellen: [Delta v52](docs/DELTA-V52.md).
+
+## Reihenansicht mit maßstabsgetreuen Größen und sanfte Bahnwelle (v51)
+
+- **Reihe aktivieren:** Beim Einschalten von **Reihe** wird **Objekt** automatisch auf **Maßstabsgetreu** gestellt (auch in der anderen Ansicht, da beide Ansichten denselben Objekt-Maßstab-Schalter teilen). Die physikalischen Radiusverhältnisse gelten sofort für die Reihen-Anordnung; der Wechsel wird wie bisher weich animiert. **Bahn** bleibt unberührt. Wer die Objektgrößen in der Reihe manuell auf schematisch schaltet, kann dies weiterhin tun; beim nächsten Einschalten der Reihe gilt erneut die maßstabsgetreue Voreinstellung. Das Verlassen der Reihe schaltet **Objekt** nicht automatisch zurück.
+- **Planetenansicht, Bahn an → aus:** Statt des bisherigen Gummiband-Überschwingens werden Bahnen und zugehörige Körperpositionen **monoton und weich** auf die schematischen Abstände überführt. Die innerste sichtbare Bahn beginnt zuerst, die äußerste startet um maximal **ca. 200 ms** später – eine sanfte Welle von innen nach außen bei weiterhin etwa **980 ms** Gesamtdauer. Schnelles Zurückschalten beginnt aus dem bereits sichtbaren Zwischenstand, ohne zu springen. Andere Maßstabs- und Ansichtswechsel behalten ihre bisherige Animation; bei `prefers-reduced-motion` wird auch die Welle übersprungen. Details: [Delta v51](docs/DELTA-V51.md).
 
 ## Kamera neu ausrichten im AR-Modus (v50)
 

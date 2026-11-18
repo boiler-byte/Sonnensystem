@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "type": "tno",
+  "provenance": {
+    "source": "Stellarium-Kleinkörperkatalog; Arrokoth: veröffentlichte historische Elementdaten",
+    "origin": "Stellarium ssystem_minor.ini; (486958) Arrokoth 2019",
+    "sourceUrl": "https://raw.githubusercontent.com/Stellarium/stellarium/master/data/ssystem_minor.ini",
+    "reviewStatus": "source-reviewed",
+    "note": "Die vier gelisteten Quaoar/Orcus/Gonggong/Sedna-Orbits benutzen katalogisierte oskulierende Elemente verschiedener Epochen; Arrokoth verwendet gerundete historische Angaben und eine aus dem ungefähren Periheldatum geschätzte Phase. Radien sind gerundete Größenabschätzungen; Modelle sind schematisch und für sehr ferne Kleinkörper nicht als präzise Ephemeriden geeignet."
+  },
+  "objects": [
+    {
+      "id": "quaoar",
+      "name": "Quaoar",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 555
+      },
+      "orbit": {
+        "semiMajorAxis": 43.1934847,
+        "unit": "AU",
+        "periodDays": 103687.20101,
+        "eccentricity": 0.0376011,
+        "inclinationDeg": 7.9912,
+        "ascendingNodeDeg": 189.04724,
+        "periapsisDeg": 163.15048,
+        "meanAnomalyDeg": 290.95514,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#98b2cb",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "orcus",
+      "name": "Orcus",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 458.5
+      },
+      "orbit": {
+        "semiMajorAxis": 39.2370318,
+        "unit": "AU",
+        "periodDays": 89772.22856,
+        "eccentricity": 0.224754,
+        "inclinationDeg": 20.55649,
+        "ascendingNodeDeg": 268.39889,
+        "periapsisDeg": 73.82944,
+        "meanAnomalyDeg": 186.3685,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#b1bfcc",
+        "style": "ice"
+      }
+    },
+    {
+      "id": "gonggong",
+      "name": "Gonggong",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 615
+      },
+      "orbit": {
+        "semiMajorAxis": 67.0618217,
+        "unit": "AU",
+        "periodDays": 200590.70592,
+        "eccentricity": 0.5064904,
+        "inclinationDeg": 30.90385,
+        "ascendingNodeDeg": 336.82029,
+        "periapsisDeg": 207.05238,
+        "meanAnomalyDeg": 104.40425,
+        "epoch": "2017-02-16T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#af7780",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "sedna",
+      "name": "Sedna",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 497.5
+      },
+      "orbit": {
+        "semiMajorAxis": 552.1531164,
+        "unit": "AU",
+        "periodDays": 4739004.03362,
+        "eccentricity": 0.8618058,
+        "inclinationDeg": 11.92774,
+        "ascendingNodeDeg": 144.39469,
+        "periapsisDeg": 310.87403,
+        "meanAnomalyDeg": 358.59443,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#a46b59",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "arrokoth",
+      "name": "Arrokoth",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 15.85
+      },
+      "orbit": {
+        "semiMajorAxis": 44.63,
+        "unit": "AU",
+        "periodDays": 108902.56705,
+        "eccentricity": 0.051,
+        "inclinationDeg": 2.5,
+        "ascendingNodeDeg": 159.0,
+        "periapsisDeg": 181.1,
+        "meanAnomalyDeg": 310.920165,
+        "epoch": "2019-04-27T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "historical-perihelion"
+      },
+      "appearance": {
+        "color": "#a47566",
+        "style": "rock"
+      },
+      "aliases": [
+        "(486958) Arrokoth",
+        "2014 MU69"
+      ]
+    }
+  ]
+}

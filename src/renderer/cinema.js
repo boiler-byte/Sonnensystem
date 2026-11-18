@@ -1,0 +1,72 @@
+/**
+ * Camera tour through the visible physical-size row.
+ * Each object is held for 1.5 seconds. Travel smoothly to the next object
+ * with a logarithmic zoom matching its real display size.
+ * Sampling by elapsed time makes playback and timeline scrubbing consistent.
+ */
+import { CAMERA_FOV, clamp, lerp } from './math.js';
+
+export const CINEMA_ENTRY_MS=1100;
+export const CINEMA_HOLD_MS=1500;
+export const CINEMA_TRAVEL_MS=1300;
+export const CINEMA_END_HOLD_MS=200;
+
+export function cinemaEligible(settings){
+ return settings?.row===true && settings.scaleObjects===true && settings.scaleOrbits===false;
+}
+
+/** Scale the viewing distance to each object's visible sphere or ring extent. */
+export function cinemaTrack(layout,width,height){
+ const ids=layout?.ids??[];
+ const aspect=Math.max(1,width)/Math.max(1,height);
+ const verticalTan=Math.tan(CAMERA_FOV/2);
+ const horizontalTan=verticalTan*aspect;
+ let elapsedMs=0;
+ const frames=ids.map((id,index)=>{
+  const radius=Math.max(0,layout?.footprints?.get(id)??layout?.radii?.get(id)??0);
+  // Zero or unknown radius must never collapse the near plane.
+  const distance=Math.max(.00001,radius*1.53/verticalTan,
+    radius*1.43/Math.max(.12,horizontalTan));
+  const holdStartMs=elapsedMs;
+  const holdEndMs=holdStartMs+CINEMA_HOLD_MS;
+  const travelEndMs=holdEndMs+(index<ids.length-1?CINEMA_TRAVEL_MS:0);
+  elapsedMs=travelEndMs;
+  return {id,x:layout.positions.get(id)?.[0]??0,radius,distance,
+    holdStartMs,holdEndMs,travelEndMs};
+ });
+ return {ids,frames,x:frames.map(frame=>frame.x),
+   distance:frames[0]?.distance??1,durationMs:elapsedMs};
+}
+
+const smooth=t=>{const k=clamp(t,0,1);return k*k*(3-2*k);};
+
+/** Exact target and zoom for any timeline progress, independently of frame rate. */
+export function cinemaPoseAt(track,progress){
+ const frames=track?.frames??[];
+ if(!frames.length)return {target:[0,0,0],distance:1,objectId:null,holding:false};
+ const elapsedMs=clamp(Number(progress)||0,0,1)*(track.durationMs||0);
+ for(let i=0;i<frames.length;i++){
+  const frame=frames[i];
+  if(elapsedMs<=frame.holdEndMs || i===frames.length-1){
+   return {target:[frame.x,0,0],distance:frame.distance,objectId:frame.id,holding:true};
+  }
+  if(elapsedMs<frame.travelEndMs){
+   const next=frames[i+1];
+   const t=smooth((elapsedMs-frame.holdEndMs)/CINEMA_TRAVEL_MS);
+   // Exponential interpolation avoids linear-zoom jolts across orders of magnitude.
+   const distance=Math.exp(lerp(Math.log(frame.distance),Math.log(next.distance),t));
+   return {target:[lerp(frame.x,next.x,t),0,0],distance,
+     objectId:t<.5?frame.id:next.id,holding:false};
+  }
+ }
+ const last=frames[frames.length-1];
+ return {target:[last.x,0,0],distance:last.distance,objectId:last.id,holding:true};
+}
+
+export function cinemaTargetAt(track,progress){return cinemaPoseAt(track,progress).target;}
+export function cinemaObjectAt(track,progress){return cinemaPoseAt(track,progress).objectId;}
+
+export function cinemaClock(ms){
+ const s=Math.max(0,Math.floor((Number(ms)||0)/1000));
+ return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+}

@@ -14,26 +14,21 @@ const segment=(source,start,end)=>{
   return source.slice(a,b);
 };
 
-test('v43: scale popover is compact, heading/note/status indicators are absent',async()=>{
-  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
-  const popover=segment(html,'id="scale-popover"','id="layer-picker-wrap"');
-  assert.doesNotMatch(popover,/scale-popover-heading|scale-popover-note|scale-option-status|orbit-toggle-indicator/);
-  assert.doesNotMatch(css,/\.scale-popover-heading|\.scale-popover-note|\.scale-option-status/);
-  const buttons=[...popover.matchAll(/<button\b[^>]*id="([a-z-]+)"[^>]*>[\s\S]*?<\/button>/g)];
-  assert.deepEqual(buttons.map(b=>b[1]),[
-    'scale-objects-btn','toggle-labels','toggle-lighting','toggle-four-moons',
-    'scale-orbits-btn','orbit-visibility-btn','orbit-contrast-btn','orbit-row-btn'
-  ]);
-  for(const [markup,id] of buttons){
-    assert.match(markup,/aria-pressed="(true|false)"/);
-    assert.match(markup,/<svg /);
-    assert.match(markup,/title="[^"]+"/);
-    if(!['scale-objects-btn','scale-orbits-btn'].includes(id))assert.match(markup,/aria-label="[^"]+"/);
-  }
-  assert.match(css,/\.scale-secondary-options\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:4px\}/);
-  assert.match(css,/#toggle-four-moons\{grid-column:1 \/ -1\}/);
-  assert.match(css,/\.scale-option\{\s*min-width:0;min-height:68px/);
-  assert.match(css,/\.scale-tool-toggle\{\s*width:100%;min-width:0;min-height:44px/);
+test('v55: three always-visible scale toggles; five compact icon-only Layer tools',async()=>{
+ const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
+ assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
+ const main=segment(html,'class="scale-main-controls"','id="layer-picker-wrap"');
+ const layer=segment(html,'class="layer-display-toggles"','class="layer-options"');
+ const mainIds=[...main.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(mainIds,['scale-objects-btn','scale-orbits-btn','orbit-row-btn']);
+ const appearanceIds=[...layer.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(appearanceIds,['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn']);
+ for(const id of [...mainIds,...appearanceIds]){
+   const button=html.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
+   assert.match(button,/aria-pressed="(true|false)"/);assert.match(button,/<svg /);assert.match(button,/title="[^"]+"/);
+ }
+ assert.match(css,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+ assert.match(css,/\.layer-display-toggles #toggle-four-moons\{grid-column:auto\}/);
 });
 
 test('v43: no colors toggle or orbitColors preference remains; palette always applies',async()=>{
@@ -115,11 +110,11 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
     return elements.get(id);
   };
   const notices=[],solar=createViewSettings('solar'),S={settings:solar};
-  const ctx=vm.createContext({S,$:get,notifyToggle:msg=>notices.push(msg)});
+  const ctx=vm.createContext({S,$:get,notifyToggle:msg=>notices.push(msg),renderer:null});
   vm.runInContext(controlsSource+handlers,ctx);
   for(const [id,label,defaultPressed] of [
     ['toggle-labels','Beschriftung',true],['toggle-lighting','Beleuchtung',false],
-    ['toggle-four-moons','4 Monde',true],['orbit-visibility-btn','Umlaufbahn',true],
+    ['toggle-four-moons','Alle Monde',false],['orbit-visibility-btn','Umlaufbahn',true],
     ['orbit-contrast-btn','Kontrast',false]
   ]){
     const button=get(id);

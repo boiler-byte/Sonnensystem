@@ -25,54 +25,45 @@ test('v40: horizontal triggers keep the viewport-right dropdown alignment',async
   assert.match(css,/\.viewport>\.control-panel \.time-panel \.speed-popover\{width:120px/);
 });
 
-test('v41: all three triggers switch directly; only one popover stays open',async()=>{
+test('v55: Layers and Time popovers switch directly while scale toggles stay in toolbar',async()=>{
   const app=await read('src/app.js');
   const extract=(start,end)=>{
     const a=app.indexOf(start),b=app.indexOf(end,a+start.length);
     assert.ok(a>=0&&b>a,`${start} precedes ${end}`);
     return app.slice(a,b);
   };
-  const layerFn=extract('function setLayerPopover(open){','function syncOrbitControls(){');
+  const layerFn=extract('function setLayerPopover(open){','function syncScaleControls(){');
   const speedFn=extract('function setSpeedPopover(open) {','function initControls(){');
-  const layerClick=extract("$('layer-btn').addEventListener('click',()=>{","  $('scale-btn').addEventListener('click'");
-  const scaleClick=extract("$('scale-btn').addEventListener('click',()=>{","  for(const [id,setting]");
+  const layerClick=extract("$('layer-btn').addEventListener('click',()=>{","  for(const [id,setting]");
   const speedClick=extract("$('speed-btn').addEventListener('click',()=>{","  $('speed').addEventListener('input'");
-  const controls=Object.fromEntries(['layer-btn','layer-popover','scale-btn','scale-popover','speed-btn','speed-popover','speed'].map(id=>[id,{
+  const controls=Object.fromEntries(['layer-btn','layer-popover','speed-btn','speed-popover','speed'].map(id=>[id,{
     id,hidden:true,attrs:{},listeners:{},setAttribute(key,val){this.attrs[key]=val;},
     addEventListener(type,cb){this.listeners[type]=cb;},focus(){this.focused=true;},click(){this.listeners.click();}
   }]));
-  // Popovers start hidden, unlike their visible trigger buttons.
   const ctx=vm.createContext({$:id=>controls[id]});
-  vm.runInContext(layerFn+speedFn+layerClick+scaleClick+speedClick,ctx);
+  vm.runInContext(layerFn+speedFn+layerClick+speedClick,ctx);
   controls['layer-btn'].click();
   assert.equal(controls['layer-popover'].hidden,false);
   assert.equal(controls['speed-popover'].hidden,true);
   assert.equal(controls['layer-btn'].attrs['aria-expanded'],'true');
-  controls['speed-btn'].click(); // No explicit close gesture before switching.
+  controls['speed-btn'].click();
   assert.equal(controls['layer-popover'].hidden,true);
   assert.equal(controls['speed-popover'].hidden,false);
-  assert.equal(controls['layer-btn'].attrs['aria-expanded'],'false');
   assert.equal(controls['speed-btn'].attrs['aria-expanded'],'true');
   assert.equal(controls.speed.focused,true);
   controls['layer-btn'].click();
   assert.equal(controls['layer-popover'].hidden,false);
   assert.equal(controls['speed-popover'].hidden,true);
-  controls['scale-btn'].click(); // The time popup closes automatically.
-  assert.equal(controls['scale-popover'].hidden,false);
-  assert.equal(controls['speed-popover'].hidden,true);
-  assert.equal(controls['scale-btn'].attrs['aria-expanded'],'true');
-  controls['layer-btn'].click();
-  assert.equal(controls['layer-popover'].hidden,false);
-  assert.equal(controls['scale-popover'].hidden,true);
   controls['layer-btn'].click();
   assert.equal(controls['layer-popover'].hidden,true);
   assert.equal(controls['layer-btn'].attrs['aria-expanded'],'false');
+  assert.doesNotMatch(app,/setScalePopover|\$\('scale-btn'\)/);
 });
 
 test('v41: version and offline cache move together',async()=>{
   const [html,pkg,sw]=await Promise.all([read('index.html'),read('package.json'),read('sw.js')]);
-  assert.match(html,/<meta name="app-version" content="V50\.0"/);
-  assert.equal(JSON.parse(pkg).version,'50.0.0');
-  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v50'/);
+  assert.match(html,/<meta name="app-version" content="V55\.0"/);
+  assert.equal(JSON.parse(pkg).version,'55.0.0');
+  assert.match(sw,/const CACHE_NAME='sonnensystem-shell-v55'/);
   assert.doesNotMatch(sw,/sonnensystem-shell-v39/);
 });

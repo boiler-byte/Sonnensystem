@@ -1,4 +1,38 @@
-# Hilfe – Sonnensystem (v50)
+# Hilfe – Sonnensystem (v55)
+
+### Control Panel und Layer-Dropdown (v55)
+
+Die Schalter **Objekt**, **Bahn** und **Reihe** liegen **direkt im Control Panel** oben rechts, mit Icon und sichtbarer Beschriftung. Ein separates **Maßstab-Dropdown gibt es nicht mehr**. Alle drei Schalter lassen sich ohne vorheriges Öffnen eines Menüs einschalten. Bei schmalen Bildschirmen ordnen sie sich in einer umgebrochenen Leiste an.
+
+Das **Layer-Dropdown** öffnen Sie über das Ebenen-Icon. Auf **Alle | Standard** folgt direkt der Abschnitt **Darstellung** mit fünf Icon-Schaltern: **Beschriftung**, **Beleuchtung**, **Alle Monde** (neun Punkte im Kreis), **Umlaufbahn**, **Kontrast**. Erst darunter folgen die **Objektkategorien**, beginnend mit **Sterne**. Die Schalter beeinflussen die Darstellung unabhängig von den ausgewählten Objektkategorien. **Alle Monde Aus** begrenzt weiterhin auf höchstens vier Monde pro Planet; **An** zeigt alle natürlichen Monde des sichtbaren Mond-Layers.
+
+### Cinema-Modus in der Objekt-Reihenansicht (v54, unverändert in v55)
+
+**Aktivieren:** Das Control Panel enthält direkt nebeneinander **Objekt**, **Bahn** und **Reihe**. **Reihe** einschalten. Objektgrößen werden dabei wie bisher automatisch auf **maßstabsgetreu** gestellt. **Bahn** ausschalten. Nur bei **Reihe An + Objekt An + Bahn Aus** erscheint im Control Panel der Cinema-**Play-Button**.
+
+**Wiedergabe:** **Play** sortiert die sichtbaren Körper von **klein links** nach **groß rechts** und fährt sie ab. Die Körper bleiben physikalisch proportional. Die Kamera zoomt für jeden Körper auf eine passende Entfernung, verweilt etwa **1,5 Sekunden** und gleitet mit stufenloser Zoomänderung zum nächsten. Die gesamte Filmdauer richtet sich nach der Anzahl sichtbarer Objekte.
+
+**Zeitleiste:** Unten stehen der aktuelle Körper und die Filmzeit. Den Regler per Maus, Touch oder Tastatur verschieben, um direkt zu einem anderen Körper oder einer Übergangsphase zu springen. Solange gezogen wird, pausiert der automatische Fortschritt.
+
+**Beenden:** Das **Stop-Symbol** beendet Cinema, stellt die Reihenfolge **groß → klein** wieder her und fährt die Kamera zur gespeicherten Ausgangsposition einschließlich Zoom und Blickrichtung zurück. Am Filmende geschieht dies automatisch. Auch ein Maßstabs- oder Ansichtswechsel, eine Änderung der sichtbaren Layer/Monde, manuelle Kamerabewegung oder `Esc` beendet den Film.
+
+### Mondbegrenzung und Schalter-Beschriftung (v54; Position in v55 geändert)
+
+**Reihe** sitzt weiterhin direkt neben **Objekt** und **Bahn** und hat eine sichtbare Beschriftung. Seit v55 sind alle drei direkt im Control Panel zu finden; Beschriftung, Beleuchtung, Umlaufbahn, Kontrast und Alle Monde befinden sich im Layer-Dropdown.
+
+Der frühere „4 Monde“-Button zeigt jetzt **neun im Kreis angeordnete Punkte** und heißt **Alle Monde**. **Aus = maximal vier größte Monde je Planet** (Sonnensystem-Standard). **An = alle natürlichen Monde** (Planetenansicht-Standard). Ein ausgeschalteter Mond-Layer bleibt ausgeschaltet; die Katalogeinträge werden nicht reduziert.
+
+### Layer und neue Objekte (v52)
+
+Im Layer-Dropdown rechts oben steht **Sterne** nun ganz oben. Daneben gibt es die eigene Objektkategorie **Transneptunische Objekte**. Mit **Alle** werden alle Kategorien aktiv, mit **Standard** bleibt die Sonnensystemansicht auf Sonne und Planeten beschränkt. Die Katalogsuche findet zusätzliche Namen auch dann, wenn ihre Layer gerade ausgeschaltet sind.
+
+Neu im Katalog: die Asteroiden **(16) Psyche, (10) Hygiea, (162173) Ryugu, (25143) Itokawa, (243) Ida**; die Kometen **67P/Tschurjumow-Gerassimenko, 9P/Tempel 1, 103P/Hartley 2, 81P/Wild 2**; sowie **Quaoar, Orcus, Gonggong, Sedna, Arrokoth**. Die Objekte lassen sich über ihren Namen oder eine alternative Schreibweise suchen und im Detailfenster auswählen. Ihre Sonnenumlaufbahnen werden mit schematischen Kepler-Elementen dargestellt. Sehr ferne oder kleine Objekte können je nach Zoom und gewähltem Maßstab außerhalb des Blickfelds liegen; für sie kann die Katalog-Auswahl und Fokussierung genutzt werden.
+
+### Reihenansicht und neue Bahnanimation (v51)
+
+Beim Aktivieren von **Reihe** stellt die Anwendung den **Objekt**-Schalter automatisch auf **maßstabsgetreue Größen**. Die Objektgrößen stammen dann proportional aus den Katalogradien. Der **Bahn**-Schalter ändert sich dabei nicht. Auch bei aktiver Reihe kann **Objekt** manuell wieder auf schematisch geschaltet werden; beim erneuten Aktivieren von Reihe gilt wieder maßstabsgetreu. Beim Verlassen der Reihe bleibt die gewählte Größenoption bestehen. Beide Szenen teilen weiterhin dieselbe Objektmaßstab-Einstellung.
+
+In der **Planetenansicht** bewegen sich beim Ausschalten von **Bahn** die Umlaufbahnen ohne Gummiband-Rückschwingen auf die schematischen Abstände. Die inneren Bahnen beginnen etwas früher als die äußeren, sodass eine dezente, von innen nach außen laufende Welle entsteht; dazugehörige Monde und Satelliten bewegen sich mit ihrer jeweiligen Bahn. Die Animation dauert insgesamt etwa eine Sekunde. Beim Wiedereinschalten von Bahn oder in der Sonnensystemansicht bleibt die bisherige Animation bestehen. Mit aktivierter Systemoption **Bewegung reduzieren** geschieht der Übergang direkt.
 
 ### Kamera zurücksetzen bei aktivem AR (v50)
 
@@ -20,7 +54,7 @@ Auf geeigneten Smartphones erscheint im Control Panel **links neben Maßstab** e
 
 ## Dein Observatorium
 
-Steuere die 3D-Ansicht per Maus, Pfeiltasten oder Touch. Die Desktop-Seitenleiste links bietet zwei Tabs: **Objekte** (Katalog und Suche) sowie **Details** (Wissen und Daten zum gewählten Objekt). Auf dem Smartphone lassen sich dieselben beiden Bereiche vom unteren Rand hochziehen; ein separater Menü-Button ist nicht vorhanden. Das rahmenlose, 190 px breite Control-Panel mit drei nebeneinanderliegenden Tasten bleibt oben rechts in der 3D-Ansicht. Der runde Kamera-Reset mit nach außen zeigenden Pfeilen befindet sich unten rechts. Bei halb geöffnetem mobilem Sheet wandert er mit der Sheet-Oberkante nach oben; bei voll geöffnetem Sheet ist er ausgeblendet.
+Steuere die 3D-Ansicht per Maus, Pfeiltasten oder Touch. Die Desktop-Seitenleiste links bietet zwei Tabs: **Objekte** (Katalog und Suche) sowie **Details** (Wissen und Daten zum gewählten Objekt). Auf dem Smartphone lassen sich dieselben beiden Bereiche vom unteren Rand hochziehen; ein separater Menü-Button ist nicht vorhanden. Das Control Panel mit den drei direkten Maßstab-Schaltern, dem Layer- und dem Zeit-Button befindet sich oben rechts in der 3D-Ansicht. Der runde Kamera-Reset mit nach außen zeigenden Pfeilen befindet sich unten rechts. Bei halb geöffnetem mobilem Sheet wandert er mit der Sheet-Oberkante nach oben; bei voll geöffnetem Sheet ist er ausgeblendet.
 
 ### 01 — Navigation
 
@@ -41,22 +75,22 @@ Die Suche verarbeitet mehrere Wörter unabhängig und verknüpft sie mit UND, au
 
 ### 02 — Zeitreise und Anzeige
 
-Die drei Buttons im Control-Panel sind von links nach rechts **Maßstab**, **Objektlayer** und **Zeitsteuerung**. Alle Dropdowns erscheinen unter den Buttons und liegen rechtsbündig am Bildschirmrand. Zum Wechseln reicht ein Klick auf den gewünschten Button; das zuvor geöffnete Dropdown schließt sich. Ein Klick außerhalb oder `Escape` schließt ein Menü ebenfalls.
+Im Control Panel stehen **Objekt**, **Bahn** und **Reihe** als direkt zugängliche Buttons neben **Objektlayer** und **Zeitsteuerung**. Nur Layer und Zeit haben Dropdowns. Diese erscheinen unter den Buttons und liegen rechtsbündig am Bildschirmrand. Zum Wechseln reicht ein Klick auf den gewünschten Button; das zuvor geöffnete Dropdown schließt sich. Ein Klick außerhalb oder `Escape` schließt ein Menü ebenfalls.
 
 Der Zeitknopf zeigt die Geschwindigkeit und das lokale Datum. Im Zeit-Dropdown befindet sich der vertikale logarithmische Regler mit Minimal- und Maximalwert rechts, darunter Play/Pause und Heute sowie Datum und Uhrzeit. **Die Sonnensystemansicht startet mit 5 Tagen/s, die Planetenansicht mit 1 Stunde/s.**
 
-Das **Objektlayer-Dropdown** enthält „Alle | Standard“ sowie die an-/abwählbaren Objektkategorien. **Sonnensystem-Standard:** Sterne und Planeten. **Planetenansicht-Standard:** Planeten, Monde und Satelliten. Nicht vorhandene Kategorien werden in der Planetenansicht ausgeblendet. Die Darstellungsoptionen (Beschriftung, Beleuchtung, 4 Monde, Umlaufbahn, Kontrast) liegen im Maßstab-Menü und bleiben unabhängig von den Layer-Checkboxen einstellbar. Bahnen verwenden stets die Kategoriepalette.
+Das **Objektlayer-Dropdown** enthält „Alle | Standard“ sowie die an-/abwählbaren Objektkategorien. **Sonnensystem-Standard:** Sterne und Planeten. **Planetenansicht-Standard:** Planeten, Monde und Satelliten. Nicht vorhandene Kategorien werden in der Planetenansicht ausgeblendet. Die Darstellungsoptionen (Beschriftung, Beleuchtung, Alle Monde, Umlaufbahn, Kontrast) stehen oberhalb der Objektkategorien im **Layer-Dropdown** und bleiben unabhängig von den Layer-Checkboxen einstellbar. Bahnen verwenden stets die Kategoriepalette.
 
-Die **Beleuchtung** steht standardmäßig im Sonnensystem auf **Aus = Optimiert**, in der Planetenansicht auf **An = Realistisch**. Der **4-Monde-Schalter** ist im Sonnensystem standardmäßig **An**, in der Planetenansicht **Aus**. Eingeschaltet zeigt er nur die vier größten natürlichen Monde je Planet oder Zwergplanet in der 3D-Szene. Beide Szenen speichern ihre Anzeigeoptionen unabhängig voneinander.
+Die **Beleuchtung** steht standardmäßig im Sonnensystem auf **Aus = Optimiert**, in der Planetenansicht auf **An = Realistisch**. Der **Alle-Monde-Schalter** ist im Sonnensystem standardmäßig **Aus** (höchstens vier Monde), in der Planetenansicht **An** (alle Monde). Beide Szenen speichern ihre Anzeigeoptionen unabhängig voneinander.
 
-### Maßstab und Darstellungs-Schalter (v45)
+### Maßstab und Darstellungs-Schalter (seit v55 direkt in der Hauptleiste)
 
-Das linke **Maßstab-Dropdown** hat das Icon eines horizontalen Doppelpfeils mit linken und rechten Begrenzungsstrichen. Darin stehen zwei Schalter mit jeweils großem Icon und kleinem Label **nebeneinander**: **Objekt** mit vertikalem Doppelpfeil und **Bahn** mit horizontalem Doppelpfeil.
+Die drei Schalter **Objekt**, **Bahn** und **Reihe** mit jeweils großem Icon und kleinem Label stehen **direkt im Control Panel** nebeneinander. Das frühere Maßstab-Dropdown ist entfernt.
 
 - **Objekt Aus**: bisherige schematische Objektgrößen. **Objekt An**: physikalisch proportionale Radien der Körper aus den hinterlegten Kilometern.
 - **Bahn Aus**: bisherige komprimierte Bahnabstände. **Bahn An**: physikalisch proportionale Abstände der Bahnen aus ihren großen Halbachsen.
 
-Unter **Objekt** stehen **Beschriftung** (Tab-Label) und **Beleuchtung** (Taschenlampe) nebeneinander, darunter **4 Monde** (vier Punkte). Unter **Bahn** stehen **Umlaufbahn** (zwei ineinanderliegende Kreise) und **Kontrast** (Schwarz/Weiß-Kreis) nebeneinander, darunter **Reihe** (drei von links nach rechts kleiner werdende Punkte). Die Menüüberschrift, die Erläuterungs-Fußnote und alle An/Aus-Statusindikatoren innerhalb der acht Buttons wurden entfernt. Der Zustand wird weiterhin farblich, im Tooltip und über `aria-pressed` angezeigt. Bei jedem Klick erscheint eine kurzlebige **Snackbar unten rechts**, z. B. „Beleuchtung: An (Realistisch)“. Der bisherige Farben-Toggle ist entfallen, da Orbitlinien nun immer die Objektkategorie-Farben verwenden. Für **Monde** gilt `#E6EDF5`.
+Unter **Objekt** stehen **Beschriftung** (Tab-Label) und **Beleuchtung** (Taschenlampe) nebeneinander, darunter **Alle Monde** (neun kreisförmig angeordnete Punkte). Unter **Bahn** stehen **Umlaufbahn** (zwei ineinanderliegende Kreise) und **Kontrast** (Schwarz/Weiß-Kreis) nebeneinander. **Reihe** (drei von links nach rechts kleiner werdende Punkte) steht in der oberen Reihe. Die Menüüberschrift, die Erläuterungs-Fußnote und alle An/Aus-Statusindikatoren innerhalb der acht Buttons wurden entfernt. Der Zustand wird weiterhin farblich, im Tooltip und über `aria-pressed` angezeigt. Bei jedem Klick erscheint eine kurzlebige **Snackbar unten rechts**, z. B. „Beleuchtung: An (Realistisch)“. Der bisherige Farben-Toggle ist entfallen, da Orbitlinien nun immer die Objektkategorie-Farben verwenden. Für **Monde** gilt `#E6EDF5`.
 
 **Reihe** ist standardmäßig **Aus**. Bei **An** ordnet sie alle aktuell sichtbaren Körper von links nach rechts nach ihrer echten Größe aus dem Katalog (groß → klein) an; der angezeigte Kugelradius folgt weiterhin dem gewählten Objekt-Maßstab. Das gilt sowohl für die Sonnensystemansicht als auch für die Planetenansicht. Umlaufbahnlinien verschwinden während der Aufreihung sanft und erscheinen beim Zurückschalten wieder. Die Kamera zoomt nun gezielt näher heran und zeigt vom größten Körper nur einen schmalen, links angeschnittenen Teil (ca. 12 % seines Durchmessers). Die Lücken zwischen den folgenden Objekten sind abhängig von ihren Radien enger; weitere Körper lassen sich durch Verschieben erreichen. Auch auf schmalen Geräten bleibt der linke Anschnitt erhalten. Ein Umschalten wird unten rechts per Snackbar bestätigt. Die Reihe ist für jede Ansicht separat einstellbar.
 
@@ -70,9 +104,9 @@ Solar OpenData nutzt einen optionalen API-Key. Asteroiden, Satelliten und Horizo
 
 ### 04 — Darstellung
 
-In den Details von Planeten und Zwergplaneten öffnet „Planetenansicht“ das jeweilige Himmelskörpersystem mit seinen verfügbaren Monden und künstlichen Satelliten. In Monddetails öffnet derselbe Button die Planetenansicht des übergeordneten Planeten oder Zwergplaneten, z. B. Charon → Pluto. Der runde **Kamera-zurücksetzen**-Button mit vier nach außen gerichteten Pfeilen rechts unten schaltet in der Sonnensystemansicht durch **Schräg/oben → Von der Seite → Draufsicht → Schräg/oben**. Nach einer manuellen Dreh-, Schwenk- oder Zoombewegung kehrt der nächste Klick immer zuerst zu **Schräg/oben** zurück; aus einer isolierten Planetenansicht führt er zum Sonnensystem zurück. Der bisherige Hilfe-Button und der mobile Menü-Button sind entfernt. Diese Hilfe liegt nur noch im Verzeichnis `docs/`. Größen und Abstände sind standardmäßig illustrativ skaliert und können im Maßstab-Menü proportional umgeschaltet werden; Satellitenpositionen sind nur angenähert.
+In den Details von Planeten und Zwergplaneten öffnet „Planetenansicht“ das jeweilige Himmelskörpersystem mit seinen verfügbaren Monden und künstlichen Satelliten. In Monddetails öffnet derselbe Button die Planetenansicht des übergeordneten Planeten oder Zwergplaneten, z. B. Charon → Pluto. Der runde **Kamera-zurücksetzen**-Button mit vier nach außen gerichteten Pfeilen rechts unten schaltet in der Sonnensystemansicht durch **Schräg/oben → Von der Seite → Draufsicht → Schräg/oben**. Nach einer manuellen Dreh-, Schwenk- oder Zoombewegung kehrt der nächste Klick immer zuerst zu **Schräg/oben** zurück; aus einer isolierten Planetenansicht führt er zum Sonnensystem zurück. Der bisherige Hilfe-Button und der mobile Menü-Button sind entfernt. Diese Hilfe liegt nur noch im Verzeichnis `docs/`. Größen und Abstände sind standardmäßig illustrativ skaliert und können direkt über **Objekt** und **Bahn** proportional umgeschaltet werden; Satellitenpositionen sind nur angenähert.
 
-**Sonnensystemansicht:** Bei eingeschalteten Umlaufbahnen erscheinen alle verfügbaren Bahnen direkt um die Sonne, deren Objekttyp im Layer-Dropdown aktiv ist (Planeten, Zwergplaneten, Asteroiden, Kometen). Monde und künstliche Satelliten umkreisen Planeten und werden daher in dieser Ansicht nicht als künstliche Sonnenbahnen gezeichnet. Ihre lokalen Umlaufbahnen sind in der Planetenansicht sichtbar. Bei eingeschaltetem **4 Monde** sind pro Planet nur die vier größten natürlichen Monde sichtbar und beschriftbar. Die Auswahl eines kleineren Monds im Katalog hebt die Begrenzung nicht auf. Wenn der Schalter **Aus** ist, werden alle Monde des aktiven Mond-Layers dargestellt; ihre Beschriftungen unterliegen weiter den allgemeinen Dichte- und Bewegungsregeln.
+**Sonnensystemansicht:** Bei eingeschalteten Umlaufbahnen erscheinen alle verfügbaren Bahnen direkt um die Sonne, deren Objekttyp im Layer-Dropdown aktiv ist (Planeten, Zwergplaneten, Asteroiden, Kometen). Monde und künstliche Satelliten umkreisen Planeten und werden daher in dieser Ansicht nicht als künstliche Sonnenbahnen gezeichnet. Ihre lokalen Umlaufbahnen sind in der Planetenansicht sichtbar. Bei ausgeschaltetem **Alle Monde** sind pro Planet nur die vier größten natürlichen Monde sichtbar und beschriftbar. Die Auswahl eines kleineren Monds im Katalog hebt die Begrenzung nicht auf. Wenn der Schalter **An** ist, werden alle Monde des aktiven Mond-Layers dargestellt; ihre Beschriftungen unterliegen weiter den allgemeinen Dichte- und Bewegungsregeln.
 
 ### 05 — Details durchschalten und mobiles Sheet (v27)
 

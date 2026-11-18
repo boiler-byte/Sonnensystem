@@ -173,8 +173,8 @@ test('v48: SVG trigger sits left of the three menus, with conditional width and 
  const root=new URL('../',import.meta.url);
  const [html,css,app,sw,pkg]=await Promise.all(['index.html','css/styles.css','src/app.js','sw.js','package.json']
   .map(f=>readFile(new URL(f,root),'utf8')));
- assert.ok(html.indexOf('id="ar-mode-btn"')<html.indexOf('id="scale-btn"'));
- assert.ok(html.indexOf('id="scale-btn"')<html.indexOf('id="layer-btn"'));
+ assert.ok(html.indexOf('id="ar-mode-btn"')<html.indexOf('id="scale-objects-btn"'));
+ assert.ok(html.indexOf('id="scale-objects-btn"')<html.indexOf('id="layer-btn"'));
  assert.ok(html.indexOf('id="layer-btn"')<html.indexOf('id="speed-btn"'));
  assert.match(html,/<button class="ar-mode-button"[^>]*hidden>/);
  assert.match(html,/id="ar-mode-btn"[\s\S]*?<svg viewBox="0 0 24 24"/);
@@ -182,6 +182,6 @@ test('v48: SVG trigger sits left of the three menus, with conditional width and 
  assert.doesNotMatch(css,/\.viewport>\.control-panel\.ar-available \.scale-popover/);
  assert.match(app,/arMode=createARMode\(renderer,\$\('ar-mode-btn'\)/);
  assert.match(sw,/src\/renderer\/ar-mode\.js/);
- assert.match(sw,/sonnensystem-shell-v50/);
- assert.equal(JSON.parse(pkg).version,'50.0.0');
+ assert.match(sw,/sonnensystem-shell-v55/);
+ assert.equal(JSON.parse(pkg).version,'55.0.0');
 });

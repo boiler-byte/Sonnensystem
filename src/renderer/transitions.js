@@ -1,6 +1,27 @@
 import { CAMERA_FOV, clamp, lerp } from './math.js';
 
 export const LAYOUT_TRANSITION_MS = 980;
+export const PLANET_ORBIT_WAVE_MAX_DELAY = 0.20; // last orbit starts ~196 ms after the first
+
+/** Monotonic start/finish, without the rubber-band recoil of ordinary layout changes. */
+export function gentleEase(progress) {
+  const t=clamp(Number(progress)||0,0,1);
+  return t*t*(3-2*t);
+}
+
+/** Order physical planet-centric orbits by distance, regardless of catalog order. */
+export function planetOrbitWaveDelays(bodies) {
+  const sorted=[...bodies].filter(b=>Number(b?.a)>0)
+    .sort((a,b)=>Number(a.a)-Number(b.a)||String(a.id).localeCompare(String(b.id)));
+  const last=sorted.length-1;
+  return new Map(sorted.map((body,index)=>[body.id,last ? index/last*PLANET_ORBIT_WAVE_MAX_DELAY : 0]));
+}
+
+/** Each orbit uses the same non-elastic curve, starting a little later further out. */
+export function planetOrbitWaveEase(progress,delay=0) {
+  const lag=clamp(Number(delay)||0,0,PLANET_ORBIT_WAVE_MAX_DELAY);
+  return gentleEase((clamp(Number(progress)||0,0,1)-lag)/(1-lag));
+}
 
 /** Smooth spring-like arrival with a small (<5%) overshoot, then settles to 1. */
 export function rubberEase(progress) {
@@ -10,8 +31,9 @@ export function rubberEase(progress) {
 }
 
 /** Row order comes from physical catalog radii, never the current display preset. */
-export function orderedRowBodies(bodies) {
-  return [...bodies].sort((a,b)=>(Number(b.radiusKm)||0)-(Number(a.radiusKm)||0)
+export function orderedRowBodies(bodies, order='desc') {
+  const sign=order==='asc'?1:-1;
+  return [...bodies].sort((a,b)=>sign*((Number(a.radiusKm)||0)-(Number(b.radiusKm)||0))
     || String(a.id).localeCompare(String(b.id)));
 }
 
@@ -19,8 +41,8 @@ export function orderedRowBodies(bodies) {
  * The latter reserves room for Saturn's rendered rings without changing sphere sizes.
  * The first clearance remains as in v47; gaps after the second body grow by 30%.
  */
-export function rowLayout(bodies, radiusOf, footprintOf=(_body,radius)=>radius) {
-  const ordered=orderedRowBodies(bodies);
+export function rowLayout(bodies, radiusOf, footprintOf=(_body,radius)=>radius,order='desc') {
+  const ordered=orderedRowBodies(bodies,order);
   const sizes=ordered.map(b=>Math.max(0,Number(radiusOf(b))||0));
   const footprints=ordered.map((body,i)=>Math.max(sizes[i],Number(footprintOf(body,sizes[i]))||0));
   const largest=Math.max(0,...sizes);

@@ -45,6 +45,7 @@ function labelPriority(body, renderer, previouslyVisible) {
     case 'planet': score = 8000; break;
     case 'star': score = 7000; break;
     case 'dwarf': score = 5700; break;
+    case 'tno': score = 4900; break;
     case 'moon': score = 4000 + Math.min(450, Math.log10(radius + 1) * 110); break;
     case 'satellite': score = body.catalog === 25544 || Number(body.catalog) === 25544 ? 4800 : 3100; break;
     case 'comet': score = 2600; break;

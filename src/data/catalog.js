@@ -44,6 +44,7 @@ export function parseCategory(doc, expectedType, path='') {
     const where=`${path} / Eintrag ${index+1}`;
     ensure(isObj(item) && idPattern.test(item.id||'') && validString(item.name),`${where}: id oder name ungültig`);
     ensure(item.parentId === null || idPattern.test(item.parentId||''),`${where}: parentId ungültig`);
+    if(item.aliases!==undefined)ensure(Array.isArray(item.aliases) && item.aliases.every(validString),`${where}: aliases müssen eine Liste von Namen sein`);
     ensure(isObj(item.physical) && okNumber(item.physical.radiusKm) && item.physical.radiusKm>=0,`${where}: radiusKm ungültig`);
     if (item.physical.temperatureK !== undefined) ensure(okNumber(item.physical.temperatureK) && item.physical.temperatureK>0,`${where}: temperatureK ungültig`);
     ensure(isObj(item.orbit),`${where}: orbit fehlt`);
@@ -61,6 +62,7 @@ export function parseCategory(doc, expectedType, path='') {
     if(item.externalIds?.norad!==undefined)ensure(Number.isInteger(item.externalIds.norad) && item.externalIds.norad>0,`${where}: NORAD-ID ungültig`);
     return {
       id:item.id,name:item.name,type:expectedType,parentId:item.parentId,
+      ...(item.aliases===undefined?{}:{aliases:item.aliases}),
       a:o.semiMajorAxis,periodDays:o.periodDays,radiusKm:item.physical.radiusKm,
       color:item.appearance.color,style:item.appearance.style,
       e:o.eccentricity,i:o.inclinationDeg,node:o.ascendingNodeDeg,peri:o.periapsisDeg,

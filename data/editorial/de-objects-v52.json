@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "revision": 1,
+  "articles": [
+    {
+      "id": "psyche",
+      "status": "imported",
+      "revision": 1,
+      "title": "(16) Psyche",
+      "summary": "Asteroid (16) Psyche im Hauptgürtel; sein hoher Metallanteil ist Gegenstand der NASA-Mission Psyche.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Psyche ist ein großes Objekt des Hauptgürtels zwischen Mars und Jupiter. Die NASA-Mission Psyche untersucht seine Zusammensetzung; der genaue Aufbau ist wissenschaftlich nicht vollständig geklärt."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 2.92 AE, die Modellumlaufzeit rund 5.0 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "hygiea",
+      "status": "imported",
+      "revision": 1,
+      "title": "(10) Hygiea",
+      "summary": "(10) Hygiea gehört zu den größten Asteroiden des Hauptgürtels.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Hygiea ist ein großer, dunkler Hauptgürtelasteroid; Form und Größenabschätzungen beruhen auf astronomischen Beobachtungen."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 3.15 AE, die Modellumlaufzeit rund 5.6 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "ryugu",
+      "status": "imported",
+      "revision": 1,
+      "title": "(162173) Ryugu",
+      "summary": "(162173) Ryugu ist ein erdnaher Asteroid und Ziel der japanischen Probenrückführungsmission Hayabusa2.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Die Raumsonde Hayabusa2 untersuchte Ryugu und brachte Material zur Erde. Der kohlenstoffreiche Körper ist klein und unregelmäßig geformt."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 1.19 AE, die Modellumlaufzeit rund 1.3 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "itokawa",
+      "status": "imported",
+      "revision": 1,
+      "title": "(25143) Itokawa",
+      "summary": "(25143) Itokawa ist ein erdnaher Asteroid, von dem die japanische Raumsonde Hayabusa Proben zur Erde brachte.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Itokawa ist ein unregelmäßig geformter, steiniger kleiner Körper. Seine Abmessungen sind nicht mit einer perfekten Kugel zu verwechseln."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 1.32 AE, die Modellumlaufzeit rund 1.5 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "ida",
+      "status": "imported",
+      "revision": 1,
+      "title": "(243) Ida",
+      "summary": "(243) Ida ist ein Hauptgürtelasteroid mit dem kleinen natürlichen Begleiter Dactyl.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Die Raumsonde Galileo fotografierte Ida und seinen Mond Dactyl. In dieser Version wird nur Idas Sonnenumlaufbahn ergänzt; eine Mondbahn für Dactyl wird nicht erfunden."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 2.86 AE, die Modellumlaufzeit rund 4.8 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "churyumov-gerasimenko",
+      "status": "imported",
+      "revision": 1,
+      "title": "67P/Tschurjumow-Gerassimenko",
+      "summary": "67P/Tschurjumow-Gerassimenko ist ein kurzperiodischer Komet, den die ESA-Mission Rosetta erforschte.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Rosetta begleitete den Kometen; der Lander Philae setzte auf seinem unregelmäßigen Kern auf. Die Umlaufbahn wird hier als vereinfachte Ellipse dargestellt."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 3.46 AE, die Modellumlaufzeit rund 6.4 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Kometenbahndaten (JPL/MPC via ExoAtlas)",
+          "url": "https://www.exoatlas.com/data/comets/67p-churyumov-gerasimenko/"
+        }
+      ]
+    },
+    {
+      "id": "tempel-1",
+      "status": "imported",
+      "revision": 1,
+      "title": "9P/Tempel 1",
+      "summary": "9P/Tempel 1 ist ein periodischer Komet, den die NASA-Mission Deep Impact 2005 untersuchte.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Deep Impact schickte einen Impaktor auf Tempel 1, um Material unter der Oberfläche zu untersuchen. Der dargestellte Kern ist kugelförmig vereinfacht."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 3.31 AE, die Modellumlaufzeit rund 6.0 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Kometenbahndaten (JPL/MPC via ExoAtlas)",
+          "url": "https://www.exoatlas.com/data/comets/9p-tempel/"
+        }
+      ]
+    },
+    {
+      "id": "hartley-2",
+      "status": "imported",
+      "revision": 1,
+      "title": "103P/Hartley 2",
+      "summary": "103P/Hartley 2 ist ein kurzperiodischer Komet, den die NASA-Sonde EPOXI aus der Nähe beobachtete.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Hartley 2 hat einen kleinen, stark gegliederten Kern. Die Sonde EPOXI untersuchte die Aktivität und Materialausströmungen des Kometen."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 3.48 AE, die Modellumlaufzeit rund 6.5 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "103P/Hartley – Bahndaten (COBS/MPC)",
+          "url": "https://cobs.si/comet/80/"
+        }
+      ]
+    },
+    {
+      "id": "wild-2",
+      "status": "imported",
+      "revision": 1,
+      "title": "81P/Wild 2",
+      "summary": "81P/Wild 2 ist ein periodischer Komet, aus dessen Umgebung die NASA-Mission Stardust Staubproben zur Erde brachte.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Stardust sammelte Partikel bei einem Vorbeiflug am Kometen Wild 2. Seine Sonnenbahn ist elliptisch und wird in diesem Atlas vereinfacht wiedergegeben."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 3.45 AE, die Modellumlaufzeit rund 6.4 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Kometenbahndaten (JPL/MPC via ExoAtlas)",
+          "url": "https://www.exoatlas.com/data/comets/81p-wild/"
+        }
+      ]
+    },
+    {
+      "id": "quaoar",
+      "status": "imported",
+      "revision": 1,
+      "title": "Quaoar",
+      "summary": "Quaoar ist ein großes transneptunisches Objekt im Kuipergürtel außerhalb Neptuns.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Quaoar ist ein eisreicher äußerer Kleinkörper mit dem Mond Weywot. Seine Zuordnung zu den offiziellen Zwergplaneten ist nicht gleichbedeutend mit einer IAU-Anerkennung."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 43.19 AE, die Modellumlaufzeit rund 283.9 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "orcus",
+      "status": "imported",
+      "revision": 1,
+      "title": "Orcus",
+      "summary": "Orcus ist ein transneptunisches Objekt mit einer resonanten Sonnenbahn und dem Begleiter Vanth.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Orcus befindet sich in einer Bahnresonanz mit Neptun und wird als Plutino eingeordnet. Die Umlaufbahn um die Sonne ist stark geneigt."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 39.24 AE, die Modellumlaufzeit rund 245.8 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "gonggong",
+      "status": "imported",
+      "revision": 1,
+      "title": "Gonggong",
+      "summary": "Gonggong ist ein großes, weit entferntes transneptunisches Objekt auf einer langgestreckten Sonnenbahn.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Gonggong wird der Gruppe der gestreuten Objekte zugeordnet und besitzt einen bekannten Mond namens Xiangliu. Die Oberflächeneigenschaften sind nur teilweise bestimmt."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 67.06 AE, die Modellumlaufzeit rund 549.2 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "sedna",
+      "status": "imported",
+      "revision": 1,
+      "title": "Sedna",
+      "summary": "Sedna ist ein extrem weit entferntes transneptunisches Objekt mit einer stark exzentrischen Sonnenbahn.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Sednas Perihel liegt deutlich außerhalb der Neptunbahn. Wegen seiner ungewöhnlichen Bahn wird es oft als entferntes oder abgelöstes Objekt diskutiert."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 552.15 AE, die Modellumlaufzeit rund 12974.5 Jahre. Die Bahnelemente gelten für eine katalogisierte Epoche und werden mit einem vereinfachten Zweikörpermodell fortgeführt. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        }
+      ]
+    },
+    {
+      "id": "arrokoth",
+      "status": "imported",
+      "revision": 1,
+      "title": "Arrokoth",
+      "summary": "Arrokoth ist ein kleiner Kontakt-Doppelkörper im Kuipergürtel, den New Horizons 2019 nahe untersuchte.",
+      "sections": [
+        {
+          "heading": "Forschung und Einordnung",
+          "text": "Arrokoth besteht aus zwei miteinander verbundenen Loben. Die hier gezeichnete Kugel ist nur ein symbolischer Ersatz für die tatsächliche Kontakt-Doppelform."
+        },
+        {
+          "heading": "Bahn und Darstellungsgrenzen",
+          "text": "Die große Halbachse beträgt etwa 44.63 AE, die Modellumlaufzeit rund 298.2 Jahre. Für Arrokoth wird die Bahnphase aus historischen Näherungsdaten abgeleitet. Es handelt sich nicht um eine genaue astronomische Ephemeride; bei Kometen werden insbesondere nichtgravitative Effekte nicht berechnet."
+        }
+      ],
+      "references": [
+        {
+          "title": "Astronomische Bahnelemente und Kleinobjekt-Klassifikation – NASA/JPL",
+          "url": "https://ssd.jpl.nasa.gov/sb/orbits.html"
+        },
+        {
+          "title": "Stellarium – offener Kleinkörperdatensatz",
+          "url": "https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini"
+        },
+        {
+          "title": "Arrokoth – historische Bahnelemente und Abmessungen",
+          "url": "https://de.wikipedia.org/wiki/(486958)_Arrokoth"
+        }
+      ]
+    }
+  ]
+}

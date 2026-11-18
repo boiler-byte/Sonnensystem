@@ -107,7 +107,8 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   const orbitModelLabel={
     'mean-elements':'Mittlere Elemente · schematisch',
     'osculating-sample':'Historische Beispielbahn',
-    'historical-perihelion':'Historische Kometenbahn'
+    'osculating-snapshot':'Oskulierende Elemente · schematische Bahn',
+    'historical-perihelion':b.type==='comet'?'Historische Kometenbahn':'Historische Bahnelemente · schematisch'
   }[b.orbitModel];
   $('orbit-facts').innerHTML=`<div><span>Umkreist</span><b>${esc(parent?.name||'—')}</b></div><div><span>Bahnneigung</span><b>${esc(incl)}</b></div><div><span>Datenquelle</span><b>${esc(b.source||'Startdatensatz')}</b></div>${orbitModelLabel?`<div><span>Bahnmodell</span><b>${esc(orbitModelLabel)}</b></div>`:''}`;
   const related=state.bodies.filter(x=>x.parentId===b.id).sort((a,c)=>c.radiusKm-a.radiusKm);
@@ -115,7 +116,10 @@ export function renderDetail(state,renderer,selectBody){const byId=id=>state.bod
   for(const el of $('related').querySelectorAll('[data-related]'))el.addEventListener('click',()=>selectBody(el.dataset.related,true));
   const supported=Boolean(HORIZONS_IDS[b.id]&&b.id!=='sun');
   const button=$('horizons-btn');button.disabled=!supported||!renderer;button.innerHTML='<span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span>';
-  if(!supported)$('horizons-note').textContent=b.type==='asteroid'?'Für Asteroiden werden JPL-SBDB-Bahnelemente verwendet.':'Horizons-Abgleich für Planeten, Pluto und den Mond verfügbar.';
+  if(!supported)$('horizons-note').textContent=b.orbitModel==='osculating-snapshot' || b.type==='tno'?
+    'Schematische Keplerbahn aus katalogisierten Elementen; kein genauer Ephemeriden-Abgleich.':
+    b.type==='asteroid'?'Für Asteroiden werden JPL-SBDB-Bahnelemente verwendet.':
+    'Horizons-Abgleich für Planeten, Pluto und den Mond verfügbar.';
   else if(!renderer?.overrides?.has(b.id))$('horizons-note').textContent='NASA/JPL-Position für das gewählte Datum (00:00 UTC) abrufen.';
 }
 

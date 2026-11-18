@@ -119,7 +119,7 @@ test('v44: overview and reset camera include expanded solar scheme while planet 
 
 test('v44: Control Panel announces optimized mode and automatically reframes on each toggle',async()=>{
   const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
-  const section=app.slice(app.indexOf('function setScalePopover(open){'),app.indexOf('function syncOrbitControls(){'));
+  const section=app.slice(app.indexOf('function syncScaleControls(){'),app.indexOf('function syncOrbitControls(){'));
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   const elements=new Map(),$=id=>{
     if(!elements.has(id))elements.set(id,{
@@ -139,11 +139,11 @@ test('v44: Control Panel announces optimized mode and automatically reframes on 
   vm.runInContext(section,context);
   vm.runInContext('updateScale("scaleObjects")',context);
   assert.equal(renderer.camera.desiredDist,188);
-  assert.match($('scale-btn').title,/Optimierte Größenverhältnisse/);
+  assert.match($('scale-objects-btn').title,/maßstabsgetreu/);
   assert.equal(notices.at(-1),'Maßstab: Optimierte Größenverhältnisse');
   vm.runInContext('updateScale("scaleOrbits")',context);
   assert.equal(renderer.camera.desiredDist,160);
-  assert.doesNotMatch($('scale-btn').title,/Optimierte Größenverhältnisse/);
+  assert.match($('scale-orbits-btn').title,/maßstabsgetreu/);
   vm.runInContext('updateScale("scaleOrbits")',context);
   assert.equal(renderer.camera.desiredDist,188);
   vm.runInContext('updateScale("scaleObjects")',context);

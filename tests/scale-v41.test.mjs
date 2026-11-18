@@ -70,29 +70,25 @@ test('v41: renderer position and orbit use the same physical radius in isolated 
   assert.ok(r.planetFrameDistance()>95,'real local distances can be framed beyond the old 95-unit cap');
 });
 
-test('v41: three icon triggers and right-anchored popovers, with accessible independent toggles',async()=>{
-  const html=await read('index.html'),css=await read('css/styles.css');
-  const controls=html.slice(html.indexOf('id="view-mode-status"'),html.indexOf('id="canvas-error"'));
-  assert.ok(controls.indexOf('id="scale-btn"')<controls.indexOf('id="layer-btn"'));
-  assert.ok(controls.indexOf('id="layer-btn"')<controls.indexOf('id="speed-btn"'));
-  assert.match(controls,/id="scale-btn"[^>]*aria-expanded="false"[^>]*aria-haspopup="true"[^>]*aria-controls="scale-popover"/);
-  assert.match(controls,/id="scale-popover"[^>]*aria-label="Maßstab" hidden/);
-  for(const id of ['scale-objects-btn','scale-orbits-btn'])
-    assert.match(controls,new RegExp(`id="${id}"[^>]*aria-pressed="false"`));
-  assert.match(controls,/scale-option-label">Objekt/);
-  assert.match(controls,/scale-option-label">Bahn/);
-  assert.doesNotMatch(controls,/scale-popover-note|scale-popover-heading/);
-  const v41=css.slice(css.indexOf('/* v41: three independent top-edge menus'));
-  assert.match(v41,/width:calc\(var\(--control-trigger-width\) \+ var\(--control-trigger-width\) \+ var\(--control-trigger-width\) \+ var\(--control-trigger-gap\) \+ var\(--control-trigger-gap\)\)!important/);
-  const v42=css.slice(css.indexOf('/* v42: Maßstab is first'));
-  assert.match(v42,/\.viewport>\.control-panel \.scale-popover\{[\s\S]*?right:calc\(0px - var\(--control-trigger-width\) - var\(--control-trigger-width\) - var\(--control-trigger-gap\) - var\(--control-trigger-gap\) - var\(--control-right-inset\)\)/);
-  assert.match(v42,/\.viewport>\.control-panel \.layer-popover\{[\s\S]*?right:calc\(0px - var\(--control-trigger-width\) - var\(--control-trigger-gap\) - var\(--control-right-inset\)\)/);
-  assert.match(css,/\.viewport>\.control-panel \.time-panel \.speed-popover\{[\s\S]*?right:calc\(0px - var\(--control-right-inset\)\)/);
+test('v55: scale buttons are direct controls and only Layer/Time are popovers',async()=>{
+ const html=await read('index.html'),css=await read('css/styles.css');
+ const panel=html.slice(html.indexOf('id="view-mode-status"'),html.indexOf('id="canvas-error"'));
+ assert.ok(panel.indexOf('id="scale-objects-btn"')<panel.indexOf('id="scale-orbits-btn"'));
+ assert.ok(panel.indexOf('id="scale-orbits-btn"')<panel.indexOf('id="orbit-row-btn"'));
+ assert.ok(panel.indexOf('id="orbit-row-btn"')<panel.indexOf('id="layer-btn"'));
+ assert.ok(panel.indexOf('id="layer-btn"')<panel.indexOf('id="speed-btn"'));
+ assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"/);
+ for(const id of ['scale-objects-btn','scale-orbits-btn'])
+  assert.match(panel,new RegExp(`id="${id}"[^>]*aria-pressed="false"`));
+ for(const label of ['Objekt','Bahn','Reihe'])assert.match(panel,new RegExp(`scale-option-label">${label}`));
+ assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
+ assert.match(panel,/id="speed-btn"[^>]*aria-controls="speed-popover"/);
+ assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
 });
 
 test('v41: scale toggles update both scene views and pressed states independently',async()=>{
   const app=await read('src/app.js');
-  const section=app.slice(app.indexOf('function setScalePopover(open){'),app.indexOf('function syncOrbitControls(){'));
+  const section=app.slice(app.indexOf('function syncScaleControls(){'),app.indexOf('function syncOrbitControls(){'));
   const settings={solar:createViewSettings('solar'),planet:createViewSettings('planet')};
   const fake=new Map();
   const get=id=>{

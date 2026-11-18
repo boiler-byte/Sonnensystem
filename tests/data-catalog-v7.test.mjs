@@ -10,11 +10,11 @@ const categoryDocs=await Promise.all(manifest.categories.map(e=>readJSON(e.path)
 const editorial=await readJSON('./data/editorial/de.json');
 const clone=x=>structuredClone(x);
 
-test('v8 catalog loads split category/editorial files and retains all 37 legacy bodies',async()=>{
+test('v52 catalog extends split category/editorial files and retains all 37 legacy bodies',async()=>{
   const {bodies,articles,version}=await loadCatalog(readJSON);
-  assert.equal(version,'8.0.0');
-  assert.equal(bodies.length,160);
-  assert.equal(articles.size,160);
+  assert.equal(version,'9.0.0');
+  assert.equal(bodies.length,174);
+  assert.equal(articles.size,174);
   assert.equal(bodies.filter(b=>b.type==='planet').length,8);
   const earth=bodies.find(x=>x.id==='earth');
   assert.equal(earth.radiusKm,6371);
@@ -69,7 +69,7 @@ test('Editorial drafts stay hidden, published sections and HTTPS references are 
   e.articles.push(clone(article));
   assert.throws(()=>assembleCatalog(manifest,categoryDocs,e),/doppelte ID/);
   const omitted=clone(editorial);omitted.articles.pop();
-  assert.equal(assembleCatalog(manifest,categoryDocs,omitted).bodies.length,160,'Missing article does not delete astronomical body');
+  assert.equal(assembleCatalog(manifest,categoryDocs,omitted).bodies.length,174,'Missing article does not delete astronomical body');
 });
 
 test('Live data enrich orbital fields but never overwrites curated copy',()=>{
@@ -82,6 +82,6 @@ test('Live data enrich orbital fields but never overwrites curated copy',()=>{
   assert.equal(updated.source,'Solar System OpenData');
   assert.equal(updated.description,earth.description);
   assert.equal(updated.editorial,earth.editorial);
-  assert.equal(result.length,161);
-  assert.equal(bodies.length,160,'Original catalog remains unchanged');
+  assert.equal(result.length,175);
+  assert.equal(bodies.length,174,'Original catalog remains unchanged');
 });

@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "type": "comet",
+  "provenance": {
+    "source": "ExoAtlas – NASA/JPL-Horizons/MPC-Aggregat (Kometen)",
+    "origin": "NASA/JPL Horizons und Minor Planet Center über ExoAtlas",
+    "sourceUrl": "https://www.exoatlas.com/data/comets/9p-tempel/",
+    "reviewStatus": "source-reviewed",
+    "note": "Bahnelemente und Periheldaten aus katalogisierten Stichtagen 2026. Die mittlere Anomalie wird aus Periheldatum und Umlaufzeit mit einer Kepler-Näherung berechnet. Kein nichtgravitativer Störungsterm und keine präzise Ephemeride."
+  },
+  "objects": [
+    {
+      "id": "churyumov-gerasimenko",
+      "name": "67P/Tschurjumow-Gerassimenko",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 1.7
+      },
+      "orbit": {
+        "semiMajorAxis": 3.458977,
+        "unit": "AU",
+        "periodDays": 2349.73723,
+        "eccentricity": 0.649462,
+        "inclinationDeg": 3.866,
+        "ascendingNodeDeg": 36.2836,
+        "periapsisDeg": 22.2419,
+        "meanAnomalyDeg": 281.624231,
+        "epoch": "2026-11-15T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#99c4b9",
+        "style": "comet"
+      },
+      "aliases": [
+        "67P/Churyumov-Gerasimenko",
+        "67P/Tschurjumow-Gerasimenko"
+      ]
+    },
+    {
+      "id": "tempel-1",
+      "name": "9P/Tempel 1",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 3.0
+      },
+      "orbit": {
+        "semiMajorAxis": 3.305904,
+        "unit": "AU",
+        "periodDays": 2195.49849,
+        "eccentricity": 0.464643,
+        "inclinationDeg": 10.4644,
+        "ascendingNodeDeg": 66.73,
+        "periapsisDeg": 184.6287,
+        "meanAnomalyDeg": 283.919856,
+        "epoch": "2026-11-05T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#99c8ba",
+        "style": "comet"
+      },
+      "aliases": [
+        "9P/Tempel",
+        "Tempel 1"
+      ]
+    },
+    {
+      "id": "hartley-2",
+      "name": "103P/Hartley 2",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0.8
+      },
+      "orbit": {
+        "semiMajorAxis": 3.476629,
+        "unit": "AU",
+        "periodDays": 2367.74708,
+        "eccentricity": 0.693057,
+        "inclinationDeg": 13.5987,
+        "ascendingNodeDeg": 219.7649,
+        "periapsisDeg": 181.3335,
+        "meanAnomalyDeg": 164.354926,
+        "epoch": "2026-09-27T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#86c7c7",
+        "style": "comet"
+      },
+      "aliases": [
+        "103P/Hartley"
+      ]
+    },
+    {
+      "id": "wild-2",
+      "name": "81P/Wild 2",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 2.0
+      },
+      "orbit": {
+        "semiMajorAxis": 3.450211,
+        "unit": "AU",
+        "periodDays": 2340.81057,
+        "eccentricity": 0.538201,
+        "inclinationDeg": 3.2391,
+        "ascendingNodeDeg": 136.1114,
+        "periapsisDeg": 41.5587,
+        "meanAnomalyDeg": 217.482368,
+        "epoch": "2026-10-31T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#89c0c6",
+        "style": "comet"
+      },
+      "aliases": [
+        "81P/Wild"
+      ]
+    }
+  ]
+}

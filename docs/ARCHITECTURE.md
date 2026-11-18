@@ -1,3 +1,46 @@
+# Architektur – Sonnensystem v55.0
+
+## Erweiterung v55 – direkte Maßstab-Schalter und Darstellungsoptionen im Layer-Menü
+
+- `index.html`: Drei Schalter `#scale-objects-btn`, `#scale-orbits-btn`, `#orbit-row-btn` als permanente direkte Kinder der Control-Panel-Leiste in `.scale-main-controls`. `#scale-btn`, `.scale-picker-wrap` und `#scale-popover` wurden entfernt. Cinema-, AR-, Layer- und Zeit-Knöpfe behalten ihren Platz und ihre Verknüpfungen.
+- `index.html`: Im bestehenden `#layer-popover` steht `.layer-display-controls` **hinter** den Presets **Alle/Standard**, aber **vor** `.layer-options` (Objektkategorien). Dort sitzen die unveränderten fünf Toggle-IDs `toggle-labels`, `toggle-lighting`, `toggle-four-moons`, `orbit-visibility-btn`, `orbit-contrast-btn` samt SVG, Tooltip und `aria-pressed`.
+- `src/app.js`: Öffnungs-/Schließlogik des entfernten Maßstab-Popovers entfällt. Die drei Hauptschalter und fünf Darstellungsschalter bleiben direkt über dieselben Ereignislistener mit den bisherigen Einstellungen verbunden, einschließlich unabhängiger Szenenpräferenzen, Cinema-Gating und der invertierten Alle-Monde-Semantik aus v54.
+- `css/styles.css`: Kompakte gruppierte Toolbar, zweizeilig umbrechbar bei kleinen Viewports, rechtsbündiges Layer- und Zeit-Popover; die fünf Layer-Darstellungsschalter bleiben gleichmäßig in einer Reihe über den Kategorien.
+- `tests/control-panel-v55.test.mjs`: fünf Regressionstests zu direkter Button-Reihenfolge, Layer-Sektion oberhalb der Kategorien, neun Mondpunkten, entfallener Maßstab-Popover-Logik und Mobile-CSS. Weiterhin laufen alle historischen Tests.
+- Release `55.0.0`, PWA-Cache `sonnensystem-shell-v55`. Aktuelle Bedienung: [DELTA-V55.md](DELTA-V55.md) und [HILFE.md](HILFE.md).
+
+## Erweiterung v54 – physischer Cinema-Zoom und neu geordnetes Maßstab-Dropdown (historisch)
+
+- `cinemaEligible(settings)` fordert `row && scaleObjects && !scaleOrbits`. Der App-Button und Renderer verwenden dieselbe Logik.
+- `cinemaTrack(layout,width,height)` erzeugt einen Zeitplan aus Halteabschnitten je Körper (1.500 ms) und Überfahrten (1.300 ms) sowie einem eigenen Perspektivabstand pro Körper. Dieser ist proportional zum dargestellten Kugelradius bzw. zum Ring-Footprint und berücksichtigt auch das Bildschirmseitenverhältnis. Zero-Radius-Datensätze erhalten einen positiven Mindestabstand. Ein zusätzlicher Abschluss von 200 ms erlaubt eine abschließende Aktualisierung der Zeitleiste.
+- `cinemaPoseAt(track,progress)` liefert aus einer normierten Zeitposition Zielkoordinaten, Entfernung, Körper-ID und Haltestatus. Im Übergang werden Positionen mit monotonem Smoothstep und **Entfernungen logarithmisch** interpoliert. Start, Animationsframe, Drag und Viewport-Resize greifen auf dieselbe Funktion zu, wodurch keine verschiedenen Zoomkurven entstehen. Die Kamerarückkehr setzt weiterhin vor Cinema gespeicherte Winkel, Ziel und Abstand wieder ein.
+- `src/app.js`: Der umgekehrte Mond-Button zeigt „Alle Monde“; intern bleibt `fourMoons` aus Kompatibilitätsgründen ein boolescher *Begrenzungs*-Schalter. `fourMoons=true` bedeutet **maximal vier**, während die sichtbare Schalterstellung **Aus** ist. `fourMoons=false` bedeutet **alle Monde**, die sichtbare Stellung **An**. Ein Mond-Moduswechsel beendet eine laufende Cinema-Tour, damit der Zeitplan keine inzwischen ausgeblendeten Objekte enthält.
+- `index.html`, `css/styles.css`: Das Maßstab-Popover wurde von zwei auf drei Spalten erweitert, „Reihe“ ist der beschriftete dritte Hauptbutton. Das Mond-Icon zeichnet neun gleichwinklig entlang einer Kreislinie angeordnete SVG-Punkte. Die Breite von 290 px passt sich unter 340 px viewportbreite an.
+- `tests/cinema-scale-controls-v54.test.mjs` prüft Gating, 1,5-s-Halten, Größenzoom, monotone Richtung, Portrait-Framing, Seeking/Restore, 3-Spalten-UI, neun Kreispunkte und beide Mondzustände. Versions-, Cache- und ältere Verhaltenstests werden mit ausgeführt.
+
+## Erweiterung v53 (historisch) – Cinema-Transport für die schematische Reihenansicht
+
+- `src/renderer/transitions.js`: `orderedRowBodies` und `rowLayout` akzeptieren eine zusätzliche optionale Größenrichtung (`desc` bleibt die Standardeinstellung). Im normalen Reihenmodus bleiben absteigende Reihenfolge, Abstände, Ring-Außenabstände und Frame-Logik v49/v51 identisch; Cinema wählt `asc` nach tatsächlichen `radiusKm`.
+- `src/renderer/cinema.js`: Reine Hilfsfunktionen für Verfügbarkeitsbedingung (`row && !scaleObjects && !scaleOrbits`), Kameraspur aus der sichtbaren Layout-Reihe, gleichmäßig auf Körper verteilte Zeitleistenabschnitte und Zeitformat. Abstand berücksichtigt großen Stern bzw. Saturnring und Hochformat. Eine einstellungsbasierte Dauer von 18–150 s deckt kleine und große Kategorien ab.
+- `src/renderer/renderer.js`: `startCinema()` sichert ursprüngliche Kamerazielkoordinaten, Distanz, Winkel, Fokusstatus und Kameramanualflag. Es stoppt optionales Folgen, erfasst den zuletzt angezeigten Layoutzustand und beginnt den sanften Wechsel zur aufsteigenden Reihe. `advanceCinema()` interpoliert die Kamerazielkoordinaten mit Framerate-/Tabwechsel-Begrenzung; `seekCinema()` setzt sie bei Drag sofort. `stopCinema()` stellt die ursprüngliche Reihenrichtung und Kamerapose mit weichem Übergang wieder her. Manuelle Kamerabewegungen und inkompatible Einstellungskombinationen brechen die Tour ab. Reaktion auf Viewport-Resize erhält den Fortschritt.
+- `src/app.js`, `index.html`, `css/styles.css`: Context-Button mit SVG Play/Stop nur bei beiden ausgeschalteten Maßstab-Toggles und aktivierter Reihe, individuelle Position in der horizontalen Toolbar. Semantische native `range`-Timeline mit Drag und Keyboard-Seeking am unteren Bildschirmrand, mobilen Safe-Area-Abständen und Live-Objektnamen. Die vorhandene Simulations-Play/Pause-Schaltfläche bleibt unverändert. Bei Wechsel in AR werden Kameraanimationen beendet.
+- `sw.js`: Versionswechsel auf `sonnensystem-shell-v53`, neuer Renderer-Helfer im Shell-Precache. `tests/cinema-v53.test.mjs`: Berechtigung der Modi, physikalische Sortierung, Zeitleistenbewegung, Start/Stop/Rückkehr, Drags, Tab-Unterbrechung, Mobile/Layout-Struktur und Overlay-Verhalten. Die vorhandenen Regressionen bleiben aktiv.
+
+## Erweiterung v52 – Layer-Reihenfolge und 14 Kleinkörper
+
+- `index.html` und `src/data/layers.js`: „Sterne“ ist die erste Kategorie der Dropdown-Liste und des gemeinsamen Layer-Modells. Eine separate Kategorie `tno` erlaubt das Anzeigen von Quaoar, Orcus, Gonggong, Sedna und Arrokoth. `Standard` (Sonne + Planeten) und die isolierte Planetenansicht behalten ihre bisherigen Voreinstellungen. Die Bezeichnung wird in der 145-px-Layerliste umbrochen, ohne das Popover zu verbreitern.
+- `data/catalog/{asteroids-v52,comets-v52,transneptunian-v52}.json`: Fünf Asteroiden, vier periodische Kometen und fünf transneptunische Objekte als vollständig validierte, sonnenzentrierte Einträge. `data/editorial/de-objects-v52.json` enthält 14 deutsche Artikel mit Links und Modellhinweisen; `data/catalog/manifest.json` verknüpft alle vier Dateien. Katalogversion **9.0.0** mit **174** Himmelskörpern und **174** redaktionellen Einträgen.
+- `src/data/catalog.js` und `src/ui/object-list.js`: Optionale geprüfte `aliases` werden übernommen und sind über die Suche auffindbar. `src/data/bodies.js`, `src/data/orbital-math.js`, `src/renderer/solar-view.js`, `src/renderer/labels.js` und `src/ui/object-details.js` berücksichtigen die neue Kategorie bei Typbeschriftung, Farbe, Körpergeometrie, Sonnenbahnen, Labeldichte und Datensatz-Hinweisen.
+- Bahnelemente sind Stichproben aus astronomischen Katalogen, für Arrokoth vereinfacht aus historischen Angaben abgeleitet. Die 3D-Simulation propagiert diese als Zweikörper-Keplerbahnen ohne gravitative Störungen oder Kometen-Ausgasung; sehr große TNO-Bahnen werden nicht in einem einzigen optimierten Ausschnitt garantiert. Kein präziser JPL-Horizons-Abgleich für diese neuen Objekte.
+- Tests: `tests/category-delta-v52.test.mjs` deckt Dropdown-Reihenfolge, alle Namen und Kategorien, Katalogintegrität, Bahnpositionen, TNO-Filter, Quellendaten, Suche und Versionierung ab. Anwendung `52.0.0`, PWA-Cache `sonnensystem-shell-v52`. Siehe [DELTA-V52.md](DELTA-V52.md).
+
+## Erweiterung v51 – Physische Größen beim Reiheneintritt und Planet-Bahnenwelle
+
+- `src/app.js`: `updateRow()` aktiviert beim **Einschalten** der Reihe `scaleObjects` in beiden Szenen, noch vor der Berechnung des neuen Layouts; die vorherige Geometrie ist zuvor gesichert. Die UI wird sofort inklusive `aria-pressed` aktualisiert. Ausschalten der Reihe belässt den Skalierungszustand unverändert. `updateScale()` wählt ausschließlich für **`scaleOrbits` an → aus bei aktiver Planetenansicht und deaktivierter Reihe** den speziellen `planet-orbits-off`-Übergang.
+- `src/renderer/transitions.js`: `gentleEase()` als monotone glatte Kurve ohne Überschwingen; `planetOrbitWaveDelays()` sortiert sichtbare, umkreisende Körper stabil nach realer großer Halbachse und verteilt Startverzögerungen über 0 bis **0,20** der 980-ms-Dauer. `planetOrbitWaveEase()` begrenzt das lokale Fortschrittsfenster und beendet alle Bahnen bis zum gemeinsamen Übergangsende.
+- `src/renderer/renderer.js`: Der Übergang erfasst bisher gerenderte Positionen/Radien. Für `planet-orbits-off` erhalten Orbit-Linienradius und zugehörige Kugelposition denselben orbit-spezifischen Fortschritt, sodass sie deckungsgleich bleiben. Ein schneller weiterer Klick übernimmt den aktuellen sichtbaren Zwischenzustand; andere Übergangstypen benutzen die unveränderte `rubberEase`-Kurve. Bewegung-reduzieren deaktiviert den Wave-Modus ebenfalls.
+- `tests/row-planet-wave-v51.test.mjs`: Prüfungen für Eintritt/Austritt und UI, weitere manuelle Größenwechsel, Modusgrenzen, monotone Welle/Reihenfolge/Geometriekohärenz, Unterbrechungen und reduzierte Bewegung. Release `51.0.0`, Cache `sonnensystem-shell-v51`. Siehe [DELTA-V51.md](DELTA-V51.md).
+
 ## Erweiterung v50 – AR-Kamera neu ausrichten
 
 - `src/renderer/ar-mode.js`: `createARMode()` speichert die letzte gültige Geräteorientierung. Die neue Methode `recenter()` ist nur bei aktivem AR verfügbar, übernimmt den aktuellen Sensorwinkel als Referenz und stellt die Blickbasis auf die aktuelle Orbit-Kamera-Grundausrichtung. `camera.arView` wird ohne Glättungsverzögerung neu gesetzt; Augenposition, Kameradistanz, Szenenmodus und Sensorlistener bleiben unverändert. Ungültige Sensormessungen werden ignoriert. Der AR-Zustand wird über `onStateChange` an die UI gemeldet; `syncSceneMode` erhält daraus die AR-spezifische Reset-Beschriftung und stellt außerhalb von AR die szenenabhängige Beschriftung wieder her.
@@ -47,7 +90,7 @@
 
 Die Reihenansicht ist eine alternative **Visualisierung**, keine Veränderung der astronomischen Bahndaten. Der Zeitverlauf und die Datenquellen bleiben gleich. Siehe `docs/DELTA-V45.md`.
 
-# Architektur – Sonnensystem v27.0
+## Historischer Architekturstand v27.0
 
 ## Aktueller Stand v44: optimierte Sonnen-/Bahnskalierung
 

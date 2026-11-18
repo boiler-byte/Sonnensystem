@@ -3,6 +3,7 @@ import { loadCatalog, mergeLiveBodies } from './data/catalog.js';
 import { clean, formatAsteroid } from './data/normalization.js';
 import { availableLayerTypes, createViewSettings, ensureAvailableSelection, layerEnabled, layerPreset, layerSummary, updateLayerSelection } from './data/layers.js';
 import { SolarRenderer } from './renderer/index.js';
+import { cinemaClock } from './renderer/cinema.js';
 import { createARMode } from './renderer/ar-mode.js';
 import { fetchJSON } from './services/api.js';
 import { fetchSolarBodies } from './services/solar-api.js';
@@ -52,7 +53,7 @@ const updateMode=()=>{
     updateTime();
   }
   // Layer visibility belongs to the renderer; keep catalog selections intact.
-  syncLightingControl();syncFourMoonsControl();syncLayers();syncOrbitControls();syncLabelControl();syncScaleControls();syncRowControl();
+  syncLightingControl();syncFourMoonsControl();syncLayers();syncOrbitControls();syncLabelControl();syncScaleControls();syncRowControl();syncCinemaControl();
   if(renderer?.transition?.kind==='view' && !S.settings.row)
     renderer.setCameraAngles?.(.63,renderer.planetId?.84:.99);
   if(renderer?.settings?.row && !renderer.focusedBodyId && !renderer.followEnabled){
@@ -91,10 +92,6 @@ function setLayerPopover(open){
   $('layer-popover').hidden=!open;
   $('layer-btn').setAttribute('aria-expanded',String(open));
 }
-function setScalePopover(open){
-  $('scale-popover').hidden=!open;
-  $('scale-btn').setAttribute('aria-expanded',String(open));
-}
 function syncScaleControls(){
   for(const [id,key,label] of [['scale-objects-btn','scaleObjects','Objektgrößen'],['scale-orbits-btn','scaleOrbits','Bahnabstände']]){
     const button=$(id),enabled=S.settings[key]===true;
@@ -102,18 +99,19 @@ function syncScaleControls(){
     button.setAttribute('aria-pressed',String(enabled));
     button.title=`${label}: ${enabled?'maßstabsgetreu':'schematisch'}`;
   }
-  const on=Boolean(S.settings.scaleObjects||S.settings.scaleOrbits);
-  $('scale-btn').classList.toggle('active',on);
-  const mode=S.settings.scaleObjects && !S.settings.scaleOrbits && !renderer?.planetId ? 'Optimierte Größenverhältnisse – ' : '';
-  $('scale-btn').title=`Maßstab: ${mode}Objekt ${S.settings.scaleObjects?'maßstabsgetreu':'schematisch'}, Bahn ${S.settings.scaleOrbits?'maßstabsgetreu':'schematisch'}`;
 }
 function updateScale(setting){
-  renderer?.beginTransition?.('scale');
+  if(renderer?.cinema?.active)renderer.stopCinema();
+  // In the isolated planet view, collapsing physical orbit spacing should
+  // sweep smoothly from the inner orbits outwards, without spring overshoot.
+  const planetOrbitCollapse=setting==='scaleOrbits' && S.settings.scaleOrbits===true
+    && Boolean(renderer?.planetId) && S.settings.row!==true;
+  renderer?.beginTransition?.(planetOrbitCollapse?'planet-orbits-off':'scale');
   const next=!S.settings[setting];
   // Both scene modes share the same independent scale toggles.
   S.viewSettings.solar[setting]=next;
   S.viewSettings.planet[setting]=next;
-  syncScaleControls();
+  syncScaleControls();syncCinemaControl();
   const optimized=S.settings.scaleObjects && !S.settings.scaleOrbits && !renderer?.planetId;
   notifyToggle(optimized ? 'Maßstab: Optimierte Größenverhältnisse'
     : `${setting==='scaleObjects'?'Objekt':'Bahn'}: ${next?'Maßstabsgetreu':'Schematisch'}`);
@@ -134,13 +132,21 @@ function syncRowControl(){
   button.classList.toggle('active',enabled);
   button.setAttribute('aria-pressed',String(enabled));
   button.title=`Reihe: ${enabled?'An – nach Größe sortiert':'Aus – Umlaufbahnen'}`;
-  $('scale-btn').classList.toggle('row-active',enabled);
 }
 function updateRow(){
+  if(renderer?.cinema?.active)renderer.stopCinema();
   renderer?.beginTransition?.('row');
   const enabled=!S.settings.row;
+  // Entry to the lineup always starts with true physical object proportions.
+  // Both scenes share these scale toggles; manual changes while in the row
+  // remain possible and leaving the row keeps the chosen object scale.
+  if(enabled && !S.settings.scaleObjects){
+    S.viewSettings.solar.scaleObjects=true;
+    S.viewSettings.planet.scaleObjects=true;
+    syncScaleControls();
+  }
   S.settings.row=enabled;
-  syncRowControl();
+  syncRowControl();syncCinemaControl();
   notifyToggle(`Reihe: ${enabled?'An (groß nach klein)':'Aus (Umlaufbahnen)'}`);
   if(!renderer)return;
   renderer._labelState=null;
@@ -158,6 +164,29 @@ function updateRow(){
       : renderer.planetId?renderer.planetFrameDistance():renderer.solarOverviewDistance();
   }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
   if(renderer.followEnabled)renderer.followSelectedBody();
+}
+/** Cinema is available for the physical-size lineup without scaled orbits. */
+function syncCinemaControl(){
+  const available=Boolean(renderer && S.settings.row && S.settings.scaleObjects && !S.settings.scaleOrbits);
+  const active=Boolean(renderer?.cinema?.active);
+  const button=$('cinema-btn');
+  button.hidden=!available;
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',String(active));
+  button.setAttribute('aria-label',active?'Cinema-Kamerafahrt stoppen':'Cinema-Kamerafahrt starten');
+  button.title=active?'Cinema stoppen und zur Ausgangsansicht zurückkehren':'Cinema-Modus starten: von klein nach groß';
+  $('view-mode-status').classList.toggle('cinema-available',available);
+  $('cinema-timeline').hidden=!active;
+  if(!active)$('cinema-seek').value='0';
+}
+function updateCinemaTimeline({active,progress=0,durationMs=0,objectId=null}){
+  syncCinemaControl();
+  if(!active)return;
+  const seek=$('cinema-seek');
+  if(!renderer?.cinema?.seeking)seek.value=String(Math.round(progress*1000));
+  seek.setAttribute('aria-valuetext',`${Math.round(progress*100)} Prozent${objectId?', '+(byId(objectId)?.name||objectId):''}`);
+  $('cinema-time').textContent=`${cinemaClock(durationMs*progress)} / ${cinemaClock(durationMs)}`;
+  $('cinema-object').textContent=objectId?`Cinema · ${byId(objectId)?.name||objectId}`:'Cinema-Modus';
 }
 function syncOrbitControls(){
   for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
@@ -185,14 +214,17 @@ function syncLightingControl(){
 }
 
 function syncFourMoonsControl(){
-  const enabled=S.settings.fourMoons===true,button=$('toggle-four-moons');
-  button.classList.toggle('active',enabled);
-  button.setAttribute('aria-pressed',String(enabled));
-  button.title=enabled?'4 Monde: An (nur die vier größten je Planet)':'4 Monde: Aus (alle Monde je Planet)';
+  // Internally fourMoons still means a cap. UI is inverted: OFF = four,
+  // ON = all natural moons, preserving prior default scene content.
+  const showAll=S.settings.fourMoons===false,button=$('toggle-four-moons');
+  button.classList.toggle('active',showAll);
+  button.setAttribute('aria-pressed',String(showAll));
+  button.title=showAll?'Alle Monde: An (ohne Vierer-Begrenzung)':'Alle Monde: Aus (maximal vier Monde je Planet)';
 }
 
 function changeLayers(next){
   if(next===S.settings.layers)return;
+  if(renderer?.cinema?.active)renderer.stopCinema();
   if(S.settings.row)renderer?.beginTransition?.('row');
   S.settings.layers=next; // S.settings belongs only to the currently active scene.
   if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
@@ -200,6 +232,7 @@ function changeLayers(next){
 }
 
 function mergeBodies(list){
+  if(renderer?.cinema?.active)renderer.stopCinema();
   if(S.settings.row)renderer?.beginTransition?.('row');
   S.bodies=mergeLiveBodies(S.bodies,list);
   renderer?.setBodies(S.bodies);
@@ -255,6 +288,7 @@ async function alignHorizons(){
 }
 /** Planetary isolation also supports dwarf planets that have catalogued moons. */
 function openPlanetScene(id){
+  if(renderer?.cinema?.active)renderer.stopCinema();
   const center=byId(id);
   if(!center || !['planet','dwarf'].includes(center.type) || !renderer?.showPlanetSystem(id))return false;
   // When a dwarf system is opened, its central dwarf must be included in the
@@ -266,6 +300,7 @@ function openPlanetScene(id){
   return true;
 }
 function selectBody(id,focus=false){
+  if(renderer?.cinema?.active)renderer.stopCinema();
   const body=byId(id);if(!body)return;
   if(renderer?.planetId && id!==renderer.planetId && body.parentId!==renderer.planetId){
     if(body.type==='planet'||body.type==='dwarf')openPlanetScene(body.id);
@@ -280,6 +315,7 @@ function selectBody(id,focus=false){
   if(body.type==='asteroid'&&!body.sbdbLoaded)loadAsteroid(body.name,body);
 }
 function clearSelection(){
+  if(renderer?.cinema?.active)renderer.stopCinema();
   if(S.selected===null)return;
   S.selected=null;
   setDetailTab('wissen');
@@ -294,18 +330,25 @@ function setSpeedPopover(open) {
 function initControls(){
   $('layer-btn').addEventListener('click',()=>{
     const opening=$('layer-popover').hidden;
-    if(opening){setSpeedPopover(false);setScalePopover(false);}
+    if(opening)setSpeedPopover(false);
     setLayerPopover(opening);
-  });
-  $('scale-btn').addEventListener('click',()=>{
-    const opening=$('scale-popover').hidden;
-    if(opening){setLayerPopover(false);setSpeedPopover(false);}
-    setScalePopover(opening);
   });
   for(const [id,setting] of [['scale-objects-btn','scaleObjects'],['scale-orbits-btn','scaleOrbits']])
     $(id).addEventListener('click',()=>updateScale(setting));
   syncScaleControls();
-  $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();
+  $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();syncCinemaControl();
+  $('cinema-btn').addEventListener('click',()=>{
+    if(!renderer)return;
+    if(renderer.cinema?.active){renderer.stopCinema();notifyToggle('Cinema: Beendet – Reihe wieder groß nach klein');return;}
+    if(arMode?.active||arMode?.pending)arMode.stop(); // Sensor look cannot override the movie camera.
+    if(renderer.startCinema())notifyToggle('Cinema: Kamerafahrt von klein nach groß');
+  });
+  const seek=$('cinema-seek');
+  seek.addEventListener('pointerdown',()=>renderer?.setCinemaScrubbing(true));
+  seek.addEventListener('input',()=>renderer?.seekCinema(Number(seek.value)/1000));
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])
+    seek.addEventListener(event,()=>renderer?.setCinemaScrubbing(false));
+  seek.addEventListener('change',()=>renderer?.setCinemaScrubbing(false));
   for(const btn of document.querySelectorAll('[data-layer-preset]'))
     btn.addEventListener('click',()=>changeLayers(layerPreset(btn.dataset.layerPreset,activeView())));
   for(const input of document.querySelectorAll('[data-layer-type]'))
@@ -349,11 +392,12 @@ function initControls(){
   });
   syncLightingControl();
   $('toggle-four-moons').addEventListener('click',()=>{
+    if(renderer?.cinema?.active)renderer.stopCinema(); // The visible tour set has changed.
     if(S.settings.row)renderer?.beginTransition?.('row');
     S.settings.fourMoons=!S.settings.fourMoons;
     if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
     syncFourMoonsControl();
-    notifyToggle(`4 Monde: ${S.settings.fourMoons?'An':'Aus'}`);
+    notifyToggle(`Alle Monde: ${S.settings.fourMoons?'Aus (max. 4)':'An (alle)'}`);
   });
   syncFourMoonsControl();
   $('center-object-btn').addEventListener('click',()=>{
@@ -371,7 +415,8 @@ function initControls(){
     updateDetail();
   });
   $('reset-camera').addEventListener('click',()=>{
-    if(arMode?.active){arMode.recenter();return;} // AR: calibrate to the current phone direction, not orbit presets.
+    if(arMode?.active){arMode.recenter();return;}
+    if(renderer?.cinema?.active)renderer.stopCinema(); // Normal reset also ends Cinema.
     renderer?.cycleCameraPerspective();updateMode();updateDetail();mobileSheets?.close();
   });
   $('planet-view-btn').addEventListener('click',()=>{
@@ -386,7 +431,7 @@ function initControls(){
   $('play-btn').addEventListener('click',()=>{S.playing=!S.playing;updateTime();});
   $('speed-btn').addEventListener('click',()=>{
     const opening=$('speed-popover').hidden;
-    if(opening){setLayerPopover(false);setScalePopover(false);} // One open panel at a time.
+    if(opening)setLayerPopover(false); // Only one popover is open at a time.
     setSpeedPopover(opening);
   });
   $('speed').addEventListener('input',e=>{
@@ -398,15 +443,14 @@ function initControls(){
   document.addEventListener('pointerdown',e=>{
     if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
     if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);
-    if(!$('scale-popover').hidden && !$('scale-picker-wrap').contains(e.target))setScalePopover(false);
   });
   $('horizons-btn').addEventListener('click',alignHorizons);
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
+      if(renderer?.cinema?.active){renderer.stopCinema();$('cinema-btn').focus({preventScroll:true});return;}
       if(!$('speed-popover').hidden){setSpeedPopover(false);$('speed-btn').focus({preventScroll:true});return;}
       if(!$('layer-popover').hidden){setLayerPopover(false);$('layer-btn').focus({preventScroll:true});return;}
-      if(!$('scale-popover').hidden){setScalePopover(false);$('scale-btn').focus({preventScroll:true});return;}
-      setLayerPopover(false);setScalePopover(false);mobileSheets?.close();
+      setLayerPopover(false);mobileSheets?.close();
     }
     if(e.key==='/'&&!(e.target instanceof HTMLInputElement)){
       e.preventDefault();mobileSheets?.open('catalog');requestAnimationFrame(()=>$('search').focus());
@@ -454,8 +498,11 @@ async function init(){
     return;
   }
   try{
-    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail()});
-    arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle,onStateChange:active=>syncSceneMode(S,renderer,active)});
+    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline});
+    arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle,onStateChange:active=>{
+      if(active && renderer?.cinema?.active)renderer.stopCinema();
+      syncSceneMode(S,renderer,active);syncCinemaControl();
+    }});
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);
   }catch(e){
     console.error(e);$('canvas-error').hidden=false;

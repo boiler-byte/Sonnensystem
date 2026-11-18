@@ -12,7 +12,8 @@ import { computePositions } from './scene.js';
 import { drawPlanetSystemScene, planetChildrenFor, planetFrameDistance } from './planet-view.js';
 import { drawSolarSystemScene, solarOrbitBodies } from './solar-view.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
-import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
+import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
+import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaObjectAt, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
 
 export class SolarRenderer {
  constructor(canvas, labelCanvas, glow, callbacks={}) {
@@ -33,6 +34,7 @@ export class SolarRenderer {
   this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.transitionsEnabled=true;this.transition=null;this._rowPreviousAngles=null;
+  this.cinema=null;this._cinemaRestoreFocus=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
   this.attachEvents();this.resize();
@@ -42,6 +44,7 @@ export class SolarRenderer {
  panByPixels(dx,dy){if(dx || dy){this.markCameraMoved({positionChanged:true});panCameraByPixels(this.camera,dx,dy,this.height);}}
  /** Rotation and zoom change the view but must not disable the global follow toggle. */
  markCameraMoved({positionChanged=false}={}){
+  if(this.cinema?.active)this.stopCinema(); // Manual input always wins over the flythrough.
   this.cameraManuallyMoved=true;
   if(this.transition)this.transition.cameraTo=null; // Manual rotation wins over an animated camera angle.
   if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
@@ -116,7 +119,89 @@ export class SolarRenderer {
     ? [this.byId?.get(this.planetId),...this.planetChildren()].filter(Boolean)
     : this.bodies.filter(b=>b.type!=='probe');
   return rowLayout(candidates.filter(b=>this.shouldDraw(b)),b=>this.targetBodyRadius(b),
-   (body,radius)=>body.id==='saturn'?Math.max(radius,1.20*this.targetRingScale()):radius);
+   (body,radius)=>body.id==='saturn'?Math.max(radius,1.20*this.targetRingScale()):radius,
+   this.cinema?.active?'asc':'desc');
+ }
+ /** Notify the UI without using global DOM state inside WebGL. */
+ cinemaNotice(active=this.cinema?.active===true){
+  const c=this.cinema;
+  this.callbacks?.onCinemaChange?.({active,progress:c?.progress??0,
+    durationMs:c?.track?.durationMs??0,objectId:c?cinemaObjectAt(c.track,c.progress):null});
+ }
+ /** Save the exact current camera pose, then rearrange the same visible bodies. */
+ startCinema(now=performance.now()){
+  if(this.cinema?.active || !cinemaEligible(this.settings))return false;
+  const oldLayout=this.rowGeometry();
+  if(!oldLayout.ids.length)return false;
+  const saved={target:this.camera.target.slice(),dist:this.camera.dist,
+    theta:this.camera.theta,phi:this.camera.phi,
+    cameraManuallyMoved:this.cameraManuallyMoved,focusedBodyId:this.focusedBodyId};
+  this.stopFollowing();
+  this.beginTransition('cinema',now); // Snapshot descending layout before sorting ascending.
+  this.cinema={active:true,progress:0,elapsedMs:0,lastAt:now,
+    lastNoticeAt:now,seeking:false,endedMs:0,saved,track:null};
+  this._cinemaRestoreFocus=null;
+  this.heldArrows?.clear();this.focusedBodyId=null;
+  const track=cinemaTrack(this.rowGeometry(),this.width,this.height);
+  this.cinema.track=track;
+  this.setCameraAngles(0,1.48);
+  const firstPose=cinemaPoseAt(track,0);
+  this.camera.desiredTarget=firstPose.target;
+  this.camera.desiredDist=firstPose.distance;
+  this.cameraManuallyMoved=false;
+  this.calcPositions(this.simTime);
+  this.cinemaNotice(true);
+  return true;
+ }
+ /** Revert order and animate back to the exact pre-Cinema camera pose. */
+ stopCinema(now=performance.now()){
+  const c=this.cinema;
+  if(!c?.active)return false;
+  this.beginTransition('cinema',now); // Capture the ascending layout currently on screen.
+  this.cinema=null;
+  this._cinemaRestoreFocus=c.saved.focusedBodyId;
+  this.setCameraAngles(c.saved.theta,c.saved.phi);
+  this.camera.desiredTarget=c.saved.target.slice();
+  this.camera.desiredDist=c.saved.dist;
+  this.cameraManuallyMoved=c.saved.cameraManuallyMoved;
+  this.calcPositions(this.simTime);
+  this.cinemaNotice(false);
+  return true;
+ }
+ /** Native range controls provide touch drag, mouse drag and keyboard seeking. */
+ seekCinema(progress,now=performance.now()){
+  const c=this.cinema;
+  if(!c?.active)return false;
+  c.progress=clamp(Number(progress)||0,0,1);
+  c.elapsedMs=CINEMA_ENTRY_MS+c.progress*c.track.durationMs;
+  c.endedMs=0;c.lastAt=now;
+  const pose=cinemaPoseAt(c.track,c.progress);
+  this.camera.target=pose.target.slice();this.camera.desiredTarget=pose.target;
+  this.camera.dist=pose.distance;this.camera.desiredDist=pose.distance;
+  this.cinemaNotice(true);
+  return true;
+ }
+ setCinemaScrubbing(active,now=performance.now()){
+  if(!this.cinema?.active)return;
+  this.cinema.seeking=Boolean(active);
+  this.cinema.lastAt=now;
+ }
+ advanceCinema(now=performance.now()){
+  const c=this.cinema;
+  if(!c?.active)return;
+  if(!cinemaEligible(this.settings)){this.stopCinema(now);return;}
+  // Avoid jumping a large portion of the movie after background tab suspension.
+  const delta=clamp(now-c.lastAt,0,120);c.lastAt=now;
+  if(!c.seeking){
+   c.elapsedMs=Math.min(CINEMA_ENTRY_MS+c.track.durationMs,c.elapsedMs+delta);
+   c.progress=clamp((c.elapsedMs-CINEMA_ENTRY_MS)/c.track.durationMs,0,1);
+   const pose=cinemaPoseAt(c.track,c.progress);
+   this.camera.desiredTarget=pose.target;
+   this.camera.desiredDist=pose.distance;
+   if(c.progress>=1)c.endedMs+=delta;
+   if(c.endedMs>=CINEMA_END_HOLD_MS){this.stopCinema(now);return;}
+  }
+  if(now-c.lastNoticeAt>=90){c.lastNoticeAt=now;this.cinemaNotice(true);}
  }
  rowFrame(){return rowCameraFrame(this.rowGeometry(),this.width,this.height);}
  rowDistance(){return this.rowFrame().distance;}
@@ -248,7 +333,9 @@ export class SolarRenderer {
     }
    }
   }
-  this.transition={kind,at:now,duration:LAYOUT_TRANSITION_MS,amount:0,
+  const orbitWave=kind==='planet-orbits-off' && this.planetId
+    ? planetOrbitWaveDelays(this.planetChildren().filter(body=>this.shouldDraw(body))) : null;
+  this.transition={kind,at:now,duration:LAYOUT_TRANSITION_MS,amount:0,progress:0,orbitWave,
     fromPositions,fromRadii,fromOrbits,fromOrbitOpacity,fromVisualBodies,fromVisualOrbits,
     fromRingScale:this.ringScale(),fromRow:!!this.settings?.row,fromPlanetId:this.planetId,
     fromView:this.planetId||'solar',cameraFrom:[this.camera.theta,this.camera.phi],cameraTo:null};
@@ -261,12 +348,20 @@ export class SolarRenderer {
   const transition=this.transition;
   if(!transition)return;
   const progress=Math.max(0,Math.min(1,(now-transition.at)/transition.duration));
-  transition.amount=rubberEase(progress);
+  transition.progress=progress;
+  transition.amount=transition.kind==='planet-orbits-off'||transition.kind==='cinema'
+    ? gentleEase(progress):rubberEase(progress);
   if(transition.cameraTo){
     this.camera.theta=transition.cameraFrom[0]+(transition.cameraTo[0]-transition.cameraFrom[0])*Math.min(1,transition.amount);
     this.camera.phi=transition.cameraFrom[1]+(transition.cameraTo[1]-transition.cameraFrom[1])*Math.min(1,transition.amount);
   }
-  if(progress>=1)this.transition=null;
+  if(progress>=1){
+   this.transition=null;
+   if(this._cinemaRestoreFocus!==null){
+    this.focusedBodyId=this._cinemaRestoreFocus;
+    this._cinemaRestoreFocus=null;
+   }
+  }
  }
  orbitOpacity(){
   const transition=this.transition;
@@ -277,13 +372,20 @@ export class SolarRenderer {
   const target=this.settings?.row ? 0 : 1;
   return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
  }
+ /** Identical wave timing for an orbit stroke and its moving moon/satellite. */
+ orbitTransitionAmount(body){
+  const t=this.transition;
+  if(!t)return 1;
+  return t.kind==='planet-orbits-off'
+    ? planetOrbitWaveEase(t.progress,t.orbitWave?.get(body?.id)??0) : t.amount;
+ }
  targetBodyRadius(body){
   return displayBodyRadius(body,this.settings,this.planetId?(this.byId?.get(this.planetId)||{radiusKm:1}):null);
  }
  orbitRadius(body,parent){
   const destination=displayOrbitRadius(body,parent,this.settings,this.planetId?this.byId?.get(this.planetId):null);
   const origin=this.transition?.fromOrbits?.get(body.id);
-  return origin===undefined?destination:Math.max(0,origin+(destination-origin)*this.transition.amount);
+  return origin===undefined?destination:Math.max(0,origin+(destination-origin)*this.orbitTransitionAmount(body));
  }
  applyCameraPreset(index){
   this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
@@ -299,6 +401,12 @@ export class SolarRenderer {
   this.labels.width=this.canvas.width;this.labels.height=this.canvas.height;
   this.canvas.style.width=w+'px';this.canvas.style.height=h+'px';this.labels.style.width=w+'px';this.labels.style.height=h+'px';
   this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
+  if(this.cinema?.active){
+   this.cinema.track=cinemaTrack(this.rowGeometry(),this.width,this.height);
+   const pose=cinemaPoseAt(this.cinema.track,this.cinema.progress);
+   this.camera.desiredTarget=pose.target;
+   this.camera.desiredDist=pose.distance;
+  }
   this.textures?.setMobile(preferredMobileQuality());
  }
  setBodies(list){this.bodies=list;this.byId=new Map(list.map(o=>[o.id,o]));
@@ -373,7 +481,9 @@ export class SolarRenderer {
       const source=transition.fromPositions.get(id)
         ?? transition.fromPositions.get(this.byId.get(id)?.parentId)
         ?? target;
-      this.positions.set(id,blendPosition(source,target,transition.amount));
+      const amount=transition.kind==='planet-orbits-off'
+        ? this.orbitTransitionAmount(this.byId.get(id)) : transition.amount;
+      this.positions.set(id,blendPosition(source,target,amount));
     }
   }
  }
@@ -463,13 +573,14 @@ export class SolarRenderer {
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
   this.advanceTransition();
+  this.advanceCinema();
   this.start(timeMs,selectedId,settings);
   // Keep a focused object centered while its animated world position changes.
   if(this.transition && this.focusedBodyId && !this.followEnabled){
     const focused=this.positions.get(this.focusedBodyId);
     if(focused)this.camera.desiredTarget=focused.slice();
   }
-  this.updateFollowTarget();
+  if(!this.cinema?.active)this.updateFollowTarget();
   const {vp}=this.makeVP();this.vp=vp;
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   this.drawStars(vp);

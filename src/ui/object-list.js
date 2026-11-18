@@ -2,7 +2,7 @@ import { TYPES, FEATURED_IDS, CATEGORY_COLORS } from '../data/bodies.js';
 import { clean } from '../data/normalization.js';
 import { esc } from './formatters.js';
 const $=id=>document.getElementById(id);
-const MAIN_TYPES=['star','planet','moon','dwarf','asteroid','comet','satellite','probe'];
+const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','comet','satellite','probe'];
 
 /** Each whitespace-separated word must match an object's own or its parent's metadata.
  * Thus "uranus c" matches Uranus moons with "c" in their name, irrespective of word order.
@@ -12,7 +12,7 @@ export function catalogMatches(body, query, byId) {
   if(!words.length)return true;
   const type=TYPES[body.type];
   const parent=body.parentId && byId.get(body.parentId);
-  const searchable=[body.name, body.id, body.catalog, type?.label, type?.plural,
+  const searchable=[body.name, ...(body.aliases||[]), body.id, body.catalog, type?.label, type?.plural,
     parent?.name, parent?.id, body.parentId]
     .filter(value=>value!=null).map(clean);
   return words.every(word=>searchable.some(field=>field.includes(word)));

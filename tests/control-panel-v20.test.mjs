@@ -10,32 +10,28 @@ const between=(source,begin,end)=>{
   return source.slice(a,b);
 };
 
-test('v42: labels toggle moved to the scale dropdown rather than scene tools',async()=>{
-  const html=await read('index.html');
-  const app=await read('src/app.js');
+test('v55: labels button lives above Layer categories, not in scene tools',async()=>{
+  const html=await read('index.html'),app=await read('src/app.js');
   const layer=between(html,'id="layer-popover"','id="time-panel"');
-  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
   const scene=between(html,'id="time-panel"','id="canvas-error"');
-  assert.doesNotMatch(layer,/id="toggle-labels"/);
-  assert.match(scale,/class="scale-secondary-options" role="group" aria-label="Objektdarstellung"/);
-  assert.match(scale,/id="toggle-labels"[^>]*aria-pressed="true"/);
-  assert.match(scale,/class="tab-label-icon"/);
-  assert.doesNotMatch(scale,/<span>Beschriftung<\/span>/);
-  assert.doesNotMatch(scene,/id="toggle-labels"/);
-  assert.doesNotMatch(scene,/id="reset-camera"/);
+  assert.match(layer,/class="layer-display-controls"/);
+  assert.match(layer,/id="toggle-labels"[^>]*aria-pressed="true"/);
+  assert.ok(layer.indexOf('id="toggle-labels"')<layer.indexOf('class="layer-options"'));
+  assert.match(layer,/class="tab-label-icon"/);
+  assert.doesNotMatch(scene,/id="toggle-labels"|id="reset-camera"/);
   assert.match(html,/class="viewport-actions"[\s\S]*?id="reset-camera"/);
   assert.equal((html.match(/id="toggle-labels"/g)||[]).length,1);
-  assert.match(app,/\$\('toggle-labels'\)\.addEventListener\('click',\(\)=>\{S\.settings\.labels=!S\.settings\.labels;syncLabelControl\(\);notifyToggle/);
+  assert.match(app,/\$\('toggle-labels'\)\.addEventListener\('click'/);
 });
 
-test('v43: default orbit contrast starts disabled while orbit lines and category colors remain on',async()=>{
+test('v55: orbit contrast defaults off and orbit visibility on in Layer controls',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),layerModel=await read('src/data/layers.js');
-  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
+  const layer=between(html,'id="layer-popover"','id="time-panel"');
   assert.match(layerModel,/orbits:true, orbitContrast:false, labels:true/);
-  assert.match(scale,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
-  assert.match(scale,/class="contrast-icon"/);
-  for(const id of ['orbit-visibility-btn'])
-    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-pressed="true"`));
+  assert.match(layer,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
+  assert.match(layer,/class="contrast-icon"/);
+  assert.match(layer,/id="orbit-visibility-btn"[^>]*aria-pressed="true"/);
+  assert.ok(layer.indexOf('id="orbit-visibility-btn"')<layer.indexOf('class="layer-options"'));
   assert.match(app,/S\.settings\[setting\]=!S\.settings\[setting\];\s*syncOrbitControls\(\)/);
 });
 

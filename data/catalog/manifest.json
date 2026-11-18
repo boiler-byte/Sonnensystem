@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "8.0.0",
+  "catalogVersion": "9.0.0",
   "defaultLocale": "de",
   "categories": [
     {
@@ -70,6 +70,18 @@
     {
       "type": "comet",
       "path": "./data/catalog/comets-jpl.json"
+    },
+    {
+      "type": "tno",
+      "path": "./data/catalog/transneptunian-v52.json"
+    },
+    {
+      "type": "asteroid",
+      "path": "./data/catalog/asteroids-v52.json"
+    },
+    {
+      "type": "comet",
+      "path": "./data/catalog/comets-v52.json"
     }
   ],
   "editorial": [
@@ -84,6 +96,10 @@
     {
       "locale": "de",
       "path": "./data/editorial/de-small-bodies.json"
+    },
+    {
+      "locale": "de",
+      "path": "./data/editorial/de-objects-v52.json"
     }
   ]
 }

@@ -24,20 +24,19 @@ function scene(settings,planetId=null,selectedBodies=bodies){
   return r;
 }
 
-test('v49: AR, scale and layer triggers lose 9px, time stays 58px, all popovers right-aligned',async()=>{
-  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
-  const v49=css.slice(css.indexOf('/* v49:'));
-  assert.match(v49,/--control-icon-width:calc\(var\(--control-trigger-width\) - 9px\)/);
-  assert.match(v49,/\.scale-picker-wrap,\s*\.viewport>\.control-panel \.layer-picker-wrap\{/);
-  assert.match(v49,/\.ar-mode-button\{[\s\S]*?width:var\(--control-icon-width\)/);
-  assert.match(v49,/\.ar-available\{[\s\S]*?width:calc\(var\(--control-icon-width\)/);
-  assert.match(v49,/\.scale-popover\{[\s\S]*?right:calc\(0px - var\(--control-icon-width\) - var\(--control-trigger-width\)/);
-  // 58 - 9=49, time unchanged; 3 or 4 slots retain two/three gaps.
-  assert.equal(2*49+58+2*8,172);
-  assert.equal(3*49+58+3*8,229);
-  assert.match(css,/\.viewport>\.control-panel \.time-panel \.time-trigger\{\s*width:100%;height:54px;min-height:54px;/);
-  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  for(const id of ['ar-mode-btn','scale-btn','layer-btn'])assert.match(html,new RegExp(`id="${id}"`));
+test('v55: AR, Cinema, three scale controls and Layer/Time fit the responsive toolbar',async()=>{
+ const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
+ const v55=css.slice(css.indexOf('/* v55:'));
+ assert.match(v55,/--control-main-scale-width:46px/);
+ assert.match(v55,/--control-icon-width:43px/);
+ assert.match(v55,/flex-wrap:wrap/);
+ assert.match(v55,/\.scale-main-controls\{/);
+ assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);
+ assert.match(v55,/@media\(max-width:770px\)/);
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+ for(const id of ['ar-mode-btn','cinema-btn','scale-objects-btn','scale-orbits-btn','orbit-row-btn','layer-btn','speed-btn'])
+  assert.match(html,new RegExp(`id="${id}"`));
+ assert.doesNotMatch(html,/id="scale-btn"|id="scale-popover"/);
 });
 
 test('v49: row gap between first and second is unchanged, subsequent gaps are 30% larger',()=>{

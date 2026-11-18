@@ -12,44 +12,41 @@ const between=(text,start,end)=>{
   return text.slice(a,b);
 };
 
-test('v42: Maßstab is the first toolbar trigger, before Objektlayer and Zeit',async()=>{
-  const html=await read('index.html');
+test('v55: three scale toggles precede Layer and Time, without scale dropdown',async()=>{
+  const html=await read('index.html'),css=await read('css/styles.css');
   const panel=between(html,'id="view-mode-status"','id="canvas-error"');
-  const ids=['scale-btn','layer-btn','speed-btn'];
-  assert.deepEqual([...panel.matchAll(/id="(scale-btn|layer-btn|speed-btn)"/g)].map(m=>m[1]),ids);
-  assert.match(panel,/id="scale-btn"[^>]*aria-controls="scale-popover"/);
+  const ids=['scale-objects-btn','scale-orbits-btn','orbit-row-btn','layer-btn','speed-btn'];
+  const re=/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn|layer-btn|speed-btn)"/g;
+  assert.deepEqual([...panel.matchAll(re)].map(m=>m[1]),ids);
+  assert.match(panel,/class="scale-main-controls" role="group"/);
+  for(const label of ['Objekt','Bahn','Reihe'])assert.match(panel,new RegExp(`class="scale-option-label">${label}</span>`));
+  assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"/);
   assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
   assert.match(panel,/id="speed-btn"[^>]*aria-controls="speed-popover"/);
-  const css=await read('css/styles.css');
-  const v42=css.slice(css.indexOf('/* v42: Maßstab is first'));
-  assert.match(v42,/\.viewport>\.control-panel \.scale-popover\{[\s\S]*?- var\(--control-trigger-width\) - var\(--control-trigger-width\) - var\(--control-trigger-gap\) - var\(--control-trigger-gap\) - var\(--control-right-inset\)/);
-  assert.match(v42,/\.viewport>\.control-panel \.layer-popover\{[\s\S]*?- var\(--control-trigger-width\) - var\(--control-trigger-gap\) - var\(--control-right-inset\)/);
-  assert.match(css,/\.viewport>\.control-panel \.time-panel \.speed-popover\{[\s\S]*?right:calc\(0px - var\(--control-right-inset\)\)/);
+  const v55=css.slice(css.indexOf('/* v55:'));
+  assert.match(v55,/\.scale-main-controls\{/);
+  assert.match(v55,/flex-wrap:wrap/);
+  assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);
 });
 
-test('v42: two scale columns contain the correct independent icon toggles',async()=>{
+test('v55: two toolbar scale toggles plus Reihe; all five icons above Layer categories',async()=>{
   const html=await read('index.html');
-  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
+  const scale=between(html,'class="scale-main-controls"','id="layer-picker-wrap"');
   const layer=between(html,'id="layer-popover"','id="time-panel"');
-  const columns=scale.split('<div class="scale-column"');
-  assert.equal(columns.length,3,'exactly two scale columns');
-  const object=columns[1],orbit=columns[2];
-  assert.deepEqual([...object.matchAll(/id="(scale-objects-btn|toggle-labels|toggle-lighting|toggle-four-moons)"/g)].map(m=>m[1]),
-    ['scale-objects-btn','toggle-labels','toggle-lighting','toggle-four-moons']);
-  assert.deepEqual([...orbit.matchAll(/id="(scale-orbits-btn|orbit-visibility-btn|orbit-contrast-btn)"/g)].map(m=>m[1]),
-    ['scale-orbits-btn','orbit-visibility-btn','orbit-contrast-btn']);
-  const icons=['tab-label-icon','flashlight-icon','four-moons-icon','orbit-visibility-icon','contrast-icon'];
-  for(const icon of icons)assert.match(scale,new RegExp(`<svg class="${icon}"[^>]*aria-hidden="true"[^>]*focusable="false"`),icon);
-  for(const label of ['Beschriftung','Beleuchtung','4 Monde','Umlaufbahn','Kontrast'])
-    assert.doesNotMatch(scale,new RegExp(`<span>${label}</span>`),`visible label ${label} was replaced by an icon`);
-  for(const id of ['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn']){
-    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-label="[^"]+"[^>]*aria-pressed="(true|false)"`),id);
+  const ids=['scale-objects-btn','scale-orbits-btn','orbit-row-btn'];
+  assert.deepEqual([...scale.matchAll(/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn)"/g)].map(m=>m[1]),ids);
+  assert.match(scale,/id="orbit-row-btn"[\s\S]*?scale-option-label">Reihe<\/span>/);
+  const appearance=['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn'];
+  const tools=between(layer,'class="layer-display-controls"','class="layer-options"');
+  assert.deepEqual([...tools.matchAll(/id="(toggle-labels|toggle-lighting|toggle-four-moons|orbit-visibility-btn|orbit-contrast-btn)"/g)].map(m=>m[1]),appearance);
+  assert.ok(layer.indexOf('layer-display-controls')<layer.indexOf('layer-options'));
+  for(const id of appearance){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
-    assert.doesNotMatch(layer,new RegExp(`id="${id}"`),`${id} was removed from the layer panel`);
+    assert.match(tools,new RegExp(`id="${id}"[^>]*aria-label="[^"]+"[^>]*aria-pressed="(true|false)"`));
+    assert.doesNotMatch(scale,new RegExp(`id="${id}"`));
   }
-  assert.match(object,/class="four-moons-icon"[\s\S]*?<circle[^>]*\/>[\s\S]*?<circle[^>]*\/>[\s\S]*?<circle[^>]*\/>[\s\S]*?<circle[^>]*\/>/);
-  assert.match(orbit,/class="orbit-visibility-icon"[^>]*><circle[^>]*\/><circle[^>]*\/>/);
-  assert.match(orbit,/class="contrast-icon"[^>]*><circle[^>]*fill="#f5f7fc"[^>]*><\/circle>|class="contrast-icon"[^>]*><circle[^>]*fill="#f5f7fc"[^>]*\/>/);
+  const dots=tools.match(/<svg class="nine-moons-icon"[^>]*>([\s\S]*?)<\/svg>/)?.[1];
+  assert.equal((dots?.match(/<circle /g)||[]).length,9);
 });
 
 test('v42: solar starts with lighting off; planet starts with lighting on',()=>{
@@ -73,21 +70,19 @@ test('v42: moon category colour remains #E6EDF5 everywhere it is reused',()=>{
   assert.equal(orbitAppearance({type:'moon',id:'moon'},{orbitContrast:false,orbitColors:true}).color,'#E6EDF5');
 });
 
-test('v43: icon toggles retain visual pressed state and keyboard focus without status text',async()=>{
+test('v55: appearance toggles retain aria-pressed states, titles and keyboard focus styling',async()=>{
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
-  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
-  const defaults={
-    'toggle-labels':true,'toggle-lighting':false,'toggle-four-moons':true,
-    'orbit-visibility-btn':true,'orbit-contrast-btn':false
-  };
+  const layer=between(html,'id="layer-popover"','id="time-panel"');
+  const defaults={'toggle-labels':true,'toggle-lighting':false,'toggle-four-moons':false,
+                  'orbit-visibility-btn':true,'orbit-contrast-btn':false};
   for(const [id,enabled] of Object.entries(defaults)){
-    const button=scale.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
+    const button=layer.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
     assert.ok(button,id);
     assert.match(button,new RegExp(`aria-pressed="${enabled}"`));
-    assert.doesNotMatch(button,/<span class="orbit-toggle-indicator"/);
     assert.match(button,/title="[^"]+"/);
+    assert.doesNotMatch(button,/orbit-toggle-indicator/);
   }
-  assert.doesNotMatch(scale,/id="orbit-colors-btn"|class="palette-icon"/);
   assert.match(css,/\.scale-tool-toggle:focus-visible\{outline:2px solid/);
   assert.match(css,/\.scale-tool-toggle svg\{[\s\S]*?pointer-events:none/);
 });
+

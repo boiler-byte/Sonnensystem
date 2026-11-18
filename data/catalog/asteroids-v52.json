@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "type": "asteroid",
+  "provenance": {
+    "source": "Stellarium – astronomischer Kleinkörperkatalog (aus JPL/MPC)",
+    "origin": "https://raw.githubusercontent.com/Stellarium/stellarium/master/data/ssystem_minor.ini",
+    "sourceUrl": "https://raw.githubusercontent.com/Stellarium/stellarium/master/data/ssystem_minor.ini",
+    "reviewStatus": "source-reviewed",
+    "note": "Oskulierende Kepler-Elemente mit jeweiliger katalogisierter Epoche, Ekliptik J2000. Die Körperradien sind gerundete Literaturwerte, keine 3D-Formmodelle. Positionen werden ohne Störungskräfte vereinfacht propagiert."
+  },
+  "objects": [
+    {
+      "id": "psyche",
+      "name": "(16) Psyche",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 111
+      },
+      "orbit": {
+        "semiMajorAxis": 2.9233145,
+        "unit": "AU",
+        "periodDays": 1825.623,
+        "eccentricity": 0.1343462,
+        "inclinationDeg": 3.09729,
+        "ascendingNodeDeg": 150.00988,
+        "periapsisDeg": 229.75341,
+        "meanAnomalyDeg": 40.63883,
+        "epoch": "2025-11-21T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#b6a995",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "hygiea",
+      "name": "(10) Hygiea",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 217
+      },
+      "orbit": {
+        "semiMajorAxis": 3.1475914,
+        "unit": "AU",
+        "periodDays": 2039.69538,
+        "eccentricity": 0.1082238,
+        "inclinationDeg": 3.83294,
+        "ascendingNodeDeg": 283.12164,
+        "periapsisDeg": 312.60583,
+        "meanAnomalyDeg": 216.69031,
+        "epoch": "2025-11-21T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#aca8a3",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "ryugu",
+      "name": "(162173) Ryugu",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0.435
+      },
+      "orbit": {
+        "semiMajorAxis": 1.1910091,
+        "unit": "AU",
+        "periodDays": 474.75594,
+        "eccentricity": 0.1911163,
+        "inclinationDeg": 5.86663,
+        "ascendingNodeDeg": 251.29445,
+        "periapsisDeg": 211.61036,
+        "meanAnomalyDeg": 327.32794,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#746e69",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "itokawa",
+      "name": "(25143) Itokawa",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 0.165
+      },
+      "orbit": {
+        "semiMajorAxis": 1.3241366,
+        "unit": "AU",
+        "periodDays": 556.54075,
+        "eccentricity": 0.2802554,
+        "inclinationDeg": 1.62118,
+        "ascendingNodeDeg": 69.07689,
+        "periapsisDeg": 162.82017,
+        "meanAnomalyDeg": 142.57407,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#b6a08d",
+        "style": "rock"
+      }
+    },
+    {
+      "id": "ida",
+      "name": "(243) Ida",
+      "parentId": "sun",
+      "physical": {
+        "radiusKm": 16
+      },
+      "orbit": {
+        "semiMajorAxis": 2.8599989,
+        "unit": "AU",
+        "periodDays": 1766.63401,
+        "eccentricity": 0.0446871,
+        "inclinationDeg": 1.13008,
+        "ascendingNodeDeg": 323.58487,
+        "periapsisDeg": 114.12766,
+        "meanAnomalyDeg": 286.6317,
+        "epoch": "2024-10-17T00:00:00.000Z",
+        "referenceFrame": "ecliptic J2000",
+        "model": "osculating-snapshot"
+      },
+      "appearance": {
+        "color": "#a89b82",
+        "style": "rock"
+      }
+    }
+  ]
+}

@@ -98,8 +98,8 @@ test('v15: new panel has a single accessible dropdown and old catalog chips are 
 test('v15: search and layer model are part of offline PWA cache',async()=>{
   const sw=await read('sw.js'),pkg=JSON.parse(await read('package.json'));
   const shell=JSON.parse(sw.match(/const SHELL=(\[[^;]+\]);/)[1]);
-  assert.equal(pkg.version,'50.0.0');
-  assert.match(sw,/sonnensystem-shell-v50/);
+  assert.equal(pkg.version,'55.0.0');
+  assert.match(sw,/sonnensystem-shell-v55/);
   assert.ok(shell.includes('./src/data/layers.js'));
 });
 

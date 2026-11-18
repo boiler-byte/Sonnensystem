@@ -123,7 +123,7 @@ test('v50: reset click chooses AR recenter only while AR is active, retaining st
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',\(\)=>\{\s*if\(arMode\?\.active\)\{arMode\.recenter\(\);return;\}/);
  assert.match(app,/renderer\?\.cycleCameraPerspective\(\);updateMode\(\);updateDetail\(\);mobileSheets\?\.close\(\);/);
- assert.match(app,/createARMode\(renderer,\$\('ar-mode-btn'\),\{notify:notifyToggle,onStateChange:active=>syncSceneMode\(S,renderer,active\)\}\)/);
+ assert.match(app,/createARMode\(renderer,\$\('ar-mode-btn'\),\{notify:notifyToggle,onStateChange:active=>\{/);
  assert.match(app,/syncSceneMode\(S,renderer,arMode\?\.active\)/);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/id="reset-camera"[^>]*title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen"/);

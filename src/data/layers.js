@@ -1,5 +1,5 @@
 /** Layer presets and scene-specific availability; no DOM or renderer dependencies. */
-export const LAYER_TYPES = Object.freeze(['planet','moon','dwarf','asteroid','satellite','comet','probe','star']);
+export const LAYER_TYPES = Object.freeze(['star','planet','moon','dwarf','tno','asteroid','satellite','comet','probe']);
 // The solar overview starts with only Sun and planets. Planet view has
 // its own default mask for the central planet, natural moons and satellites.
 export const STANDARD_LAYERS = Object.freeze(['star','planet']);
