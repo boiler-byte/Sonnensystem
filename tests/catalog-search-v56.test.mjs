@@ -169,7 +169,7 @@ test('v56: layer checkbox and offline cache include new data and category',async
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
   assert.match(html,/data-layer-type="binary"[^>]*><span>Doppelasteroiden<\/span>/);
-  assert.match(sw,/sonnensystem-shell-v62/);
+  assert.match(sw,/sonnensystem-shell-v63/);
   assert.match(sw,/manifest\.categories,\.\.\.manifest\.editorial/);
   for(const category of ['binary-asteroids-v56','moons-additions-v56','satellites-additions-v56'])
     assert.ok(manifest.categories.some(item=>item.path.includes(category)),category);

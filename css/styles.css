@@ -1083,3 +1083,32 @@
    max-height:min(75dvh,calc(100dvh - 230px));
  }
 }
+
+/* v63: AR belongs to the same bottom-aligned viewport action row as Reset.
+   Shared positioning and --sheet-visible keep both buttons at exactly the same
+   height while the mobile bottom sheet is dragged, half-opened or expanded. */
+.viewport-actions{
+  left:max(15px,env(safe-area-inset-left));
+  right:max(15px,env(safe-area-inset-right));
+  justify-content:space-between;
+}
+/* The reset button still stays on the right when AR is unavailable/hidden. */
+.viewport-actions .camera-reset-button{margin-left:auto}
+.viewport-actions .ar-mode-button[hidden]{display:none!important}
+.viewport-actions .ar-mode-button{
+  display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;
+  padding:6px;border:1px solid #71859c;border-radius:50%;
+  background:#132238ed;color:#e5edf7;cursor:pointer;
+  box-shadow:0 5px 20px #0009;backdrop-filter:blur(12px);
+}
+.viewport-actions .ar-mode-button svg{
+  display:block;width:23px;height:23px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
+}
+.viewport-actions .ar-mode-button:hover,
+.viewport-actions .ar-mode-button.pending{border-color:#d7b37c;background:#26394c}
+.viewport-actions .ar-mode-button.active{background:#293f43;border-color:#84cdb2;color:#b7efdd}
+.viewport-actions .ar-mode-button:focus-visible{outline:2px solid #dfb77d;outline-offset:3px}
+@media(max-width:770px){
+  .viewport-actions{left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right))}
+}

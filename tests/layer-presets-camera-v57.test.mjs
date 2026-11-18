@@ -58,7 +58,7 @@ test('v57: both removed Layer captions are absent and controls form 3+2 ordered 
   assert.match(css,/\.layer-display-toggles \.scale-tool-toggle\{[^}]*grid-column:span 2/);
   assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
   assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(5){grid-column:4 / span 2}'));
-  assert.match(html,/app-version" content="V62\.0"/);
+  assert.match(html,/app-version" content="V63\.0"/);
 });
 
 test('v57: Alle activates all five appearances; Standard restores view-specific defaults',()=>{

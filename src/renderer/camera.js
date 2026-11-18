@@ -48,7 +48,8 @@ export function lookAroundFixedEye(camera,dx,dy,sensitivityX=.0051,sensitivityY=
     :initial?Math.acos(clamp(-vnorm(initial)[1],-1,1)):camera.phi;
   const theta=baseTheta-dx*sensitivityX;
   // Unlike target-orbit mode, free look can point above the horizon.
-  const phi=clamp(basePhi+dy*sensitivityY,.001,Math.PI-.001);
+  // Positive screen drag is now a downward gaze (inverse of v62).
+  const phi=clamp(basePhi-dy*sensitivityY,.001,Math.PI-.001);
   const forward=[-Math.sin(phi)*Math.sin(theta),-Math.cos(phi),-Math.sin(phi)*Math.cos(theta)];
   const right=[Math.cos(theta),0,-Math.sin(theta)];
   const up=[-Math.cos(phi)*Math.sin(theta),Math.sin(phi),-Math.cos(phi)*Math.cos(theta)];

@@ -182,6 +182,6 @@ test('v48: SVG trigger sits left of the three menus, with conditional width and 
  assert.doesNotMatch(css,/\.viewport>\.control-panel\.ar-available \.scale-popover/);
  assert.match(app,/arMode=createARMode\(renderer,\$\('ar-mode-btn'\)/);
  assert.match(sw,/src\/renderer\/ar-mode\.js/);
- assert.match(sw,/sonnensystem-shell-v62/);
- assert.equal(JSON.parse(pkg).version,'62.0.0');
+ assert.match(sw,/sonnensystem-shell-v63/);
+ assert.equal(JSON.parse(pkg).version,'63.0.0');
 });

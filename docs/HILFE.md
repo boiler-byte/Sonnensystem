@@ -1,4 +1,6 @@
-# Hilfe – Sonnensystem (v62)
+# Hilfe – Sonnensystem (v63)
+
+**v63:** Der **AR-Button** sitzt links unten, waagerecht gegenüber **Kamera zurücksetzen** rechts unten. Auf Smartphones verschieben sich beide Buttons zusammen mit der Oberkante des mobilen Detail-Panels. Ohne selektiertes Objekt ist die Vertikalbewegung beim freien Umsehen **umgekehrt**: mit gedrückter rechter Maustaste bzw. mit zwei Fingern **nach unten ziehen → nach unten sehen**; nach oben ziehen → nach oben sehen. Das freie Umschauen bleibt am festen Kamerastandort. Bei Selektion und beim gerätegesteuerten AR bleibt die bisherige Steuerung erhalten.
 
 **v62:** Ohne ausgewähltes Objekt drehen Rechtsziehen (Maus) und Zwei-Finger-Wischen die Blickrichtung **am selben Kamerastandort**, wie im AR-Modus. Die linke Maustaste bzw. ein Finger verschiebt weiterhin; Zoom per Mausrad/Pinch bleibt unverändert. Mit ausgewähltem Objekt bleibt die bisherige Kamerarotation bestehen. Nach erneuter Auswahl oder Kamera-Reset kehrt die normale Perspektivsteuerung zurück. Im Layer-Menü heißt die Kategorie weiterhin **Transnept. Objekte**.
 
@@ -10,7 +12,7 @@
 
 ### Kameraansichten und AR (v58)
 
-Der **Kamera-Button** am oberen rechten Rand zeigt immer die **nächste** Kameraansicht als SVG: die diagonale Videokamera für **Schräg/oben**, die nach unten gerichtete für **Topdown** und die frontal sichtbare Videokamera für **Seitlich**. Die Reihenfolge lautet **Schräg/oben → Topdown → Seitlich → Schräg/oben**. Aus der ursprünglichen Schrägansicht wird daher als nächstes **Topdown** angeboten. Nach manuellem Schwenken oder Zoomen wird die Schrägansicht wieder zur nächsten Wahl. Die Schaltfläche trägt einen entsprechenden Tooltip und einen zugänglichen Namen.
+Der **Kamera-Button** unten rechts zeigt immer die **nächste** Kameraansicht als SVG: die diagonale Videokamera für **Schräg/oben**, die nach unten gerichtete für **Topdown** und die frontal sichtbare Videokamera für **Seitlich**. Die Reihenfolge lautet **Schräg/oben → Topdown → Seitlich → Schräg/oben**. Aus der ursprünglichen Schrägansicht wird daher als nächstes **Topdown** angeboten. Nach manuellem Schwenken oder Zoomen wird die Schrägansicht wieder zur nächsten Wahl. Die Schaltfläche trägt einen entsprechenden Tooltip und einen zugänglichen Namen.
 
 Bei aktivem **AR-Modus** bleibt das Gerät mit dem Orientierungssensor gekoppelt. Mit dem Kamera-Button schalten Sie in der **aktuellen Szene**, auch in einer Planetenansicht, durch die drei Perspektiven. Jede Auswahl orientiert den momentanen Sensorwinkel an der neuen Perspektive aus. **Nur Umsehen** – das Drehen und Neigen des Telefons – verändert die Blickrichtung, nicht die nächste Preset-Auswahl. Ein manuelles Verschieben/Zoomen der virtuellen Kamera stellt dagegen die nächste Preset-Auswahl wieder auf Schräg/oben. Es ist keine erneute Berechtigungsabfrage erforderlich. Ein Orientierungssensor kann tatsächliche Ortsänderungen des Smartphones nicht erfassen.
 

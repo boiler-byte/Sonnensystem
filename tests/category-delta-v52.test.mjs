@@ -135,7 +135,7 @@ test('v52: malformed aliases are rejected instead of breaking catalog search',as
 });
 
 test('v52: release and offline shell version match the added data',async()=>{
-  assert.equal((await readJson('package.json')).version,'62.0.0');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v62/);
+  assert.equal((await readJson('package.json')).version,'63.0.0');
+  assert.match(await read('sw.js'),/sonnensystem-shell-v63/);
   assert.match(await read('src/ui/object-details.js'),/Oskulierende Elemente · schematische Bahn/);
 });

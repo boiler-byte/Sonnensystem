@@ -1,4 +1,10 @@
-# Architektur – Sonnensystem v62.0
+# Architektur – Sonnensystem v63.0
+
+## Aktuelles Delta v63 – AR-Aktionsleiste und vertikales Freiumsehen
+
+`index.html` positioniert `#ar-mode-btn` und `#reset-camera` als Kinder derselben `.viewport-actions`-Leiste. Mit `justify-content:space-between`, `margin-left:auto` beim Reset sowie den linken/rechten Safe-Area-Abständen in `css/styles.css` steht AR links unten und Reset rechts unten auf exakt derselben Höhe. Das bereits vorhandene `src/ui/bottom-sheet.js` verwaltet `--sheet-visible`, `sheet-dragging` und `inert` für den gemeinsamen Wrapper; daher bleiben beide Buttons beim Verschieben und vollständigen Öffnen des mobilen Sheets synchron. Das Sichtbarkeitsflag (`hidden`) und die AR-Berechtigungslogik bleiben unverändert. AR beansprucht keinen Platz mehr im oberen Control Panel.
+
+`src/renderer/camera.js` interpretiert die vertikale freie Blickbewegung seit v63 invertiert (`basePhi - dy*sensitivityY`). Dies gilt nur für `lookAroundFixedEye()` (keine Selektion, Rechtsziehen und zweifingriges Wischen), nicht für die Orbitalsteuerung mit Selektion und nicht für die Sensorrotation. Version `63.0.0`, PWA-Cache `sonnensystem-shell-v63`. Siehe [DELTA-V63.md](DELTA-V63.md).
 
 ## Aktuelles Delta v62 – freies Umschauen ohne Auswahl
 

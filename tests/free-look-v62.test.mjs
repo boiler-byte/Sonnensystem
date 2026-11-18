@@ -102,7 +102,7 @@ test('v62: a new object selection hands free-look back to orbit camera seamlessl
 
 test('v62: free-looking also allows upward viewing and panning uses current gaze heading',()=>{
  const cam={theta:.63,phi:.99,dist:47,desiredDist:47,target:[0,0,0],desiredTarget:[0,0,0]};
- assert.ok(lookAroundFixedEye(cam,310,570));
+ assert.ok(lookAroundFixedEye(cam,310,-570));
  assert.ok(cam.freeLook.phi>Math.PI/2,'the camera can look above the horizon');
  const oldTheta=cam.theta,oldTarget=cam.target.slice();
  panCameraByPixels(cam,100,0,720);
@@ -127,9 +127,9 @@ test('v62: explicit camera preset discards free-look and the abbreviated TNO lab
  }finally{cleanup();}
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/<input type="checkbox" data-layer-type="tno" aria-label="Transneptunische Objekte"\/><span>Transnept\. Objekte<\/span>/);
- assert.match(html,/app-version" content="V62\.0"/);
+ assert.match(html,/app-version" content="V63\.0"/);
  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
- assert.match(sw,/sonnensystem-shell-v62/);
+ assert.match(sw,/sonnensystem-shell-v63/);
 });
 
 
