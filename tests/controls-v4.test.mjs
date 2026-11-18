@@ -81,12 +81,12 @@ function makeRenderer(phi, theta = .63) {
   return { renderer, emit, selected };
 }
 
-function mouseRun(phi, theta, shift = false) {
+function mouseRun(phi, theta) {
   const { renderer, emit, selected } = makeRenderer(phi, theta);
   const initial = renderer.camera.target.slice();
-  const button = shift ? 0 : 2;
+  const button = 0;
   emit('pointerdown', { button });
-  emit('pointermove', { button, shiftKey: shift, clientX: 137, clientY: 159 });
+  emit('pointermove', { button, clientX: 137, clientY: 159 });
   emit('pointerup', { button, clientX: 137, clientY: 159 });
   near(renderer.camera.target[1], initial[1], 'Mouse drag remains on orbital plane');
   nearVector(delta(renderer.camera.target, initial), expectedDelta(renderer.camera, 37, 59, 600), 'Mouse drag follows ground');
@@ -96,6 +96,7 @@ function mouseRun(phi, theta, shift = false) {
 function touchRun(phi, theta) {
   const { renderer, emit, selected } = makeRenderer(phi, theta);
   const initial = renderer.camera.target.slice();
+  const initialTheta=renderer.camera.theta;
   const touch = (type, pointerId, clientX, clientY) =>
     emit(type, { pointerType: 'touch', pointerId, clientX, clientY });
   touch('pointerdown', 1, 100, 100);
@@ -105,12 +106,13 @@ function touchRun(phi, theta) {
   touch('pointermove', 2, 260, 155);
   touch('pointerup', 1, 130, 145);
   touch('pointerup', 2, 260, 155);
-  near(renderer.camera.target[1], initial[1], 'Two-finger pan remains on orbital plane');
+  nearVector(renderer.camera.target,initial,'Two-finger look never pans');
+  assert.ok(renderer.camera.theta<initialTheta,'Two-finger look changes heading');
   assert.equal(renderer.pointers.size, 0, 'Touch releases pointer capture');
   assert.equal(selected.length, 0, 'Two-finger gesture must not pick objects');
   assert.ok(renderer.camera.dist < 47, 'Finger separation still zooms in');
   near(renderer.camera.dist, renderer.camera.desiredDist, 'Pinch zoom remains immediate');
-  return { target: renderer.camera.target, dist: renderer.camera.dist };
+  return { theta: renderer.camera.theta, target: renderer.camera.target, dist: renderer.camera.dist };
 }
 function keysRun(phi, theta) {
   const { renderer } = makeRenderer(phi, theta);
@@ -133,17 +135,16 @@ function keysRun(phi, theta) {
 }
 try {
   for (const theta of [0, .63, 1.7, -2.3]) {
-    const mouse = [], shifted = [], touch = [], keyboard = [];
+    const mouse = [], touch = [], keyboard = [];
     for (const phi of [.16, .8, 1.55]) {
       mouse.push(mouseRun(phi, theta));
-      shifted.push(mouseRun(phi, theta, true));
       touch.push(touchRun(phi, theta));
       keyboard.push(keysRun(phi, theta));
     }
     for (let i = 1; i < mouse.length; i++) {
-      nearVector(mouse[i], mouse[0], 'Right mouse panning does not change with inclination');
-      nearVector(shifted[i], shifted[0], 'Shift-left panning does not change with inclination');
-      nearVector(touch[i].target, touch[0].target, 'Two-finger panning does not change with inclination');
+      nearVector(mouse[i], mouse[0], 'Left mouse panning does not change with inclination');
+      near(touch[i].theta,touch[0].theta,'Two-finger rotation stays independent of inclination');
+      nearVector(touch[i].target, touch[0].target, 'Two-finger look does not pan at any inclination');
       near(touch[i].dist, touch[0].dist, 'Two-finger zoom does not change with inclination');
       nearVector(keyboard[i], keyboard[0], 'Keyboard panning does not change with inclination');
     }

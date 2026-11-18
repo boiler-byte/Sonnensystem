@@ -1,4 +1,64 @@
+## Erweiterung v49 – kompakte Control-Panel-Buttons und ringbewusste Reihenlabels
+
+- CSS `css/styles.css`: `--control-icon-width` = `--control-trigger-width - 9px` (typisch 49 statt 58 px) für AR/Scale/Layer; Zeit 58 px. Die Panelbreite ist für 3/4 Buttons aus einzelnen Flex-Breiten zusammengesetzt. Für das Maßstab-Dropdown wird die gemeinsame rechte Viewportkante durch Neuberechnung des Versatzes erhalten; Layer/Time bleiben unverändert.
+- `src/renderer/transitions.js`: `rowLayout` erhält einen optionalen Callback für sichtbare Außenradien. Für Saturn wird die ringführende Außenkante (`1.20 × targetRingScale`) als Abstandshülle verwendet; Körperradien bleiben physikalisch/schematisch wie zuvor. Erste Objektlücke unverändert, danach 30 % mehr radial proportionale Lücke. `rowCameraFrame` verwendet den visuellen Außenradius bei Breiten- und Höhenanpassung.
+- `src/renderer/renderer.js`: Die Reihenfolge der Körper wird in `_rowLabelOrder` bei jedem `calcPositions`-Durchlauf stabil hinterlegt; `targetRingScale()` teilt die gleiche Skalierungsformel mit Renderer und Reihenlayout.
+- `src/renderer/labels.js`: Feste Reihenlabel-Seiten anhand des stabilen Größenrangs (gerade = oberhalb, ungerade = unterhalb); Saturn verwendet den projizierten Ringaußenradius für die Label-Freiheit. Der Label-Zustand wird beim Reihenwechsel getrennt vom üblichen Orbitlayout geführt.
+- Tests: v49 ergänzt Regressionen für gemischte Triggerbreiten, 3/4-Button-Positionierung, ringfreie Nachbarabstände, Labelseiten und Skalierungsmodi.
+
+## Erweiterung v48 – Smartphone-AR-Blicksteuerung
+
+- `src/renderer/ar-mode.js`: Reine Quaternion-Hilfsfunktionen für `DeviceOrientationEvent` (`alpha/beta/gamma` und Bildschirmrotation), kalibrierter Relativblick mit vollständiger Nick-/Gier-/Rollbewegung. `supportsARLook()` zeigt den Button ausschließlich bei sicherem Kontext, Smartphone-Touchprofil und vorhandener Geräteausrichtungs-API. `createARMode()` fordert Berechtigung ausschließlich in der direkten Klickbehandlung an, wartet auf gültige Sensordaten und räumt Listener/Timeouts bei Aus, Abbruch, Hintergrund und Seitenwechsel ab. Keine Kamera- oder Ortsberechtigung und keine Sensor-Datenübertragung.
+- `src/renderer/camera.js`: Beim aktiven AR-Blick werden bestehende Augenposition und die durch Sensoren bestimmten Kamera-Forward- und Up-Vektoren in `lookAt()` eingesetzt. Dies ist echtes Umsehen **vom Standort**, keine Rotation des Eye-Punktes um das Zielobjekt. Die Standardprojektion, Picking und die bisherigen Eingabegesten bleiben erhalten. Beim Ausschalten wird der Blick wieder in die Orbit-Kamera umgesetzt, um die letzte Blickrichtung möglichst zu erhalten.
+- `index.html`, `css/styles.css`, `src/app.js`: SVG-AR-Button ganz links, standardmäßig versteckt. Wenn die Sensor-API verfügbar ist, wächst die Kopfleiste von drei auf vier Buttons; das Maßstab-, Layer- und Zeit-Dropdown bleiben an der Viewport-Rechtskante ausgerichtet. Zustand per `aria-pressed`, Status per Snackbar.
+- Offline: `src/renderer/ar-mode.js` ist in der PWA-Precache-Liste enthalten; Anwendung `48.0.0`, `sonnensystem-shell-v48`.
+- Tests: `tests/ar-mode-v48.test.mjs` prüft Feature-Erkennung, Permission/Fehlerfälle, Relative Orientierung, Kalibrierung, Blickprojektion und Sensor-Cleanup. Die übrigen Steuerungs-/Ansichts-/Reihen-Regressionen bleiben aktiv.
+
+## Erweiterung v47 – Navigation und größengewichtetes Reihen-Framing
+
+- `src/renderer/controls.js`: Desktop-Drag **links = bodenparallele Bewegung**, **rechts / Shift+links = Blickrotation**; Touch **ein Finger = Bewegung**, **zwei Finger = Rotation**, Fingerabstand weiterhin Pinch-Zoom. Zwei-Finger-Rotation wird aus gemeinsam gerichteten Fingerbewegungen erkannt, nicht aus dem isolierten Midpoint eines einzelnen Pointer-Events. Klick/Tippen, Keyboard-Pan und Follow-Semantik bleiben erhalten.
+- `src/renderer/transitions.js`: `rowLayout()` sortiert weiter nach `radiusKm`, verteilt die Abstände aber relativ zu benachbarten Darstellungsradien (`.14*(r_i+r_(i+1))` bei Kappung). `rowCameraFrame()` liefert sowohl Blickziel als auch Kameraabstand. Der erste Körper wird am linken Rand um 88 % seines Durchmessers beschnitten; die Kamera rahmt bis zu sechs Folgeobjekte in einem näheren Ausschnitt. Weitere Objekte bleiben interaktiv erreichbar. Rahmenberechnung berücksichtigt Quer-/Hochformat und physikalische Maßstäbe. `rowFrameDistance()` bleibt als Kompatibilitätsfunktion bestehen.
+- `src/renderer/renderer.js` und `src/app.js`: Ziel **und** Distanz des neuen Kameraframes werden beim Reihen-/Maßstabs-/Szenenwechsel gesetzt. Die bisherige Interpolation der Kamera und der Framerate-unabhängigen Gummiband-Objektanimationen bleibt erhalten. Die minimale Distanz der Reihe kann näher als der Normalmodus liegen.
+- Regressionen: `tests/navigation-row-v47.test.mjs`, aktualisierte v3/v4/v38-Gesten- und v45-Reihenprüfungen. Release `47.0.0` und PWA-Shell `sonnensystem-shell-v47`.
+
+## Erweiterung v46 – transparente, unterbrechbare Szenenübergänge
+
+- `src/renderer/renderer.js`: `beginTransition()` erfasst zusätzlich zum geometrischen Zwischenzustand die tatsächlich sichtbaren Körper und Orbitlinien mit ihren aktuellen Opazitäten. Bei schnellen Richtungswechseln werden auch bereits verblassende Elemente erneut in den Snapshot übernommen. `drawDepartingScene()` rendert nur Objekte/Bahnen, die nicht zur neuen Ansicht gehören, während `sceneBodyOpacity()` und `sceneOrbitOpacity()` die neue Szene einblenden. Abgehende Elemente schreiben keinen WebGL-Tiefenpuffer; globale Folgen- und Kamerafunktionen bleiben bestehen.
+- `src/renderer/shaders.js`: Kugel- und Saturnring-Fragmentshader erlauben individuelle Deckkraft (`uOpacity`) und damit echte transparente Blenden der 3D-Körper. Der allgemeine Körper-Shader bleibt bei Deckkraft 1 unverändert.
+- `src/renderer/solar-view.js`, `planet-view.js`: Bahnmittelpunkte folgen dem **interpolierten** Sonnen- oder Planetenstandort. Dadurch sind die Linien während Reihe-/Ansichtswechseln räumlich an den bewegten Körper gebunden.
+- `src/renderer/orbits.js`: historische Bahnen lassen sich mit eingefrorener Radius-, Farb-/Kontrast- und Opazitätskonfiguration zeichnen, bevor die neuen Bahnen eingeblendet werden.
+- `orbitOpacity()` blendet beim raschen Zurückschalten aus der Reihenansicht vom **letzten sichtbaren Alphawert** statt direkt bei 0 oder 1 zu beginnen. Interpolationsdauer weiterhin 980 ms; `prefers-reduced-motion` deaktiviert den Übergang.
+- Qualitätssicherung: `tests/spring-view-transitions-v46.test.mjs`, Dokumentation [DELTA-V46.md](DELTA-V46.md). Release `46.0.0`, PWA-Cache `sonnensystem-shell-v46`.
+
+## Erweiterung v45 – Reihenansicht und Szeneninterpolation
+
+- `src/data/layers.js`: Jede Szene besitzt den unabhängigen, standardmäßig deaktivierten Schalter `row`.
+- `src/renderer/transitions.js`: Reine Funktionen für physikalisch absteigende Reihenfolge, horizontale Positionierung ohne Kugelüberlappung, Hochformat-taugliche Kameradistanz, elastische Interpolation und Positionsmischung. Sortierung basiert auf `radiusKm`, nicht auf dem schematischen Kugelradius.
+- `src/renderer/renderer.js`: Beim Wechsel wird der zuletzt **gerenderte** Zustand von Positionen, Körperradien, Saturnring-Größe, Bahnradien und Kamera-Blickwinkel erfasst. Übergänge dauern 980 ms, sind bei wiederholter Betätigung unterbrechbar und respektieren `prefers-reduced-motion`. Die Positionsrechnung liefert weiterhin die echten Kepler-Zielpositionen; erst danach werden Reihenlayout und visuelle Interpolation angewendet. Bei aktivem Fokus wird das Kameraziel während der Animation nachgeführt; eine manuelle Drehung unterbricht nur die animierte Blickwinkelsteuerung. Künstlich schnelle Zwischenpositionen beenden nicht die globale Folgen-Nachführung.
+- `src/renderer/orbits.js`, `solar-view.js`, `planet-view.js`, `labels.js`: Orbitgeometrie, Deckkraft, Objekt-/Ringradien, Labelanker und Sonnenglühen folgen den angezeigten Übergangskoordinaten. Reihenmodus blendet Bahnen aus und zurück, ohne die Nutzerpräferenz `orbits` zu verändern.
+- `src/app.js`, `index.html`, `css/styles.css`: Neuer zugänglicher `orbit-row-btn` mit drei abgestuften SVG-Punkten unter Umlaufbahn und Kontrast, individuelle Szenenpräferenz, Snackbar sowie kameragestützte Layoutwechsel.
+- `sw.js`: neuer Cache-Namespace und vollständiges Precache-Inventar einschließlich `transitions.js`.
+
+Die Reihenansicht ist eine alternative **Visualisierung**, keine Veränderung der astronomischen Bahndaten. Der Zeitverlauf und die Datenquellen bleiben gleich. Siehe `docs/DELTA-V45.md`.
+
 # Architektur – Sonnensystem v27.0
+
+## Aktueller Stand v44: optimierte Sonnen-/Bahnskalierung
+
+- `src/data/orbital-math.js`: Die Schalterkombination `scaleObjects === true && scaleOrbits === false` verwendet in der **Sonnensystem-Übersicht** einen separaten optimierten Maßstab. Die Sonne ist `4 * renderRadius(sun)` groß. Alle anderen körperlichen Radien werden anhand des Referenz-Sonnenradius aus `data/catalog/stars.json` (696340 km) mit demselben physischen Größenverhältnis skaliert. Die vorhandenen schematischen Heliobahnradien und eingeblendeten Kindbahnen werden mit Faktor 4 multipliziert. Planetenzentrierte Orbits/Radien (mit `center`) bleiben davon unberührt.
+- `src/renderer/scene.js`: Auch JPL-/Horizons-Positionsüberschreibungen erhalten diesen Faktor 4 bei schematischen solarzentrischen Koordinaten; Orbitlinien, Kugelpositionen und Labels liegen damit übereinander.
+- `src/renderer/renderer.js`, `src/app.js`: Die neue Übersichtsdistanz beträgt `47 * 4 = 188` Szeneneinheiten; maximaler Abstand `100 * 4 = 400`, wenn der Modus in der Sonnenübersicht aktiv ist. Änderungen beider Skalentoggles passen die unmanipulierte Übersicht an. Fokussierte oder nachgeführte Objekte behalten ihre Zielausrichtung. Tooltip und Snackbar nennen den Modus.
+- Die anderen drei Kombinationen und die isolierte Planetenansicht behalten die bisherigen Skalen. Die Kataloggeometrie ist nicht mit präziser Ephemeridenphysik gleichzusetzen.
+- Release: `44.0.0`, PWA-Cache `sonnensystem-shell-v44`; Qualitätssicherung unter [DELTA-V44.md](DELTA-V44.md).
+
+## Aktueller Stand v43: kompaktes Control-Panel und dauerhafte Bahnfarben
+
+- `index.html`/`css/styles.css`: das Maßstab-Popover ist zweispaltig, ohne Heading, Fußnote oder Text-Statuschips. Die Objekt-Spalte gruppiert Beschriftung/Beleuchtung nebeneinander, 4 Monde darunter; die Bahn-Spalte gruppiert Umlaufbahn/Kontrast nebeneinander. Insgesamt sieben Toggles, jeweils mit `aria-pressed` und Tooltip.
+- `src/app.js`/`src/ui/status.js`: alle sieben Toggle-Klicks aktualisieren den Status und rufen `notifyToggle()` auf; die eigene Snackbar `#toggle-toast` ist unten rechts verankert und blendet nach 2,4 Sekunden aus. Die bestehende API-Fehlermeldungs-Toast-Funktion bleibt separat.
+- `src/renderer/orbits.js`: die Kategoriepalette und die blaue Erdumlaufbahn sind dauerhaft aktiv; das frühere `orbitColors`-Flag und der Farben-Toggle wurden aus State und UI entfernt. `orbitContrast` beeinflusst nur Linienstärke/Deckkraft.
+- Service-Worker-Cache und Versionskennung: v43. Vorherige Layout- und Orbit-Abschnitte dokumentieren historische Zwischenstände, keine aktuellen Menüs.
+
+Siehe [Delta v43](DELTA-V43.md).
 
 ## Grundprinzip
 
@@ -198,3 +258,32 @@ Siehe [DELTA-V26.md](DELTA-V26.md).
 `largestMoonIds(bodies)` in `src/data/layers.js` bestimmt die vier nach `radiusKm` größten natürlichen Monde je `parentId`; bei gleichen Radien entscheidet die ID deterministisch. `SolarRenderer.setBodies()` aktualisiert den Index nach Katalog- und Live-Daten-Änderungen. `shouldDraw()` schließt bei aktiviertem Schalter andere Monde aus der 3D-Szene aus; damit sind sie weder gezeichnet noch anklickbar. `planet-view.js` benutzt dieselbe Sichtbarkeitsprüfung vor Körper- und Orbitzeichnung. `labels.js` wendet die historische Vierer-Beschriftungsgrenze nur noch im eingeschalteten Modus an (für ältere Renderereinstellungen ohne `fourMoons` bleibt das alte Verhalten als Fallback). Bei deaktiviertem Schalter können alle sichtbaren Monde um Labels konkurrieren; Dichte- und Bewegungsregeln greifen weiterhin.
 
 **Unverändert:** Sonnenübersicht „Standard“ enthält weiterhin Sterne und Planeten, die Planetenansicht standardmäßig Planeten, Monde und Satelliten. Der „4 Monde“-Schalter aktiviert keinen ausgeschalteten Mond-Layer. Der Katalog und die Detaildaten bleiben trotz 3D-Filter vollständig. Das Layer-Popover ist nun 188 px breit und auf Desktop nach verfügbarer Höhe bemessen; auf Mobilgeräten hat es einen scrollbaren Bereich oberhalb des Bottom-Sheets. Anwendungsversion und PWA-Cache sind v29. Details: [DELTA-V29.md](DELTA-V29.md).
+
+## Aktueller Stand v40: horizontale Steuerung am Viewportrand
+
+- `#view-mode-status` bleibt ein rahmenloses, absolutes Overlay der 3D-Ansicht. `css/styles.css` überschreibt die historische vertikale Anordnung mit einer horizontalen Flex-Zeile aus zwei 58-px-Triggern und 8 px Abstand. Beide Tasten sind 54 px hoch.
+- Die zwei Popovers bleiben in ihren ursprünglichen Wrappers und behalten ihre UI-Logik; sie öffnen 7 px unterhalb der gemeinsamen Tastenzeile. Über gemeinsame CSS-Variablen für Triggerbreite, Zwischenraum und Safe-Area-Rand werden ihre `right`-Offsets so berechnet, dass **beide dieselbe rechte Kante des Viewports** erreichen. Die Menübreiten bleiben 145 und 120 px, die Höhen sind begrenzt und scrollen bei Bedarf.
+- `src/app.js` schließt beim Öffnen einer Menüart weiterhin automatisch die andere. Mit nebeneinanderliegenden Triggern kann man direkt umschalten, ohne dass ein offenes Popover einen Trigger überlagert. Die globale `pointerdown`-/`Escape`-Behandlung und `aria-expanded` werden unverändert verwendet. Desktop und Mobil erhalten denselben Aufbau; bis 770 px gilt der kleinere Trigger-Randabstand.
+- Anwendungsversion `40.0.0`, Offline-Cache `sonnensystem-shell-v40`. Siehe [DELTA-V40.md](DELTA-V40.md).
+
+## Aktueller Stand v41: getrennte Maßstabs-Schalter
+
+`src/data/orbital-math.js` stellt `displayBodyRadius` und `displayOrbitRadius` bereit. Der Zustand `scaleObjects` bzw. `scaleOrbits` wird in `src/app.js` über beide Szenen hinweg synchronisiert; standardmäßig sind beide `false`. Kugelshader, Picking, Labels und Saturnringe verwenden dieselbe Radiusfunktion. Positionen und gezeichnete Orbitlinien verwenden dieselbe Distanzfunktion.
+
+- Im Sonnensystem wird 1 AE auf 3,4 Szeneneinheiten bezogen. Körperradien in km werden durch `AU_KM` in dieselbe Szeneeinheit umgerechnet; relative Abstände nach `a` sind linear, wenn `scaleOrbits` aktiv ist.
+- In isolierten Planetenszenen entspricht der Radius des Planeten 1,28 Szeneneinheiten. Körpergrößen und Satelliten-/Mondabstände in km werden mit diesem Radius in dieselbe Einheit umgerechnet.
+- Bei echten Bahnabständen werden Kamera-Zoom- und Clipping-Bereiche erweitert, insbesondere für lange Mondbahnen. Die Orbitmodelle selbst bleiben die vorhandenen vereinfachten Kepler-Daten; fehlende Körperradien (`0`) bleiben unbekannt.
+- Die drei Dropdowns sind direkt umschaltbar und enden alle an der rechten Viewportkante; das neue Maßstabs-Dropdown bietet zwei SVG-Toggles nebeneinander.
+
+Version `41.0.0`, Cache `sonnensystem-shell-v41`. Siehe [DELTA-V41.md](DELTA-V41.md).
+
+
+## Aktueller Stand v42: neu gruppierte Maßstab- und Anzeige-Schalter
+
+- `index.html`: Button-Reihenfolge am oberen rechten Bildschirmrand **Maßstab → Objektlayer → Zeitsteuerung**. Das Maßstab-Dropdown enthält zwei Spalten, links `#scale-objects-btn` über den Icon-Toggles `#toggle-labels`, `#toggle-lighting`, `#toggle-four-moons`; rechts `#scale-orbits-btn` über `#orbit-visibility-btn`, `#orbit-contrast-btn`, `#orbit-colors-btn`. Die sechs Zusatzschalter wurden aus `#layer-popover` entfernt, ohne DOM-IDs, Schaltlogik oder szenenspezifische Einstellungen zu verändern. SVG-Icons, Tooltips, `aria-label`, `aria-pressed` und sichtbarer An/Aus-Status bleiben verfügbar.
+- `css/styles.css`: die v42-Overrides ordnen Scale- und Layer-Popover nach der geänderten Buttonreihenfolge wieder an der **gleichen rechten Viewportkante** an, auch bei den mobilen Safe-Area-Werten. Die zwei gleich breiten Spalten minimieren die Menübreite (186 px), die Dropdown-Höhe wird nach Viewport begrenzt.
+- `src/data/layers.js`: `createViewSettings('solar')` startet weiterhin mit `lighting:'optimized'`; `createViewSettings('planet')` startet mit `lighting:'realistic'`. Die Szenen behalten ihre unabhängigen Licht-/Labels-/Orbit-Einstellungen, die zwei Maßstabsschalter bleiben synchronisiert. Shader und Rendererlogik bleiben unverändert.
+- `src/data/bodies.js`: `CATEGORY_COLORS.moon === '#E6EDF5'` war bereits in v41 korrekt. Die Palette wird unverändert von Bahnen, Katalog und Detailkategorie verwendet.
+- `src/app.js`: bestehende Toggle-Handler bleiben bei ihren ursprünglichen IDs; für die zu Icons gewordenen Beschriftungs-/Orbit-Schalter werden die Tooltiptexte beim Zustandswechsel aktualisiert.
+
+Version `42.0.0`, Cache `sonnensystem-shell-v42`. Siehe [DELTA-V42.md](DELTA-V42.md).

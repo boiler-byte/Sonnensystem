@@ -10,19 +10,21 @@ const within=(text,start,end)=>{
   return text.slice(a,b);
 };
 
-test('v19: layer dropdown owns all three independent orbit toggles; old orbit popup is absent',async()=>{
+test('v43: scale dropdown owns two orbit toggles; palette is permanently enabled',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),layerModel=await read('src/data/layers.js');
+  const scale=within(html,'id="scale-popover"','id="layer-picker-wrap"');
   const layer=within(html,'id="layer-popover"','id="time-panel"');
-  assert.match(layer,/class="layer-orbit-section" aria-label="Umlaufbahn-Einstellungen"/);
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn','orbit-colors-btn']){
+  assert.match(scale,/class="scale-secondary-options" role="group" aria-label="Bahndarstellung"/);
+  assert.doesNotMatch(layer,/id="orbit-visibility-btn"/);
+  for(const id of ['orbit-visibility-btn','orbit-contrast-btn']){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
-    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
+    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
   }
-  assert.doesNotMatch(html,/id="toggle-orbits"|id="orbit-popover"|id="orbit-picker-wrap"/);
+  assert.doesNotMatch(html,/id="toggle-orbits"|id="orbit-popover"|id="orbit-picker-wrap"|id="orbit-colors-btn"/);
   assert.doesNotMatch(app,/setOrbitPopover|orbit-popover|toggle-orbits/);
-  assert.match(layerModel,/orbitContrast:false,\s*orbitColors:true/);
+  assert.match(layerModel,/orbitContrast:false,\s*labels:true/);
   assert.match(app,/\$\('layer-btn'\)\.addEventListener\('click'/);
-  assert.match(app,/\[\['orbit-visibility-btn','orbits'\],\['orbit-contrast-btn','orbitContrast'\],\['orbit-colors-btn','orbitColors'\]\]/);
+  assert.match(app,/\[\['orbit-visibility-btn','orbits'\],\['orbit-contrast-btn','orbitContrast'\]\]/);
 });
 
 test('v21: time menu header has only speed, and a stacked slider precedes two action buttons and date/time',async()=>{

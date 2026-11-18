@@ -22,7 +22,7 @@ test('v27: viewport reset is bottom-right and control panel is frameless 58px',a
   assert.doesNotMatch(time,/time-trigger-chevron/);
   assert.match(time,/id="speed-readout"/);
   assert.match(panel,/speed-popover\{width:120px/,'wider popover remains usable despite the narrow trigger');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v39/);
+  assert.match(await read('sw.js'),/sonnensystem-shell-v49/);
 });
 
 test('v27: detail index cycles across objects of the same category and wraps around',()=>{

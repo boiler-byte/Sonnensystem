@@ -10,52 +10,54 @@ const between=(source,begin,end)=>{
   return source.slice(a,b);
 };
 
-test('v20: labels toggle is part of the layer dropdown rather than the scene tools',async()=>{
+test('v42: labels toggle moved to the scale dropdown rather than scene tools',async()=>{
   const html=await read('index.html');
   const app=await read('src/app.js');
   const layer=between(html,'id="layer-popover"','id="time-panel"');
+  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
   const scene=between(html,'id="time-panel"','id="canvas-error"');
-  assert.match(layer,/class="layer-label-section" aria-label="Beschriftung-Einstellungen"/);
-  assert.match(layer,/id="toggle-labels"[^>]*aria-pressed="true"/);
-  assert.match(layer,/id="toggle-labels"[^>]*>[\s\S]*?<span>Beschriftung<\/span>/);
+  assert.doesNotMatch(layer,/id="toggle-labels"/);
+  assert.match(scale,/class="scale-secondary-options" role="group" aria-label="Objektdarstellung"/);
+  assert.match(scale,/id="toggle-labels"[^>]*aria-pressed="true"/);
+  assert.match(scale,/class="tab-label-icon"/);
+  assert.doesNotMatch(scale,/<span>Beschriftung<\/span>/);
   assert.doesNotMatch(scene,/id="toggle-labels"/);
   assert.doesNotMatch(scene,/id="reset-camera"/);
   assert.match(html,/class="viewport-actions"[\s\S]*?id="reset-camera"/);
   assert.equal((html.match(/id="toggle-labels"/g)||[]).length,1);
-  assert.match(app,/\$\('toggle-labels'\)\.addEventListener\('click',\(\)=>\{S\.settings\.labels=!S\.settings\.labels;syncLabelControl\(\);\}\)/);
+  assert.match(app,/\$\('toggle-labels'\)\.addEventListener\('click',\(\)=>\{S\.settings\.labels=!S\.settings\.labels;syncLabelControl\(\);notifyToggle/);
 });
 
-test('v20: default orbit contrast starts disabled while orbit lines, colors and labels remain on',async()=>{
+test('v43: default orbit contrast starts disabled while orbit lines and category colors remain on',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),layerModel=await read('src/data/layers.js');
-  const layer=between(html,'id="layer-popover"','id="time-panel"');
-  assert.match(layerModel,/orbits:true, orbitContrast:false, orbitColors:true, labels:true/);
-  assert.match(layer,/class="orbit-option orbit-suboption" id="orbit-contrast-btn"[^>]*aria-pressed="false"[^>]*><span>Kontrast<\/span><span[^>]*>Aus<\/span>/);
-  for(const id of ['orbit-visibility-btn','orbit-colors-btn'])
-    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="true"`));
+  const scale=between(html,'id="scale-popover"','id="layer-picker-wrap"');
+  assert.match(layerModel,/orbits:true, orbitContrast:false, labels:true/);
+  assert.match(scale,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
+  assert.match(scale,/class="contrast-icon"/);
+  for(const id of ['orbit-visibility-btn'])
+    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-pressed="true"`));
   assert.match(app,/S\.settings\[setting\]=!S\.settings\[setting\];\s*syncOrbitControls\(\)/);
 });
 
-test('v20: labels synchronize visible An/Aus and aria-pressed after toggling',async()=>{
+test('v43: labels synchronize titles, active styling and aria-pressed after toggling',async()=>{
   const source=await read('src/app.js');
   const fn=between(source,'function syncLabelControl(){','function changeLayers(next){');
-  const indicator={textContent:'An'};
   const attrs={};
   const classes=new Set(['active']);
   const control={
     setAttribute(key,value){attrs[key]=value;},
-    classList:{toggle(name,enabled){if(enabled)classes.add(name);else classes.delete(name);}},
-    querySelector(selector){assert.equal(selector,'.orbit-toggle-indicator');return indicator;}
+    classList:{toggle(name,enabled){if(enabled)classes.add(name);else classes.delete(name);}}
   };
   const state={settings:{labels:true}};
   const context=vm.createContext({S:state,$:()=>control});
   vm.runInContext(fn+'\nthis.syncLabelControl=syncLabelControl;',context);
   state.settings.labels=false;context.syncLabelControl();
   assert.equal(attrs['aria-pressed'],'false');
-  assert.equal(indicator.textContent,'Aus');
+  assert.match(control.title,/Beschriftung: Aus/);
   assert.equal(classes.has('active'),false);
   state.settings.labels=true;context.syncLabelControl();
   assert.equal(attrs['aria-pressed'],'true');
-  assert.equal(indicator.textContent,'An');
+  assert.match(control.title,/Beschriftung: An/);
   assert.equal(classes.has('active'),true);
 });
 

@@ -11,8 +11,9 @@ const defaultTypes = view => view === 'planet' ? PLANET_STANDARD_LAYERS : STANDA
 /** Independent filter and display settings for each scene. */
 export function createViewSettings(view = 'solar') {
   return {
-    orbits:true, orbitContrast:false, orbitColors:true, labels:true,
-    lighting:'optimized', fourMoons:view !== 'planet',
+    orbits:true, orbitContrast:false, labels:true,
+    lighting:view === 'planet' ? 'realistic' : 'optimized', fourMoons:view !== 'planet',
+    scaleObjects:false, scaleOrbits:false, row:false,
     layers:layerPreset('standard',view)
   };
 }

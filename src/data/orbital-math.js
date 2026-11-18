@@ -1,7 +1,46 @@
-import { J2000 } from './bodies.js';
+import { J2000, AU_KM } from './bodies.js';
 import { TAU, RAD, DAY, clamp } from '../renderer/math.js';
 
+/** Physically proportional world coordinates: 1 AU = 3.4 units in the solar view.
+ * In planet view, the parent's physical radius is 1.28 units; sizes and
+ * distances therefore use the same reference when both toggles are active.
+ */
+export const SOLAR_UNITS_PER_AU = 3.4;
+export const SOLAR_UNITS_PER_KM = SOLAR_UNITS_PER_AU / AU_KM;
+export const PLANET_RADIUS_UNITS = 1.28;
+// v44: One solar-overview preset for Objekt=An, Bahn=Aus. All solar
+// radii share one physical ratio, calibrated so the Sun is 4x the
+// schematic Sun. Schematic solar orbits expand uniformly by the same factor.
+// The reference radius matches data/catalog/stars.json; unknown radii stay 0.
+export const OPTIMIZED_ORBIT_FACTOR = 4;
+export const SOLAR_REFERENCE_RADIUS_KM = 696340;
+export const optimizedSolarMode = settings => settings?.scaleObjects === true && settings?.scaleOrbits !== true;
+export const OPTIMIZED_SUN_RADIUS = OPTIMIZED_ORBIT_FACTOR * renderRadius({id:'sun',type:'star'});
 export const sceneRadius = (aAU) => 3.4 * Math.sqrt(Math.max(0.01,aAU) + 0.22);
+
+/** Schematic by default, radius proportional to catalog radius when enabled. */
+export function displayBodyRadius(body, settings = {}, center = null) {
+  if (!settings?.scaleObjects) return center ? planetBodyRadius(body) : renderRadius(body);
+  const radiusKm = Math.max(0, Number(body?.radiusKm) || 0);
+  if (center) return radiusKm * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  if (optimizedSolarMode(settings)) {
+    if (body?.id === 'sun' || body?.type === 'star') return radiusKm ? OPTIMIZED_SUN_RADIUS : 0;
+    return radiusKm * OPTIMIZED_SUN_RADIUS / SOLAR_REFERENCE_RADIUS_KM;
+  }
+  return radiusKm * SOLAR_UNITS_PER_KM;
+}
+
+/** Orbits remain Keplerian; only the semi-major axis mapping changes. */
+export function displayOrbitRadius(body, parent, settings = {}, center = null) {
+  if (!settings?.scaleOrbits) {
+    const schematic = center ? planetOrbitRadius(body, center) : orbitalRadius(body, parent);
+    return !center && optimizedSolarMode(settings) ? schematic * OPTIMIZED_ORBIT_FACTOR : schematic;
+  }
+  const a = Math.max(0, Number(body?.a) || 0);
+  if (center) return a * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  return body?.type === 'moon' || body?.type === 'satellite'
+    ? a * SOLAR_UNITS_PER_KM : a * SOLAR_UNITS_PER_AU;
+}
 export function renderRadius(body) {
   if (!body) return 0;
   if (body.id === 'sun' || body.type === 'star') return 1.13;

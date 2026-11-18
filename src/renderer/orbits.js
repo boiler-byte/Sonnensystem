@@ -1,6 +1,6 @@
 import { J2000, CATEGORY_COLORS, EARTH_ORBIT_COLOR } from '../data/bodies.js';
 import { DAY, hex } from './math.js';
-import { keplerPosition, planetOrbitRadius } from '../data/orbital-math.js';
+import { keplerPosition, displayOrbitRadius } from '../data/orbital-math.js';
 
 const CLIP_IDENTITY = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 const NEUTRAL_ORBIT = '#8394A8';
@@ -8,10 +8,9 @@ const NEUTRAL_ORBIT = '#8394A8';
 /** True by default for integrations that still pass only {orbits, labels}. */
 export function orbitAppearance(body, settings = {}, alpha = .2, selected = false) {
   const contrast = settings.orbitContrast !== false;
-  const colors = settings.orbitColors !== false;
-  const color = colors
-    ? (body.type === 'planet' && body.id === 'earth' ? EARTH_ORBIT_COLOR : CATEGORY_COLORS[body.type] || NEUTRAL_ORBIT)
-    : NEUTRAL_ORBIT;
+  // Orbit category colors are permanent; contrast changes only stroke and opacity.
+  const color = body.type === 'planet' && body.id === 'earth'
+    ? EARTH_ORBIT_COLOR : CATEGORY_COLORS[body.type] || NEUTRAL_ORBIT;
   return {
     color,
     rgb: hex(color),
@@ -62,16 +61,19 @@ export function orbitRibbonVertices(points, vp, viewportWidth, viewportHeight, w
   return new Float32Array(vertices);
 }
 
-export function drawOrbitLine(renderer, body, center, vp, alpha, selected) {
+export function drawOrbitLine(renderer, body, center, vp, alpha, selected, options = {}) {
   if(!body.periodDays||!body.a) return;
   const gl=renderer.gl,points=[],n=renderer.planetId?100:180,periodMs=Number(body.periodDays)*DAY;
   const parent=renderer.byId.get(body.parentId);
-  const displayRadius=renderer.planetId?planetOrbitRadius(body,parent):null;
+  const centralBody=renderer.planetId?renderer.byId.get(renderer.planetId):null;
+  const displayRadius=options.radius ?? renderer.orbitRadius?.(body,parent) ?? displayOrbitRadius(body,parent,renderer.settings,centralBody);
   for(let i=0;i<=n;i++) {
     const local=keplerPosition(body,parent,Number(body.epoch||J2000)+i/n*periodMs,null,displayRadius);
     points.push(center[0]+local[0],center[1]+local[1],center[2]+local[2]);
   }
-  const appearance=orbitAppearance(body,renderer.settings,alpha,selected);
+  const appearance=orbitAppearance(body,options.settings ?? renderer.settings,alpha,selected);
+  const visibility=options.opacity ?? renderer.sceneOrbitOpacity?.(body) ?? renderer.orbitOpacity?.() ?? 1;
+  if(visibility<=.001)return;
   const raw=new Float32Array(points);
   const vertices=appearance.contrast
     ? orbitRibbonVertices(raw,vp,renderer.width,renderer.height,appearance.widthPx)
@@ -79,6 +81,6 @@ export function drawOrbitLine(renderer, body, center, vp, alpha, selected) {
   if(!vertices.length) return;
   const program=renderer.useLineProgram(appearance.contrast?CLIP_IDENTITY:vp);
   gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.DYNAMIC_DRAW);
-  gl.uniform4f(gl.getUniformLocation(program,'uColor'),...appearance.rgb,appearance.alpha);
+  gl.uniform4f(gl.getUniformLocation(program,'uColor'),...appearance.rgb,appearance.alpha*visibility);
   gl.drawArrays(appearance.contrast?gl.TRIANGLES:gl.LINE_STRIP,0,vertices.length/3);
 }

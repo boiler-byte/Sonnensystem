@@ -54,12 +54,13 @@ test('v25: HTML has accessible two-segment preset, no visible section headings o
   assert.doesNotMatch(layer,/<p[^>]+class="orbit-popover-note"/);
   assert.doesNotMatch(layer,/>\s*UMLAUFBAHNEN\s*</);
   assert.doesNotMatch(layer,/>\s*BESCHRIFTUNG\s*</);
-  assert.match(layer,/class="layer-orbit-section" aria-label="Umlaufbahn-Einstellungen"/);
-  assert.match(layer,/class="layer-label-section" aria-label="Beschriftung-Einstellungen"/);
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn','orbit-colors-btn','toggle-labels'])
+  assert.doesNotMatch(layer,/class="layer-orbit-section"|class="layer-label-section"/);
+  for(const id of ['orbit-visibility-btn','orbit-contrast-btn','toggle-labels'])
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
-  assert.match(layer,/class="orbit-option orbit-suboption" id="orbit-contrast-btn"/);
-  assert.match(layer,/class="orbit-option orbit-suboption active" id="orbit-colors-btn"/);
+  assert.doesNotMatch(layer,/id="orbit-contrast-btn"|id="toggle-labels"/);
+  const scale=html.split('id="scale-popover"')[1].split('id="layer-picker-wrap"')[0];
+  for(const id of ['orbit-contrast-btn','toggle-labels'])
+    assert.match(scale,new RegExp(`id="${id}"`));
   assert.match(layer,/id="layer-note">Standard: Sterne und Planeten/);
 });
 

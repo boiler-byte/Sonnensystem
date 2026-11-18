@@ -18,7 +18,7 @@ void main() { vP=aPosition; vN=aNormal; vUV=aUV; gl_Position=uMVP*vec4(aPosition
 export const BODY_FS = `
 precision highp float;
 varying vec3 vP; varying vec3 vN; varying vec2 vUV;
-uniform vec3 uBase; uniform vec3 uLight; uniform float uStyle; uniform float uSeed; uniform float uTime;
+uniform vec3 uBase; uniform vec3 uLight; uniform float uStyle; uniform float uSeed; uniform float uTime; uniform float uOpacity;
 uniform float uOptimizedLighting;
 uniform sampler2D uDiffuse; uniform float uHasTexture;
 float hash(vec3 p){p=fract(p*.1031);p+=dot(p,p.yxz+33.33);return fract((p.x+p.y)*p.z);}
@@ -65,12 +65,12 @@ void main() {
  if (uStyle<.5) light=1.0; // The Sun stays self-luminous in both modes.
  float rim=pow(1.0-abs(dot(n,normalize(vec3(.18,.20,1.0)))),3.0);
  col=col*light + (uStyle<.5 ? vec3(.12,.035,.0) : uBase*.05*rim);
- gl_FragColor=vec4(pow(max(col,0.0),vec3(.92)),1.0);
+ gl_FragColor=vec4(pow(max(col,0.0),vec3(.92)),clamp(uOpacity,0.0,1.0));
 }`;
 export const LINE_VS=`attribute vec3 aPosition;uniform mat4 uVP;void main(){gl_Position=uVP*vec4(aPosition,1.0);}`;
 export const LINE_FS=`precision mediump float; uniform vec4 uColor;void main(){gl_FragColor=uColor;}`;
 export const STARS_VS=`attribute vec3 aPosition;attribute float aSize;uniform mat4 uVP;uniform float uPixelRatio;varying float vAlpha;void main(){gl_Position=uVP*vec4(aPosition,1.0);gl_PointSize=aSize*uPixelRatio;vAlpha=clamp(aSize/2.8,.25,1.0);}`;
 export const STARS_FS=`precision mediump float;varying float vAlpha;void main(){float r=length(gl_PointCoord-.5);float a=1.0-smoothstep(.14,.48,r);gl_FragColor=vec4(.65,.81,1.0,a*.77*vAlpha);}`;
 export const RING_VS=`attribute vec3 aPosition;uniform mat4 uMVP;varying float vR;void main(){vR=length(aPosition.xz);gl_Position=uMVP*vec4(aPosition,1.0);}`;
-export const RING_FS=`precision mediump float;varying float vR;void main(){float bands=sin(vR*135.0)*.13+sin(vR*41.0)*.11;float gap=1.0-smoothstep(.82,.84,vR)+smoothstep(.88,.90,vR);float fade=smoothstep(.70,.78,vR)*(1.0-smoothstep(1.14,1.20,vR));float a=fade*(.41+bands)*gap;gl_FragColor=vec4(.78,.69,.52,a);}`;
+export const RING_FS=`precision mediump float;uniform float uOpacity;varying float vR;void main(){float bands=sin(vR*135.0)*.13+sin(vR*41.0)*.11;float gap=1.0-smoothstep(.82,.84,vR)+smoothstep(.88,.90,vR);float fade=smoothstep(.70,.78,vR)*(1.0-smoothstep(1.14,1.20,vR));float a=fade*(.41+bands)*gap;gl_FragColor=vec4(.78,.69,.52,a*clamp(uOpacity,0.0,1.0));}`;
 export const STYLES = {sun:0,rock:1,mars:1,earth:2,jupiter:3,saturn:3.2,venus:4,uranus:5,neptune:5,moon:6,ice:6,pluto:7,io:7};

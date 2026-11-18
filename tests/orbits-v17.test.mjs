@@ -40,7 +40,7 @@ test('v17: all category colors and the Earth-orbit exception are exact',()=>{
   assert.notEqual(orbitAppearance({type:'planet',id:'mars'},{}).color,EARTH_ORBIT_COLOR);
 });
 
-test('v17: colors and contrast are independent toggles; default is visible thick stroke',()=>{
+test('v43: category colors are permanent; contrast still controls stroke width and opacity',()=>{
   const earth={type:'planet',id:'earth'};
   const defaults=orbitAppearance(earth,{},.2,false);
   assert.equal(defaults.color,EARTH_ORBIT_COLOR);
@@ -50,10 +50,10 @@ test('v17: colors and contrast are independent toggles; default is visible thick
   assert.equal(noContrast.color,EARTH_ORBIT_COLOR);
   assert.equal(noContrast.widthPx,1);
   assert.equal(noContrast.alpha,.2);
-  const noColors=orbitAppearance(earth,{orbitColors:false},.2,false);
-  assert.notEqual(noColors.color,EARTH_ORBIT_COLOR);
-  assert.equal(noColors.widthPx,defaults.widthPx);
-  assert.equal(orbitAppearance({type:'asteroid',id:'ceres'},{orbitColors:false}).color,noColors.color);
+  const legacy=orbitAppearance(earth,{orbitColors:false},.2,false);
+  assert.equal(legacy.color,EARTH_ORBIT_COLOR,'obsolete orbitColors flag cannot disable category palette');
+  assert.equal(legacy.widthPx,defaults.widthPx);
+  assert.equal(orbitAppearance({type:'asteroid',id:'ceres'},{orbitColors:false}).color,CATEGORY_COLORS.asteroid);
   const selected=orbitAppearance(earth,{},.7,true);
   assert.ok(selected.widthPx>defaults.widthPx);
   assert.ok(selected.alpha>.7);
@@ -103,21 +103,21 @@ test('v17: orbital draw switches GL_TRIANGLES/GL_LINE_STRIP without touching obj
   assert.equal(captured.find(x=>x[0]==='vp')[1],vp);
 });
 
-test('v19: orbit switches are inside the layer popover, without their own dropdown',async()=>{
+test('v42: orbit switches are inside the scale popover, without their own dropdown',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),mobile=await read('src/ui/bottom-sheet.js');
   const css=await read('css/styles.css');
-  const start=html.indexOf('id="layer-popover"');
-  const end=html.indexOf('id="time-panel"',start);
-  const layer=html.slice(start,end);
-  assert.match(layer,/class="layer-orbit-section"/);
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn','orbit-colors-btn']) {
+  const start=html.indexOf('id="scale-popover"');
+  const end=html.indexOf('id="layer-picker-wrap"',start);
+  const scale=html.slice(start,end);
+  assert.match(scale,/class="scale-secondary-options" role="group" aria-label="Bahndarstellung"/);
+  for(const id of ['orbit-visibility-btn','orbit-contrast-btn']) {
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
-    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
+    assert.match(scale,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
     assert.match(app,new RegExp(`\\$\\(id\\)\\.addEventListener\\('click'`));
   }
   assert.doesNotMatch(html,/id="orbit-popover"|id="toggle-orbits"|id="orbit-picker-wrap"/);
   assert.doesNotMatch(app,/setOrbitPopover|toggle-orbits|orbit-popover/);
   assert.doesNotMatch(mobile,/orbit-popover|toggle-orbits/);
-  assert.match(css,/\.layer-orbit-section\{/);
+  assert.match(css,/\.scale-secondary-options\{/);
   assert.match(html,/Standard: Sterne und Planeten/);
 });

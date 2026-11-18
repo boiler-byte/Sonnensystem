@@ -3,6 +3,7 @@ import { loadCatalog, mergeLiveBodies } from './data/catalog.js';
 import { clean, formatAsteroid } from './data/normalization.js';
 import { availableLayerTypes, createViewSettings, ensureAvailableSelection, layerEnabled, layerPreset, layerSummary, updateLayerSelection } from './data/layers.js';
 import { SolarRenderer } from './renderer/index.js';
+import { createARMode } from './renderer/ar-mode.js';
 import { fetchJSON } from './services/api.js';
 import { fetchSolarBodies } from './services/solar-api.js';
 import { fetchSatellites } from './services/celestrak-api.js';
@@ -12,7 +13,7 @@ import { renderCatalog } from './ui/object-list.js';
 import { detailNavigation, renderDetail, setDetailTab } from './ui/object-details.js';
 import { syncSceneMode } from './ui/scene-mode.js';
 import { syncControls, syncSpeedMode, speedAtStep, SPEED_MODES } from './ui/timeline.js';
-import { renderStatus, changeStatus, notify } from './ui/status.js';
+import { renderStatus, changeStatus, notify, notifyToggle } from './ui/status.js';
 import { initMobileSheets } from './ui/bottom-sheet.js';
 
 const $ = id => document.getElementById(id);
@@ -23,7 +24,7 @@ const S = {
   viewSettings, settings:viewSettings.solar,
   status:{ catalog:['loading','Lädt ...'],solar:['loading','Verbinde'],sbdb:['idle','Auf Abruf'],celestrak:['loading','Verbinde'],horizons:['idle','Auf Abruf'] }
 };
-let renderer=null, mobileSheets=null, lastTimeReadoutAt=0;
+let renderer=null, mobileSheets=null, arMode=null, lastTimeReadoutAt=0;
 const byId=id=>S.bodies.find(x=>x.id===id);
 const updateCatalog=()=>{
   const planetId=renderer?.planetId||null;
@@ -43,6 +44,7 @@ const activeView = () => renderer?.planetId ? 'planet' : 'solar';
 const updateMode=()=>{
   const view=activeView();
   S.settings=S.viewSettings[view]; // Distinct layer, orbit and label preferences per scene.
+  if(renderer)renderer.settings=S.settings;
   S.settings.layers=ensureAvailableSelection(S.settings.layers,availableLayerTypes(S.bodies,view,renderer?.planetId),view);
   syncSceneMode(S,renderer);
   if(syncSpeedMode(S,view)) {
@@ -50,7 +52,14 @@ const updateMode=()=>{
     updateTime();
   }
   // Layer visibility belongs to the renderer; keep catalog selections intact.
-  syncLightingControl();syncFourMoonsControl();syncLayers();syncOrbitControls();syncLabelControl();updateCatalog();updateDetail();
+  syncLightingControl();syncFourMoonsControl();syncLayers();syncOrbitControls();syncLabelControl();syncScaleControls();syncRowControl();
+  if(renderer?.transition?.kind==='view' && !S.settings.row)
+    renderer.setCameraAngles?.(.63,renderer.planetId?.84:.99);
+  if(renderer?.settings?.row && !renderer.focusedBodyId && !renderer.followEnabled){
+    renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();
+    renderer.setCameraAngles?.(0,1.5);
+  }
+  renderer?.calcPositions(S.time);updateCatalog();updateDetail();
 };
 const updateTime=()=>syncControls(S);
 function syncLayers(){
@@ -82,12 +91,81 @@ function setLayerPopover(open){
   $('layer-popover').hidden=!open;
   $('layer-btn').setAttribute('aria-expanded',String(open));
 }
+function setScalePopover(open){
+  $('scale-popover').hidden=!open;
+  $('scale-btn').setAttribute('aria-expanded',String(open));
+}
+function syncScaleControls(){
+  for(const [id,key,label] of [['scale-objects-btn','scaleObjects','Objektgrößen'],['scale-orbits-btn','scaleOrbits','Bahnabstände']]){
+    const button=$(id),enabled=S.settings[key]===true;
+    button.classList.toggle('active',enabled);
+    button.setAttribute('aria-pressed',String(enabled));
+    button.title=`${label}: ${enabled?'maßstabsgetreu':'schematisch'}`;
+  }
+  const on=Boolean(S.settings.scaleObjects||S.settings.scaleOrbits);
+  $('scale-btn').classList.toggle('active',on);
+  const mode=S.settings.scaleObjects && !S.settings.scaleOrbits && !renderer?.planetId ? 'Optimierte Größenverhältnisse – ' : '';
+  $('scale-btn').title=`Maßstab: ${mode}Objekt ${S.settings.scaleObjects?'maßstabsgetreu':'schematisch'}, Bahn ${S.settings.scaleOrbits?'maßstabsgetreu':'schematisch'}`;
+}
+function updateScale(setting){
+  renderer?.beginTransition?.('scale');
+  const next=!S.settings[setting];
+  // Both scene modes share the same independent scale toggles.
+  S.viewSettings.solar[setting]=next;
+  S.viewSettings.planet[setting]=next;
+  syncScaleControls();
+  const optimized=S.settings.scaleObjects && !S.settings.scaleOrbits && !renderer?.planetId;
+  notifyToggle(optimized ? 'Maßstab: Optimierte Größenverhältnisse'
+    : `${setting==='scaleObjects'?'Objekt':'Bahn'}: ${next?'Maßstabsgetreu':'Schematisch'}`);
+  if(renderer){
+    renderer._labelState=null;
+    renderer.calcPositions(S.time);
+    if(!renderer.focusedBodyId && !renderer.cameraManuallyMoved){
+      renderer.camera.desiredTarget=S.settings.row?renderer.rowFrame().target:[0,0,0];
+      renderer.camera.desiredDist=S.settings.row?renderer.rowDistance()
+        : renderer.planetId?renderer.planetFrameDistance()
+        : (renderer.solarOverviewDistance?.() ?? (S.settings.scaleOrbits?160:optimized?188:47));
+    }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
+    if(renderer.followEnabled)renderer.followSelectedBody();
+  }
+}
+function syncRowControl(){
+  const enabled=S.settings.row===true,button=$('orbit-row-btn');
+  button.classList.toggle('active',enabled);
+  button.setAttribute('aria-pressed',String(enabled));
+  button.title=`Reihe: ${enabled?'An – nach Größe sortiert':'Aus – Umlaufbahnen'}`;
+  $('scale-btn').classList.toggle('row-active',enabled);
+}
+function updateRow(){
+  renderer?.beginTransition?.('row');
+  const enabled=!S.settings.row;
+  S.settings.row=enabled;
+  syncRowControl();
+  notifyToggle(`Reihe: ${enabled?'An (groß nach klein)':'Aus (Umlaufbahnen)'}`);
+  if(!renderer)return;
+  renderer._labelState=null;
+  if(enabled){
+    renderer._rowPreviousAngles=[renderer.camera.theta,renderer.camera.phi];
+    renderer.setCameraAngles?.(0,1.5);
+  }else{
+    const previous=renderer._rowPreviousAngles||[.63,renderer.planetId?.84:.99];
+    renderer.setCameraAngles?.(...previous);
+  }
+  renderer.calcPositions(S.time);
+  if(!renderer.followEnabled && !renderer.focusedBodyId){
+    renderer.camera.desiredTarget=enabled?renderer.rowFrame().target:[0,0,0];
+    renderer.camera.desiredDist=enabled?renderer.rowDistance()
+      : renderer.planetId?renderer.planetFrameDistance():renderer.solarOverviewDistance();
+  }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
+  if(renderer.followEnabled)renderer.followSelectedBody();
+}
 function syncOrbitControls(){
-  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast'],['orbit-colors-btn','orbitColors']]){
+  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
     const enabled=S.settings[setting]!==false,button=$(id);
     button.setAttribute('aria-pressed',String(enabled));
     button.classList.toggle('active',enabled);
-    button.querySelector('.orbit-toggle-indicator').textContent=enabled?'An':'Aus';
+    const label={orbits:'Umlaufbahn',orbitContrast:'Kontrast'}[setting];
+    button.title=`${label}: ${enabled?'An':'Aus'}`;
   }
 }
 
@@ -95,7 +173,7 @@ function syncLabelControl(){
   const enabled=S.settings.labels!==false,button=$('toggle-labels');
   button.classList.toggle('active',enabled);
   button.setAttribute('aria-pressed',String(enabled));
-  button.querySelector('.orbit-toggle-indicator').textContent=enabled?'An':'Aus';
+  button.title=`Beschriftung: ${enabled?'An':'Aus'}`;
 }
 
 function syncLightingControl(){
@@ -103,7 +181,6 @@ function syncLightingControl(){
   const realistic=S.settings.lighting==='realistic',button=$('toggle-lighting');
   button.classList.toggle('active',realistic);
   button.setAttribute('aria-pressed',String(realistic));
-  button.querySelector('.orbit-toggle-indicator').textContent=realistic?'An':'Aus';
   button.title=`Beleuchtung: ${realistic?'An (Realistisch)':'Aus (Optimiert)'} (zum Wechseln klicken)`;
 }
 
@@ -111,19 +188,22 @@ function syncFourMoonsControl(){
   const enabled=S.settings.fourMoons===true,button=$('toggle-four-moons');
   button.classList.toggle('active',enabled);
   button.setAttribute('aria-pressed',String(enabled));
-  button.querySelector('.orbit-toggle-indicator').textContent=enabled?'An':'Aus';
-  button.title=enabled?'Nur die vier größten Monde je Planet anzeigen':'Alle Monde je Planet anzeigen';
+  button.title=enabled?'4 Monde: An (nur die vier größten je Planet)':'4 Monde: Aus (alle Monde je Planet)';
 }
 
 function changeLayers(next){
   if(next===S.settings.layers)return;
+  if(S.settings.row)renderer?.beginTransition?.('row');
   S.settings.layers=next; // S.settings belongs only to the currently active scene.
+  if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
   syncLayers();updateDetail(); // Catalog entries and selection remain layer-independent.
 }
 
 function mergeBodies(list){
+  if(S.settings.row)renderer?.beginTransition?.('row');
   S.bodies=mergeLiveBodies(S.bodies,list);
   renderer?.setBodies(S.bodies);
+  if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
   syncLayers();updateCatalog();updateDetail();
 }
 
@@ -214,9 +294,18 @@ function setSpeedPopover(open) {
 function initControls(){
   $('layer-btn').addEventListener('click',()=>{
     const opening=$('layer-popover').hidden;
-    if(opening)setSpeedPopover(false);
+    if(opening){setSpeedPopover(false);setScalePopover(false);}
     setLayerPopover(opening);
   });
+  $('scale-btn').addEventListener('click',()=>{
+    const opening=$('scale-popover').hidden;
+    if(opening){setLayerPopover(false);setSpeedPopover(false);}
+    setScalePopover(opening);
+  });
+  for(const [id,setting] of [['scale-objects-btn','scaleObjects'],['scale-orbits-btn','scaleOrbits']])
+    $(id).addEventListener('click',()=>updateScale(setting));
+  syncScaleControls();
+  $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();
   for(const btn of document.querySelectorAll('[data-layer-preset]'))
     btn.addEventListener('click',()=>changeLayers(layerPreset(btn.dataset.layerPreset,activeView())));
   for(const input of document.querySelectorAll('[data-layer-type]'))
@@ -243,23 +332,28 @@ function initControls(){
     });
   }
   setDetailTab('wissen');
-  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast'],['orbit-colors-btn','orbitColors']]){
+  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
     $(id).addEventListener('click',()=>{
       S.settings[setting]=!S.settings[setting];
       syncOrbitControls();
+      notifyToggle(`${setting==='orbits'?'Umlaufbahn':'Kontrast'}: ${S.settings[setting]?'An':'Aus'}`);
     });
   }
   syncOrbitControls();
-  $('toggle-labels').addEventListener('click',()=>{S.settings.labels=!S.settings.labels;syncLabelControl();});
+  $('toggle-labels').addEventListener('click',()=>{S.settings.labels=!S.settings.labels;syncLabelControl();notifyToggle(`Beschriftung: ${S.settings.labels?'An':'Aus'}`);});
   syncLabelControl();
   $('toggle-lighting').addEventListener('click',()=>{
     S.settings.lighting=S.settings.lighting==='realistic'?'optimized':'realistic';
     syncLightingControl();
+    notifyToggle(`Beleuchtung: ${S.settings.lighting==='realistic'?'An (Realistisch)':'Aus (Optimiert)'}`);
   });
   syncLightingControl();
   $('toggle-four-moons').addEventListener('click',()=>{
+    if(S.settings.row)renderer?.beginTransition?.('row');
     S.settings.fourMoons=!S.settings.fourMoons;
+    if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
     syncFourMoonsControl();
+    notifyToggle(`4 Monde: ${S.settings.fourMoons?'An':'Aus'}`);
   });
   syncFourMoonsControl();
   $('center-object-btn').addEventListener('click',()=>{
@@ -289,7 +383,7 @@ function initControls(){
   $('play-btn').addEventListener('click',()=>{S.playing=!S.playing;updateTime();});
   $('speed-btn').addEventListener('click',()=>{
     const opening=$('speed-popover').hidden;
-    if(opening)setLayerPopover(false); // One open panel at a time.
+    if(opening){setLayerPopover(false);setScalePopover(false);} // One open panel at a time.
     setSpeedPopover(opening);
   });
   $('speed').addEventListener('input',e=>{
@@ -301,13 +395,15 @@ function initControls(){
   document.addEventListener('pointerdown',e=>{
     if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
     if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);
+    if(!$('scale-popover').hidden && !$('scale-picker-wrap').contains(e.target))setScalePopover(false);
   });
   $('horizons-btn').addEventListener('click',alignHorizons);
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
       if(!$('speed-popover').hidden){setSpeedPopover(false);$('speed-btn').focus({preventScroll:true});return;}
       if(!$('layer-popover').hidden){setLayerPopover(false);$('layer-btn').focus({preventScroll:true});return;}
-      setLayerPopover(false);mobileSheets?.close();
+      if(!$('scale-popover').hidden){setScalePopover(false);$('scale-btn').focus({preventScroll:true});return;}
+      setLayerPopover(false);setScalePopover(false);mobileSheets?.close();
     }
     if(e.key==='/'&&!(e.target instanceof HTMLInputElement)){
       e.preventDefault();mobileSheets?.open('catalog');requestAnimationFrame(()=>$('search').focus());
@@ -356,6 +452,7 @@ async function init(){
   }
   try{
     renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail()});
+    arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle});
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);
   }catch(e){
     console.error(e);$('canvas-error').hidden=false;

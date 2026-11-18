@@ -13,14 +13,15 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const visible=b=>layerEnabled(settings.layers,b.type);
   const selected=renderer.byId.get(selectedId);
-  if(settings.orbits){
+  if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
     // Show every available heliocentric orbit for enabled layers, not just a
     // selection/subset. Planet-centered trajectories belong in planet view.
+    const animatedCenter=renderer.positions.get('sun')||[0,0,0];
     for(const body of solarOrbitBodies(renderer.bodies,settings.layers)){
       const selectedOrbit=body.id===selectedId;
       const opacity=selectedOrbit?.70:body.type==='planet'?.20:.16;
-      renderer.orbitLine(body,[0,0,0],vp,opacity,selectedOrbit);
+      renderer.orbitLine(body,animatedCenter,vp,opacity,selectedOrbit);
     }
     gl.depthMask(true);
   }
@@ -30,7 +31,7 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
   });
   for(const b of renderer.rendered){const p=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(p,vp);renderer.drawSphere(b,p,vp);}
   renderer.drawLabels(vp);
-  const sun=projected([0,0,0],vp,renderer.width,renderer.height);
+  const sun=projected(renderer.positions.get('sun')||[0,0,0],vp,renderer.width,renderer.height);
   if(!layerEnabled(settings.layers,'star'))renderer.glow.style.opacity='0';
-  else if(sun){renderer.glow.style.left=sun.x+'px';renderer.glow.style.top=sun.y+'px';renderer.glow.style.opacity=clamp(.98-(renderer.camera.dist-15)/90,.25,.9).toFixed(2);}
+  else if(sun){renderer.glow.style.left=sun.x+'px';renderer.glow.style.top=sun.y+'px';renderer.glow.style.opacity=(clamp(.98-(renderer.camera.dist-15)/90,.25,.9)*(renderer.sceneBodyOpacity?.(renderer.byId.get('sun'))??1)).toFixed(2);}
 }

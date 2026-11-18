@@ -112,7 +112,7 @@ test('v23: application binds the scene-specific settings to render, catalog and 
   assert.match(app,/check\.disabled=!available\.has\(type\)/);
   assert.match(app,/S\.settings\.layers=next/);
   assert.match(app,/renderer\.draw\(S\.time,S\.selected,S\.settings\)/);
-  assert.match(app,/syncLayers\(\);syncOrbitControls\(\);syncLabelControl\(\);updateCatalog\(\);updateDetail\(\)/);
+  assert.match(app,/syncLayers\(\);syncOrbitControls\(\);syncLabelControl\(\);syncScaleControls\(\);syncRowControl\(\)/);
   assert.match(css,/\.layer-option\[hidden\]\{display:none!important\}/);
   for(const type of ['planet','star'])
     assert.match(html,new RegExp(`data-layer-type="${type}" checked`));

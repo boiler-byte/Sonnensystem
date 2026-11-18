@@ -63,7 +63,7 @@ test('v18: time dropdown is a single collapsed button with focusable popup contr
   assert.match(css,/\.control-panel \.time-panel \.time-trigger\{/);
   assert.match(css,/\.control-panel \.time-panel \.speed-popover\{/);
   assert.match(css,/transform:translate\(-50%,-50%\) rotate\(-90deg\)/);
-  assert.match(app,/if\(opening\)setLayerPopover\(false\)/);
+  assert.match(app,/if\(opening\)\{setLayerPopover\(false\);setScalePopover\(false\);\}/);
   assert.match(app,/if\(!\$\('speed-popover'\)\.hidden\)\{setSpeedPopover\(false\);\$\('speed-btn'\)\.focus/);
   assert.equal((html.match(/id="speed-btn"/g)||[]).length,1);
   assert.equal((html.match(/id="today-btn"/g)||[]).length,1);

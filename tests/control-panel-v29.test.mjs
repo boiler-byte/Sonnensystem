@@ -23,14 +23,14 @@ function mockRenderer(){
   return r;
 }
 
-test('v29: new defaults are optimized lighting in both scenes, four moons only in solar overview',()=>{
+test('v42: realistic lighting defaults to planet view, and four moons to solar overview',()=>{
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   assert.equal(solar.lighting,'optimized');
-  assert.equal(planet.lighting,'optimized');
+  assert.equal(planet.lighting,'realistic');
   assert.equal(solar.fourMoons,true);
   assert.equal(planet.fourMoons,false);
   solar.lighting='realistic';solar.fourMoons=false;
-  assert.equal(planet.lighting,'optimized','scene preferences remain independent');
+  assert.equal(planet.lighting,'realistic','scene preferences remain independent');
   assert.equal(planet.fourMoons,false,'scene preferences remain independent');
   assert.deepEqual([...solar.layers.types],['star','planet'],'solar layer defaults remain unchanged');
   assert.deepEqual([...planet.layers.types],['planet','moon','satellite'],'planet layer defaults remain unchanged');
@@ -141,29 +141,28 @@ test('v29: new toggles follow labels, expose states, and synchronize for each vi
   assert.ok(start>=0&&end>start);
   const buttons={};
   for(const id of ['toggle-lighting','toggle-four-moons']){
-    buttons[id]={attrs:{},indicator:{textContent:''},classes:new Set(),title:'',
+    buttons[id]={attrs:{},classes:new Set(),title:'',
       setAttribute(key,value){this.attrs[key]=value;},
-      classList:{toggle(name,enabled){if(enabled)buttons[id].classes.add(name);else buttons[id].classes.delete(name);}},
-      querySelector(){return this.indicator;}};
+      classList:{toggle(name,enabled){if(enabled)buttons[id].classes.add(name);else buttons[id].classes.delete(name);}}};
   }
   const S={settings:createViewSettings('solar')};
   const ctx=vm.createContext({S,$:id=>buttons[id]});
   vm.runInContext(app.slice(start,end)+'\nthis.syncControlsV29=()=>{syncLightingControl();syncFourMoonsControl()};',ctx);
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Aus');
+  assert.match(buttons['toggle-lighting'].title,/Aus \(Optimiert\)/);
   assert.equal(buttons['toggle-lighting'].attrs['aria-pressed'],'false');
   assert.equal(buttons['toggle-lighting'].classes.has('active'),false);
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'true');
   S.settings.lighting='realistic';S.settings.fourMoons=false;
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'An');
+  assert.match(buttons['toggle-lighting'].title,/An \(Realistisch\)/);
   assert.equal(buttons['toggle-lighting'].attrs['aria-pressed'],'true');
   assert.equal(buttons['toggle-lighting'].classes.has('active'),true);
-  assert.equal(buttons['toggle-four-moons'].indicator.textContent,'Aus');
+  assert.match(buttons['toggle-four-moons'].title,/4 Monde: Aus/);
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'false');
   S.settings=createViewSettings('planet');
   ctx.syncControlsV29();
-  assert.equal(buttons['toggle-lighting'].indicator.textContent,'Aus');
+  assert.match(buttons['toggle-lighting'].title,/An \(Realistisch\)/);
   assert.equal(buttons['toggle-four-moons'].attrs['aria-pressed'],'false');
   assert.match(app,/syncLightingControl\(\);syncFourMoonsControl\(\);syncLayers\(\);/,
     'Scene switch refreshes both new controls');

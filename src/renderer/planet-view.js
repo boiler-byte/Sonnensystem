@@ -1,36 +1,47 @@
-import { planetOrbitRadius, planetBodyRadius } from '../data/orbital-math.js';
-import { CAMERA_FOV, clamp } from './math.js';
+import { displayOrbitRadius } from '../data/orbital-math.js';
+import { CAMERA_FOV, clamp, projected } from './math.js';
 
 /** Isolated planet scene: planet and the direct children present in catalog data. */
 export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const selected=renderer.byId.get(selectedId);
    const planet=renderer.byId.get(renderer.planetId),children=renderer.planetChildren().filter(b=>renderer.shouldDraw(b));
-   if(settings.orbits){
+   if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
     // All bodies remain visible. Limit the number of orbit strokes for dense live catalogs.
     const moons=children.filter(b=>b.type==='moon').sort((a,b)=>b.radiusKm-a.radiusKm);
     const satellites=children.filter(b=>b.type==='satellite');
     const otherChildren=children.filter(b=>b.type!=='moon'&&b.type!=='satellite');
     const orbitIds=new Set([...moons.slice(0,80),...satellites.slice(0,35),...otherChildren,selected].filter(Boolean).map(b=>b.id));
-    for(const b of children)if(orbitIds.has(b.id))renderer.orbitLine(b,[0,0,0],vp,b.id===selectedId?.70:.22,b.id===selectedId);
+    const animatedCenter=renderer.positions.get(renderer.planetId)||[0,0,0];
+    for(const b of children)if(orbitIds.has(b.id))renderer.orbitLine(b,animatedCenter,vp,b.id===selectedId?.70:.22,b.id===selectedId);
     gl.depthMask(true);
    }
    renderer.rendered=[planet,...children].filter(b=>b && renderer.shouldDraw(b) && renderer.positions.has(b.id));
    for(const b of renderer.rendered){const pos=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(pos,vp);renderer.drawSphere(b,pos,vp);}
    renderer.drawLabels(vp);
-   renderer.glow.style.opacity='0';
+   // The Sun's halo belongs to the outgoing solar scene: let it fade
+   // along with the solar sphere instead of disappearing on the first frame.
+   const previousSun=renderer.transition?.kind==='view'
+     ? renderer.transition.fromVisualBodies.get('sun') : null;
+   const leavingSun=previousSun && renderer.departingBodyState(previousSun);
+   const sun=leavingSun && projected(leavingSun.position,vp,renderer.width,renderer.height);
+   if(sun?.visible && leavingSun.opacity>.001){
+     renderer.glow.style.left=sun.x+'px';renderer.glow.style.top=sun.y+'px';
+     renderer.glow.style.opacity=(clamp(.98-(renderer.camera.dist-15)/90,.25,.9)*leavingSun.opacity).toFixed(2);
+   }else renderer.glow.style.opacity='0';
 }
 
 export function planetChildrenFor(bodies,id) {
   return bodies.filter(b=>b.parentId===id && b.type!=='probe');
 }
 
-export function planetFrameDistance(width,height,planet,children) {
+export function planetFrameDistance(width,height,planet,children,settings={}) {
   if(!planet)return 12;
-  const outer=children.reduce((r,b)=>Math.max(r,planetOrbitRadius(b,planet)*(1+clamp(Number(b.e)||0,0,.8))),0);
+  const outer=children.reduce((r,b)=>Math.max(r,displayOrbitRadius(b,planet,settings,planet)*(1+clamp(Number(b.e)||0,0,.8))),0);
   if(!outer)return 10.5;
   const halfVertical=CAMERA_FOV/2;
   const halfHorizontal=Math.atan(Math.tan(halfVertical)*Math.max(.2,width)/Math.max(1,height));
-  return clamp(outer/Math.tan(Math.min(halfVertical,halfHorizontal))*1.24,12,95);
+  const maximum=settings.scaleOrbits ? 30000 : 95;
+  return clamp(outer/Math.tan(Math.min(halfVertical,halfHorizontal))*1.24,12,maximum);
 }

@@ -3,7 +3,7 @@ import { CAMERA_FOV, clamp, lerp, matMul, perspective, lookAt } from './math.js'
 /**
  * Pan across the orbital ground plane (XZ), never along the tilted screen plane.
  * Right and forward depend on camera heading (theta), NOT inclination (phi).
- * Dragging moves the scene with the pointer; arrow keys move the viewpoint.
+ * Left-mouse / one-finger dragging moves the scene; arrow keys move the viewpoint.
  * Preserve the target height so panning cannot climb or sink at low angles.
  * Manual panning cancels target easing; focus()/reset() remain animated.
  */
@@ -32,7 +32,7 @@ export function followMotionTooFast(previous, current, distance, viewportHeight,
 }
 
 /** Smooth focus changes; manual pan remains immediate. */
-export function cameraView(camera, width, height, focusOffsetY=0) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
+export function cameraView(camera, width, height, focusOffsetY=0, far=350) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
   for(let i=0;i<3;i++)cam.target[i]=lerp(cam.target[i],cam.desiredTarget[i],.075);
   const r=cam.dist,phi=cam.phi,th=cam.theta;
   const eye=[cam.target[0]+r*Math.sin(phi)*Math.sin(th),cam.target[1]+r*Math.cos(phi),cam.target[2]+r*Math.sin(phi)*Math.cos(th)];
@@ -40,8 +40,14 @@ export function cameraView(camera, width, height, focusOffsetY=0) {const cam=cam
   // covers the lower viewport. All scene objects, labels and picking use this VP.
   // With focusOffsetY=.56, the camera target projects to 22% of canvas height:
   // the center of the 44% of the canvas left visible above the sheet.
-  const projection=perspective(CAMERA_FOV,width/height,.1,350);
+  // Very small bodies need a closer near plane when the physical-size toggle is on.
+  const near=Math.min(.1,Math.max(1e-7,cam.dist*.12));
+  const projection=perspective(CAMERA_FOV,width/height,near,far);
   projection[9]=-clamp(focusOffsetY,0,1);
-  const vp=matMul(projection,lookAt(eye,cam.target));
+  // Device-look rotates the view in place. Ordinary orbit/pan/zoom still move
+  // the eye as before; the sensor never moves it around the selected body.
+  const gaze=cam.arView?.forward
+    ? eye.map((v,i)=>v+cam.arView.forward[i]) : cam.target;
+  const vp=matMul(projection,lookAt(eye,gaze,cam.arView?.up||[0,1,0]));
   return {vp,eye};
  }

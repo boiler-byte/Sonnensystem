@@ -46,7 +46,7 @@ test('v38: global toggle follows each selected body without switching off',()=>{
   assert.equal(r.followedBodyId,'mars');
   assert.deepEqual(r.camera.desiredTarget,[4,0,0]);
   assert.equal(r.focusedBodyId,'mars');
-  r.positions.set('mars',[4.2,0,0]);r.updateFollowTarget(200);
+  r.positions.set('mars',[4.2,0,0]);r.updateFollowTarget(r.followLastAtMs+500);
   assert.deepEqual(r.camera.desiredTarget,[4.2,0,0]);
   r.setSelected('earth',{focus:true});
   assert.equal(r.followEnabled,true);
@@ -149,7 +149,7 @@ test('v38: DOM shows a global pressed state regardless of selected body',()=>{
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });
 
-test('v38: mouse wheel, drag rotation and touch pinch keep following; two-finger pan cancels it',()=>{
+test('v38: mouse wheel, right drag and two-finger look keep following; left drag cancels it',()=>{
   const oldDocument=globalThis.document,oldWindow=globalThis.window;
   const {renderer:r}=makeRenderer(),handlers={};
   const canvas={addEventListener(name,fn){handlers[name]=fn;},setPointerCapture(){},getBoundingClientRect(){return {left:0,top:0}}};
@@ -162,10 +162,10 @@ test('v38: mouse wheel, drag rotation and touch pinch keep following; two-finger
     r.follow('earth',0);
     handlers.wheel({deltaY:150,preventDefault(){}});
     assert.equal(r.followEnabled,true,'mouse wheel zoom');
-    handlers.pointerdown(pointer(1,100,100));
-    handlers.pointermove(pointer(1,120,108));
-    assert.equal(r.followEnabled,true,'drag rotation');
-    handlers.pointerup(pointer(1,120,108));
+    handlers.pointerdown(pointer(1,100,100,'mouse',2));
+    handlers.pointermove(pointer(1,120,108,'mouse',2));
+    assert.equal(r.followEnabled,true,'right-drag look');
+    handlers.pointerup(pointer(1,120,108,'mouse',2));
     handlers.pointerdown(pointer(10,100,100,'touch'));
     handlers.pointerdown(pointer(11,200,100,'touch'));
     handlers.pointermove(pointer(11,220,100,'touch'));
@@ -176,7 +176,12 @@ test('v38: mouse wheel, drag rotation and touch pinch keep following; two-finger
     handlers.pointerdown(pointer(21,200,100,'touch'));
     handlers.pointermove(pointer(20,112,100,'touch'));
     handlers.pointermove(pointer(21,212,100,'touch'));
-    assert.equal(r.followEnabled,false,'deliberate two-finger pan');
+    assert.equal(r.followEnabled,true,'two-finger look does not cancel follow');
+    handlers.pointerup(pointer(20,112,100,'touch'));
+    handlers.pointerup(pointer(21,212,100,'touch'));
+    handlers.pointerdown(pointer(30,100,100,'touch'));
+    handlers.pointermove(pointer(30,125,116,'touch'));
+    assert.equal(r.followEnabled,false,'one-finger pan cancels follow');
   }finally{
     if(oldDocument===undefined)delete globalThis.document;else globalThis.document=oldDocument;
     if(oldWindow===undefined)delete globalThis.window;else globalThis.window=oldWindow;

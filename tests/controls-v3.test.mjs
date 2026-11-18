@@ -54,38 +54,40 @@ function makeRenderer(){
   return {renderer,emit,selected};
 }
 try{
-  // Single click remains a selection, single-finger drag remains rotation.
+  // Single click remains a selection; dragging with one finger or left mouse pans.
   {
     const {renderer,emit,selected}=makeRenderer();
     emit('pointerdown',{pointerId:1,clientX:120,clientY:150});
     emit('pointerup',{pointerId:1,clientX:120,clientY:150});
     assert.deepEqual(selected,[[110,130]],'Left click selects object');
-    const theta=renderer.camera.theta;
+    const before=renderer.camera.target.slice();
     emit('pointerdown',{pointerId:2,clientX:100});
     emit('pointermove',{pointerId:2,clientX:140});
     emit('pointerup',{pointerId:2,clientX:140});
-    assert.ok(renderer.camera.theta<theta,'Left drag retains orbit rotation');
+    assert.notDeepEqual(renderer.camera.target,before,'Left drag moves across orbital plane');
     assert.equal(selected.length,1,'Left drag does not pick');
   }
-  // Right mouse drag pans in ground-plane, instantly and in intuitive direction.
+  // Right mouse drag looks around, leaving the camera target untouched.
   {
     const {renderer,emit,selected}=makeRenderer();
-    const cam=renderer.camera,{right,up}=axes(cam);
+    const cam=renderer.camera,theta=cam.theta,phi=cam.phi,target=cam.target.slice();
     emit('pointerdown',{pointerId:3,button:2,clientX:100,clientY:100});
     emit('pointermove',{pointerId:3,button:2,clientX:140,clientY:130});
-    assert.ok(dot(cam.target,right)<0,'Right-drag horizontal movement follows mouse');
-    assert.ok(dot(cam.target,up)>0,'Right-drag vertical movement follows mouse');
-    assert.deepEqual(cam.target,cam.desiredTarget,'No right-drag lag');
+    assert.ok(cam.theta<theta,'Right-drag changes camera heading');
+    assert.ok(cam.phi>phi,'Right-drag changes camera tilt');
+    assert.deepEqual(cam.target,target,'Looking around does not translate the camera');
     emit('pointerup',{pointerId:3,button:2,clientX:140,clientY:130});
     assert.equal(selected.length,0,'Right click does not select');
   }
-  // Shift+left drag also pans, mouse wheel still uses eased zoom.
+  // Shift+left drag is an alternative look gesture; mouse wheel still zooms.
   {
     const {renderer,emit}=makeRenderer(),cam=renderer.camera;
+    const before=cam.theta;
     emit('pointerdown',{pointerId:4,button:0,clientX:100,clientY:100});
     emit('pointermove',{pointerId:4,clientX:115,clientY:100,shiftKey:true});
     emit('pointerup',{pointerId:4,clientX:115,clientY:100});
-    assert.ok(Math.hypot(...cam.target)>0,'Shift+drag pans');
+    assert.ok(cam.theta<before,'Shift+drag rotates instead of panning');
+    assert.deepEqual(cam.target,[0,0,0]);
     const dist=cam.dist;
     let prevented=false;
     emit('wheel',{deltaY:-100,preventDefault(){prevented=true;}});
@@ -107,17 +109,17 @@ try{
     emit('pointerup',{pointerId:11,pointerType:'touch',clientX:200,clientY:200});
     assert.equal(selected.length,0,'Two-finger gesture cannot select an object');
   }
-  // Translate both fingers without changing their final distance; this pans the scene.
+  // Translate both fingers without changing their final distance; this looks around.
   {
     const {renderer,emit}=makeRenderer(),cam=renderer.camera;
-    const {right,up}=axes(cam);
+    const theta=cam.theta,phi=cam.phi,origin=cam.target.slice();
     emit('pointerdown',{pointerId:20,pointerType:'touch',clientX:100,clientY:200});
     emit('pointerdown',{pointerId:21,pointerType:'touch',clientX:200,clientY:200});
     emit('pointermove',{pointerId:20,pointerType:'touch',clientX:130,clientY:220});
     emit('pointermove',{pointerId:21,pointerType:'touch',clientX:230,clientY:220});
     near(cam.dist,47,'Same final gap means no net zoom');
-    assert.ok(dot(cam.target,right)<0 && dot(cam.target,up)>0,'Two-finger swipe follows ground direction');
-    assert.deepEqual(cam.target,cam.desiredTarget,'Two-finger pan is immediate');
+    assert.ok(cam.theta<theta && cam.phi>phi,'Two-finger swipe rotates camera');
+    assert.deepEqual(cam.target,origin,'Two-finger look does not pan');
     emit('pointercancel',{pointerId:20,pointerType:'touch',clientX:130,clientY:220});
     emit('pointerup',{pointerId:21,pointerType:'touch',clientX:230,clientY:220});
     assert.equal(renderer.pointers.size,0,'Pointer cancellation cleans up gesture');
@@ -167,8 +169,8 @@ try{
   assert.match(sw,/sonnensystem-shell-v(?:[4-9]|[12][0-9]|3[0-9])\d*/,'PWA cache bumped');
   assert.match(html,/V(?:[4-9]|[12][0-9]|3[0-9])\d*\.\d+/,'UI version bumped');
   const guide=await readFile(new URL('../docs/HILFE.md',import.meta.url),'utf8');
-  assert.match(guide,/zwei Fingern/i,'Documentation keeps mobile gesture help');
-  console.log('✓ v3 gesture regression (v4 ground-plane) mouse pan, keyboard movement, two-finger pinch/pan, focus and selection regression checks passed');
+  assert.match(guide,/zwei Finger/i,'Documentation keeps mobile gesture help');
+  console.log('✓ v3 gesture regression (v4 ground-plane) mouse pan, keyboard movement, two-finger pinch/look, focus and selection regression checks passed');
 }finally{
   if(originalDocument===undefined)delete globalThis.document;else globalThis.document=originalDocument;
   if(originalWindow===undefined)delete globalThis.window;else globalThis.window=originalWindow;

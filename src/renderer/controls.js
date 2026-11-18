@@ -1,6 +1,17 @@
 import { clamp } from './math.js';
 
 const KEYBOARD_PAN_PX_PER_SECOND = 390;
+const LOOK_SENSITIVITY_X = .0051;
+const LOOK_SENSITIVITY_Y = .005;
+
+/** Looking around changes the camera heading, never its ground-plane target. */
+function lookByPixels(renderer, dx, dy) {
+  if(!dx && !dy)return;
+  renderer.markCameraMoved();
+  renderer.camera.theta-=dx*LOOK_SENSITIVITY_X;
+  renderer.camera.phi=clamp(renderer.camera.phi+dy*LOOK_SENSITIVITY_Y,.16,1.55);
+}
+
 function twoPointerGesture(pointers) {
   const [a, b] = [...pointers.values()];
   if (!a || !b) return null;
@@ -22,10 +33,13 @@ export function attachCameraControls(renderer) {
       renderer.drag={id:e.pointerId,button:e.button,startX:e.clientX,startY:e.clientY,moved:false};
       renderer.gesture=null;
     }else{
-      // Second finger switches to pinch + ground-plane pan; never select a body.
+      // Second finger switches to look-around + pinch zoom; never select a body.
       if(renderer.drag)renderer.drag.moved=true;
       renderer.gesture=twoPointerGesture(renderer.pointers);
       renderer.gestureOrigin=renderer.gesture;
+      renderer.gestureLookCenter=renderer.gesture;
+      renderer.gestureStartPoints=new Map([...renderer.pointers].map(([id,p])=>[id,{x:p.x,y:p.y}]));
+      renderer.gestureLookActive=false;
     }
   });
   c.addEventListener('pointermove',e=>{
@@ -37,26 +51,44 @@ export function attachCameraControls(renderer) {
       const next=twoPointerGesture(renderer.pointers),prev=renderer.gesture;
       if(prev && next){
         // Pinch distance (not vertical finger motion) controls zoom immediately.
-        const dist=clamp(renderer.camera.dist*prev.distance/next.distance,2.2,100);
+        const dist=clamp(renderer.camera.dist*prev.distance/next.distance,(renderer.minCameraDistance?.() ?? 2.2),(renderer.maxCameraDistance?.() ?? 100));
         if(dist!==renderer.camera.dist)renderer.markCameraMoved();
         renderer.camera.dist=dist;
         renderer.camera.desiredDist=dist;
-        // Pinch zoom naturally moves the finger midpoint. While following,
-        // ignore that incidental translation; deliberate two-finger panning
-        // (midpoint moves much farther than pinch span) still cancels follow.
-        const origin=renderer.gestureOrigin||prev;
-        const centroidMove=Math.hypot(next.x-origin.x,next.y-origin.y);
-        const pinchMove=Math.abs(next.distance-origin.distance);
-        if(!renderer.followEnabled || (centroidMove>8 && centroidMove>pinchMove*.9+3))
-          renderer.panByPixels(next.x-prev.x,next.y-prev.y);
+        // Distinguish a real two-finger swipe from a pinch. Pointermove events
+        // arrive ONE finger at a time; comparing midpoint movement with pinch
+        // delta per event misclassifies horizontal two-finger swipes as pinches.
+        // Once both fingers travel together, apply the full midpoint movement.
+        const [a,b]=[...renderer.pointers.entries()];
+        const sa=renderer.gestureStartPoints?.get(a?.[0]);
+        const sb=renderer.gestureStartPoints?.get(b?.[0]);
+        if(sa && sb){
+          const adx=a[1].x-sa.x,ady=a[1].y-sa.y;
+          const bdx=b[1].x-sb.x,bdy=b[1].y-sb.y;
+          const al=Math.hypot(adx,ady),bl=Math.hypot(bdx,bdy);
+          const alignment=al*bl>0?(adx*bdx+ady*bdy)/(al*bl):0;
+          if(al>2 && bl>2 && alignment>.7)renderer.gestureLookActive=true;
+          if(al>2 && bl>2 && alignment<-.7)renderer.gestureLookActive=false;
+        }
+        if(renderer.gestureLookActive){
+          const last=renderer.gestureLookCenter||renderer.gestureOrigin||prev;
+          lookByPixels(renderer,next.x-last.x,next.y-last.y);
+          renderer.gestureLookCenter=next;
+        }else if(renderer.gestureLookCenter && next.distance!==prev.distance){
+          // Maintain the baseline during pinch-only gestures, avoiding a jump
+          // when a later two-finger swipe begins.
+          renderer.gestureLookCenter=next;
+        }
       }
       renderer.gesture=next;
       return;
     }
     if(!renderer.drag || renderer.drag.id!==e.pointerId)return;
     if(Math.hypot(e.clientX-renderer.drag.startX,e.clientY-renderer.drag.startY)>3)renderer.drag.moved=true;
-    if(renderer.drag.button===2 || e.shiftKey)renderer.panByPixels(dx,dy);
-    else{if(dx || dy)renderer.markCameraMoved();renderer.camera.theta-=dx*.0051;renderer.camera.phi=clamp(renderer.camera.phi+dy*.005,.16,1.55);}
+    // Left mouse / one finger move across space. Right mouse looks around;
+    // Shift+left is an alternative for devices without a right mouse button.
+    if(renderer.drag.button===2 || (e.pointerType==='mouse' && e.shiftKey))lookByPixels(renderer,dx,dy);
+    else renderer.panByPixels(dx,dy);
   });
   const finishPointer=(e,cancelled)=>{
     if(!renderer.pointers.has(e.pointerId))return;
@@ -67,10 +99,15 @@ export function attachCameraControls(renderer) {
     }
     renderer.pointers.delete(e.pointerId);
     renderer.gesture=twoPointerGesture(renderer.pointers);
-    if(renderer.pointers.size<2)renderer.gestureOrigin=null;
+    if(renderer.pointers.size<2){
+      renderer.gestureOrigin=null;
+      renderer.gestureStartPoints=null;
+      renderer.gestureLookCenter=null;
+      renderer.gestureLookActive=false;
+    }
     if(renderer.pointers.size===1){
       const [id,point]=renderer.pointers.entries().next().value;
-      // A remaining finger may rotate again, but must never trigger a tap.
+      // A remaining finger may move again, but must never trigger a tap.
       renderer.drag={id,button:point.button,startX:point.x,startY:point.y,moved:true};
     }else if(renderer.pointers.size===0)renderer.drag=null;
   };
@@ -78,7 +115,7 @@ export function attachCameraControls(renderer) {
   c.addEventListener('pointercancel',e=>finishPointer(e,true));
   c.addEventListener('wheel',e=>{
     e.preventDefault();
-    const distance=clamp(renderer.camera.desiredDist*Math.exp(e.deltaY*.001),2.2,100);
+    const distance=clamp(renderer.camera.desiredDist*Math.exp(e.deltaY*.001),(renderer.minCameraDistance?.() ?? 2.2),(renderer.maxCameraDistance?.() ?? 100));
     if(distance!==renderer.camera.desiredDist)renderer.markCameraMoved();
     renderer.camera.desiredDist=distance;
   },{passive:false});

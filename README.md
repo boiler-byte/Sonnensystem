@@ -1,6 +1,73 @@
-# Sonnensystem – interaktiver 3D-Atlas v39.0
+# Sonnensystem – interaktiver 3D-Atlas v49.0
 
-**Aktueller Stand v39.** Der runde Kamera-Reset mit Pfeilen nach außen sitzt **unten rechts** in der 3D-Ansicht und weicht mobil dem geöffneten Sheet nach oben aus. Das rahmenlose Control-Panel oben rechts ist **58 px** breit; die Dropdowns messen **145 px (Layer)** und **120 px (Zeitsteuerung)**.
+**Aktueller Stand v49.** Das rahmenlose Control-Panel zeigt oben rechts regulär drei Buttons (mit Smartphone-AR optional vier) in der Reihenfolge **Maßstab → Objektlayer → Zeitsteuerung**. Die Icon-Buttons sind **49 px**, die Zeitsteuerung unverändert **58 px** breit. Die drei Dropdowns schließen bündig an derselben rechten Viewportkante ab (Maßstab **192 px**, Layer **145 px**, Zeit **120 px**). Der Kamera-Reset bleibt unten rechts.
+
+## Kompakte Icon-Leiste und lesbare Reihe (v49)
+
+- **Platzersparnis:** AR (falls eingeblendet), Maßstab und Objektlayer sind jeweils **49 statt 58 px** breit (etwa 15,5 % schmaler), unveränderte Höhe und Icons. Der **Zeitsteuerungsbutton bleibt 58 px** breit. Alle Dropdowns schließen weiterhin an der rechten Bildschirmkante ab, unabhängig vom optionalen AR-Button und den Safe-Area-Abständen.
+- **Reihen-Beschriftung:** Labels stehen nach Größenrang abwechselnd **oberhalb** und **unterhalb** der Körper, unabhängig von ihrer Zeichenpriorität. Der Wechsel zurück zu Bahnen stellt die gewöhnliche Label-Ausrichtung wieder her.
+- **Abstände:** Die erste Lücke bleibt unverändert, ab der zweiten Lücke wächst der größenabhängige freie Zwischenraum um **30 %**. Saturns sichtbarer Ringaußenrand wird bei der Platzverteilung und Label-Positionierung zusätzlich zum Planetenradius berücksichtigt. Die bisherige Reihenfolge, der linke Anschnitt des größten Objekts und die Übergangsanimationen bleiben erhalten. Details: [Delta v49](docs/DELTA-V49.md).
+
+## AR-Modus: Mit dem Smartphone umsehen (v48)
+
+- **Verfügbarkeit:** Links neben Maßstab erscheint ein AR-Button (Fadenkreuz-SVG) nur bei geeignetem Touch-Smartphone mit Geräteausrichtungs-API in sicherem Kontext (HTTPS bzw. localhost). Ohne Unterstützung bleibt die gewohnte Dreierleiste unverändert. Dies ist ein sensorbasierter AR-*Blickmodus*, kein Kamera-Livebild.
+- **Bedienung:** Beim Antippen wird, falls nötig, die Browserberechtigung für Bewegungssensoren angefragt. Sobald eine gültige Sensormessung eintrifft, ist der Button aktiv (deutlich hervorgehoben); das Drehen, Neigen und Kippen des Smartphones ändert den Blick aus dem aktuellen Kamerastandort. Die Startausrichtung wird kalibriert, sodass kein Bildsprung entsteht. Erneutes Antippen deaktiviert. Pan- und Pinch-Gesten bleiben verwendbar.
+- **Sicherheit und Fehlerfälle:** Keine Bildkamera-, Standort- oder Mikrofonberechtigung; es werden keine Sensordaten übertragen. Bei abgelehnter Berechtigung, fehlenden Sensordaten oder unsicherem Kontext wird AR nicht aktiviert. Beim Verlassen der Seite bzw. im Hintergrund stoppt die Sensorsteuerung. Eine kurze Snackbar unten rechts meldet Status und Fehler. Die zwei bisherigen und das Zeit-Dropdown bleiben unverändert rechtsbündig. Details: [Delta v48](docs/DELTA-V48.md).
+
+## Neue Raumsteuerung und verdichtete Nah-Reihe (v47)
+
+- **Maus:** **Links ziehen** verschiebt die Kamera entlang der Bahnebene; **rechts ziehen** dreht den Blickwinkel. **Shift + links** dient als alternative Drehgeste. Ein Klick links wählt weiterhin Objekte aus; das Mausrad zoomt. Pfeiltasten verschieben die Kamera unverändert.
+- **Touch:** **Ein Finger wischen** verschiebt die Kamera; **zwei Finger gemeinsam wischen** drehen den Blickwinkel. **Zwei Finger spreizen/zusammenziehen** zoomen weiterhin. Beim Abheben eines Fingers entsteht keine versehentliche Objektauswahl.
+- **Reihe:** Die Körper bleiben nach den hinterlegten realen Radien absteigend sortiert, ihre **Zwischenräume skalieren jetzt mit den Größen beider Nachbarn**. Die Übersichtskamera zeigt nur eine **schmale Randpartie (ca. 12 % des Durchmessers)** des größten Körpers am linken Rand und zoomt näher zu den folgenden Körpern. Statt alle oft winzigen Objekte gleichzeitig ins Bild zu zwingen, kann man die Reihe mit der neuen linken Maus-/Ein-Finger-Geste entlangfahren. Das Framing gilt in beiden Szenen und bei allen Maßstabskombinationen, auch im Hochformat. Bestehende Gummiband-Übergänge bleiben aktiv. Details: [Delta v47](docs/DELTA-V47.md).
+
+## Durchgehende Szenenwechsel ohne Sprünge (v46)
+
+Beim Umschalten zwischen **Schema und Maßstab**, der **Reihenansicht** und der **Sonnensystem-/Planetenansicht** werden Körperpositionen, Körperradien, Saturnringe und Umlaufbahnen weiterhin ca. **980 ms** mit einem leichten Gummiband-Effekt überblendet. In v46 bleibt jetzt zusätzlich beim **Ansichtswechsel die bisherige Szene während der Animation sichtbar**: Nicht mehr benötigte Körper und ihre Bahnen verblassen, neu auftauchende Körper und Bahnen werden sanft eingeblendet. Die Bahnlinien bleiben dabei an den **animierten Positionen der Sonne bzw. des Zentralplaneten** ausgerichtet.
+
+Bei einem schnellen Zurückschalten beginnt sowohl die Objekt- als auch die Bahn-Deckkraft bei ihrem **momentan sichtbaren Wert**. So entstehen weder Helligkeitsblitze noch abrupt ein- oder ausgeblendete Planeten. Kamera, Objektfokus und Folgen werden weiterhin weich nachgeführt. Bei aktivierter Systemoption **„Bewegung reduzieren“** erfolgen die Szenenwechsel ohne diesen Federübergang. Es ändern sich weder die astronomischen Rohdaten noch die Schalterbelegung. Siehe [Delta v46](docs/DELTA-V46.md).
+
+## Reihe und animierte Ansichtswechsel (v45)
+
+Das **Maßstab-Dropdown** hat einen achten Toggle **Reihe** mit drei nach rechts kleiner werdenden SVG-Punkten, direkt unter **Umlaufbahn / Kontrast**. **Standard: Aus.** Bei **An** stehen die derzeit sichtbaren Körper in einer waagerechten Reihe – nach **katalogisiertem physikalischem Radius absteigend**, beginnend mit dem größten. Die Körper behalten dabei die Größe ihres aktuellen Objekt-Maßstabs. Zur Kollisionsvermeidung bleiben größenabhängige Zwischenräume; der Kamerabildausschnitt vergrößert die Folgeobjekte und schneidet das größte Objekt links gezielt an. Weitere Körper erreicht man durch Verschieben der Reihe. Die Einstellung ist getrennt für Sonnensystem- und isolierte Planetenansicht verfügbar. Bei aktivierter Reihe werden die Bahnlinien weich ausgeblendet, beim Verlassen wieder eingeblendet; die bisherige Umlaufbahn-Einstellung bleibt erhalten. Der Toggle meldet jede Änderung per Snackbar unten rechts.
+
+**Animationen:** Umschalten zwischen schematischen und maßstabsgetreuen Größen/Entfernungen, Ein-/Ausschalten der Reihe sowie Wechsel zwischen Sonnensystem und Planetenansicht interpolieren Körperpositionen, Kugelradien, Saturnring-Größe und Bahnradien über rund **980 ms**, mit einem leichten elastischen Überschwingen am Ende. Die Kamera führt Zoom, Ziel und gegebenenfalls Blickwinkel nach. Während eines Übergangs sind erneute Klicks zulässig; sie starten von der aktuellen Zwischenposition ohne Sprung. `prefers-reduced-motion` unterdrückt die Federanimationen. Die tatsächlichen Bahnparameter und die bisherige Zeitsteuerung bleiben unverändert. Details: [Delta v45](docs/DELTA-V45.md).
+
+## Optimierte Größenverhältnisse (v44)
+
+Bei der Schalterkombination **Objekt an / Bahn aus** erhält die Sonnensystem-Übersicht den Modus **„Optimierte Größenverhältnisse“**:
+
+- **Sonne:** exakt **4 ×** der bisherige schematische Sonnenradius (4,52 Szeneneinheiten gegenüber 1,13).
+- **Planeten:** die Kugelradien bleiben proportional zu ihren physikalischen Radien (`radiusKm`). Derselbe gemeinsame Umrechnungsfaktor gilt für Sonne, Planeten und andere Körper. Planeten behalten damit ihre Größenverhältnisse untereinander sowie zur Sonne bei. Unbekannte Radien werden nicht ergänzt.
+- **Bahnen:** die bisherige schematische Abstandszuordnung bleibt erhalten, wird aber in der Sonnensystem-Übersicht einheitlich **4 ×** vergrößert. So bleibt insbesondere zwischen der vergrößerten Sonne und Merkur Platz, ohne die relative Anordnung der schematischen Bahnen zu verändern.
+- **Kamera:** die automatische Sonnensystem-Übersicht und ihr maximaler Zoomabstand passen sich an die erweiterten Bahnen an. Bei manuell verschobener Kamera wird der eingestellte Blickwinkel nicht überschrieben. Eine Snackbar meldet das Betreten des Modus; der Tooltip des Maßstab-Buttons nennt den Modus ebenfalls.
+
+Die anderen drei Schalterkombinationen bleiben unverändert: **Aus/Aus** = schematisch; **Aus/An** = schematische Körper mit physikalischen Bahnen; **An/An** = physikalisch proportionale Größen und Bahnabstände. In der isolierten **Planetenansicht** bleibt die vorhandene lokale Skalierung unverändert; die modifizierten Sonnen-/Bahn-Faktoren betreffen nur die Sonnensystem-Übersicht. Die Darstellung ist eine Visualisierung und verbessert nicht die Genauigkeit der Bahndaten. Siehe [Delta v44](docs/DELTA-V44.md).
+
+## Kompaktes Maßstab-Dropdown (v43)
+
+Das Maßstab-Menü enthält zwei Spalten ohne eigene Überschrift und ohne Fußnote. Insgesamt **sieben Toggle-Buttons** bleiben erhalten. Ihre An/Aus-Zustände werden durch das aktive Styling, die aktualisierten Tooltips und `aria-pressed` vermittelt; Text-Statusindikatoren direkt in den Buttons entfallen. Jede manuelle Statusänderung blendet eine **Snackbar unten rechts** für etwa 2,4 Sekunden ein.
+
+- **Objekt** (vertikaler Doppelpfeil): **Beschriftung** und **Beleuchtung** direkt nebeneinander, darunter **4 Monde** über die gesamte Spaltenbreite.
+- **Bahn** (horizontaler Doppelpfeil): **Umlaufbahn** und **Kontrast** nebeneinander.
+
+Der **Farben-Schalter entfällt**: Bahnen verwenden immer die jeweilige Objektkategorie-Farbe; für die Erdumlaufbahn bleibt die besondere Akzentfarbe aktiv. Kontrast schaltet weiterhin unabhängig Breite und Deckkraft der Orbitlinien. Die Mond-Kategoriefarbe bleibt `#E6EDF5`.
+
+Die Beleuchtungs-Standards bleiben **Sonnensystem: Aus (Optimiert)** und **Planetenansicht: An (Realistisch)**. Alle weiteren Optionen außer den beiden szenenübergreifenden Maßstabs-Toggles behalten ihre separaten Einstellungen für beide Szenen.
+
+Details: [Delta v43](docs/DELTA-V43.md); neuer Skalierungsmodus: [Delta v44](docs/DELTA-V44.md).
+
+## Maßstab: Objektgrößen und Bahnabstände (v41)
+
+Im Dropdown **Maßstab** (SVG: waagerechter Doppelpfeil mit Begrenzungsstrichen) stehen zwei große Icon-Toggles nebeneinander:
+
+- **Objekt** (vertikaler Doppelpfeil): skaliert Kugelgrößen nach den physischen Radien der Himmelskörper.
+- **Bahn** (horizontaler Doppelpfeil): skaliert Bahnradien nach den tatsächlichen großen Halbachsen der Katalogdaten.
+
+**Aus/Aus** ist die bisherige schematische Darstellung und bleibt der Standard. Beide Schalter lassen sich unabhängig betätigen. **An/An** zeigt Körperradien und Abstände in einer gemeinsamen geometrischen Einheit je Szene; **An/Aus** nutzt seit v44 in der Sonnenübersicht die optimierten Größenverhältnisse statt der ursprünglichen v41-Skalierung. Die Einstellungen gelten gleichermaßen für Sonnensystem- und Planetenansicht. Bei echten Größen sind kleinere Objekte im Überblick teilweise nur noch anhand der Labels erkennbar; das ist eine Konsequenz der sehr großen astronomischen Größenverhältnisse. Unbekannte Radien bleiben nicht darstellbar, statt durch fiktive Werte ersetzt zu werden. Der Maßstabsschalter verbessert **nicht** die Genauigkeit der zugrunde liegenden Bahnelemente. Siehe [Delta v41](docs/DELTA-V41.md).
+
+## Horizontales Control-Panel (seit v40, erweitert in v42)
+
+Das in v40 eingeführte horizontale Panel erhielt in v41 den Maßstab-Button. Seit v42 stehen **Maßstab**, **Objektlayer** und **Zeitsteuerung** in dieser Reihenfolge nebeneinander oben rechts. Alle drei Dropdown-Panels erscheinen darunter mit einer gemeinsamen, bis zum rechten Rand reichenden Kante; das schmale Zeitmenü verdeckt so nur den rechten Bildbereich. Auf Desktop und Mobil kann durch direkten Klick auf einen anderen Button **in einem Schritt** zwischen den Menüs gewechselt werden. Das bisher geöffnete Menü schließt sich automatisch. `Escape` und Klicks außerhalb schließen die Popovers weiterhin; Bedien- und Filterfunktionen bleiben unverändert. Siehe [Delta v40](docs/DELTA-V40.md).
 
 ## Folgen: Ansicht des übergeordneten Planeten (v39)
 
@@ -142,11 +209,11 @@ Der Katalog hat keine Kategorie-Filterchips. Die Suche prüft zusätzlich zum Na
 
 ## Control-Panel und Zeitsteuerung (v21)
 
-Das schmale vertikale Control-Panel bleibt oben rechts. Seit v26 stehen darin **nur der Icon-Button für Objektlayer und das Zeit-Dropdown** (ohne Ansichtsauswahl). Sein zweizeiliges Label zeigt die aktuelle **Simulationsgeschwindigkeit** (z. B. `5 Tage / s`) und das **lokale Simulationsdatum** im Format `DD.MM.YYYY` (keine Uhrzeit). Die zwei Einzelknöpfe für Play/Pause und „Heute“ sind nicht mehr direkt im Panel sichtbar.
+Das seit v40 horizontale, rahmenlose Control-Panel bleibt oben rechts. Seit v42 stehen darin **Maßstab, Objektlayer und Zeit-Dropdown** (ohne Ansichtsauswahl). Sein zweizeiliges Label zeigt die aktuelle **Simulationsgeschwindigkeit** (z. B. `5 Tage / s`) und das **lokale Simulationsdatum** im Format `DD.MM.YYYY` (keine Uhrzeit). Die zwei Einzelknöpfe für Play/Pause und „Heute“ sind nicht mehr direkt im Panel sichtbar.
 
-Ein Klick auf den Zeitknopf öffnet ein **rechtsbündiges Menü direkt unter dem Knopf**. Seit v27 ist das Menü **116 px** breit, unabhängig von der **58 px** breiten Auslösertaste. Oben steht die Geschwindigkeit. Darunter befindet sich der vertikale 241-Stufen-Regler mit mittigem, kontrastreichem Griff und dynamisch gefüllter Spur (von unten bis zum aktuellen Wert). **Unter dem Slider** liegen Play/Pause und der auf ein Symbol reduzierte Heute-Button **nebeneinander**. Zuletzt folgen **Datum und Uhrzeit** in zwei Zeilen (`DD.MM.YYYY` / `hh:mm`). Der Heute-Button behält den zugänglichen Namen und die Zurücksetzfunktion. `Esc` schließt das Menü und setzt den Tastaturfokus auf den Auslöser; Klick außerhalb schließt es ebenfalls. Beim Öffnen der Objektlayer-Auswahl wird das Zeitmenü geschlossen.
+Ein Klick auf den Zeitknopf öffnet ein **an der rechten Bildschirmkante bündiges Menü unter der horizontalen Buttonreihe**. Seit v27 ist das Menü **116 px** breit, unabhängig von der **58 px** breiten Auslösertaste. Oben steht die Geschwindigkeit. Darunter befindet sich der vertikale 241-Stufen-Regler mit mittigem, kontrastreichem Griff und dynamisch gefüllter Spur (von unten bis zum aktuellen Wert). **Unter dem Slider** liegen Play/Pause und der auf ein Symbol reduzierte Heute-Button **nebeneinander**. Zuletzt folgen **Datum und Uhrzeit** in zwei Zeilen (`DD.MM.YYYY` / `hh:mm`). Der Heute-Button behält den zugänglichen Namen und die Zurücksetzfunktion. `Esc` schließt das Menü und setzt den Tastaturfokus auf den Auslöser; Klick außerhalb schließt es ebenfalls. Beim Öffnen der Objektlayer-Auswahl wird das Zeitmenü geschlossen.
 
-Auf Smartphones und Tablets bis 770 px befindet sich das vollständige Control-Panel **direkt über der 3D-Szene**. Layer und Zeit sind dort erreichbar; der separate runde Kamera-Reset sitzt rechts unten oberhalb der geschlossenen Sheet-Leiste. Beide Dropdowns öffnen rechtsbündig unter ihrem Auslöser; das Layer-Menü ist für kleine Bildschirme scrollbar. Das Bottom-Sheet hat nur die zwei Tabs **„Objekte“** und **„Details“**. Der Regler besitzt einen größeren, hellen Griff mit dunkler Umrandung und seit v21 eine zentrierte Position und eine füllende Farbspur.
+Auf Smartphones und Tablets bis 770 px befindet sich das vollständige Control-Panel **direkt über der 3D-Szene**. Layer und Zeit sind dort erreichbar; der separate runde Kamera-Reset sitzt rechts unten oberhalb der geschlossenen Sheet-Leiste. Beide Dropdowns öffnen unter der Buttonreihe bündig an der rechten Bildschirmkante; das Layer-Menü ist für kleine Bildschirme scrollbar. Das Bottom-Sheet hat nur die zwei Tabs **„Objekte“** und **„Details“**. Der Regler besitzt einen größeren, hellen Griff mit dunkler Umrandung und seit v21 eine zentrierte Position und eine füllende Farbspur.
 
 - **Play/Pause:** Stellt nur den Wiedergabestatus um und behält die Geschwindigkeit.
 - **Regler:** 241 Stufen logarithmisch; nach oben schneller. Die beiden Ansichten speichern die zuletzt gewählte Geschwindigkeit separat.
@@ -173,15 +240,15 @@ Das Layer-Menü ist von **227 px auf 152 px** reduziert (ca. 33 %). „Alle“ u
 
 Die Sonnensystemansicht startet mit **5 simulierten Tagen pro realer Sekunde** (Reglerstufe 101). Die Planetenansicht bleibt bei **1 Stunde/s**. Die beiden Geschwindigkeiten sind weiterhin unabhängig.
 
-**Objektlayer, Umlaufbahnen, Kontrast, Farben und Beschriftungen** werden getrennt für die beiden Ansichten gespeichert. Bei einem Szenenwechsel werden die Einstellungen der Zielansicht wiederhergestellt. In v23/v24 umfasste der Standard **Planeten, Monde und Satelliten** und in der Sonnenübersicht zusätzlich **Sterne**. Seit v25 startet die Sonnenübersicht dagegen ausschließlich mit **Sterne und Planeten**; die planetenzentrierte Voreinstellung bleibt unverändert. Bei einem ausgewählten Planeten erscheinen im Layer-Dropdown nur der Planetentyp und die tatsächlich im Katalog unter `parentId` dieses Planeten verzeichneten Kindkategorien. Bei Erde sind dies Planeten, Monde und Satelliten, bei Jupiter Planeten und Monde. In der Szene verbleiben immer mindestens eine aktivierte verfügbare Kategorie; verdeckte Kategorien bleiben als Status für andere Planeten erhalten. Details: [Delta v23](docs/DELTA-V23.md).
+**Objektlayer, Umlaufbahnen, Kontrast und Beschriftungen** werden getrennt für die beiden Ansichten gespeichert; die Bahnfarben sind seit v43 fest aktiv. Bei einem Szenenwechsel werden die Einstellungen der Zielansicht wiederhergestellt. In v23/v24 umfasste der Standard **Planeten, Monde und Satelliten** und in der Sonnenübersicht zusätzlich **Sterne**. Seit v25 startet die Sonnenübersicht dagegen ausschließlich mit **Sterne und Planeten**; die planetenzentrierte Voreinstellung bleibt unverändert. Bei einem ausgewählten Planeten erscheinen im Layer-Dropdown nur der Planetentyp und die tatsächlich im Katalog unter `parentId` dieses Planeten verzeichneten Kindkategorien. Bei Erde sind dies Planeten, Monde und Satelliten, bei Jupiter Planeten und Monde. In der Szene verbleiben immer mindestens eine aktivierte verfügbare Kategorie; verdeckte Kategorien bleiben als Status für andere Planeten erhalten. Details: [Delta v23](docs/DELTA-V23.md).
 
 ## Vollständige Sonnenbahnen und Mondbeschriftungen (v22)
 
 In der Sonnensystemansicht erscheinen bei aktivierten Umlaufbahnen die Pfade **aller** Objekte mit Sonne als direktem Elternkörper, die einer aktiven Layer-Kategorie angehören und gültige Bahnparameter haben. Dies umfasst die nicht ausgewählten Zwergplaneten, Asteroiden und Kometen. Monde und Satelliten umkreisen stattdessen Planeten; ihre Bahnen werden unverändert in den Planetenansichten gezeichnet, nicht fälschlich als Kreise um die Sonne. Historisch (v22–v28) konkurrierten pro Planet nur die **vier größten Monde** um ein Label; ein ausgewählter kleinerer Mond konnte den viertgrößten Kandidaten ersetzen. **Seit v29** steuert der neue „4 Monde“-Toggle die tatsächliche Sichtbarkeit: Bei **An** sind nur die vier größten Monde samt Labels sichtbar, bei **Aus** alle aktiven Monde mit den üblichen Dichte- und Bewegungsfiltern.
 
-## Objektlayer mit Umlaufbahn- und Beschriftungseinstellungen (v20)
+## Objektlayer und Orbitdarstellung (seit v20; aktualisiert v43)
 
-Das Objektlayer-Dropdown öffnet direkt unter dem Layer-Button, rechtsbündig. Unterhalb der Kategorien enthält es die drei unabhängigen Umlaufbahn-Schalter: **Umlaufbahn** (anzeigen/ausblenden), **Kontrast** (breitere und stärker deckende Striche) und **Farben** (Kategoriefarben statt einheitlichem Graublau). Beim Start sind **Umlaufbahn an**, **Kontrast aus** und **Farben an**. Darunter gibt es den eigenen Schalter **Beschriftung** (beim Start an), der die Namen in der 3D-Szene ein- und ausschaltet. Bei deaktivierten Bahnen bleiben die beiden visuellen Einstellungen gespeichert. Ein Klick außerhalb, Escape oder der Wechsel zum Zeitmenü schließt die Layer-Auswahl. Mobil bleibt das Menü am Control-Panel der Szene. Es gibt keinen separaten Bahnen- oder Beschriftungs-Button im Panel.
+Das Objektlayer-Dropdown öffnet unter der horizontalen Buttonreihe rechtsbündig am Bildschirmrand und enthält heute nur Layer-Presets und Kategorie-Checkboxen. Im benachbarten Maßstab-Menü sind **Umlaufbahn** (ein-/ausblenden), **Kontrast** (breitere und deckendere Striche) und **Beschriftung** untergebracht. Die Bahnfarben entsprechen seit v43 stets der Kategoriepalette; ein Farben-Schalter ist nicht mehr vorhanden. Beim Start sind Umlaufbahnen und Beschriftungen an, Kontrast aus. Die Ansichtseinstellungen bleiben getrennt; Klick außerhalb, Escape und direkter Menüwechsel schließen das offene Popover.
 
 | Objekt / Umlaufbahn | Farbe |
 |---|---|
@@ -254,14 +321,14 @@ Die neuen Mondumlaufbahnen basieren auf **NASA/JPL – Planetary Satellite Mean 
 
 ## Bedienung
 
-- **Desktop:** Links ziehen: umschauen. Mausrad: Zoom. Rechts ziehen oder Shift + links ziehen: bodenparallel bewegen. Pfeiltasten: bodenparallel bewegen.
-- **Mobil:** Ein Finger: umschauen. Zwei Finger spreizen/zusammenziehen: Zoom. Zwei Finger gemeinsam bewegen: bodenparallel verschieben.
+- **Desktop:** Links ziehen: bodenparallel durch den Raum bewegen. Rechts ziehen oder Shift + links ziehen: umschauen. Mausrad: Zoom. Pfeiltasten: bodenparallel bewegen.
+- **Mobil:** Ein Finger: bodenparallel durch den Raum bewegen. Zwei Finger gemeinsam bewegen: umschauen. Zwei Finger spreizen/zusammenziehen: Zoom.
 - **Planetenansicht:** In Planet-, Zwergplanet- oder Monddetails „Planetenansicht“ wählen. Bei Monden wird das übergeordnete Planeten-/Zwergplanetensystem geöffnet. Der runde Kamera-Reset rechts oben kehrt zur Sonnensystemübersicht zurück.
 - **Redaktion:** In den Objektdetails unter den Kennzahlen erscheinen Hintergrundabschnitte und direkte Quellenlinks (auf Mobilgeräten Detail-Panel erweitern).
 
 ## PWA und Updates
 
-`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v39-PWA verwendet den Cache `sonnensystem-shell-v39` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
+`sw.js` liegt unmittelbar im Workspace-Root unter `/sw.js`. Die v43-PWA verwendet den Cache `sonnensystem-shell-v43` und speichert beim Installieren die App-Shell und alle im Katalog-Manifest genannten JSON-Dateien für den Offline-Betrieb. Bei installiertem Altbestand gegebenenfalls aktualisieren und die PWA neu öffnen. API-Antworten werden nicht mitgespeichert.
 
 ## Weiterarbeiten
 

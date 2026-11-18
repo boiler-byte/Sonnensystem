@@ -1,5 +1,5 @@
 import { CAMERA_FOV, TAU, projected } from './math.js';
-import { planetBodyRadius, renderRadius } from '../data/orbital-math.js';
+import { displayBodyRadius } from '../data/orbital-math.js';
 
 // Motion is measured in CSS pixels per real second, not in simulated days.
 // Hysteresis prevents labels flashing on and off near the threshold.
@@ -71,6 +71,11 @@ function fitLabel(name, ctx, maxWidth) {
   return name.slice(0, lo) + ellipsis;
 }
 
+/** Fixed alternating orientation by physical row rank; never by label priority. */
+export function rowLabelSide(index) {
+  return Number.isInteger(index)&&index>=0 ? (index%2===0?'above':'below') : null;
+}
+
 function placements(item, previousSide) {
   const {projection: p, radius: r, width: w, height: h} = item;
   const distance = Math.max(10, r) + 8;
@@ -106,7 +111,8 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     return [];
   }
   const {width: w, height: h} = renderer;
-  const sceneKey = `${renderer.planetId || 'solar'}:${w}x${h}`;
+  const rowActive=renderer.settings?.row===true;
+  const sceneKey = `${renderer.planetId || 'solar'}:${rowActive?'row':'orbit'}:${w}x${h}`;
   const old = renderer._labelState?.key === sceneKey ? renderer._labelState : null;
   const dt = old ? now - old.at : NaN;
   const observations = new Map();
@@ -130,8 +136,11 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     const oldSample = old?.observations.get(body.id);
     const motion = isTooFast(oldSample, p, now, dt);
     observations.set(body.id, {x: p.x, y: p.y, ...motion});
-    const bodyRadius = renderer.planetId ? planetBodyRadius(body) : renderRadius(body);
-    const radius = Math.max(0, bodyRadius * h / (HALF_FOV_TANGENT * p.depth));
+    const bodyRadius = renderer.bodyRadius?.(body) ?? displayBodyRadius(body, renderer.settings, renderer.planetId ? renderer.byId?.get(renderer.planetId) : null);
+    // Use the Saturn ring silhouette as the label clearance in row mode.
+    const visualRadius=rowActive && body.id==='saturn'
+      ? Math.max(bodyRadius,1.20*(renderer.ringScale?.()??0)) : bodyRadius;
+    const radius = Math.max(0, visualRadius * h / (HALF_FOV_TANGENT * p.depth));
     projectedBodies.push({body, projection: p, radius, fast: motion.fast});
     if (anchors.has(body.id)) anchors.set(body.id, {...anchors.get(body.id), seenAt: now});
   }
@@ -178,10 +187,13 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     item.selected = selected;
 
     const prior = anchors.get(body.id);
-    const options = placements(item, prior?.side);
-    // Do not reposition labels because of another label or passing object.
-    // The only reason to switch sides is to stay within the viewport.
-    let chosen = options.find(o => o.side === prior?.side && visibleInsideViewport(o.rect, w, h)) ||
+    const rowSide=rowActive ? rowLabelSide(renderer._rowLabelOrder?.get(body.id)) : null;
+    // In a row, labels alternate above/below by their physical body order;
+    // priority and previous orbit-view anchors must never flip this side.
+    const options = rowSide ? placements(item,rowSide).filter(o=>o.side===rowSide)
+      : placements(item,prior?.side);
+    // Ordinary views retain their stable side; row mode uses only its assigned side.
+    let chosen = options.find(o => o.side === (rowSide||prior?.side) && visibleInsideViewport(o.rect, w, h)) ||
       options.find(o => visibleInsideViewport(o.rect, w, h));
     if (!chosen && selected) {
       const option = options[0];

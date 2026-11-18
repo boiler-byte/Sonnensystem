@@ -1,5 +1,5 @@
 import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, model, hex, projected } from './math.js';
-import { renderRadius, planetBodyRadius, planetOrbitRadius, orbitalRadius, sceneRadius, keplerPosition } from '../data/orbital-math.js';
+import { displayBodyRadius, displayOrbitRadius, optimizedSolarMode, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
@@ -10,8 +10,9 @@ import { drawOrbitLine } from './orbits.js';
 import { drawSceneLabels } from './labels.js';
 import { computePositions } from './scene.js';
 import { drawPlanetSystemScene, planetChildrenFor, planetFrameDistance } from './planet-view.js';
-import { drawSolarSystemScene } from './solar-view.js';
+import { drawSolarSystemScene, solarOrbitBodies } from './solar-view.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
+import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
 
 export class SolarRenderer {
  constructor(canvas, labelCanvas, glow, callbacks={}) {
@@ -30,7 +31,8 @@ export class SolarRenderer {
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.focusedBodyId=null;this.focusOffsetY=0;
   this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
-  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
+  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
+  this.transitionsEnabled=true;this.transition=null;this._rowPreviousAngles=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
   this.attachEvents();this.resize();
@@ -41,6 +43,7 @@ export class SolarRenderer {
  /** Rotation and zoom change the view but must not disable the global follow toggle. */
  markCameraMoved({positionChanged=false}={}){
   this.cameraManuallyMoved=true;
+  if(this.transition)this.transition.cameraTo=null; // Manual rotation wins over an animated camera angle.
   if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
   else if(!this.followEnabled)this.focusedBodyId=null;
  }
@@ -94,7 +97,7 @@ export class SolarRenderer {
   if(!position || position.some(value=>!Number.isFinite(value))){
     this.clearFollowTarget();this.focusedBodyId=null;return;
   }
-  if(followMotionTooFast(this.followLastPosition,position,this.camera.desiredDist,
+  if(!this.transition && followMotionTooFast(this.followLastPosition,position,this.camera.desiredDist,
       this.height,now-this.followLastAtMs)){
     this.stopFollowing();return;
   }
@@ -107,13 +110,188 @@ export class SolarRenderer {
   const index=this.cameraManuallyMoved?0:((this.cameraPresetIndex??0)+1)%3;
   this.applyCameraPreset(index);
  }
+  /** The camera frames the smaller bodies up close and crops most of the largest at the left. */
+ rowGeometry(){
+  const candidates=this.planetId
+    ? [this.byId?.get(this.planetId),...this.planetChildren()].filter(Boolean)
+    : this.bodies.filter(b=>b.type!=='probe');
+  return rowLayout(candidates.filter(b=>this.shouldDraw(b)),b=>this.targetBodyRadius(b),
+   (body,radius)=>body.id==='saturn'?Math.max(radius,1.20*this.targetRingScale()):radius);
+ }
+ rowFrame(){return rowCameraFrame(this.rowGeometry(),this.width,this.height);}
+ rowDistance(){return this.rowFrame().distance;}
+ solarOverviewDistance(){return this.settings?.row ? this.rowDistance()
+   : this.settings?.scaleOrbits ? 160 : optimizedSolarMode(this.settings) ? 47*OPTIMIZED_ORBIT_FACTOR : 47;}
+  /** Objects actually visible in this scene, before the user changes the view. */
+ visibleSceneBodies(){
+  const candidates=this.planetId
+    ? [this.byId.get(this.planetId),...this.planetChildren()]
+    : this.bodies;
+  return candidates.filter(b=>b && this.shouldDraw(b) && this.positions.has(b.id));
+ }
+ /** Only capture orbit strokes that the current view was drawing. */
+ visibleSceneOrbits(){
+  if(this.settings?.orbits===false)return [];
+  if(!this.planetId)return solarOrbitBodies(this.bodies,this.settings?.layers).filter(b=>this.shouldDraw(b));
+  const children=this.planetChildren().filter(b=>this.shouldDraw(b));
+  const moons=children.filter(b=>b.type==='moon').sort((a,b)=>b.radiusKm-a.radiusKm);
+  const satellites=children.filter(b=>b.type==='satellite');
+  const other=children.filter(b=>b.type!=='moon'&&b.type!=='satellite');
+  const ids=new Set([...moons.slice(0,80),...satellites.slice(0,35),...other,this.byId.get(this.selectedId)]
+    .filter(Boolean).map(b=>b.id));
+  return children.filter(b=>ids.has(b.id) && b.a && b.periodDays);
+ }
+ /** Incoming bodies begin at their previous visible alpha; reversing stays seamless. */
+ sceneBodyOpacity(body){
+  const t=this.transition;
+  if(!body || !t || t.kind!=='view')return 1;
+  const from=t.fromVisualBodies.get(body.id)?.opacity ?? 0;
+  return clamp(from+(1-from)*clamp(t.amount,0,1),0,1);
+ }
+ /** Orbit strokes have their own per-body opacity to avoid a view-switch flash. */
+ sceneOrbitOpacity(body){
+  const base=this.orbitOpacity();
+  const t=this.transition;
+  if(!body || !t || t.kind!=='view')return base;
+  const from=t.fromVisualOrbits.get(body?.id)?.opacity ?? 0;
+  return clamp(from+(base-from)*clamp(t.amount,0,1),0,1);
+ }
+ departingBodyState(snapshot,t=this.transition){
+  if(!t)return snapshot;
+  const alpha=clamp(t.amount,0,1);
+  const destination=this.positions.get(snapshot.body.id)
+    ?? this.positions.get(snapshot.body.parentId)
+    ?? this.positions.get(this.planetId || t.fromPlanetId)
+    ?? [0,0,0];
+  return {
+   ...snapshot,
+   position:blendPosition(snapshot.position,destination,t.amount),
+   radius:Math.max(0,lerp(snapshot.radius,this.targetBodyRadius(snapshot.body),t.amount)),
+   opacity:snapshot.opacity*(1-alpha)
+  };
+ }
+ departingOrbitState(snapshot,t=this.transition){
+  if(!t)return snapshot;
+  const alpha=clamp(t.amount,0,1);
+  const destination=this.positions.get(this.planetId || t.fromPlanetId) ?? snapshot.center;
+  return {...snapshot,center:blendPosition(snapshot.center,destination,t.amount),
+    radius:Math.max(0,snapshot.radius*(1-.18*alpha)),opacity:snapshot.opacity*(1-alpha)};
+ }
+ /** Render disappearing bodies and their former paths while the new view fades in. */
+ drawDepartingScene(vp){
+  const t=this.transition;
+  if(!t || t.kind!=='view')return;
+  const visible=new Set(this.visibleSceneBodies().map(body=>body.id));
+  const orbits=new Set(this.visibleSceneOrbits().map(body=>body.id));
+  const gl=this.gl;
+  gl.depthMask(false);
+  for(const source of t.fromVisualOrbits.values()){
+   if(orbits.has(source.body.id))continue;
+   const ghost=this.departingOrbitState(source,t);
+   if(ghost.opacity<=.001)continue;
+   this.orbitLine(ghost.body,ghost.center,vp,ghost.alpha,ghost.selected,
+     {radius:ghost.radius,opacity:ghost.opacity,settings:ghost.settings});
+  }
+  gl.depthMask(true);
+  for(const source of t.fromVisualBodies.values()){
+   if(visible.has(source.body.id))continue;
+   const ghost=this.departingBodyState(source,t);
+   if(ghost.opacity<=.001)continue;
+   if(ghost.body.id==='saturn')this.drawRings(ghost.position,vp,
+     {opacity:ghost.opacity,scale:source.ringScale});
+   this.drawSphere(ghost.body,ghost.position,vp,{opacity:ghost.opacity,radius:ghost.radius});
+  }
+ }
+ /** Respect reduced-motion preferences while retaining testable pure transition math. */
+ canAnimateLayout(){
+  return this.transitionsEnabled===true &&
+    !(typeof window!=='undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+ }
+ /** Cache the *displayed* state before a mode change, including rapid re-toggles. */
+ beginTransition(kind='scale',now=performance.now()){
+  if(!this.canAnimateLayout()){this.transition=null;return;}
+  // Snapshot what was *actually displayed* (including a partially faded
+  // previous view) before replacing the active transition.
+  const prior=this.transition;
+  const fromOrbitOpacity=this.orbitOpacity();
+  const fromPositions=new Map([...this.positions].map(([id,p])=>[id,p.slice()]));
+  const fromRadii=new Map(),fromOrbits=new Map();
+  for(const body of this.bodies){
+    fromRadii.set(body.id,this.bodyRadius(body));
+    if(body.parentId){
+      const parent=this.byId.get(body.parentId);
+      fromOrbits.set(body.id,this.orbitRadius(body,parent));
+    }
+  }
+  const fromVisualBodies=new Map(),fromVisualOrbits=new Map();
+  if(kind==='view'){
+   const ringScale=this.ringScale();
+   for(const body of this.visibleSceneBodies()){
+    fromVisualBodies.set(body.id,{body,position:this.positions.get(body.id).slice(),
+      radius:fromRadii.get(body.id),opacity:this.sceneBodyOpacity(body),ringScale});
+   }
+   const center=(this.positions.get(this.planetId||'sun')||[0,0,0]).slice();
+   for(const body of this.visibleSceneOrbits()){
+    const selected=body.id===this.selectedId;
+    fromVisualOrbits.set(body.id,{body,center:center.slice(),radius:fromOrbits.get(body.id),
+      opacity:this.sceneOrbitOpacity(body),selected,alpha:selected ? .70 : (this.planetId ? .22 : body.type==='planet' ? .20 : .16),
+      settings:{orbitContrast:this.settings?.orbitContrast}});
+   }
+   if(prior?.kind==='view'){
+    for(const source of prior.fromVisualBodies.values())if(!fromVisualBodies.has(source.body.id)){
+     const ghost=this.departingBodyState(source,prior);
+     if(ghost.opacity>.001)fromVisualBodies.set(source.body.id,ghost);
+    }
+    for(const source of prior.fromVisualOrbits.values())if(!fromVisualOrbits.has(source.body.id)){
+     const ghost=this.departingOrbitState(source,prior);
+     if(ghost.opacity>.001)fromVisualOrbits.set(source.body.id,ghost);
+    }
+   }
+  }
+  this.transition={kind,at:now,duration:LAYOUT_TRANSITION_MS,amount:0,
+    fromPositions,fromRadii,fromOrbits,fromOrbitOpacity,fromVisualBodies,fromVisualOrbits,
+    fromRingScale:this.ringScale(),fromRow:!!this.settings?.row,fromPlanetId:this.planetId,
+    fromView:this.planetId||'solar',cameraFrom:[this.camera.theta,this.camera.phi],cameraTo:null};
+ }
+ setCameraAngles(theta,phi){
+  if(this.transition){this.transition.cameraFrom=[this.camera.theta,this.camera.phi];this.transition.cameraTo=[theta,phi];}
+  else{this.camera.theta=theta;this.camera.phi=phi;}
+ }
+ advanceTransition(now=performance.now()){
+  const transition=this.transition;
+  if(!transition)return;
+  const progress=Math.max(0,Math.min(1,(now-transition.at)/transition.duration));
+  transition.amount=rubberEase(progress);
+  if(transition.cameraTo){
+    this.camera.theta=transition.cameraFrom[0]+(transition.cameraTo[0]-transition.cameraFrom[0])*Math.min(1,transition.amount);
+    this.camera.phi=transition.cameraFrom[1]+(transition.cameraTo[1]-transition.cameraFrom[1])*Math.min(1,transition.amount);
+  }
+  if(progress>=1)this.transition=null;
+ }
+ orbitOpacity(){
+  const transition=this.transition;
+  if(!transition)return this.settings?.row ? 0 : 1;
+  // Capture the last *drawn* opacity when reversing a row transition.
+  // Previous code restarted from 0/1 and caused a visible blink.
+  const amount=clamp(transition.amount,0,1);
+  const target=this.settings?.row ? 0 : 1;
+  return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
+ }
+ targetBodyRadius(body){
+  return displayBodyRadius(body,this.settings,this.planetId?(this.byId?.get(this.planetId)||{radiusKm:1}):null);
+ }
+ orbitRadius(body,parent){
+  const destination=displayOrbitRadius(body,parent,this.settings,this.planetId?this.byId?.get(this.planetId):null);
+  const origin=this.transition?.fromOrbits?.get(body.id);
+  return origin===undefined?destination:Math.max(0,origin+(destination-origin)*this.transition.amount);
+ }
  applyCameraPreset(index){
   this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
   const tracked=this.followEnabled && this.followedBodyId===this.selectedId;
   this.focusedBodyId=tracked?this.selectedId:null;
-  this.camera.desiredTarget=tracked?(this.positions.get(this.selectedId)?.slice()||[0,0,0]):[0,0,0];
-  this.camera.desiredDist=47;
-  this.camera.theta=.63;this.camera.phi=[.99,1.54,.16][index];
+  this.camera.desiredTarget=tracked?(this.positions.get(this.selectedId)?.slice()||[0,0,0]):(this.settings?.row?this.rowFrame().target:[0,0,0]);
+  this.camera.desiredDist=this.solarOverviewDistance();
+  this.setCameraAngles(this.settings?.row?0:.63,this.settings?.row?1.5:[.99,1.54,.16][index]);
  }
  updateKeyboard(now=performance.now()){moveCameraWithKeyboard(this,now);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();const w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));this.dpr=Math.min(window.devicePixelRatio||1,1.8);
@@ -129,12 +307,15 @@ export class SolarRenderer {
  }
  /** The planet and its direct natural/artificial orbiters form an isolated scene. */
  planetChildren(id=this.planetId){return planetChildrenFor(this.bodies,id);}
- planetFrameDistance(id=this.planetId){return planetFrameDistance(this.width,this.height,this.byId.get(id),this.planetChildren(id));}
+ planetFrameDistance(id=this.planetId){return planetFrameDistance(this.width,this.height,this.byId.get(id),this.planetChildren(id),this.settings);}
   showPlanetSystem(id){if(!['planet','dwarf'].includes(this.byId.get(id)?.type))return false;
+  const animated=this.canAnimateLayout();
+  if(animated)this.beginTransition('view');
   this.planetId=id;this.markCameraMoved();
-  this.camera.theta=.63;this.camera.phi=.84;
-  this.camera.target=[0,0,0];this.camera.desiredTarget=[0,0,0];
-  this.camera.dist=this.camera.desiredDist=this.planetFrameDistance(id);
+  this.setCameraAngles(.63,.84);
+  if(!animated)this.camera.target=[0,0,0];this.camera.desiredTarget=this.settings?.row?this.rowFrame().target:[0,0,0];
+  const frame=this.settings?.row?this.rowDistance():this.planetFrameDistance(id);
+  if(!animated)this.camera.dist=frame;this.camera.desiredDist=frame;
   this.calcPositions(this.simTime);
   if(this.followEnabled)this.followSelectedBody();
   return true;
@@ -153,22 +334,49 @@ export class SolarRenderer {
     const pos=this.positions.get(id);if(pos)this.camera.desiredTarget=pos.slice();
     this.camera.desiredDist=b.type==='satellite'?5.5:6.5;
    }
+   if(this.settings?.scaleObjects){
+    const radius=this.bodyRadius(b);
+    if(radius>0)this.camera.desiredDist=Math.max(this.minCameraDistance()*2,radius*10);
+   }
    return;
   }
   const pos=this.positions.get(id);if(pos)this.camera.desiredTarget=pos.slice();
   const dist=b.type==='star'?24:b.type==='planet'?10.5:b.type==='moon'?3.8:b.type==='satellite'?3.6:b.type==='dwarf'?8.7:7.5;
-  this.camera.desiredDist=dist;
+  const radius=this.settings?.scaleObjects?this.bodyRadius(b):0;
+  this.camera.desiredDist=radius>0?Math.max(this.minCameraDistance()*2,radius*10):dist;
  }
  /** Overview always exits the isolated planet view and returns to the solar system. */
- reset(){const wasPlanet=Boolean(this.planetId);this.planetId=null;
+ reset(){const wasPlanet=Boolean(this.planetId);
+  const animated=wasPlanet && this.canAnimateLayout();
+  if(animated)this.beginTransition('view');
+  this.planetId=null;
   this.applyCameraPreset(0);
   if(wasPlanet){
-    this.camera.target=[0,0,0];this.camera.dist=47;this.calcPositions(this.simTime);
+    if(!animated){this.camera.target=[0,0,0];this.camera.dist=this.solarOverviewDistance();}
+    this.calcPositions(this.simTime);
     if(this.followEnabled)this.followSelectedBody();
   }
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});}
- calcPositions(timeMs){computePositions(this,timeMs);}
+ calcPositions(timeMs){
+  computePositions(this,timeMs);
+  if(this.settings?.row){
+    const layout=this.rowGeometry();
+    // Stable order is also used by the alternating above/below row labels.
+    this._rowLabelOrder=new Map(layout.ids.map((id,index)=>[id,index]));
+    for(const [id,position] of layout.positions)this.positions.set(id,position);
+  }else this._rowLabelOrder=null;
+  const transition=this.transition;
+  if(transition){
+    for(const [id,target] of this.positions){
+      // A newly visible child enters at its parent's old location if absent.
+      const source=transition.fromPositions.get(id)
+        ?? transition.fromPositions.get(this.byId.get(id)?.parentId)
+        ?? target;
+      this.positions.set(id,blendPosition(source,target,transition.amount));
+    }
+  }
+ }
   shouldDraw(b){
   if(!layerEnabled(this.settings?.layers,b.type))return false;
   // Categories are actual scene layers, not only catalog filters.
@@ -177,12 +385,24 @@ export class SolarRenderer {
   return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
  }
  start(time,selected,settings){this.simTime=time;this.selectedId=selected;this.settings=settings;this.calcPositions(time);}
+  minCameraDistance(){return this.settings?.scaleObjects || this.settings?.row ? 0.000005 : 2.2;}
+  maxCameraDistance(){
+    if(this.settings?.row)return Math.max(100,this.rowDistance()*2.8);
+    return this.planetId && this.settings?.scaleOrbits
+      ? Math.max(100,this.planetFrameDistance()*1.5)
+      : this.settings?.scaleOrbits ? 350 : !this.planetId && optimizedSolarMode(this.settings) ? 100*OPTIMIZED_ORBIT_FACTOR : 100;
+  }
+  bodyRadius(body){
+   const target=this.targetBodyRadius(body),previous=this.transition?.fromRadii?.get(body.id);
+   return previous===undefined?target:Math.max(0,previous+(target-previous)*this.transition.amount);
+  }
   makeVP(visibleFocusOffset=this.visibleFocusOffset??0){this.updateKeyboard();
     // Only automatic object focus is reframed. Manual rotation/pan/zoom restores
     // the ordinary centered camera; desktop and closed sheet supply offset 0.
     const offset=this.focusedBodyId!=null && this.focusedBodyId===this.selectedId?clamp(visibleFocusOffset,0,1):0;
     this.focusOffsetY=lerp(this.focusOffsetY||0,offset,.14);
-    return cameraView(this.camera,this.width,this.height,this.focusOffsetY);
+    const far=Math.max(350,this.camera.dist*4,this.camera.desiredDist*4,this.maxCameraDistance()*1.5);
+    return cameraView(this.camera,this.width,this.height,this.focusOffsetY,far);
   }
   useLineProgram(vp){const gl=this.gl,p=this.lineProgram;gl.useProgram(p);
   gl.uniformMatrix4fv(gl.getUniformLocation(p,'uVP'),false,vp);
@@ -190,7 +410,7 @@ export class SolarRenderer {
   const a=gl.getAttribLocation(p,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
   return p;
  }
- orbitLine(b,center,vp,alpha,selected){drawOrbitLine(this,b,center,vp,alpha,selected);}
+ orbitLine(b,center,vp,alpha,selected,options){drawOrbitLine(this,b,center,vp,alpha,selected,options);}
   drawStars(vp){const gl=this.gl,p=this.starsProgram;gl.useProgram(p);gl.uniformMatrix4fv(gl.getUniformLocation(p,'uVP'),false,vp);
   gl.uniform1f(gl.getUniformLocation(p,'uPixelRatio'),this.dpr);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.starVB);
@@ -198,14 +418,18 @@ export class SolarRenderer {
   gl.vertexAttribPointer(pos,3,gl.FLOAT,false,16,0);gl.vertexAttribPointer(size,1,gl.FLOAT,false,16,12);
   gl.depthMask(false);gl.drawArrays(gl.POINTS,0,this.starCount);gl.depthMask(true);
  }
- drawSphere(body,p,vp){const gl=this.gl,program=this.bodyProgram;gl.useProgram(program);
+ drawSphere(body,p,vp,options={}){const gl=this.gl,program=this.bodyProgram;gl.useProgram(program);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.sphereVB);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.sphereIB);
   const a=gl.getAttribLocation(program,'aPosition'),n=gl.getAttribLocation(program,'aNormal'),uv=gl.getAttribLocation(program,'aUV');
   gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(n);gl.enableVertexAttribArray(uv);
   gl.vertexAttribPointer(a,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(n,3,gl.FLOAT,false,32,12);
   gl.vertexAttribPointer(uv,2,gl.FLOAT,false,32,24);
-  const r=(this.planetId?planetBodyRadius(body):renderRadius(body))*(this.selectedId===body.id?1.045:1);
-  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,r)));
+  const r=options.radius ?? this.bodyRadius(body); // No selected-body enlargement in physical-size mode.
+  const opacity=clamp(options.opacity ?? this.sceneBodyOpacity(body),0,1);
+  if(opacity<=.001)return;
+  gl.uniform1f(gl.getUniformLocation(program,'uOpacity'),opacity);
+  if(opacity<.999)gl.depthMask(false);
+  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1))));
   const color=hex(body.color);gl.uniform3f(gl.getUniformLocation(program,'uBase'),...color);
   const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));gl.uniform3f(gl.getUniformLocation(program,'uLight'),...light);
   gl.uniform1f(gl.getUniformLocation(program,'uStyle'),STYLES[body.style]??1);
@@ -219,26 +443,44 @@ export class SolarRenderer {
   gl.bindTexture(gl.TEXTURE_2D,texture||null);
   gl.uniform1i(gl.getUniformLocation(program,'uDiffuse'),0);
   gl.drawElements(gl.TRIANGLES,this.sphereCount,gl.UNSIGNED_SHORT,0);
+  if(opacity<.999)gl.depthMask(true);
  }
- drawRings(p,vp){const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
+ targetRingScale(){
+  return this.settings?.scaleObjects ? this.targetBodyRadius(this.byId.get('saturn'))*2.15 : (this.planetId?2.05:1);
+ }
+ ringScale(){
+  const target=this.targetRingScale();
+  const previous=this.transition?.fromRingScale;
+  return previous===undefined?target:Math.max(0,previous+(target-previous)*this.transition.amount);
+ }
+ drawRings(p,vp,options={}){const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);const a=gl.getAttribLocation(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
-  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,this.planetId?2.05:1,.41)));
+  const ringScale=options.scale ?? this.ringScale();
+  gl.uniform1f(gl.getUniformLocation(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
+  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,ringScale,.41)));
   gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,200*6);gl.depthMask(true);
  }
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
+  this.advanceTransition();
   this.start(timeMs,selectedId,settings);
+  // Keep a focused object centered while its animated world position changes.
+  if(this.transition && this.focusedBodyId && !this.followEnabled){
+    const focused=this.positions.get(this.focusedBodyId);
+    if(focused)this.camera.desiredTarget=focused.slice();
+  }
   this.updateFollowTarget();
   const {vp}=this.makeVP();this.vp=vp;
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   this.drawStars(vp);
+  this.drawDepartingScene(vp);
   if(this.planetId)drawPlanetSystemScene(this,selectedId,settings,vp);
   else drawSolarSystemScene(this,selectedId,settings,vp);
  }
   pick(x,y){if(!this.vp)return;let best=null,dist=Infinity;
   for(const b of this.rendered){const pos=this.positions.get(b.id);if(!pos)continue;
    const p=projected(pos,this.vp,this.width,this.height);if(!p?.visible)continue;
-   const radius=(this.planetId?planetBodyRadius(b):renderRadius(b))*this.height/(this.camera.dist*.6);
+   const radius=this.bodyRadius(b)*this.height/(this.camera.dist*.6);
    const d=Math.hypot(x-p.x,y-p.y);const threshold=Math.max(12,Math.min(radius+5,40));
    if(d<threshold&&d<dist){best=b;dist=d;}
   }
