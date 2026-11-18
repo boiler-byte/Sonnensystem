@@ -18,6 +18,22 @@ export function createViewSettings(view = 'solar') {
   };
 }
 
+/** The five Layer presentation controls are separate from Objekt/Bahn/Reihe. */
+export const DISPLAY_SETTING_KEYS = Object.freeze(['labels','lighting','fourMoons','orbits','orbitContrast']);
+
+/** ON means realistic lighting, unrestricted moons and visible high-contrast orbits. */
+export function displayPreset(name = 'standard', view = 'solar') {
+  if(name === 'all')return {labels:true,lighting:'realistic',fourMoons:false,orbits:true,orbitContrast:true};
+  const defaults=createViewSettings(view);
+  return Object.fromEntries(DISPLAY_SETTING_KEYS.map(key=>[key,defaults[key]]));
+}
+
+/** A highlighted preset must match both its categories and its presentation. */
+export function displayMatchesPreset(settings, name = 'standard', view = 'solar') {
+  const preset=displayPreset(name,view);
+  return DISPLAY_SETTING_KEYS.every(key=>settings?.[key]===preset[key]);
+}
+
 /** Four largest natural moons *per parent* by catalog radius, not by distance or name. */
 export function largestMoonIds(bodies, maximum = 4) {
   const groups = new Map();

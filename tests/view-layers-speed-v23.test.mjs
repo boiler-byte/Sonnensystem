@@ -118,5 +118,5 @@ test('v23: application binds the scene-specific settings to render, catalog and 
     assert.match(html,new RegExp(`data-layer-type="${type}" checked`));
   for(const type of ['moon','satellite'])
     assert.doesNotMatch(html,new RegExp(`data-layer-type="${type}" checked`));
-  assert.match(html,/id="layer-note"/);
+  assert.doesNotMatch(html,/id="layer-note"/);
 });

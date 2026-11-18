@@ -23,13 +23,13 @@ const requiredIds=Object.values(newGroups).flatMap(group=>Object.keys(group));
 test('v52: the first Layer-Dropdown category is Sterne, in model and DOM',async()=>{
   const html=await read('index.html');
   const layer=html.split('id="layer-popover"')[1].split('id="time-panel"')[0];
-  const entries=[...layer.matchAll(/<label class="layer-option"><input type="checkbox" data-layer-type="([a-z]+)"( checked)?\/><span>([^<]+)<\/span><\/label>/g)];
+  const entries=[...layer.matchAll(/<label class="layer-option"><input type="checkbox" data-layer-type="([a-z]+)"( checked)?(?: aria-label="[^"]*")?\/><span>([^<]+)<\/span><\/label>/g)];
   assert.equal(entries.length,LAYER_TYPES.length);
   assert.deepEqual(entries.map(m=>m[1]),LAYER_TYPES);
   assert.equal(entries[0][1],'star');
   assert.equal(entries[0][3],'Sterne');
   assert.deepEqual(entries.filter(m=>m[2]).map(m=>m[1]),['star','planet']);
-  assert.equal(entries.find(m=>m[1]==='tno')[3],'Transneptunische Objekte');
+  assert.equal(entries.find(m=>m[1]==='tno')[3],'Transnept. Objekte');
   assert.equal((layer.match(/data-layer-type="star"/g)||[]).length,1);
 });
 
@@ -135,7 +135,7 @@ test('v52: malformed aliases are rejected instead of breaking catalog search',as
 });
 
 test('v52: release and offline shell version match the added data',async()=>{
-  assert.equal((await readJson('package.json')).version,'56.0.0');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v56/);
+  assert.equal((await readJson('package.json')).version,'62.0.0');
+  assert.match(await read('sw.js'),/sonnensystem-shell-v62/);
   assert.match(await read('src/ui/object-details.js'),/Oskulierende Elemente · schematische Bahn/);
 });

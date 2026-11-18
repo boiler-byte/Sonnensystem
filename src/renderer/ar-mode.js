@@ -4,6 +4,7 @@
  * selected body. No camera/media/location permissions are requested.
  */
 import { clamp, vnorm, dot, cross } from './math.js';
+import { restoreOrbitFromLook } from './camera.js';
 
 const DEG=Math.PI/180;
 const normalize=q=>{const n=Math.hypot(...q)||1;return q.map(v=>v/n);};
@@ -67,22 +68,7 @@ function smoothLook(old,next){
 
 /** Render device-look as an ordinary orbit camera again without a view jump. */
 export function restoreOrbitFromDeviceLook(camera){
- if(!camera?.arView)return;
- const f=vnorm(camera.arView.forward),r=camera.dist;
- const eye=[camera.target[0]+r*Math.sin(camera.phi)*Math.sin(camera.theta),
-            camera.target[1]+r*Math.cos(camera.phi),
-            camera.target[2]+r*Math.sin(camera.phi)*Math.cos(camera.theta)];
- // Avoid the pole singularity of the ordinary world-up orbit camera if the
- // phone is pointing straight up or down when AR is switched off.
- camera.phi=clamp(Math.acos(clamp(-f[1],-1,1)),.001,Math.PI-.001);
- camera.theta=Math.atan2(-f[0],-f[2]);
- const orbitForward=[-Math.sin(camera.phi)*Math.sin(camera.theta),
-                     -Math.cos(camera.phi),
-                     -Math.sin(camera.phi)*Math.cos(camera.theta)];
- camera.target=eye.map((v,i)=>v+orbitForward[i]*r);
- camera.desiredTarget=camera.target.slice();
- camera.desiredDist=r;
- camera.arView=null;
+ restoreOrbitFromLook(camera,'arView');
 }
 
 /** Show the control only where motion sensors can actually be requested. */
@@ -130,11 +116,15 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   if(!current)return;
   latestOrientation=current;
   if(!reference){
+   // The sensor takes over the last manually chosen, stationary direction
+   // without snapping back to the old target-orbit orientation.
+   if(renderer.camera.freeLook)restoreOrbitFromLook(renderer.camera);
    reference=current;basis=cameraLookBasis(renderer.camera);
    // Start at the current view, never snap to a compass heading.
    renderer.camera.desiredTarget=renderer.camera.target.slice();
    renderer.camera.desiredDist=renderer.camera.dist;
-   renderer.markCameraMoved?.();
+   // Looking around by sensor rotates the gaze, not the camera's position.
+   // Do not mark the preset as manually displaced, so AR can cycle all views.
    active=true;pending=false;
    if(timeout!==null){cancel(timeout);timeout=null;}
    notify('AR-Modus: An – Smartphone zum Umsehen bewegen');
@@ -143,14 +133,18 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   const next=relativeDeviceLook(reference,current,basis);
   renderer.camera.arView=smoothLook(renderer.camera.arView,next);
  };
- /** Re-anchor the phone's present attitude to the current scene-camera direction. */
- const recenter=()=>{
+ /** Align the current sensor attitude to the selected camera preset. */
+ const alignToPerspective=()=>{
   if(!active||disposed||!latestOrientation||!renderer?.camera)return false;
   reference=latestOrientation;
   basis=cameraLookBasis(renderer.camera);
-  // Make the alignment visible immediately. Smoothing the old AR direction
-  // would otherwise pull the newly centered view away from its target.
+  // Jump to the new heading without interpolating from the previous AR gaze.
   renderer.camera.arView={forward:basis.forward.slice(),up:basis.up.slice()};
+  return true;
+ };
+ /** Existing explicit realignment remains available for callers other than reset. */
+ const recenter=()=>{
+  if(!alignToPerspective())return false;
   notify('AR-Perspektive neu ausgerichtet');
   return true;
  };
@@ -187,7 +181,7 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
  sync();
  return {
   get available(){return available;},get active(){return active;},get pending(){return pending;},
-  activate,stop,toggle,recenter,
+  activate,stop,toggle,recenter,alignToPerspective,
   dispose(){
    if(disposed)return;
    stop();disposed=true;

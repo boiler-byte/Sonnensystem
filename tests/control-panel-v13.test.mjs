@@ -18,8 +18,9 @@ test('v26: control panel has no view selector; the camera reset is separate and 
   assert.doesNotMatch(html,/id="view-mode-select"|for="view-mode-select"/);
   assert.doesNotMatch(controls,/id="reset-camera"/);
   assert.match(html,/<div class="viewport-actions"[\s\S]*?<button class="icon-button camera-reset-button" id="reset-camera"/);
-  assert.match(html,/<path d="M9 9 4 4/);
-  assert.match(html,/<path d="M9 9 4 4/);
+  assert.match(html,/data-perspective="oblique"/);
+  assert.match(html,/data-perspective="topdown"/);
+  assert.match(html,/data-perspective="side"/);
   for(const id of ['play-btn','speed-btn','today-btn','orbit-visibility-btn','orbit-contrast-btn','toggle-labels'])
     assert.match(controls,new RegExp(`id="${id}"`));
   const timeline=area(html,'id="time-panel"','id="canvas-error"');

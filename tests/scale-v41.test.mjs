@@ -100,7 +100,9 @@ test('v41: scale toggles update both scene views and pressed states independentl
     const element=fake.get(id);element.classList._parent=element;return element;
   };
   const r={settings:settings.solar,_labelState:{},camera:{desiredDist:47,desiredTarget:[0,0,0]},planetId:null,focusedBodyId:null,cameraManuallyMoved:false,
-    count:0,calcPositions(){this.count++;},planetFrameDistance(){return 180;}};
+    count:0,calcPositions(){this.count++;},planetFrameDistance(){return 180;},
+    resetViewCamera(){this.camera.desiredDist=this.settings.scaleOrbits?160:this.settings.scaleObjects?188:47;
+      this.camera.desiredTarget=[0,0,0];this.cameraManuallyMoved=false;this.focusedBodyId=null;}};
   const state={settings:settings.solar,viewSettings:settings,time:123};
   const notices=[];
   const context=vm.createContext({$:get,S:state,renderer:r,notifyToggle:msg=>notices.push(msg)});

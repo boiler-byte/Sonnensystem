@@ -45,8 +45,8 @@ test('v50: AR camera reset re-anchors the latest valid phone posture without orb
  assert.equal(x.mode.active,false);
  x.sensor({alpha:10,beta:65,gamma:-12});
  assert.equal(x.mode.active,true);
- assert.match(x.resetButton.title,/AR-Perspektive neu ausrichten/);
- assert.match(x.resetAttrs.get('aria-label'),/AR-Perspektive neu ausrichten/);
+ assert.match(x.resetButton.title,/AR: Nächste Perspektive: Topdown/);
+ assert.match(x.resetAttrs.get('aria-label'),/AR: Nächste Perspektive: Topdown/);
  x.sensor({alpha:100,beta:48,gamma:27});
  const rotated=cameraView(x.renderer.camera,390,760);
  assert.ok(distance(x.renderer.camera.arView.forward,startBasis.forward)>.02);
@@ -78,8 +78,8 @@ test('v50: AR camera reset re-anchors the latest valid phone posture without orb
  x.sensor({alpha:128,beta:69,gamma:10});
  nearVector(x.renderer.camera.arView.forward,startBasis.forward);
  x.mode.stop();
- assert.equal(x.resetButton.title,'Kamera zurücksetzen');
- assert.equal(x.resetAttrs.get('aria-label'),'Kamera zurücksetzen');
+ assert.equal(x.resetButton.title,'Nächste Perspektive: Topdown');
+ assert.equal(x.resetAttrs.get('aria-label'),'Nächste Perspektive: Topdown');
  assert.equal(x.renderer.camera.arView,null);
  assert.equal(x.mode.recenter(),false);
  x.mode.dispose();
@@ -91,7 +91,7 @@ test('v50: pending, unsupported, or stopped AR cannot recenter',async()=>{
  const activate=x.mode.activate();
  assert.equal(x.mode.pending,true);
  assert.equal(x.mode.recenter(),false);
- assert.equal(x.resetButton.title,'Kamera zurücksetzen');
+ assert.equal(x.resetButton.title,'Nächste Perspektive: Topdown');
  x.sensor({alpha:20,beta:60,gamma:0}); // listener not installed while permission is pending
  assert.equal(x.mode.active,false);
  x.mode.stop();
@@ -121,8 +121,8 @@ test('v50: invalid sensor samples do not replace the current alignment reference
 
 test('v50: reset click chooses AR recenter only while AR is active, retaining standard camera resets otherwise',async()=>{
  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
- assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',\(\)=>\{\s*if\(arMode\?\.active\)\{arMode\.recenter\(\);return;\}/);
- assert.match(app,/renderer\?\.cycleCameraPerspective\(\);updateMode\(\);updateDetail\(\);mobileSheets\?\.close\(\);/);
+ assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',\(\)=>\{\s*if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?arMode\.alignToPerspective\(\)/);
+ assert.match(app,/renderer\?\.cycleCameraPerspective\(\);[\s\S]*?if\(leavingPlanet\)updateMode\(\)/);
  assert.match(app,/createARMode\(renderer,\$\('ar-mode-btn'\),\{notify:notifyToggle,onStateChange:active=>\{/);
  assert.match(app,/syncSceneMode\(S,renderer,arMode\?\.active\)/);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
@@ -136,9 +136,9 @@ test('v50: scene-specific reset label is restored after AR ends in a planet scen
  assert.equal(x.resetButton.title,'Zurück zum Sonnensystem');
  assert.equal(x.resetAttrs.get('aria-label'),'Zurück zur Sonnensystem-Übersicht');
  await x.mode.activate();x.sensor({alpha:10,beta:70,gamma:0});
- assert.equal(x.resetButton.title,'AR-Perspektive neu ausrichten');
+ assert.equal(x.resetButton.title,'AR: Nächste Perspektive: Topdown');
  x.syncLabel(true); // A scene update must not overwrite the AR reset action.
- assert.match(x.resetAttrs.get('aria-label'),/AR-Perspektive neu ausrichten/);
+ assert.match(x.resetAttrs.get('aria-label'),/AR: Nächste Perspektive: Topdown/);
  x.mode.stop();
  assert.equal(x.resetButton.title,'Zurück zum Sonnensystem');
  assert.equal(x.resetAttrs.get('aria-label'),'Zurück zur Sonnensystem-Übersicht');

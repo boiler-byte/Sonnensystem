@@ -32,7 +32,10 @@ function mockControl(view='solar'){
     beginTransition(kind){snapshots.push({kind,scaleObjects:settings.scaleObjects,scaleOrbits:settings.scaleOrbits,row:settings.row});},
     setCameraAngles(theta,phi){this.camera.theta=theta;this.camera.phi=phi;},
     calcPositions(){this.calcCalls++;},rowFrame(){return {target:[1,0,0]};},rowDistance(){return 7;},
-    planetFrameDistance(){return 24;},solarOverviewDistance(){return 47;}
+    planetFrameDistance(){return 24;},solarOverviewDistance(){return 47;},
+    resetViewCamera(){this.camera.desiredTarget=settings.row?this.rowFrame().target:[0,0,0];
+      this.camera.desiredDist=settings.row?this.rowDistance():this.planetId?this.planetFrameDistance():this.solarOverviewDistance();
+      this.cameraManuallyMoved=false;this.focusedBodyId=null;}
   };
   const S={viewSettings,settings,time};
   const notices=[];

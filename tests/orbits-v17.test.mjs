@@ -115,6 +115,6 @@ test('v55: orbit switches are in Layer appearance controls without a separate me
  assert.doesNotMatch(html,/id="orbit-popover"|id="toggle-orbits"|id="orbit-picker-wrap"/);
  assert.doesNotMatch(app,/setOrbitPopover|toggle-orbits|orbit-popover/);
  assert.doesNotMatch(mobile,/orbit-popover|toggle-orbits/);
- assert.match(html,/Standard: Sterne und Planeten/);
+ assert.doesNotMatch(html,/Standard: Sterne und Planeten/);
 });
 

@@ -10,11 +10,11 @@ const near=(actual,expected,tolerance=.001)=>assert.ok(Math.abs(actual-expected)
 
 const camera=()=>({theta:.63,phi:.99,dist:10.5,desiredDist:10.5,target:[0,0,0],desiredTarget:[0,0,0]});
 
-test('v31: layer popover is 166px for the final desktop/mobile rule',async()=>{
+test('v59: layer popover keeps 155px across desktop and mobile rules',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:145px;max-height:/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px;max-height:/);
   assert.doesNotMatch(css,/\.viewport>\.control-panel \.layer-popover\{width:188px/);
-  assert.match(await read('sw.js'),/sonnensystem-shell-v56/);
+  assert.match(await read('sw.js'),/sonnensystem-shell-v62/);
 });
 
 test('v31: visible camera area uses the real sheet top and canvas rectangle',()=>{

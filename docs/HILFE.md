@@ -1,3 +1,37 @@
+# Hilfe – Sonnensystem (v62)
+
+**v62:** Ohne ausgewähltes Objekt drehen Rechtsziehen (Maus) und Zwei-Finger-Wischen die Blickrichtung **am selben Kamerastandort**, wie im AR-Modus. Die linke Maustaste bzw. ein Finger verschiebt weiterhin; Zoom per Mausrad/Pinch bleibt unverändert. Mit ausgewähltem Objekt bleibt die bisherige Kamerarotation bestehen. Nach erneuter Auswahl oder Kamera-Reset kehrt die normale Perspektivsteuerung zurück. Im Layer-Menü heißt die Kategorie weiterhin **Transnept. Objekte**.
+
+**v61:** Das Kamerasymbol für die Perspektive **Schräg/oben** zeigt jetzt diagonal **nach unten links**. Die Perspektivfolge und das AR-Verhalten bleiben unverändert.
+
+**v60:** Im Layer-Dropdown steht **„Transnept. Objekte“** statt „Transneptunische Objekte“. Die Suche und die Kategoriezuordnung verwenden weiterhin den ausgeschriebenen Namen.
+
+**v59:** Das Layer-Dropdown ist **155 px** breit. Seine Presets, Darstellungsoptionen und Objektkategorien bleiben unverändert.
+
+### Kameraansichten und AR (v58)
+
+Der **Kamera-Button** am oberen rechten Rand zeigt immer die **nächste** Kameraansicht als SVG: die diagonale Videokamera für **Schräg/oben**, die nach unten gerichtete für **Topdown** und die frontal sichtbare Videokamera für **Seitlich**. Die Reihenfolge lautet **Schräg/oben → Topdown → Seitlich → Schräg/oben**. Aus der ursprünglichen Schrägansicht wird daher als nächstes **Topdown** angeboten. Nach manuellem Schwenken oder Zoomen wird die Schrägansicht wieder zur nächsten Wahl. Die Schaltfläche trägt einen entsprechenden Tooltip und einen zugänglichen Namen.
+
+Bei aktivem **AR-Modus** bleibt das Gerät mit dem Orientierungssensor gekoppelt. Mit dem Kamera-Button schalten Sie in der **aktuellen Szene**, auch in einer Planetenansicht, durch die drei Perspektiven. Jede Auswahl orientiert den momentanen Sensorwinkel an der neuen Perspektive aus. **Nur Umsehen** – das Drehen und Neigen des Telefons – verändert die Blickrichtung, nicht die nächste Preset-Auswahl. Ein manuelles Verschieben/Zoomen der virtuellen Kamera stellt dagegen die nächste Preset-Auswahl wieder auf Schräg/oben. Es ist keine erneute Berechtigungsabfrage erforderlich. Ein Orientierungssensor kann tatsächliche Ortsänderungen des Smartphones nicht erfassen.
+
+Ist **AR ausgeschaltet**, wechselt der Button in der normalen Sonnensystemansicht zwischen den drei Ansichten. In der **Planetenansicht** führt er weiterhin zur Sonnensystemübersicht zurück.
+
+---
+
+### Layer-Dropdown und Presets (v57)
+
+Im **Layer-Dropdown** stehen nach **Alle | Standard** direkt die Icons **Beschriftung**, **Beleuchtung** und **Alle Monde**. In der **zweiten Zeile** befinden sich **Umlaufbahn** und **Kontrast**. Darunter stehen die Objektkategorien mit **Sterne** an erster Stelle. Die frühere sichtbare Überschrift „Darstellung“ und der beschreibende Text mit den Standard-Kategorien am Ende des Menüs entfallen.
+
+**Alle** schaltet jetzt **alle Objektkategorien und alle fünf Darstellungsschalter ein**. **Standard** stellt sowohl Kategorien als auch die fünf Anzeigeoptionen auf die Vorgaben der *aktuellen* Ansicht zurück. Im **Sonnensystem** sind dies: Sterne + Planeten; Beschriftung an, Beleuchtung optimiert/aus, „Alle Monde“ aus (höchstens vier), Umlaufbahn an, Kontrast aus. In der **Planetenansicht**: Planeten + Monde + Satelliten; Beschriftung an, Beleuchtung realistisch/an, „Alle Monde“ an, Umlaufbahn an, Kontrast aus. Einstellungen der anderen Ansicht bleiben bestehen. Objektmaßstab, Bahnabstände und Reihenansicht werden durch die Presets nicht verändert.
+
+Wenn man nach der Preset-Auswahl eine Objektkategorie oder eine Darstellungsoption individuell ändert, wird die Hervorhebung von „Alle“ beziehungsweise „Standard“ entfernt, bis wieder alle Werte der jeweiligen Voreinstellung entsprechen.
+
+### Maßstabs-Toggles und Kameraposition (v57)
+
+Ein Wechsel von **Objekt** oder **Bahn** im Control Panel bewegt die Kamera wieder in die **Ausgangsposition der gerade geöffneten Ansicht**. Das gilt auch nach Drehen, Schwenken, Zoomen, Fokussieren eines Himmelskörpers oder aktivierter Objekt-Nachführung. Eine aktive Nachführung wird dabei beendet. Für die Sonnensystemansicht ist die Schrägübersicht der Ausgangspunkt; in der Planetenansicht wird das Planetensystem zentriert; in der Reihenansicht die Anfangs-Rahmung der Reihe. Der Übergang ist animiert; die Bahn-Wellenanimation der Planetenansicht bleibt erhalten.
+
+---
+
 ### Neue Katalogeinträge und Trefferreihenfolge (v56)
 
 Im Objektkatalog sind **Didymos und Dimorphos** (neue Layer-Kategorie **Doppelasteroiden**), **neun weitere kleine natürliche Monde** bei Jupiter, Saturn und Neptun sowie **sieben künstliche Erdsatelliten** verfügbar: Tiangong (Tianhe), zwei GPS-, zwei NOAA- und zwei GOES-Satelliten. Sie können die Objekte über Namen oder Alias suchen und im Detailbereich ihre Bahnangaben und Quellen öffnen.
@@ -6,7 +40,7 @@ Im Objektkatalog sind **Didymos und Dimorphos** (neue Layer-Kategorie **Doppelas
 
 **Darstellung:** Die neue Kategorie **Doppelasteroiden** kann im Layer-Dropdown separat aktiviert werden. Für die neu aufgenommenen kleinen Monde liegen überwiegend mittlere Bahnelemente vor; neue künstliche Satelliten besitzen schematische Umlaufbahnen auf Basis typischer Bahndaten. Besonders GPS- und Wettersatelliten werden **nicht in Echtzeit** verfolgt. Bei unbekanntem Radius steht im Katalog `—`; es wird kein Wert geschätzt.
 
-# Hilfe – Sonnensystem (v55)
+## Vorherige Bedienung (v55)
 
 ### Control Panel und Layer-Dropdown (v55)
 
@@ -42,11 +76,11 @@ Beim Aktivieren von **Reihe** stellt die Anwendung den **Objekt**-Schalter autom
 
 In der **Planetenansicht** bewegen sich beim Ausschalten von **Bahn** die Umlaufbahnen ohne Gummiband-Rückschwingen auf die schematischen Abstände. Die inneren Bahnen beginnen etwas früher als die äußeren, sodass eine dezente, von innen nach außen laufende Welle entsteht; dazugehörige Monde und Satelliten bewegen sich mit ihrer jeweiligen Bahn. Die Animation dauert insgesamt etwa eine Sekunde. Beim Wiedereinschalten von Bahn oder in der Sonnensystemansicht bleibt die bisherige Animation bestehen. Mit aktivierter Systemoption **Bewegung reduzieren** geschieht der Übergang direkt.
 
-### Kamera zurücksetzen bei aktivem AR (v50)
+### Früheres AR-Neuausrichten (v50; durch den v58-Perspektivwechsel ersetzt)
 
-Wenn der AR-Modus **an** ist, richtet der Button **Kamera zurücksetzen** unten rechts die AR-Perspektive neu aus: Das Smartphone in die gewünschte neue Neutralhaltung bringen und den Reset-Button antippen. Der aktuelle Sensorwinkel wird als neuer Nullpunkt übernommen; der Blick wird auf die aktuelle Kamera-Grundausrichtung dieser Szene ausgerichtet. Es gibt **keinen** Wechsel zwischen Kamera-Presets und **keinen** Szenenwechsel. AR bleibt aktiv, und eine Statusmeldung bestätigt die Neukalibrierung. Die Augenposition und der Zoom bleiben erhalten. Wiederholtes Antippen ist möglich.
+Bis einschließlich v57 richtete der Kamera-Button bei aktivem AR die Perspektive neu aus: Das Smartphone in die gewünschte neue Neutralhaltung bringen und den Reset-Button antippen. Der aktuelle Sensorwinkel wird als neuer Nullpunkt übernommen; der Blick wird auf die aktuelle Kamera-Grundausrichtung dieser Szene ausgerichtet. Es gibt **keinen** Wechsel zwischen Kamera-Presets und **keinen** Szenenwechsel. AR bleibt aktiv, und eine Statusmeldung bestätigt die Neukalibrierung. Die Augenposition und der Zoom bleiben erhalten. Wiederholtes Antippen ist möglich.
 
-Bei **ausgeschaltetem AR** arbeitet derselbe Button wie gewohnt (in der Sonnensystemansicht die Perspektiven wechseln, in der Planetenansicht zur Übersicht zurückkehren).
+In v58 ist die AR-Reset-Taste dagegen ein **Perspektivwechsel**; die Beschreibung oben ist maßgeblich. Ohne AR bleibt die Planetenansicht-Rückkehr erhalten.
 
 ### Control Panel und Reihenansicht (v49)
 
@@ -135,4 +169,4 @@ Neben **Planetenansicht** (ohne die frühere Unterzeile mit Mond-/Satellitenzahl
 
 **Drehen, Zoomen und Umschalten der Kameraperspektive** lassen Folgen aktiv. Ein gezieltes **Verschieben der Kameraposition** per Linksziehen, Ein-Finger-Wischen oder Pfeiltasten beendet Folgen. Rechtsziehen, Shift-Linksziehen und Zwei-Finger-Umschauen lassen Folgen aktiv. Bei einer zu schnellen simulierten Bewegung beendet die Sicherheitsgrenze die Nachführung ebenfalls. Ohne Auswahl oder bei Raumsonden ohne bekannte 3D-Position bleibt Folgen aktiv, aber ohne Nachführungsziel; die nächste gültige Auswahl wird wieder verfolgt. Beim Wechsel zwischen Sonnensystem und Planetenansicht bleibt der Toggle erhalten.
 
-Die Breiten der Dropdowns sind **145 px (Layer)**, **192 px (Maßstab)** und **120 px (Zeitsteuerung)**.
+Aktuell beträgt die Breite des Layer-Dropdowns **155 px** (v59). Die Angaben zu Maßstab und Zeitsteuerung aus älteren Versionen beziehen sich auf die jeweilige damalige Anordnung.

@@ -27,8 +27,8 @@ test('v55: three always-visible scale toggles; five compact icon-only Layer tool
    const button=html.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
    assert.match(button,/aria-pressed="(true|false)"/);assert.match(button,/<svg /);assert.match(button,/title="[^"]+"/);
  }
- assert.match(css,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
- assert.match(css,/\.layer-display-toggles #toggle-four-moons\{grid-column:auto\}/);
+ assert.match(css,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
 });
 
 test('v43: no colors toggle or orbitColors preference remains; palette always applies',async()=>{
@@ -110,7 +110,7 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
     return elements.get(id);
   };
   const notices=[],solar=createViewSettings('solar'),S={settings:solar};
-  const ctx=vm.createContext({S,$:get,notifyToggle:msg=>notices.push(msg),renderer:null});
+  const ctx=vm.createContext({S,$:get,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg),renderer:null});
   vm.runInContext(controlsSource+handlers,ctx);
   for(const [id,label,defaultPressed] of [
     ['toggle-labels','Beschriftung',true],['toggle-lighting','Beleuchtung',false],

@@ -31,7 +31,7 @@ test('v42: lighting defaults differ by scene; optimized and realistic still togg
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   const S={settings:solar};
   const notices=[];
-  const context=vm.createContext({S,$:()=>button,notifyToggle:msg=>notices.push(msg)});
+  const context=vm.createContext({S,$:()=>button,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg)});
   vm.runInContext(source.slice(begin,end)+listener+'\nthis.refresh=syncLightingControl;',context);
   const check=(mode,state,pressed)=>{
     assert.match(button.title,new RegExp(state));

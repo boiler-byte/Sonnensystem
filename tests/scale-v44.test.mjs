@@ -130,7 +130,9 @@ test('v44: Control Panel announces optimized mode and automatically reframes on 
   };
   const renderer={settings:solar,planetId:null,camera:{desiredDist:47,desiredTarget:[0,0,0]},
     focusedBodyId:null,cameraManuallyMoved:false,followEnabled:false,_labelState:null,
-    calcCount:0,calcPositions(){this.calcCount++},solarOverviewDistance(){
+    calcCount:0,calcPositions(){this.calcCount++},
+    resetViewCamera(){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.solarOverviewDistance();
+      this.focusedBodyId=null;this.cameraManuallyMoved=false;},solarOverviewDistance(){
       return solar.scaleOrbits?160:solar.scaleObjects?188:47;
     }};
   const S={settings:solar,viewSettings:{solar,planet},time:Date.UTC(2026,10,18)};

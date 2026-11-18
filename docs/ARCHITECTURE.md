@@ -1,3 +1,43 @@
+# Architektur – Sonnensystem v62.0
+
+## Aktuelles Delta v62 – freies Umschauen ohne Auswahl
+
+`src/renderer/controls.js` prüft beim Rechtsziehen, Shift+Linksziehen und zweifingrigen Wischen, ob `renderer.selectedId === null` gilt. Ohne Auswahl wird mittels `lookAroundFixedEye()` in `camera.js` nur die Blickrichtung geändert; der kamerastandortgebende Orbitparameter `theta/phi`, `target` und `dist` werden nicht gedreht. `cameraView()` nutzt dafür `camera.freeLook` analog zu ARs `camera.arView`. Beim erneuten Auswählen wird die Orientierung mithilfe von `restoreOrbitFromLook()` nahtlos in eine Orbitkamera übertragen. Perspektiv- und Szenenwechsel löschen die freie Orientierung. Ein aktiver AR-Sensor übernimmt die letzte manuelle Orientierung ohne Sprung. Die Layerkurzform **„Transnept. Objekte“** bleibt wie in v60 erhalten. Version `62.0.0`, Cache `sonnensystem-shell-v62`. Siehe [DELTA-V62.md](DELTA-V62.md).
+
+## Aktuelles Delta v61 – SVG-Richtung der Schrägansicht
+
+Das `data-perspective="oblique"`-Icon in `index.html` verwendet jetzt `rotate(142 12 12)` statt `rotate(38 12 12)`, sodass die Videokamera nach **links unten** zeigt. Die Preset-Reihenfolge, Topdown-, Seitlich-SVGs und AR-Kamerafunktionen bleiben unverändert. App-Version `61.0.0`, Offline-Cache `sonnensystem-shell-v61`. Siehe [DELTA-V61.md](DELTA-V61.md).
+
+## Aktuelles Delta v60 – verkürzte Layer-Beschriftung
+
+`index.html` zeigt im Layer-Popover für `data-layer-type="tno"` **„Transnept. Objekte“**. Die Kennung `tno`, `TYPES.tno.plural`, Katalogsuche und Filter bleiben unverändert; das Checkbox-`aria-label` nennt den vollständigen Namen. Projektversion `60.0.0`, Offline-Cache `sonnensystem-shell-v60`. Siehe [DELTA-V60.md](DELTA-V60.md).
+
+## Aktuelles Delta v59 – Layer-Popover-Breite
+
+Die effektive Breite des `#layer-popover` ist auf **155 px** festgelegt; alle historischen `width`-Deklarationen für diese Komponente wurden vereinheitlicht. Die adaptive Maximalbreite bleibt erhalten. Keine Änderungen an Schalterlogik, Objektkatalog oder Renderer. Projektversion `59.0.0`, Offline-Cache `sonnensystem-shell-v59`. Siehe [DELTA-V59.md](DELTA-V59.md).
+
+## Aktuelles Delta v58 – Kamera-Perspektiven als SVG und AR-Wechsel
+
+- `src/renderer/camera.js`: gemeinsame feste Perspektivreihenfolge `CAMERA_PERSPECTIVES` (Schräg/oben, Topdown, Seitlich) mit szenenspezifischen Neigungen und reiner Funktion `nextCameraPerspectiveIndex`. Der manuelle Kamerastatus erzwingt als nächste Aktion die Schrägansicht.
+- `src/renderer/renderer.js`: `cycleCameraPerspective({keepPlanetScene:true})` erlaubt den Preset-Zyklus auch bei aktivem AR in einer isolierten Planetenansicht, ohne einen Szenenwechsel. `applyCameraPreset` verwendet dort `planetFrameDistance()` und setzt bei aktiver AR-Ansicht die neuen Winkel unmittelbar. `onCameraChange` signalisiert Presetwechsel und manuelle Kameraverschiebung, damit das nächste Icon sofort stimmt. In der Reihe werden alle drei Winkel angeboten; beim Eintritt ist die seitliche Perspektive aktiv.
+- `src/renderer/ar-mode.js`: Sensor-Drehung allein setzt `cameraManuallyMoved` nicht mehr. `alignToPerspective()` verankert die letzte gültige Sensorhaltung am neuen Preset-Winkel und behält denselben Gerätesensor-Listener, die Berechtigung und den AR-Modus bei. Das ältere `recenter()` bleibt als explizite Kalibrierungsfunktion erhalten, ist jedoch nicht mehr an den Reset-Button gebunden.
+- `src/ui/scene-mode.js`, `index.html`, `css/styles.css`: drei einzeln schaltbare, barrierefrei beschriftete SVG-Symbole im Kamera-Button, mit passendem Tooltip je Folgeschritt. Ohne AR bleibt der Button innerhalb einer Planetenansicht ein Zurück-zur-Übersicht-Button (mit Schräg/oben-Icon). `src/app.js` verbindet Presetwechsel, AR-Kalibrierung und UI, ohne beim normalen Perspektivwechsel ungewollt das Row-Framing erneut zurückzusetzen.
+- `tests/perspective-icons-ar-v58.test.mjs` prüft sechs neue Szenarien: SVG und Reihenfolge, sofortige Icon-Änderung, sensorbasiertes Umsehen, Perspektiven im Planetensystem, Positionsänderung und die bestehende Sensorberechtigung. Bestehende ältere Tests werden auf die geänderten Erwartungen aktualisiert.
+- Projektversion **58.0.0**, Offline-Cache `sonnensystem-shell-v58`. Keine Änderung an Katalog- oder Ephemeridendaten. [DELTA-V58.md](DELTA-V58.md).
+
+---
+
+## Vorgänger v57 – gemeinsame Layer-Presets und Kamera-Rückführung
+
+- `index.html` entfernt `.layer-display-heading` und `#layer-note`. `css/styles.css` legt die fünf unveränderten `.scale-tool-toggle`-Buttons in einem 6-Spalten-Raster an: die ersten drei erhalten jeweils zwei Rasterspalten, die beiden letzten stehen zentriert in Zeile 2. Objektkategorien bleiben darunter; ihre Reihenfolge bleibt erhalten.
+- `src/data/layers.js` stellt mit `DISPLAY_SETTING_KEYS`, `displayPreset(name, view)` und `displayMatchesPreset(settings,name,view)` den fünf Darstellungszuständen explizite Preset-Vorgaben zur Verfügung. **Alle** setzt `labels=true`, `lighting='realistic'`, `fourMoons=false` (umgekehrte UI-Semantik), `orbits=true`, `orbitContrast=true`. **Standard** entnimmt die fünf Werte aus `createViewSettings(view)`; die View-übergreifenden Skalen- und Reihenoptionen werden dabei nicht angetastet.
+- `src/app.js`: `changeLayers(layerPreset(...))` setzt unverändert die Kategorien. Direkt anschließend aktualisiert `applyDisplayPreset(...)` die fünf Darstellungswerte der aktuellen Szene und synchronisiert Buttons, Tooltips, ARIA und Preset-Hervorhebung. Auch manuelle Änderungen an einem Darstellungsschalter synchronisieren die Preset-Auswahl neu. Eine Preset-Markierung ist aktiv, wenn sowohl `layers.mode` als auch `displayMatchesPreset` zutreffen.
+- `src/renderer/renderer.js`: `resetViewCamera()` beendet eine aktive Folgen-Nachführung, entfernt Objektfokus und den manuellen Bewegungsstatus, stellt die Szenenkamera (`rowFrame`/`rowDistance`, `planetFrameDistance` oder `solarOverviewDistance`) wieder her und startet die animierte Rückkehr zu den Startwinkeln. `updateScale()` ruft es nach der neuen Objekt-/Bahnmaßstabsberechnung auf; vorhandene Positions-, Orbit-Wellen- und Cinema-Übergänge bleiben erhalten.
+- Tests: `tests/layer-presets-camera-v57.test.mjs` deckt HTML/CSS, reine Presetwerte, Kombinationswirkung beider Presets, Ansichtsisolation, Markierungszustände, Fokus/Folgen/Manuell-Reset sowie alle drei Kamera-Ausgangsansichten ab. Die historischen Tests berücksichtigen die neue Release- und Offline-Cache-Version.
+- App-Version **57.0.0**, Service-Worker-Cache `sonnensystem-shell-v57`; keine Datenmigration und keine Änderungen am Katalog. [DELTA-V57.md](DELTA-V57.md).
+
+---
+
 ## Erweiterung v56 – zwei Hierarchieebenen im Doppelasteroiden-System, weitere Kataloggruppen, Trefferpriorität
 
 - **Daten:** `data/catalog/manifest.json` (`catalogVersion: 10.0.0`) integriert `binary-asteroids-v56.json` (2), `moons-additions-v56.json` (9), `satellites-additions-v56.json` (7) sowie `data/editorial/de-objects-v56.json`. Insgesamt **192 Objekte** mit 192 redaktionellen Einträgen. Keiner der vorherigen Katalogdatensätze wird entfernt oder überschrieben.

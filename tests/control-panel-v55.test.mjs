@@ -63,13 +63,13 @@ test('v55: the removed scale popup has no script event or dangling references',a
  assert.match(app,/if\(!\$\('layer-popover'\)\.hidden\)/);
 });
 
-test('v55: small viewports wrap the toolbar and the layer switches form one row',async()=>{
+test('v57: small viewports wrap the toolbar and the Layer switches form three plus two rows',async()=>{
  const css=await read('css/styles.css');
  const v55=css.slice(css.indexOf('/* v55:'));
  assert.match(v55,/flex-wrap:wrap/);
  assert.match(v55,/max-width:calc\(100% - var\(--control-right-inset\) - 8px\)!important/);
- assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
- assert.match(v55,/\.layer-display-toggles #toggle-four-moons\{grid-column:auto\}/);
+ assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.ok(v55.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
  assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{[\s\S]*?top:calc\(100% \+ 7px\)/);
  assert.match(v55,/@media\(max-width:770px\)/);
 });

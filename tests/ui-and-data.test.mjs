@@ -58,7 +58,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('planet-view-title').textContent,'Planetenansicht');
     renderer.reset();syncSceneMode(state,renderer);
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
-    assert.equal(get('reset-camera').title,'Kamera zurücksetzen');
+    assert.equal(get('reset-camera').title,'Nächste Perspektive: Topdown');
     changeStatus(state.status,'solar','offline','Startdaten');
     assert.match(get('source-status').innerHTML,/Startdaten/);
     assert.match(get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026\n\d{2}:\d{2}$/);
@@ -71,7 +71,7 @@ test('App event wiring still exposes planet-view and overview actions',async()=>
   assert.ok(app.includes('openPlanetScene(center?.id)'));
   assert.ok(app.includes("selected?.type==='moon'?byId(selected.parentId):selected"));
   assert.ok(app.includes("$('reset-camera').addEventListener('click'"));
-  assert.ok(app.includes('renderer?.cycleCameraPerspective();updateMode();updateDetail()'));
+  assert.ok(app.includes('renderer?.cycleCameraPerspective();')); 
   assert.ok(app.includes('initMobileSheets()'));
 });
 

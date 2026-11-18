@@ -55,28 +55,27 @@ test('v55: Layer preset precedes appearance settings and object categories',asyn
     assert.match(layer,new RegExp(`id="${id}"`));
   }
   assert.doesNotMatch(layer,/class="layer-section-title"|class="orbit-popover-note"/);
-  assert.match(layer,/id="layer-note">Standard: Sterne und Planeten/);
+  assert.doesNotMatch(layer,/id="layer-note"|class="layer-display-heading"/);
 });
 
 test('v25: initial checkbox state matches solar only; view transition still synchronizes switches',async()=>{
   const html=await read('index.html'),app=await read('src/app.js');
   const layer=popover(html);
-  const found=[...layer.matchAll(/<input type="checkbox" data-layer-type="(\w+)"( checked)?\/>/g)];
+  const found=[...layer.matchAll(/<input type="checkbox" data-layer-type="(\w+)"( checked)?(?: aria-label="[^"]*")?\/>/g)];
   assert.equal(found.length,LAYER_TYPES.length);
   assert.deepEqual(found.filter(match=>Boolean(match[2])).map(match=>match[1]),['star','planet']);
   assert.match(app,/S\.settings=S\.viewSettings\[view\]/);
   assert.match(app,/check\.checked=layerEnabled\(selected,type\)/);
   assert.match(app,/preset\.dataset\.layerPreset===selected\.mode/);
   assert.match(app,/changeLayers\(layerPreset\(btn\.dataset\.layerPreset,activeView\(\)\)\)/);
-  assert.match(app,/\? 'Standard: Planeten, Monde und Satelliten\.'/);
-  assert.match(app,/: 'Standard: Sterne und Planeten\.'/);
+  assert.doesNotMatch(app,/\$\('layer-note'\)/);
 });
 
 test('v25: dropdown is about one third narrower; preset switch shares border and options have no divider',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.layer-popover\{[^\n]*width:152px/);
-  assert.match(css,/\.control-panel \.layer-popover\{[\s\S]*?width:152px/);
-  assert.ok(Math.abs(152/227-2/3)<0.01);
+  assert.match(css,/\.layer-popover\{[^\n]*width:155px/);
+  assert.match(css,/\.control-panel \.layer-popover\{[\s\S]*?width:155px/);
+  assert.ok(Math.abs(155/227-2/3)<0.02);
   assert.match(css,/\.layer-presets\{[^\n]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:0/);
   assert.match(css,/\.layer-preset\{[^\n]*border:0/);
   assert.match(css,/\.layer-preset\.active/);

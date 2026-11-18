@@ -1,7 +1,7 @@
 import { HORIZONS_IDS, CATEGORY_COLORS } from './data/bodies.js';
 import { loadCatalog, mergeLiveBodies } from './data/catalog.js';
 import { clean, formatAsteroid } from './data/normalization.js';
-import { availableLayerTypes, createViewSettings, ensureAvailableSelection, layerEnabled, layerPreset, layerSummary, updateLayerSelection } from './data/layers.js';
+import { availableLayerTypes, createViewSettings, displayMatchesPreset, displayPreset, ensureAvailableSelection, layerEnabled, layerPreset, layerSummary, updateLayerSelection } from './data/layers.js';
 import { SolarRenderer } from './renderer/index.js';
 import { cinemaClock } from './renderer/cinema.js';
 import { createARMode } from './renderer/ar-mode.js';
@@ -72,9 +72,6 @@ function syncLayers(){
     ? 'Aktive Objektlayer: '+[...selected.types].join(', ')
     : (selected.mode==='all'?'Alle Objektkategorien':`Standardfilter (${view==='planet'?'Planetenansicht':'Sonnensystem'})`);
   $('layer-popover').setAttribute('aria-label',view==='planet'?'Objektlayer der Planetenansicht':'Objektlayer des Sonnensystems');
-  $('layer-note').textContent=view==='planet'
-    ? 'Standard: Planeten, Monde und Satelliten.'
-    : 'Standard: Sterne und Planeten.';
   for(const check of document.querySelectorAll('[data-layer-type]')){
     const type=check.dataset.layerType;
     check.parentElement.hidden=!available.has(type);
@@ -83,7 +80,8 @@ function syncLayers(){
     check.parentElement?.style.setProperty('--category-color',CATEGORY_COLORS[type]||'#E6EDF5');
   }
   for(const preset of document.querySelectorAll('[data-layer-preset]')){
-    const active=preset.dataset.layerPreset===selected.mode;
+    const active=preset.dataset.layerPreset===selected.mode
+      && displayMatchesPreset(S.settings,preset.dataset.layerPreset,view);
     preset.classList.toggle('active',active);
     preset.setAttribute('aria-pressed',String(active));
   }
@@ -118,13 +116,9 @@ function updateScale(setting){
   if(renderer){
     renderer._labelState=null;
     renderer.calcPositions(S.time);
-    if(!renderer.focusedBodyId && !renderer.cameraManuallyMoved){
-      renderer.camera.desiredTarget=S.settings.row?renderer.rowFrame().target:[0,0,0];
-      renderer.camera.desiredDist=S.settings.row?renderer.rowDistance()
-        : renderer.planetId?renderer.planetFrameDistance()
-        : (renderer.solarOverviewDistance?.() ?? (S.settings.scaleOrbits?160:optimized?188:47));
-    }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
-    if(renderer.followEnabled)renderer.followSelectedBody();
+    // A scale change always returns home, including after manual pan/zoom,
+    // object focus or follow. The existing scale transition animates this move.
+    renderer.resetViewCamera();
   }
 }
 function syncRowControl(){
@@ -153,10 +147,15 @@ function updateRow(){
   if(enabled){
     renderer._rowPreviousAngles=[renderer.camera.theta,renderer.camera.phi];
     renderer.setCameraAngles?.(0,1.5);
+    renderer.cameraPresetIndex=2;
+    renderer.cameraManuallyMoved=false;
   }else{
     const previous=renderer._rowPreviousAngles||[.63,renderer.planetId?.84:.99];
     renderer.setCameraAngles?.(...previous);
+    renderer.cameraPresetIndex=0;
+    renderer.cameraManuallyMoved=false;
   }
+  renderer.callbacks?.onCameraChange?.();
   renderer.calcPositions(S.time);
   if(!renderer.followEnabled && !renderer.focusedBodyId){
     renderer.camera.desiredTarget=enabled?renderer.rowFrame().target:[0,0,0];
@@ -226,9 +225,23 @@ function changeLayers(next){
   if(next===S.settings.layers)return;
   if(renderer?.cinema?.active)renderer.stopCinema();
   if(S.settings.row)renderer?.beginTransition?.('row');
-  S.settings.layers=next; // S.settings belongs only to the currently active scene.
+  S.settings.layers=next; // Presets affect only the current scene, not the other view.
   if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
   syncLayers();updateDetail(); // Catalog entries and selection remain layer-independent.
+}
+function applyDisplayPreset(name){
+  // Only the current scene's five presentation controls are affected.
+  Object.assign(S.settings,displayPreset(name,activeView()));
+  if(renderer){
+    renderer._labelState=null;
+    if(S.settings.row){
+      renderer.calcPositions(S.time);
+      renderer.camera.desiredTarget=renderer.rowFrame().target;
+      renderer.camera.desiredDist=renderer.rowDistance();
+    }
+  }
+  syncLabelControl();syncLightingControl();syncFourMoonsControl();syncOrbitControls();
+  syncLayers();updateDetail();
 }
 
 function mergeBodies(list){
@@ -350,7 +363,10 @@ function initControls(){
     seek.addEventListener(event,()=>renderer?.setCinemaScrubbing(false));
   seek.addEventListener('change',()=>renderer?.setCinemaScrubbing(false));
   for(const btn of document.querySelectorAll('[data-layer-preset]'))
-    btn.addEventListener('click',()=>changeLayers(layerPreset(btn.dataset.layerPreset,activeView())));
+    btn.addEventListener('click',()=>{
+      changeLayers(layerPreset(btn.dataset.layerPreset,activeView()));
+      applyDisplayPreset(btn.dataset.layerPreset);
+    });
   for(const input of document.querySelectorAll('[data-layer-type]'))
     input.addEventListener('change',()=>{
       const available=availableLayerTypes(S.bodies,activeView(),renderer?.planetId);
@@ -378,16 +394,16 @@ function initControls(){
   for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
     $(id).addEventListener('click',()=>{
       S.settings[setting]=!S.settings[setting];
-      syncOrbitControls();
+      syncOrbitControls();syncLayers();
       notifyToggle(`${setting==='orbits'?'Umlaufbahn':'Kontrast'}: ${S.settings[setting]?'An':'Aus'}`);
     });
   }
   syncOrbitControls();
-  $('toggle-labels').addEventListener('click',()=>{S.settings.labels=!S.settings.labels;syncLabelControl();notifyToggle(`Beschriftung: ${S.settings.labels?'An':'Aus'}`);});
+  $('toggle-labels').addEventListener('click',()=>{S.settings.labels=!S.settings.labels;syncLabelControl();syncLayers();notifyToggle(`Beschriftung: ${S.settings.labels?'An':'Aus'}`);});
   syncLabelControl();
   $('toggle-lighting').addEventListener('click',()=>{
     S.settings.lighting=S.settings.lighting==='realistic'?'optimized':'realistic';
-    syncLightingControl();
+    syncLightingControl();syncLayers();
     notifyToggle(`Beleuchtung: ${S.settings.lighting==='realistic'?'An (Realistisch)':'Aus (Optimiert)'}`);
   });
   syncLightingControl();
@@ -396,7 +412,7 @@ function initControls(){
     if(S.settings.row)renderer?.beginTransition?.('row');
     S.settings.fourMoons=!S.settings.fourMoons;
     if(S.settings.row && renderer){renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();}
-    syncFourMoonsControl();
+    syncFourMoonsControl();syncLayers();
     notifyToggle(`Alle Monde: ${S.settings.fourMoons?'Aus (max. 4)':'An (alle)'}`);
   });
   syncFourMoonsControl();
@@ -415,9 +431,19 @@ function initControls(){
     updateDetail();
   });
   $('reset-camera').addEventListener('click',()=>{
-    if(arMode?.active){arMode.recenter();return;}
+    if(arMode?.active){
+      // Keep the planet scene and the AR sensor session; only change the view.
+      renderer?.cycleCameraPerspective({keepPlanetScene:true});
+      arMode.alignToPerspective();
+      syncSceneMode(S,renderer,true);updateDetail();mobileSheets?.close();
+      return;
+    }
     if(renderer?.cinema?.active)renderer.stopCinema(); // Normal reset also ends Cinema.
-    renderer?.cycleCameraPerspective();updateMode();updateDetail();mobileSheets?.close();
+    const leavingPlanet=Boolean(renderer?.planetId);
+    renderer?.cycleCameraPerspective();
+    if(leavingPlanet)updateMode(); // Only scene exits require a full view refresh.
+    else syncSceneMode(S,renderer,false); // Do not overwrite row camera angles.
+    updateDetail();mobileSheets?.close();
   });
   $('planet-view-btn').addEventListener('click',()=>{
     const selected=byId(S.selected);
@@ -498,7 +524,8 @@ async function init(){
     return;
   }
   try{
-    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline});
+    renderer=new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline,
+      onCameraChange:()=>syncSceneMode(S,renderer,arMode?.active)});
     arMode=createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle,onStateChange:active=>{
       if(active && renderer?.cinema?.active)renderer.stopCinema();
       syncSceneMode(S,renderer,active);syncCinemaControl();

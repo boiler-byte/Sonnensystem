@@ -39,14 +39,14 @@ test('v27: reset is a single framed zoom-out icon separate from the panel and mo
   const panel=html.split('id="view-mode-status"')[1].split('id="canvas-error"')[0];
   assert.equal((html.match(/id="reset-camera"/g)||[]).length,1);
   assert.match(action,/id="reset-camera"[^>]*aria-label="Kamera zurücksetzen"/);
-  assert.match(action,/<path d="M9 9 4 4/);
-  assert.match(action,/m-5 0h5v5/,'outward-facing corners are part of the icon');
+  for(const perspective of ['oblique','topdown','side'])
+    assert.match(action,new RegExp(`data-perspective="${perspective}"`),'all next-view camera icons exist');
   assert.doesNotMatch(panel,/id="reset-camera"|class="scene-tools"|id="view-mode-select"/);
   assert.doesNotMatch(html,/id="help-btn"|id="help-modal"|id="mobile-menu"|id="view-mode-select"/);
   assert.doesNotMatch(app,/\$\('help-btn'\)|\$\('mobile-menu'\)|\$\('view-mode-select'\)/);
   assert.match(css,/\.viewport-actions \.camera-reset-button\{[\s\S]*?border-radius:50%/);
   assert.match(css,/\.viewport>\.control-panel\{\s*width:58px!important/);
-  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?if\(arMode\?\.active\)\{arMode\.recenter\(\);return;\}[\s\S]*?renderer\?\.cycleCameraPerspective\(\)/);
+  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\)[\s\S]*?arMode\.alignToPerspective\(\)[\s\S]*?renderer\?\.cycleCameraPerspective\(\)/);
 });
 
 test('v26: layer trigger is icon-only and keeps an accessible, state-dependent name',async()=>{

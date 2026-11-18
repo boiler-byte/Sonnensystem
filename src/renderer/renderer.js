@@ -4,7 +4,7 @@ import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
-import { panCameraByPixels, cameraView, followMotionTooFast } from './camera.js';
+import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
 import { drawOrbitLine } from './orbits.js';
 import { drawSceneLabels } from './labels.js';
@@ -49,6 +49,7 @@ export class SolarRenderer {
   if(this.transition)this.transition.cameraTo=null; // Manual rotation wins over an animated camera angle.
   if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
   else if(!this.followEnabled)this.focusedBodyId=null;
+  this.callbacks?.onCameraChange?.(); // Immediately switch the next-view icon on pan/zoom/rotation.
  }
  /** Clear a target without turning off the global toggle (e.g. no selection/probe). */
  clearFollowTarget(){
@@ -107,11 +108,14 @@ export class SolarRenderer {
   this.camera.desiredTarget=position.slice();
   this.followLastPosition=position.slice();this.followLastAtMs=now;
  }
- /** Next preset only while the active one has not been changed by the user. */
- cycleCameraPerspective(){
-  if(this.planetId){this.reset();return;}
-  const index=this.cameraManuallyMoved?0:((this.cameraPresetIndex??0)+1)%3;
-  this.applyCameraPreset(index);
+ /** Return the next action without changing the camera (used by the button icon). */
+ nextCameraPerspectiveIndex(){
+  return nextCameraPerspectiveIndex(this.cameraPresetIndex,this.cameraManuallyMoved);
+ }
+ /** A manual camera displacement returns to oblique; look-only AR events do not. */
+ cycleCameraPerspective({keepPlanetScene=false}={}){
+  if(this.planetId&&!keepPlanetScene){this.reset();return;}
+  this.applyCameraPreset(this.nextCameraPerspectiveIndex());
  }
   /** The camera frames the smaller bodies up close and crops most of the largest at the left. */
  rowGeometry(){
@@ -341,6 +345,8 @@ export class SolarRenderer {
     fromView:this.planetId||'solar',cameraFrom:[this.camera.theta,this.camera.phi],cameraTo:null};
  }
  setCameraAngles(theta,phi){
+  // A deliberate scene, row, cinema or preset change supersedes free look.
+  this.camera.freeLook=null;
   if(this.transition){this.transition.cameraFrom=[this.camera.theta,this.camera.phi];this.transition.cameraTo=[theta,phi];}
   else{this.camera.theta=theta;this.camera.phi=phi;}
  }
@@ -387,13 +393,39 @@ export class SolarRenderer {
   const origin=this.transition?.fromOrbits?.get(body.id);
   return origin===undefined?destination:Math.max(0,origin+(destination-origin)*this.orbitTransitionAmount(body));
  }
+ /** Return to the origin of the current scene after an Objekt/Bahn scale change. */
+ resetViewCamera(){
+  this.stopFollowing();
+  this.focusedBodyId=null;
+  this.cameraManuallyMoved=false;
+  this.camera.freeLook=null;
+  const row=this.settings?.row===true;
+  this.cameraPresetIndex=row?2:0; // A row starts in the side-on preset.
+  this.camera.desiredTarget=row?this.rowFrame().target.slice():[0,0,0];
+  this.camera.desiredDist=row?this.rowDistance()
+    :this.planetId?this.planetFrameDistance():this.solarOverviewDistance();
+  this.setCameraAngles(row?0:.63,row?1.5:this.planetId?.84:.99);
+  this.callbacks?.onCameraChange?.();
+ }
  applyCameraPreset(index){
+  if(!CAMERA_PERSPECTIVES[index])return false;
+  this.camera.freeLook=null;
   this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
   const tracked=this.followEnabled && this.followedBodyId===this.selectedId;
   this.focusedBodyId=tracked?this.selectedId:null;
   this.camera.desiredTarget=tracked?(this.positions.get(this.selectedId)?.slice()||[0,0,0]):(this.settings?.row?this.rowFrame().target:[0,0,0]);
-  this.camera.desiredDist=this.solarOverviewDistance();
-  this.setCameraAngles(this.settings?.row?0:.63,this.settings?.row?1.5:[.99,1.54,.16][index]);
+  this.camera.desiredDist=this.settings?.row?this.rowDistance()
+    :this.planetId?this.planetFrameDistance():this.solarOverviewDistance();
+  const preset=CAMERA_PERSPECTIVES[index];
+  const theta=this.settings?.row?0:.63,phi=this.planetId?preset.planetPhi:preset.phi;
+  // Active AR uses the new heading immediately; device look is then calibrated
+  // relative to this preset, instead of continuing to point at the old target.
+  if(this.camera.arView){
+    if(this.transition)this.transition.cameraTo=null;
+    this.camera.theta=theta;this.camera.phi=phi;
+  }else this.setCameraAngles(theta,phi);
+  this.callbacks?.onCameraChange?.();
+  return true;
  }
  updateKeyboard(now=performance.now()){moveCameraWithKeyboard(this,now);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();const w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));this.dpr=Math.min(window.devicePixelRatio||1,1.8);
@@ -420,7 +452,9 @@ export class SolarRenderer {
   const animated=this.canAnimateLayout();
   if(animated)this.beginTransition('view');
   this.planetId=id;this.markCameraMoved();
+  this.cameraPresetIndex=0;
   this.setCameraAngles(.63,.84);
+  this.callbacks?.onCameraChange?.();
   if(!animated)this.camera.target=[0,0,0];this.camera.desiredTarget=this.settings?.row?this.rowFrame().target:[0,0,0];
   const frame=this.settings?.row?this.rowDistance():this.planetFrameDistance(id);
   if(!animated)this.camera.dist=frame;this.camera.desiredDist=frame;
@@ -429,13 +463,19 @@ export class SolarRenderer {
   return true;
  }
  setSelected(id,{focus=false}={}){
+  // A new selection restores the ordinary orbit camera at exactly the same
+  // eye/gaze before focus animation starts. Clearing selection does not jump.
+  if(id!==null && id!==undefined && this.camera.freeLook)
+    restoreOrbitFromLook(this.camera);
   const changed=id!==this.selectedId;
   this.selectedId=id;
   if(this.followEnabled && changed){this.followSelectedBody();return;}
   if(focus && id!==this.followedBodyId)this.focus(id);
   else if(id!==this.focusedBodyId && !this.followEnabled)this.focusedBodyId=null;
  }
- focus(id){const b=this.byId.get(id);if(!b)return;this.markCameraMoved();this.focusedBodyId=id;
+ focus(id){const b=this.byId.get(id);if(!b)return;
+  if(this.camera.freeLook)restoreOrbitFromLook(this.camera);
+  this.markCameraMoved();this.focusedBodyId=id;
   if(this.planetId){
    if(id===this.planetId){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.planetFrameDistance();}
    else if(b.parentId===this.planetId){

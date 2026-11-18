@@ -18,7 +18,7 @@ test('v27: reset is separate from the compact control panel, with time controls 
   const ids=['speed-btn','play-btn','today-btn'];
   assert.ok(ids.map(id=>controls.indexOf(`id="${id}"`)).every((pos,i,all)=>pos>=0&&(i===0||all[i-1]<pos)), 'A time trigger opens the playback and today actions');
   assert.equal((controls.slice(0,controls.indexOf('id="speed-popover"')).match(/<button\b/g)||[]).length,1);
-  assert.equal((scenes.match(/<svg /g)||[]).length,1,'A zoom-out SVG is the separate reset action');
+  assert.equal((scenes.match(/<svg /g)||[]).length,3,'Three perspective SVGs belong to the separate reset action');
   for(const id of ['reset-camera']){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,`${id} must not be duplicated`);
     assert.match(scenes,new RegExp(`<button[^>]*id="${id}"[^>]*aria-label="[^"]+"`));
@@ -49,8 +49,8 @@ test('v14: renderer and timeline retain existing behavior and cache is invalidat
   const app=await read('src/app.js');
   const sw=await read('sw.js');
   const pkg=JSON.parse(await read('package.json'));
-  assert.equal(pkg.version,'56.0.0');
-  assert.match(sw,/sonnensystem-shell-v56/);
+  assert.equal(pkg.version,'62.0.0');
+  assert.match(sw,/sonnensystem-shell-v62/);
   for(const id of ['toggle-labels','reset-camera','play-btn','speed-btn','today-btn'])
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\(`));
   assert.match(app,/mobileSheets\?\.close\(\)/);

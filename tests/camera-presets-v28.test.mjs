@@ -10,10 +10,10 @@ function mockRenderer(){
   return r;
 }
 
-test('v28: undisturbed camera cycles oblique, side, top, oblique',()=>{
+test('v28: undisturbed camera cycles oblique, topdown, side, oblique',()=>{
   const r=mockRenderer();
   assert.equal(r.camera.phi,.99);
-  for(const [index,phi] of [[1,1.54],[2,.16],[0,.99],[1,1.54]]){
+  for(const [index,phi] of [[1,.16],[2,1.54],[0,.99],[1,.16]]){
     r.cycleCameraPerspective();
     assert.equal(r.cameraPresetIndex,index);
     assert.equal(r.camera.phi,phi);

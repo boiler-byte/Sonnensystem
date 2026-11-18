@@ -1,6 +1,41 @@
-# Sonnensystem – interaktiver 3D-Atlas v56.0
+# Sonnensystem – interaktiver 3D-Atlas v62.0
+**Aktueller Stand v62.** Bei **keiner Objektauswahl** dreht Rechtsziehen bzw. Zwei-Finger-Wischen die Blickrichtung wie im AR-Modus am **festen Kamerastandort**; Linksziehen/Ein-Finger-Wischen verschiebt die Kamera weiterhin, Pinch und Mausrad zoomen. Bei einer Auswahl bleibt das bisherige Umschauen erhalten. Im Layer-Dropdown steht weiterhin **„Transnept. Objekte“**. App-Version **62.0.0**, PWA-Cache `sonnensystem-shell-v62`. **Installation:** `Sonnensystem-Delta-v62.zip` über eine vollständige v61-Installation entpacken. Siehe [Delta v62](docs/DELTA-V62.md).
 
-**Aktueller Stand v56.** Der Objektkatalog enthält **192 Himmelskörper**. Neu sind das Doppelasteroiden-System **Didymos und Dimorphos** (eigene Layer-Kategorie), **neun kleine Jupiter-, Saturn- und Neptunmonde** und **sieben künstliche Erdsatelliten** einschließlich Tiangong, GPS und Wetterbeobachtung. Die Suche sortiert nun nach **exaktem Namen oder Alias**, **exakter Objektkategorie**, **Präfix** und erst danach **Teiltreffern**. Bei vergleichbarer Treffergüte erhalten Planeten Vorrang vor Zwergplaneten, Monden und anderen Objekten. Die Bedienung aus v55 bleibt unverändert.
+**Stand v60.** Der Layer-Eintrag für transneptunische Objekte heißt im Dropdown nun **„Transnept. Objekte“**. Der vollständige Katalog-/Suchname und die Layer-ID `tno` bleiben erhalten. Projektversion **60.0.0**, PWA-Cache `sonnensystem-shell-v60`. **Installation:** `Sonnensystem-Delta-v60.zip` auf einen vollständigen v59-Stand entpacken. Siehe [Delta v60](docs/DELTA-V60.md).
+
+**Stand v59.** Das Layer-Dropdown `#layer-popover` hat nun eine einheitliche Breite von **155 px**; alle fünf Darstellungs-Toggles, Presets und Objektkategorien bleiben unverändert. Projektversion **59.0.0**, PWA-Cache `sonnensystem-shell-v59`. **Installation:** `Sonnensystem-Delta-v59.zip` auf einen vollständigen v58-Stand entpacken. Siehe [Delta v59](docs/DELTA-V59.md).
+
+
+**Stand v58.** Der Kamera-Button zeigt durch drei Videokamera-SVGs stets die **nächste Ansicht**. Die Reihenfolge ist **Schräg/oben → Topdown → Seitlich → Schräg/oben**. Wird die Kamera manuell verschoben, gedreht oder gezoomt, wird als Nächstes die Schrägansicht angeboten. Im AR-Modus kann die Perspektive jetzt ebenfalls durchgeschaltet werden, ohne den Sensor zu deaktivieren; reines Umsehen per Gerätesensor unterbricht die Reihenfolge nicht. Die bestehende Rückkehr zur Sonnensystemübersicht aus der Planetenansicht ohne AR bleibt erhalten.
+
+## Kamera-Perspektiven und AR (v58)
+
+- **Symbol für die nächste Aktion:** Schräg/oben = diagonale Videokamera nach links unten, Topdown = Videokamera nach unten, Seitlich = Videokamera frontal zum Betrachter. Immer genau ein Symbol ist sichtbar. Der Button-Tooltip und die Screenreader-Beschriftung nennen ebenfalls die kommende Perspektive.
+- **Ablauf:** Ausgangslage Schräg/oben bietet zunächst Topdown an. Nach Umschalten zu Schräg/oben (z. B. nach manueller Kamerabewegung) erscheint Topdown als nächstes Symbol. Wird der virtuelle Kamerastandort manuell geschwenkt oder der Zoom bzw. die Blickrichtung geändert, zeigt das Symbol direkt wieder Schräg/oben.
+- **AR:** Ein Klick auf den Kamera-Button wählt in der aktiven Szene das nächste Preset, einschließlich einer Planetenansicht. Der gültige letzte Sensorwinkel wird auf die neue Preset-Richtung kalibriert, während AR aktiv und dieselbe Sensorberechtigung erhalten bleiben. Das Drehen oder Neigen des Telefons ändert nur die Blickrichtung und setzt den Preset-Zyklus **nicht** zurück. Eine manuelle Position-/Zoomänderung in der Szene setzt die nächste Wahl auf Schräg/oben.
+- **Ohne AR:** In der Sonnensystemansicht werden die drei Perspektiven wie oben gewählt; innerhalb einer isolierten Planetenansicht behält der Button aus Kompatibilitätsgründen die Funktion **Zurück zur Sonnensystemübersicht**.
+- **Technik:** Reines DeviceOrientation-Sensing erfasst **keine echte räumliche Translation** des Telefons. Der Unterschied „umsehen“ versus „bewegen“ beruht auf Sensorrotation gegenüber der manuellen Kamera-Pan-/Zoomsteuerung.
+
+**Installation:** `Sonnensystem-Delta-v58.zip` über einen vollständigen v57-Stand entpacken und vorhandene Dateien ersetzen. Projektversion **58.0.0**, PWA-Cache `sonnensystem-shell-v58`. Siehe [Delta v58](docs/DELTA-V58.md).
+
+---
+
+## Vorgängerversion v57 – Layer-Presets und Kamerarückkehr
+**Stand v57.** Das Layer-Dropdown verzichtet auf die beiden sichtbaren Hinweise „Darstellung“ und „Standard: …“. Die drei oberen Darstellungsschalter stehen in der ersten Reihe, **Umlaufbahn** und **Kontrast** zentriert darunter. Die Presets **Alle** und **Standard** verwalten neben den Objektkategorien nun auch alle fünf Darstellungsschalter. Maßstabsänderungen durch **Objekt** oder **Bahn** führen die Kamera stets zur Ausgangsposition der aktiven Ansicht zurück, selbst nach manuellem Verschieben, Zoom, Fokus oder eingeschalteter Nachführung.
+
+## Layer-Presets und Kamera-Rückführung (v57)
+
+- **Layer-Popover:** Nach „Alle | Standard“ folgen sofort die drei Icons **Beschriftung, Beleuchtung, Alle Monde**. In der zweiten Zeile folgen **Umlaufbahn und Kontrast**. Die Objektkategorien schließen direkt an. Der Schriftzug „Darstellung“ und die Beschreibung unter den Kategorien (`p.layer-note`) wurden aus HTML, Styles und Skript entfernt; die Gruppe besitzt weiterhin einen Screenreader-Namen.
+- **Alle:** Aktiviert alle Objektkategorien und setzt alle fünf Darstellungsschalter auf **An**. Für „Alle Monde“ bedeutet „An“ weiterhin unbegrenzte natürliche Monde (`fourMoons: false`); Beleuchtung wird **realistisch**, die Bahnlinien werden **eingeblendet** und der **Kontrast** aktiviert.
+- **Standard:** Stellt die Kategorien und fünf Darstellungsschalter auf die Standardwerte **der aktuellen Ansicht** zurück. Sonnensystem: Sterne/Planeten, Beschriftung An, Beleuchtung Optimiert, Alle Monde Aus (max. vier), Umlaufbahn An, Kontrast Aus. Planetenansicht: Planeten/Monde/Satelliten, Beschriftung An, Beleuchtung Realistisch, Alle Monde An, Umlaufbahn An, Kontrast Aus. Die jeweils andere Ansicht bleibt unverändert. **Objekt, Bahn und Reihe** sind von beiden Presets ausgenommen.
+- **Status:** Ein Preset erscheint nur als aktiviert, wenn **sowohl** die Kategorien **als auch** alle fünf Darstellungszustände übereinstimmen. Nach manuellem Abweichen werden die beiden Preset-Markierungen deaktiviert.
+- **Maßstab/Kamera:** Beim Betätigen von **Objekt** oder **Bahn** laufen die bisherigen Übergänge weiter; zusätzlich wird die Kamera zur Startperspektive der aktuellen Szene animiert (Sonnensystem: Schrägansicht und Übersichtsdistanz; Planetenansicht: Planetensystem zentriert; Reihe: erste Rahmenposition). Vorherige manuelle Kameraverschiebung und Objektfokus werden aufgehoben; aktive Objekt-Nachführung wird beendet.
+
+**Installation:** `Sonnensystem-Delta-v57.zip` ist ein **inkrementelles Update für v56**. Inhalt im Projektstamm von v56 entpacken und Dateien ersetzen. App-Version **57.0.0**, Offline-Cache `sonnensystem-shell-v57`. Vollständige Änderungsliste: [Delta v57](docs/DELTA-V57.md).
+
+## Vorgängerversion v56 – Katalog und Suche
+
+**Stand v56.** Der Objektkatalog enthält **192 Himmelskörper**. Neu sind das Doppelasteroiden-System **Didymos und Dimorphos** (eigene Layer-Kategorie), **neun kleine Jupiter-, Saturn- und Neptunmonde** und **sieben künstliche Erdsatelliten** einschließlich Tiangong, GPS und Wetterbeobachtung. Die Suche sortiert nun nach **exaktem Namen oder Alias**, **exakter Objektkategorie**, **Präfix** und erst danach **Teiltreffern**. Bei vergleichbarer Treffergüte erhalten Planeten Vorrang vor Zwergplaneten, Monden und anderen Objekten. Die Bedienung aus v55 bleibt unverändert.
 
 ## Neue Körper und priorisierte Suche (v56)
 

@@ -21,9 +21,9 @@ const makeRenderer=()=>{
   return {renderer,changes};
 };
 
-test('v37: 145px layer popover, 120px time popover, existing range height intact',async()=>{
+test('v59: 155px layer popover, 120px time popover, existing range height intact',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:145px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
   assert.match(css,/\.viewport>\.control-panel \.time-panel \.speed-popover\{width:120px;min-width:120px/);
   assert.match(css,/\.vertical-speed-control #speed\{[\s\S]*?width:182px;min-width:182px/);
   assert.match(css,/\.speed-slider-rail\{\s*position:relative;width:44px;height:200px/);

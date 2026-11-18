@@ -162,6 +162,6 @@ test('v47: documentation and version announce updated controls and close-up row'
   assert.match(guide,/Rechts ziehen = umschauen/i);
   assert.match(guide,/Zwei Finger.*umschauen/i);
   assert.match(guide,/angeschnitten/i);
-  assert.match(sw,/sonnensystem-shell-v56/);
-  assert.match(html,/app-version" content="V56\.0/);
+  assert.match(sw,/sonnensystem-shell-v62/);
+  assert.match(html,/app-version" content="V62\.0/);
 });

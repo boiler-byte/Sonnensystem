@@ -1,4 +1,5 @@
 import { clamp } from './math.js';
+import { lookAroundFixedEye } from './camera.js';
 
 const KEYBOARD_PAN_PX_PER_SECOND = 390;
 const LOOK_SENSITIVITY_X = .0051;
@@ -8,8 +9,13 @@ const LOOK_SENSITIVITY_Y = .005;
 function lookByPixels(renderer, dx, dy) {
   if(!dx && !dy)return;
   renderer.markCameraMoved();
-  renderer.camera.theta-=dx*LOOK_SENSITIVITY_X;
-  renderer.camera.phi=clamp(renderer.camera.phi+dy*LOOK_SENSITIVITY_Y,.16,1.55);
+  if(renderer.selectedId===null){
+    lookAroundFixedEye(renderer.camera,dx,dy,LOOK_SENSITIVITY_X,LOOK_SENSITIVITY_Y);
+  }else{
+    // A selected object retains the established orbit-style look controls.
+    renderer.camera.theta-=dx*LOOK_SENSITIVITY_X;
+    renderer.camera.phi=clamp(renderer.camera.phi+dy*LOOK_SENSITIVITY_Y,.16,1.55);
+  }
 }
 
 function twoPointerGesture(pointers) {

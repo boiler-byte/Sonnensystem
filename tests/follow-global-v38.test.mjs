@@ -83,7 +83,7 @@ test('v38: rotate, zoom and perspective presets retain follow and keep target ce
   r.applyCameraPreset(1);
   assert.equal(r.followEnabled,true);
   assert.equal(r.followedBodyId,'earth');
-  assert.equal(r.camera.phi,1.54);
+  assert.equal(r.camera.phi,.16);
   assert.deepEqual(r.camera.desiredTarget,[1,0,0]);
   r.positions.set('earth',[1.1,0,0]);r.updateFollowTarget(100);
   assert.deepEqual(r.camera.desiredTarget,[1.1,0,0]);
