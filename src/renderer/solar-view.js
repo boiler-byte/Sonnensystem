@@ -1,10 +1,11 @@
 import { layerEnabled } from '../data/layers.js';
 import { projected, clamp } from './math.js';
+import {drawSceneBodies} from './scene-objects.js';
 
 /** Real Sun-centered Kepler paths; moons and satellites remain planet-centered. */
+const SOLAR_ORBIT_TYPES=new Set(['planet','dwarf','tno','asteroid','binary','comet']);
 export function solarOrbitBodies(bodies, layers) {
-  const types=new Set(['planet','dwarf','tno','asteroid','binary','comet']);
-  return bodies.filter(body=>body.parentId==='sun' && types.has(body.type) &&
+  return bodies.filter(body=>body.parentId==='sun' && SOLAR_ORBIT_TYPES.has(body.type) &&
     layerEnabled(layers,body.type) && Number(body.a)>0 && Number(body.periodDays)>0);
 }
 
@@ -32,12 +33,8 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
     }
     gl.depthMask(true);
   }
-  renderer.rendered=renderer.bodies.filter(b=>renderer.shouldDraw(b)&&renderer.positions.has(b.id));
-  renderer.rendered.sort((a,b)=>{
-    const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,binary:4,comet:4,moon:5,satellite:6};return order[a.type]-order[b.type];
-  });
-  for(const b of renderer.rendered){const p=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(p,vp);renderer.drawSphere(b,p,vp);}
-  renderer.drawLabels(vp);
+  const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,binary:4,comet:4,moon:5,satellite:6};
+  drawSceneBodies(renderer,renderer.bodies,vp,(a,b)=>order[a.type]-order[b.type]);
   const sun=projected(renderer.positions.get('sun')||[0,0,0],vp,renderer.width,renderer.height);
   if(!layerEnabled(settings.layers,'star'))renderer.glow.style.opacity='0';
   else if(sun){renderer.glow.style.left=sun.x+'px';renderer.glow.style.top=sun.y+'px';renderer.glow.style.opacity=(clamp(.98-(renderer.camera.dist-15)/90,.25,.9)*(renderer.sceneBodyOpacity?.(renderer.byId.get('sun'))??1)).toFixed(2);}

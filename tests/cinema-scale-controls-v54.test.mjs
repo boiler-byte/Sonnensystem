@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -8,7 +10,7 @@ import {rowLayout} from '../src/renderer/transitions.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=name=>readFile(new URL('../'+name,import.meta.url),'utf8');
+const read=name=>readProjectSource(name);
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-7*Math.max(1,Math.abs(b)),`${a} != ${b}`);
 const bodies=['moon','earth','jupiter','sun'].map(id=>INITIAL_BODIES.find(b=>b.id===id));
 const layout=()=>rowLayout(bodies,b=>b.radiusKm/100000,undefined,'asc');
@@ -133,7 +135,7 @@ test('v54: inversed moon toggle OFF caps to four, ON shows all, with scene defau
  const solar=createViewSettings('solar'),planet=createViewSettings('planet');
  assert.equal(solar.fourMoons,true,'solar still caps to four');
  assert.equal(planet.fourMoons,false,'planet still shows all');
- const S={settings:solar};const ctx=vm.createContext({S,$:()=>button});
+ const S={settings:solar};const ctx=vm.createContext({syncToggleState,S,$:()=>button});
  vm.runInContext(source+'\nsyncFourMoonsControl()',ctx);
  assert.equal(button.attrs['aria-pressed'],'false');assert.match(button.title,/maximal vier/);
  S.settings=planet;

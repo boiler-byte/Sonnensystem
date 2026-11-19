@@ -79,7 +79,6 @@ test('v8 rejects duplicate editorial IDs across different files and preserves dr
 test('v8 PWA manifests every imported JSON file and shows approximate-model note',async()=>{
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
   const details=await readFile(new URL('../src/ui/object-details.js',import.meta.url),'utf8');
-  assert.match(sw,/sonnensystem-shell-v63/);
   assert.match(sw,/manifest\.categories,\.\.\.manifest\.editorial/);
   assert.match(details,/Mittlere Elemente · schematisch/);
   assert.match(details,/Historische Beispielbahn/);

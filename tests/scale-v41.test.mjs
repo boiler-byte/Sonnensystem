@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -10,7 +12,7 @@ import {SolarRenderer} from '../src/renderer/index.js';
 import {cameraView} from '../src/renderer/camera.js';
 
 const byId=id=>INITIAL_BODIES.find(body=>body.id===id);
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 const close=(got,want,label)=>assert.ok(Math.abs(got-want)<1e-10*Math.max(1,Math.abs(want)),`${label}: ${got} != ${want}`);
 
 test('v41: both toggles default off and preserve the v40 schematic geometry',()=>{
@@ -105,7 +107,7 @@ test('v41: scale toggles update both scene views and pressed states independentl
       this.camera.desiredTarget=[0,0,0];this.cameraManuallyMoved=false;this.focusedBodyId=null;}};
   const state={settings:settings.solar,viewSettings:settings,time:123};
   const notices=[];
-  const context=vm.createContext({$:get,S:state,renderer:r,notifyToggle:msg=>notices.push(msg)});
+  const context=vm.createContext({syncToggleState,$:get,S:state,renderer:r,notifyToggle:msg=>notices.push(msg)});
   vm.runInContext(section,context);
   vm.runInContext('syncScaleControls();updateScale("scaleObjects");',context);
   assert.equal(settings.solar.scaleObjects,true);

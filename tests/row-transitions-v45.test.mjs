@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -33,7 +34,7 @@ test('v55: Reihe remains third always-visible scale button with accessible label
  assert.match(controls,/class="row-order-icon"[\s\S]*?cx="5\.5"[^>]*r="4\.1"[\s\S]*?cx="14\.5"[^>]*r="2\.7"[\s\S]*?cx="21"[^>]*r="1\.15"/);
  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
  assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
- const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const app=await readAppSource();
  assert.match(app,/\$\('orbit-row-btn'\)\.addEventListener\('click',updateRow\)/);
  for(const view of ['solar','planet'])assert.equal(createViewSettings(view).row,false);
 });

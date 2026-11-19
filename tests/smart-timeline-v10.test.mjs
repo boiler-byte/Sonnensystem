@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -100,7 +101,7 @@ test('v10: controls update icon, pause state and speed-range labels in each scen
 test('v18: one compact time trigger contains Play, slider, and Heute in its popup',async()=>{
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
-  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+  const app=await readAppSource();
   const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
   assert.equal((panel.match(/<button\b/g)||[]).length,3,'one time trigger and two popup actions');
   const trigger=panel.slice(0,panel.indexOf('id="speed-popover"'));

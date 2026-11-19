@@ -1,10 +1,12 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {createViewSettings} from '../src/data/layers.js';
 
-const read=file=>readFile(new URL('../'+file,import.meta.url),'utf8');
+const read=file=>readProjectSource(file);
 
 test('v42: lighting defaults differ by scene; optimized and realistic still toggle',async()=>{
   const [html,source]=await Promise.all([read('index.html'),read('src/app.js')]);
@@ -31,7 +33,7 @@ test('v42: lighting defaults differ by scene; optimized and realistic still togg
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   const S={settings:solar};
   const notices=[];
-  const context=vm.createContext({S,$:()=>button,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg)});
+  const context=vm.createContext({syncToggleState,S,$:()=>button,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg)});
   vm.runInContext(source.slice(begin,end)+listener+'\nthis.refresh=syncLightingControl;',context);
   const check=(mode,state,pressed)=>{
     assert.match(button.title,new RegExp(state));

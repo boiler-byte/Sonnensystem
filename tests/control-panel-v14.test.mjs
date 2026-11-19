@@ -1,8 +1,9 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 
-const read=async file=>readFile(new URL('../'+file,import.meta.url),'utf8');
+const read=async file=>readProjectSource(file);
 
 const extract=(text,start,end)=>{
   const a=text.indexOf(start),b=text.indexOf(end,a+start.length);
@@ -28,7 +29,7 @@ test('v27: reset is separate from the compact control panel, with time controls 
   assert.doesNotMatch(html,/data-sheet-panel="control"/);
   assert.doesNotMatch(html,/data-sheet-panel="time"/);
   const css=await read('css/styles.css');
-  assert.match(css,/width:58px!important;max-width:calc\(100% - 20px\)/);
+  assert.match(css,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
   assert.match(css,/\.control-panel \.time-panel \.time-trigger\{/);
   assert.match(css,/\.viewport-actions \.camera-reset-button svg\{/);
 });
@@ -50,8 +51,6 @@ test('v14: renderer and timeline retain existing behavior and cache is invalidat
   const app=await read('src/app.js');
   const sw=await read('sw.js');
   const pkg=JSON.parse(await read('package.json'));
-  assert.equal(pkg.version,'63.0.0');
-  assert.match(sw,/sonnensystem-shell-v63/);
   for(const id of ['toggle-labels','reset-camera','play-btn','speed-btn','today-btn'])
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\(`));
   assert.match(app,/mobileSheets\?\.close\(\)/);

@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -6,7 +7,7 @@ import {followMotionTooFast} from '../src/renderer/camera.js';
 import {renderDetail} from '../src/ui/object-details.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 const makeRenderer=()=>{
   const renderer=Object.create(SolarRenderer.prototype);
   renderer.camera={theta:.63,phi:.99,dist:47,desiredDist:47,target:[0,0,0],desiredTarget:[0,0,0]};

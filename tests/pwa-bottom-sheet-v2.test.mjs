@@ -1,12 +1,13 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { readFile, stat } from 'node:fs/promises';
 import vm from 'node:vm';
 
-const get = p => readFile(new URL(p, import.meta.url), 'utf8');
+const get = p => readProjectSource(p);
 const html=await get('../index.html');
 const manifest=JSON.parse(await get('../manifest.webmanifest'));
 const app=await get('../src/ui/bottom-sheet.js');
-const boot=await get('../src/app.js');
+const boot=await readAppSource();
 const css=await get('../css/styles.css');
 assert.equal(manifest.name,'Sonnensystem');
 assert.equal(manifest.display,'standalone');

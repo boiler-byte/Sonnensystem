@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -118,7 +120,7 @@ test('v44: overview and reset camera include expanded solar scheme while planet 
 });
 
 test('v44: Control Panel announces optimized mode and automatically reframes on each toggle',async()=>{
-  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+  const app=await readAppSource();
   const section=app.slice(app.indexOf('function syncScaleControls(){'),app.indexOf('function syncOrbitControls(){'));
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   const elements=new Map(),$=id=>{
@@ -137,7 +139,7 @@ test('v44: Control Panel announces optimized mode and automatically reframes on 
     }};
   const S={settings:solar,viewSettings:{solar,planet},time:Date.UTC(2026,10,18)};
   const notices=[];
-  const context=vm.createContext({$,S,renderer,notifyToggle:msg=>notices.push(msg)});
+  const context=vm.createContext({syncToggleState,$,S,renderer,notifyToggle:msg=>notices.push(msg)});
   vm.runInContext(section,context);
   vm.runInContext('updateScale("scaleObjects")',context);
   assert.equal(renderer.camera.desiredDist,188);

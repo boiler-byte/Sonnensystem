@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -8,7 +9,7 @@ import {syncSceneMode} from '../src/ui/scene-mode.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {availableLayerTypes,createViewSettings,layerEnabled,updateLayerSelection} from '../src/data/layers.js';
 
-const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
+const read=p=>readProjectSource(p);
 const byId=id=>INITIAL_BODIES.find(body=>body.id===id);
 
 class Node {

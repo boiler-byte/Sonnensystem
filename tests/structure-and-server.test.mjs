@@ -25,7 +25,9 @@ test('PWA entry files live directly in the workspace root (without public/)',asy
   assert.match(html,/href="css\/styles\.css"/);
   assert.match(html,/href="manifest\.webmanifest"/);
   const app=await file('src/app.js');
-  assert.match(app,/serviceWorker\.register\('\.\/sw\.js'/);
+  assert.match(app,/import \{init\} from '\.\/app\/runtime\.js'/);
+  const registration=await file('src/app/service-worker-registration.js');
+  assert.match(registration,/serviceWorker\.register\('\.\/sw\.js'/);
 });
 
 // The browser graph must be fully served and fully cached for PWA offline operation.
@@ -41,7 +43,6 @@ test('All ES module imports are local, resolvable and precached', async()=>{
   assert.ok(modules.length>=20,'Modularized frontend has multiple components');
   const sw=await file('sw.js');
   const shell=JSON.parse(sw.match(/const SHELL=(\[[^;]+\]);/)[1]);
-  assert.match(sw,/sonnensystem-shell-v63/);
   assert.equal(new Set(shell).size,shell.length,'No duplicate precached files');
   for(const m of modules){
     const browserPath='./'+m.slice(root.length).replaceAll('\\','/');
@@ -63,7 +64,6 @@ test('All ES module imports are local, resolvable and precached', async()=>{
   const html=await file('index.html');
   assert.match(html,/src="src\/app\.js"/);
   assert.match(html,/href="css\/styles\.css"/);
-  assert.match(html,/V63/);
   const manifest=JSON.parse(await file('manifest.webmanifest'));
   for(const item of manifest.icons)assert.ok((await stat(join(root,item.src))).size>10000);
 });

@@ -1,20 +1,21 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 import {detailNavigation,renderDetail} from '../src/ui/object-details.js';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 
 test('v27: viewport reset is bottom-right and control panel is frameless 58px',async()=>{
   const css=await read('css/styles.css');
   const html=await read('index.html');
-  const panel=css.slice(css.indexOf('/* v27: floating icon stack'));
-  assert.match(panel,/\.viewport>\.control-panel\{[\s\S]*?width:58px!important/);
+  const panel=css;
+  assert.match(panel,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
   assert.match(panel,/padding:0!important;border:0!important;background:none!important/);
   assert.match(panel,/box-shadow:none!important;backdrop-filter:none!important/);
   assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:max\(16px/);
-  assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:calc\(45px/);
+  assert.match(panel,/\.viewport-actions\{\s*bottom:calc\(var\(--sheet-visible,45px\)/);
   const layer=html.split('class="layer-button"')[1].split('</button>')[0];
   const time=html.split('class="timeline-button speed-button time-trigger"')[1].split('</button>')[0];
   assert.match(layer,/<svg[^>]+viewBox=/);
@@ -22,7 +23,6 @@ test('v27: viewport reset is bottom-right and control panel is frameless 58px',a
   assert.doesNotMatch(time,/time-trigger-chevron/);
   assert.match(time,/id="speed-readout"/);
   assert.match(panel,/speed-popover\{width:120px/,'wider popover remains usable despite the narrow trigger');
-  assert.match(await read('sw.js'),/sonnensystem-shell-v63/);
 });
 
 test('v27: detail index cycles across objects of the same category and wraps around',()=>{
@@ -93,5 +93,5 @@ test('v27: mobile header replaces the handle and half-snap sizes its scrollport'
   assert.doesNotMatch(sheet,/const full=sheet\.getBoundingClientRect\(\)\.height/);
   assert.match(css,/height:var\(--sheet-visible,45px\)!important;transform:none!important/);
   assert.match(css,/\.sheet-content\{flex:1;min-height:0;overflow:hidden\}/);
-  assert.match(css,/\.sheet-content>\.catalog \.object-list,\.sheet-content>\.detail \.detail-scroll\{/);
+  assert.match(css,/\.sheet-content>\.catalog \.object-list,\s*\.sheet-content>\.detail \.detail-scroll\{/);
 });

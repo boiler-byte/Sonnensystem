@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -120,7 +121,7 @@ test('v50: invalid sensor samples do not replace the current alignment reference
 });
 
 test('v50: reset click chooses AR recenter only while AR is active, retaining standard camera resets otherwise',async()=>{
- const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const app=await readAppSource();
  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',\(\)=>\{\s*if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?arMode\.alignToPerspective\(\)/);
  assert.match(app,/renderer\?\.cycleCameraPerspective\(\);[\s\S]*?if\(leavingPlanet\)updateMode\(\)/);
  assert.match(app,/createARMode\(renderer,\$\('ar-mode-btn'\),\{notify:notifyToggle,onStateChange:active=>\{/);

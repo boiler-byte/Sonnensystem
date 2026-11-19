@@ -1,13 +1,29 @@
 // Embedded GLSL: no CDN or external shader assets.
 function shader(gl,type,source) {
-  const s=gl.createShader(type); gl.shaderSource(s,source); gl.compileShader(s);
-  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw Error('WebGL Shader: '+gl.getShaderInfoLog(s));
+  const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){
+    const info=gl.getShaderInfoLog(s);
+    gl.deleteShader?.(s);
+    throw Error('WebGL Shader: '+info);
+  }
   return s;
 }
 export function program(gl,vertex,fragment) {
-  const p=gl.createProgram(); gl.attachShader(p,shader(gl,gl.VERTEX_SHADER,vertex)); gl.attachShader(p,shader(gl,gl.FRAGMENT_SHADER,fragment)); gl.linkProgram(p);
-  if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw Error('WebGL Program: '+gl.getProgramInfoLog(p));
-  return p;
+  const p=gl.createProgram();
+  let vs=null,fs=null;
+  try{
+    vs=shader(gl,gl.VERTEX_SHADER,vertex);
+    fs=shader(gl,gl.FRAGMENT_SHADER,fragment);
+    gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);
+    if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error('WebGL Program: '+gl.getProgramInfoLog(p));
+    return p;
+  }catch(error){gl.deleteProgram?.(p);throw error;}
+  finally{
+    // Once linked, the program retains the compiled code. Shader handles
+    // themselves are no longer needed and would otherwise stay on the GPU.
+    if(vs)gl.deleteShader?.(vs);
+    if(fs)gl.deleteShader?.(fs);
+  }
 }
 export const BODY_VS = `
 attribute vec3 aPosition; attribute vec3 aNormal; attribute vec2 aUV;

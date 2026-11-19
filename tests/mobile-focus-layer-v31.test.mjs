@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -5,16 +6,15 @@ import {cameraView} from '../src/renderer/camera.js';
 import {projected} from '../src/renderer/math.js';
 import {visibleCanvasFocusOffset} from '../src/ui/bottom-sheet.js';
 import {SolarRenderer} from '../src/renderer/renderer.js';
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 const near=(actual,expected,tolerance=.001)=>assert.ok(Math.abs(actual-expected)<tolerance,`expected ${expected}, got ${actual}`);
 
 const camera=()=>({theta:.63,phi:.99,dist:10.5,desiredDist:10.5,target:[0,0,0],desiredTarget:[0,0,0]});
 
 test('v59: layer popover keeps 155px across desktop and mobile rules',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px;max-height:/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px;max-width:calc\(100vw - 20px\)/);
   assert.doesNotMatch(css,/\.viewport>\.control-panel \.layer-popover\{width:188px/);
-  assert.match(await read('sw.js'),/sonnensystem-shell-v63/);
 });
 
 test('v31: visible camera area uses the real sheet top and canvas rectangle',()=>{

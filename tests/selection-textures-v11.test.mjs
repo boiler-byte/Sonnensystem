@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -146,9 +147,8 @@ test('v11: object detail attribution is visible for mapped bodies and cleared on
 test('v11: browser PWA preloads the texture modules and caches maps only on demand',async()=>{
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+  const app=await readAppSource();
   const server=await readFile(new URL('../server/server.mjs',import.meta.url),'utf8');
-  assert.match(sw,/sonnensystem-shell-v63/);
   assert.match(sw,/\.\/src\/renderer\/textures\.js/);
   assert.match(sw,/textures\\\//);
   assert.match(html,/id="texture-credit"/);

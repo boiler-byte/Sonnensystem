@@ -1,0 +1,2380 @@
+# Versionshistorie – Sonnensystem
+
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+
+## Schnellindex
+
+- [v67 – CSS-Bereinigung](#release-v67)
+- [v66 – Performance bei Rendering, Animation und Speicher](#release-v66)
+- [v65 – doppelten Code entfernen](#release-v65)
+- [v64 – aufgeräumte Modulstruktur](#release-v64)
+- [v63 – AR-Button und vertikale Blicksteuerung](#release-v63)
+- [v62 – freies Umschauen ohne Objektauswahl](#release-v62)
+- [v61 – Kamera-SVG für Schrägansicht nach unten links](#release-v61)
+- [v60 – Layer-Kategorie kürzer beschriftet](#release-v60)
+- [v59 – Layer-Dropdown: feste Breite 155 px](#release-v59)
+- [v58 – SVG-Perspektivicons und Perspektivwechsel im AR-Modus](#release-v58)
+- [v57 – Layer-Dropdown-Presets und Kamera zur Ansicht zurücksetzen](#release-v57)
+- [v56 – Katalogerweiterung und relevanzsortierte Suche](#release-v56)
+- [v55 – Control-Panel ohne Maßstab-Dropdown](#release-v55)
+- [v54 – Cinema-Zoom und neues Maßstab-Panel](#release-v54)
+- [v53 – Cinema-Modus für Objekt-Reihen-Darstellung](#release-v53)
+- [v52 – Layer-Dropdown und Objektkatalog](#release-v52)
+- [v51 – Größen in Reihe und sanfte Bahnwelle](#release-v51)
+- [v50 – Kamera zurücksetzen im AR-Modus](#release-v50)
+- [v49 – schmalere Control-Panel-Buttons und Reihen-Beschriftung](#release-v49)
+- [v48 – AR-Modus / Bewegungsgeste zum Umsehen](#release-v48)
+- [v47 – Raumsteuerung und verdichtete Objekt-Reihe](#release-v47)
+- [v46 – sichtbare Gummiband-Übergänge für Maßstab und Ansichten](#release-v46)
+- [v45 – Reihe und Übergangsanimationen](#release-v45)
+- [v44 – Optimierte Größenverhältnisse](#release-v44)
+- [v43 – Kompaktes Maßstab-Menü und Status-Snackbars](#release-v43)
+- [v42 – maßstabsbezogene Darstellungsoptionen](#release-v42)
+- [v41 – Control-Panel „Maßstab“](#release-v41)
+- [v40 – horizontales Control-Panel](#release-v40)
+- [v39 – Folgen öffnet das übergeordnete Planetensystem](#release-v39)
+- [v38 – kompakter Planetenansicht-Button und globales Folgen](#release-v38)
+- [v37 – kompakte Dropdowns und Objekt-Nachführung](#release-v37)
+- [v36 – Zeitsteuerung: Reglerlänge und seitliche Endwerte](#release-v36)
+- [v35 – Sichtbare Höhe des eingeklappten Mobile-Sheets](#release-v35)
+- [v34 – Beleuchtung als An/Aus-Schalter](#release-v34)
+- [v33 – Mobiles Sheet über Browser-/Android-Zurück schließen](#release-v33)
+- [v32 – Kategoriepunkte im Objektkatalog](#release-v32)
+- [v31 – Layer-Dropdown und mobiler Objektfokus](#release-v31)
+- [v30 – Objektdetails und mobiler Kamera-Button](#release-v30)
+- [v29 – Beleuchtung und vier größte Monde](#release-v29)
+- [v28 – Drei Kameraperspektiven](#release-v28)
+- [v27 – Viewport, Detailindex und mobiles Sheet](#release-v27)
+- [v26 – Kamera-Reset, schlankes Control-Panel und erweiterte Planetenansicht](#release-v26)
+- [v25 – Objektlayer-Standards und kompaktes Dropdown](#release-v25)
+- [v24 – unabhängiger Objektkatalog und erweiterte Suche](#release-v24)
+- [v23 – getrennte Objektlayer und 5 Tage/s](#release-v23)
+- [v22 – linke Tab-Seitenleiste und vollständige Sonnenbahnen](#release-v22)
+- [v21 – kompakte Zeitsteuerung und dynamische Sliderfüllung](#release-v21)
+- [v20 – Zeitregler, Beschriftung und mobiles Control-Panel](#release-v20)
+- [v19 – Rechtsbündige Dropdowns und kompakte Zeitsteuerung](#release-v19)
+- [v18 – Kompakte Zeitsteuerung](#release-v18)
+- [v17 – Standardansicht und Umlaufbahn-Optionen](#release-v17)
+- [v16 – Standard-Sterne und stabile Label-Dichte](#release-v16)
+- [v15 – Kompaktes Control-Panel und Objektlayer](#release-v15)
+- [v14 – Schmales Control-Panel und mobile Steuerung](#release-v14)
+- [v13 – Control-Panel, Objekt-Registerkarten und reduzierte Navigation](#release-v13)
+- [v12 – lokale Texturen, Raumsonden und Zeitleiste](#release-v12)
+- [v11 – Objekt-Auswahl und Oberflächenbilder](#release-v11)
+- [v10 – Ruhige Labels und smarte Zeitleiste](#release-v10)
+- [v9 – Smarte Labels](#release-v9)
+- [v8 – echter Katalogbestand und Redaktion](#release-v8)
+- [v7 – Datenarchitektur und Redaktionsschicht](#release-v7)
+- [v6 – Vollständige Umstrukturierung](#release-v6)
+- [v5 – Planetenansicht mit Monden und Satelliten](#release-v5)
+- [v4 – Sonnensystem: Bewegungen in der Umlaufbahnebene](#release-v4)
+- [v3 – Sonnensystem: Kamerasteuerung](#release-v3)
+- [v2 – Sonnensystem](#release-v2)
+- [Hotfix v6.1](#hotfix-v61)
+
+---
+
+<a id="release-v67"></a>
+
+## Release v67
+
+# Delta v67 – CSS-Bereinigung
+
+**Basis:** v66.0.0 (vollständige v64 + Delta v65 + Delta v66). **Ziel:** v67.0.0. **Paket:** `Sonnensystem-Delta-v67.zip`.
+
+## Änderungen
+
+- **CSS-Audit gegen aktuellen Code:** `index.html`, sämtliche `src/**/*.js` und die datengetriebenen Objekt-Stile wurden abgeglichen. Unbenutzte Selektor-Alternativen wurden auch aus gemischten Selektorlisten entfernt; weiterhin verwendete Alternativen bleiben erhalten.
+- **Entfernte historische Komponenten:** Styles für die frühere obere Kopfzeile, freie Szene-Werkzeugleiste, Ansichtsauswahl, Maßstab-Popover, alte Zeit-/Orbitgruppen und die alte Hilfe-Modaldarstellung wurden entfernt, da sie nicht mehr in der aktiven Oberfläche vorkommen.
+- **Kaskade vereinfacht:** Deklarationen entfernt, wenn eine spätere Deklaration derselben Eigenschaft mit demselben Selektor unter identischer Media-Bedingung sie in jedem Fall übersteuert. CSS-Spezifität und `!important` wurden berücksichtigt. Die historische Reihenfolge der übrigen Regeln und Media-Queries wurde beibehalten.
+- **Theme:** sieben unbenutzte globale CSS-Variablen gestrichen; verwendete Farben, Abstände und Schriftdefinitionen bleiben erhalten.
+- **Struktur:** Statt chronologischer Versionskommentare enthält die CSS-Datei fachliche Abschnittsüberschriften. Responsive Breakpoints, `prefers-reduced-motion`, mobile Sheets, AR/Cinema und Popover-Verankerungen bleiben erhalten.
+- **PWA:** `sw.js` verwendet `sonnensystem-shell-v67`; die bereinigte `css/styles.css` bleibt im Offline-Shell-Cache. Version in `package.json` und `index.html` auf 67.0.0 aktualisiert.
+
+## Zahlen und Absicherung
+
+| Kennzahl | Wert |
+| --- | ---: |
+| CSS vorher | 88.227 Bytes |
+| CSS nachher | 59.064 Bytes |
+| CSS-Reduktion | 29.163 Bytes, rund 33,1 % |
+| Entfernte ungenutzte Selektor-Alternativen | 191 |
+| Vollständig entfallene ungenutzte Regelblöcke | 182 |
+| Entfernte sicher überschriebene Deklarationen | 200 |
+| Entfernte unbenutzte CSS-Variablen | 7 |
+
+- **38 statische Kaskadenvergleiche** zwischen v66 und v67: verschiedene Viewportgrößen (320–1280 px), Desktop- und mobil umgehängte Panels, offene/volle/gezogene Sheets und reduzierte Bewegung. Bei den verwendeten CSS-Eigenschaften **keine Unterschiede** für das geprüfte DOM; lediglich die sieben bewusst entfernten, nicht referenzierten Theme-Variablen fehlen. Pseudoelement-Selektoren des nativen Range-Sliders konnten im statischen Selektorvergleich nicht aufgelöst werden, wurden aber unverändert beibehalten.
+- **343 von 343 automatisierten Tests bestanden** (`npm run check`). Fünf neue v67 Regressionstests prüfen verbliebene AR/Cinema-/Popover- und Sheet-Styles, CSS-Struktur, unbenutzte Variablen und PWA-Versionierung.
+- **Ein vollständiger grafischer Browser-/Gerätetest wurde in der vorliegenden Umgebung nicht abgeschlossen.** Deshalb ist die Kaskaden-Äquivalenzprüfung keine Garantie für identisches Pixelrendering auf jedem Gerät.
+- **Keine Funktionsänderungen beabsichtigt.** Der Objektkatalog, die Render- und Animationslogik sowie AR bleiben unverändert.
+
+## Dateistatus
+
+Neu: `docs/DELTA-V67.md` und `tests/css-cleanup-v67.test.mjs`. Geändert: `css/styles.css`, Release-/PWA-Metadaten, `README.md`, `docs/ARCHITECTURE.md` sowie historische Regressionstests, deren CSS- und Versionsassertionen auf überholte Varianten verwiesen. **Gelöscht: keine Dateien**. Es sind keine Löschschritte für die Installation nötig.
+
+## Installation v66 → v67
+
+Das Archiv `Sonnensystem-Delta-v67.zip` im Projektstamm von **v66** entpacken und die enthaltenen Dateien überschreiben. Danach die PWA online neu laden, sodass der Service Worker den neuen Cache `sonnensystem-shell-v67` aktivieren und die aktuelle CSS-Datei offline speichern kann.
+
+---
+
+<a id="release-v66"></a>
+
+## Release v66
+
+# Delta v66 – Performance bei Rendering, Animation und Speicher
+
+**Basis:** v65.0.0 (`Sonnensystem-v64.zip` + `Sonnensystem-Delta-v65.zip`). **Ziel:** v66.0.0. **Paket:** `Sonnensystem-Delta-v66.zip`. Dieses Delta enthält ausschließlich neue und geänderte Dateien.
+
+## Änderungen
+
+| Bereich | Optimierung | Korrektheit / Begrenzung |
+| --- | --- | --- |
+| Umlaufbahnen | `src/renderer/orbit-cache.js` speichert Kepler-Stützpunkte (`Float64Array`) je Himmelskörper und verwendet einen wiederverwendbaren Weltkoordinatenpuffer (`Float32Array`). | LRU mit **maximal 256 Bahnen**. Berechnung erfolgt erneut, wenn Orbitalparameter, Epoche, Segmentzahl oder Bahnmaßstab wechseln. Bewegte Mittelpunkte aktualisieren die Weltkoordinaten. `setBodies()` leert den Cache bei Katalogwechsel. |
+| Kontrastbahnen | `src/renderer/orbits.js` schreibt Segment-Dreiecke in einen wiederverwendbaren typisierten Puffer. Die Projektion benötigt nur noch zwei temporäre Punkte je Bahn statt eines Objekts pro Stützpunkt. Unsichtbare Bahnen werden vor Sampling und Upload abgebrochen. | Breite, Farbe, Alpha und die Übergangsbehandlung bleiben erhalten. Projektion durch Zufallsdaten mit **465.318 Ausgabewerten** gegen v65 numerisch identisch geprüft. |
+| Renderer | Uniform- und Attributpositionen werden je WebGL-Programm einmal ermittelt. `drawSceneBodies()` verwendet sein Array erneut; Planeten-Kinder sind pro Katalogstand vorindiziert. | Vorhandene Zeichenreihenfolge inklusive Saturnringen und Labels bleibt erhalten. Für Fremdaufrufer, die `bodies` direkt ersetzen, bleibt die Filterfunktion als Fallback erhalten. |
+| Positions-/Animationsrechnung | Bei unveränderter Simulationszeit, Szene und Maßstab werden Kepler-Positionen zwischen Frames wiederverwendet; bei laufenden Übergängen und Cinema weiterhin pro Frame neu berechnet. Die Reihenansicht berücksichtigt ihre Layer- und Mond-Signatur. | Kamera und WebGL-Bild werden weiterhin gezeichnet. Katalog- und Horizons-Updates invalidieren die Berechnung ausdrücklich. Ein Tab im Hintergrund pausiert das Rendern und den Fortschritt der Simulationszeit. |
+| Canvas-Speicher | Ein wiederholtes `ResizeObserver`-Ereignis mit gleicher Pixelgröße initialisiert WebGL-/Label-Backbuffer nicht mehr neu. | Bei neuer Größe oder Gerätepixeldichte wird weiterhin skaliert und `gl.viewport` angepasst. |
+| GPU-Speicher | Asynchrone Texturen werden nach `dispose()` nicht mehr hochgeladen; verspätet fertiggestellte GPU-Texturen werden gelöscht. Textur-LRU-Eviction scannt ohne Sortierarray; nach Programmlinks werden separate Shaderobjekte freigegeben. | Bestehende mobile/desktop Texturbudgets von 48 MiB und 192 MiB werden beibehalten. |
+
+## Messung und Tests
+
+- **338 / 338 automatisierte Tests bestanden** (`npm run check`); davon **12 neue v66-Regressionen**, u. a. für Cache-Invalidierung, Pufferwiederverwendung, Pausierung verdeckter Tabs und GPU-Texturfreigabe.
+- **Isolierter CPU-Vergleich, keine FPS-Aussage:** Auf derselben Node-Laufzeit, mit 72 Bahnen über je 20 Bilder und simuliertem WebGL-Aufruf, benötigte v65 für die Umlaufbahn-Zeichenlogik je Lauf ca. **152–206 ms**, v66 ca. **26–56 ms** (etwa **3,7–6,7×** schneller in diesen Messläufen). Das betrifft nur diesen Ausschnitt und lässt keine Rückschlüsse auf echte GPU-Frametimes zu.
+- Neuer Orbit-Ribbon-Aufbau mit **1.000 zufälligen Datensätzen / 465.318 Float-Werten** auf exakte Gleichheit mit v65 geprüft.
+- Keine grafischen End-to-End- oder FPS-Messungen im Browser ausgeführt; echte Leistung hängt von Hardware, Anzahl aktiver Objekte, Ansichtsmodus und Datenbestand ab.
+- Alle statischen `src/`-Module bleiben azyklisch und sind im Offline-Service-Worker erfasst.
+
+## Version und Offlinebetrieb
+
+- `package.json`: **66.0.0**; `index.html`: **V66.0**.
+- `sw.js`: **`sonnensystem-shell-v66`** inklusive `src/renderer/orbit-cache.js`.
+- Dokumentation in `README.md` und `docs/ARCHITECTURE.md` ergänzt.
+
+## Dateistatus
+
+**Neu:** 3 Dateien (Orbit-Cache, Performance-Tests, diese Dokumentation). **Geändert:** 27 Dateien (inklusive 15 historischer Tests mit aktualisierten Versionsassertionen). **Gelöscht:** **0 Dateien**. Keine Löschanweisungen erforderlich.
+
+## Update v65 → v66
+
+`Sonnensystem-Delta-v66.zip` in das Hauptverzeichnis der **bestehenden v65-Installation** entpacken und vorhandene Dateien überschreiben. Nichts löschen. PWA online neu laden, bis `sonnensystem-shell-v66` aktiviert und das neue Modul offline zwischengespeichert wurde.
+
+---
+
+<a id="release-v65"></a>
+
+## Release v65
+
+# Delta v65 – doppelten Code entfernen
+
+**Basis:** `Sonnensystem-v64.zip` (v64.0.0). **Ziel:** v65.0.0. **Umfang:** veränderte und neue Dateien, keine vollständige Neuinstallation.
+
+## Zusammengeführte Implementierungen
+
+| Bereich | Gemeinsame Implementierung | Anbindung / erhaltenes Verhalten |
+| --- | --- | --- |
+| UI-Schalter | `src/ui/control-state.js` – `syncToggleState()` | `display-controls`, `animation-controls`, `catalog-controller`, `layer-panel`: CSS-Status, `aria-pressed`, optionaler Tooltip |
+| Reihen-Kamera | `src/app/animation-controls.js` – `refreshRowCameraFrame()` | Live-Katalog-Merge, Layerwechsel, Darstellungspresets und Mond-Schalter verwenden dieselbe Kamera-/Positionsneuberechnung |
+| Planetenbahnen | `src/renderer/scene-objects.js` – `planetOrbitIds()` | Planetenansicht und Übergangs-Snapshot verwenden dieselbe Auswahl einschließlich der bisherigen Grenzen von 80 Monden und 35 Satelliten |
+| WebGL-Zeichenablauf | `src/renderer/scene-objects.js` – `drawSceneBodies()` | Sonnen- und Planetenansicht filtern und zeichnen Kugeln, Saturnring und Labels über eine gemeinsame Routine; solarer Sortiervergleich bleibt erhalten |
+| JPL-Positionskoordinaten | `src/renderer/scene.js` – `eclipticVectorToScene()` | Ekliptikachsen `x,y,z` werden an einer Stelle auf die Szenenachsen `x,z,y` abgebildet; planetare/solare Faktoren bleiben verschieden |
+| Meldungen | `src/ui/status.js` – `showTimedNotice()` | Toast und Schalter-Snackbar nutzen denselben Zeitablauf, aber jeweils eigene Timer, Dauer und Fehlerdarstellung |
+
+Die UI-Bezeichnungen und Schalterzustände, die Auswahl-/Szenenlogik, die Simulationsdaten und die API-Routen wurden nicht absichtlich verändert. Bestehende Export-Schnittstellen bleiben verfügbar. Die bisherigen Snapshot-/Quelltexttests wurden für die gemeinsamen Funktionen aktualisiert, ohne die fachlichen Verhaltenstests zu entfernen.
+
+## Release und Offlinebetrieb
+
+- `package.json`: Version **65.0.0**.
+- `index.html`: Metaversion **V65.0**.
+- `sw.js`: Cache-Name **`sonnensystem-shell-v65`**; neue Hilfsmodule `src/ui/control-state.js` und `src/renderer/scene-objects.js` sind in der Shell-Liste.
+- Dokumentation in `README.md` und `docs/ARCHITECTURE.md` aktualisiert.
+- Neues Regressionstestpaket `tests/dedup-v65.test.mjs`.
+
+## Gelöschte Dateien
+
+**Keine. 0 bestehende Dateien gelöscht.** Alle Dateien aus v64 bleiben erhalten. Das Delta enthält keine Löschanweisungen.
+
+## Prüfungen
+
+- **326 von 326 automatisierten Tests erfolgreich** (`npm run check`) einschließlich 7 neuer v65-Testfälle.
+- Alle statischen Frontend-Imports sind azyklisch; alle `src/*.js`-Module sind im PWA-Cache erfasst.
+- Der Update-Vergleich gegen das ausgelieferte `Sonnensystem-v64.zip` unterscheidet neue, geänderte und entfernte Dateien; der Rückspieltest prüft die Vollständigkeit des Deltas.
+- Kein grafischer End-to-End-Test im Chromium-Browser; der Browser kann in dieser Umgebung nicht zuverlässig starten.
+
+## Update v64 → v65
+
+`Sonnensystem-Delta-v65.zip` in den Stamm der vorhandenen v64-Installation entpacken und vorhandene Dateien überschreiben. **Keine Dateien manuell entfernen.** Server und PWA neu laden, bis `sonnensystem-shell-v65` aktiv ist. Für den Offlinebetrieb muss die App einmal mit Verbindung geöffnet werden, um die neu hinzugefügten Module zu cachen.
+
+---
+
+<a id="release-v64"></a>
+
+## Release v64
+
+# Delta v64 – aufgeräumte Modulstruktur
+
+**Basis:** vollständiger Projektstand v63.0.0. **Ziel:** v64.0.0.
+
+## Änderungen
+
+Die bisherige zentrale Datei `src/app.js` ist jetzt ein minimaler Einstiegspunkt. Die Anwendungssteuerung liegt in eigenständigen, statisch importierten ES-Modulen. Es wurden keine Bedienkonzepte, Datensätze oder Berechnungsmodelle absichtlich geändert.
+
+| Bereich | Neue Zuständigkeit | Bestehende fachliche Module |
+| --- | --- | --- |
+| Kamera und Szenen | `src/app/camera-controller.js` – Auswahl, Fokus, Planetenszene, Rückkehr | `src/renderer/camera.js`, `controls.js`, `scene-mode.js` |
+| AR | `src/app/ar-controller.js` – Anbindung an Kamera und UI | `src/renderer/ar-mode.js` – Sensorik und Orientierung |
+| Animation und Cinema | `src/app/animation-loop.js`, `animation-controls.js` – Bildschleife, Maßstab, Reihe, Cinema-UI | `src/renderer/transitions.js`, `cinema.js` – Animation und Kamerafahrt |
+| UI | `src/ui/event-handlers.js`, `display-controls.js`, `layer-panel.js`, `popover-controls.js`, `catalog-controller.js` – Events und Darstellung | `bottom-sheet.js`, `object-details.js`, `object-list.js`, `timeline.js` |
+| Objektkatalog | `src/app/object-catalog.js` – Live-Updates, API-Abrufe, JPL-Overrides | `src/data/catalog.js` – Manifest, Prüfung und Zusammenbau |
+| Start und Zustand | `src/app/runtime.js`, `state.js`, `service-worker-registration.js` | `src/app.js` – nur Bootstrap |
+
+Die Modulabhängigkeiten sind **azyklisch** (keine zirkulären ES-Imports). Der Katalog erhält seinen Auswahl-Callback beim Start über `connectCatalogSelection()`. Der Renderer, das mobile Sheet und der AR-Controller werden als Live-Bindings im gemeinsamen Zustand registriert; es gibt keine neue globale Browservariable.
+
+Die UI-Ereignisse für Auswahl, Filter, Maßstab, Reihe, Cinema, AR-Perspektiven, Zeit, Follow und mobile Navigation sind weiterhin verbunden. Die bestehenden CSS-/HTML-Ansichten sowie die Katalog- und Redaktionstexte wurden nicht verändert (abgesehen von der sichtbaren App-Metaversion).
+
+## Version und Offlinebetrieb
+
+- `package.json`: **64.0.0**.
+- `index.html`: **V64.0**.
+- `sw.js`: **`sonnensystem-shell-v64`**. Der Offline-Shell-Cache enthält alle neuen statischen ES-Module. Der bestehende Manifest- und Editorial-Cache-Prozess bleibt erhalten.
+- `docs/ARCHITECTURE.md` und `README.md` wurden um die neue Aufteilung ergänzt.
+
+## Tests und Verifikation
+
+**319 von 319 automatisierten Tests erfolgreich** (`npm run check`). Die bisherigen v2–v63-Prüfungen wurden für den modularen Aufbau angepasst: Ihre Quelltextprüfungen lesen nun die tatsächlichen, getrennten Moduldateien; vorhandene Verhaltens- und Renderer-Tests bleiben bestehen. Drei neue v64-Tests prüfen den schlanken Startpunkt, die Importierbarkeit und Zuständigkeit der Module, reale UI-Handler samt Zustandsänderungen und die Offline-Manifestaufnahme.
+
+Die lokale Chromium-Headless-Instanz konnte in der Ausführungsumgebung keine Browserprüfung durchführen. Daher wird kein erfolgreicher visueller End-to-End-Test behauptet.
+
+## Installation
+
+**Vollständige Installation:** `Sonnensystem-v64.zip` entpacken, im Projektverzeichnis `npm start` ausführen und die angezeigte lokale URL öffnen.
+
+**Update einer v63-Installation:** `Sonnensystem-Delta-v64.zip` im Projektstamm von v63 entpacken; vorhandene Dateien ersetzen. Das Delta enthält nur geänderte oder neue Dateien. Da ES-Module umgezogen sind, dürfen alte Browser-Cache-Stände nicht als v64 verwendet werden. Nach dem Update die PWA neu laden, bis der Cache `sonnensystem-shell-v64` aktiv ist.
+
+---
+
+<a id="release-v63"></a>
+
+## Release v63
+
+# Delta v63 – AR-Button und vertikale Blicksteuerung
+
+**Basis:** vollständige Version v62.0. **Zielversion:** v63.0.0.
+
+## Änderungen
+
+- Der AR-Toggle `#ar-mode-btn` wurde aus dem oberen Control Panel in die vorhandene untere `.viewport-actions`-Leiste vor `#reset-camera` verschoben. Er sitzt links unten, Reset rechts unten, beide in derselben horizontalen Ebene.
+- Die mobile Bottom-Sheet-Synchronisierung (Höhenvariable, Drag-Transition und Inert-Zustand) gilt nun automatisch für **beide** Buttons. Safe-Area-Ränder, Screenreader-Zustände und die Ausblendung ohne AR-Unterstützung bleiben wirksam. Wenn AR verborgen ist, bleibt Reset rechtsbündig.
+- Für die freie Blicksteuerung ohne Selektion ist die vertikale Maus- und Zwei-Finger-Bewegung umgekehrt: Ziehen nach unten senkt die Blickrichtung. Horizontalsteuerung, Pan, Zoom, AR-Sensororientierung und Blickorbit bei bestehender Selektion sind unverändert.
+- Version und Service-Worker-Cache auf v63 aktualisiert.
+
+## Installation
+
+`Sonnensystem-Delta-v63.zip` über **v62** entpacken, vorhandene Dateien ersetzen. Das ZIP enthält nur neue/geänderte Dateien. Offline-PWA nach dem Update neu laden, bis der Cache `sonnensystem-shell-v63` aktiv ist.
+
+## Prüfung
+
+**316 von 316 automatisierten Tests bestanden.** Layout geprüft in Chromium bei 1440, 390, 320 und 280 Pixeln; AR und Reset sind in derselben Zeile und werden beim mobilen Sheet gemeinsam angehoben. ZIP-Overlay-Vergleich auf den vollständigen v62-Bestand.
+
+---
+
+<a id="release-v62"></a>
+
+## Release v62
+
+# Delta v62 – freies Umschauen ohne Objektauswahl
+
+**Basis:** vollständiger Projektstand v61. **Ziel:** v62.0.0. Nur geänderte bzw. neue Dateien im Delta enthalten.
+
+## Layer-Dropdown
+
+Der sichtbare Name der Kategorie bleibt **„Transnept. Objekte“**, wie bereits seit v60. Die Kategorie-ID `tno` und der ausgeschriebene, barrierefrei zugängliche Name bleiben erhalten.
+
+## Kamerasteuerung ohne Selektion
+
+- **Ohne ausgewähltes Objekt (`selectedId === null`):** Rechtsziehen, Shift+Linksziehen und synchrones **Zwei-Finger-Wischen** drehen die Blickrichtung wie AR am **unveränderten Augenpunkt**. Es wird keine Umlaufbewegung um ein Zentrum erzeugt. Der Blick kann auch oberhalb des Horizonts liegen.
+- **Mit ausgewähltem Objekt:** Bisherige Winkel-/Orbitsteuerung bleibt unverändert.
+- **Linksziehen, ein Finger, Pfeiltasten:** Weiterhin bodenparalleles Verschieben, nun in der aktuellen freien Blickrichtung.
+- **Mausrad und Pinch:** Weiterhin Zoom. Zwei-Finger-Swipes werden von Pinch weiterhin über die Bewegung beider Kontakte unterschieden.
+- **Auswahl, Kamera-/Perspektivwechsel, Szenenwechsel:** Die freie Orientierung wird entweder ohne Änderung von Augpunkt/Blickrichtung in die übliche Kamerasteuerung übertragen oder bei expliziter Neuausrichtung zurückgesetzt. Aktivierung des AR-Sensors übernimmt den freien Blick ohne Sprung.
+
+## Installation und Prüfung
+
+ZIP `Sonnensystem-Delta-v62.zip` auf **v61** überlagern. Projektversion `62.0.0`, Offline-Cache `sonnensystem-shell-v62`. `npm run check` prüft die vorhandenen Regressionstests sowie neue Tests der v62-Gesten, Kamera- und Übergangsinvarianten.
+
+---
+
+<a id="release-v61"></a>
+
+## Release v61
+
+# Delta v61 – Kamera-SVG für Schrägansicht nach unten links
+
+Der Kamera-zurücksetzen-Button zeigt für die nächste Perspektive **Schräg/oben** jetzt ein Videokamera-Symbol, dessen Objektiv **diagonal nach links unten** gerichtet ist. Dafür wurde nur das `data-perspective="oblique"`-SVG in `index.html` von einer Drehung um 38° auf 142° geändert. Die übrigen beiden SVG-Symbole (Topdown, Seitlich), die Anzeigefolge und die AR-Steuerung bleiben unverändert.
+
+## Installation
+
+`Sonnensystem-Delta-v61.zip` über einen vollständigen v60-Stand entpacken und vorhandene Dateien ersetzen. App-Version `61.0.0`, Offline-Cache `sonnensystem-shell-v61`.
+
+## Prüfung
+
+`npm run check` führt die vorhandenen Regressionstests und `tests/camera-icon-v61.test.mjs` aus. Die beiden Tests prüfen die Richtung des Objektivs und die unveränderten übrigen SVGs.
+
+---
+
+<a id="release-v60"></a>
+
+## Release v60
+
+# Delta v60 – Layer-Kategorie kürzer beschriftet
+
+Im Control Panel wird die Kategorie für transneptunische Objekte im **Layer-Dropdown** jetzt als **„Transnept. Objekte“** angezeigt. Die interne Kennung (`tno`), der vollständige Kategoriename **„Transneptunische Objekte“** in Katalog und Suche sowie das Filterverhalten bleiben unverändert. Der vollständig ausgeschriebene Kategoriename bleibt für Screenreader über `aria-label` zugänglich.
+
+## Installation
+
+`Sonnensystem-Delta-v60.zip` über einen vollständigen **v59**-Stand entpacken und vorhandene Dateien ersetzen. Projektversion `60.0.0`, Service-Worker-Cache `sonnensystem-shell-v60`.
+
+## Prüfung
+
+`npm run check` validiert den Katalog, die bestehenden Regressionstests und den neuen Test `tests/layer-label-v60.test.mjs`.
+
+---
+
+<a id="release-v59"></a>
+
+## Release v59
+
+# Delta v59 – Layer-Dropdown: feste Breite 155 px
+
+## Änderung
+
+- Das Dropdown `#layer-popover` erhält **155 px Breite** (`box-sizing: border-box`).
+- Die bestehende responsive Maximalbreite `calc(100vw - 20px)` bleibt erhalten.
+- Die veralteten Breitenangaben in früheren CSS-Regeln (145, 152 und 232 px) sind auf denselben Wert abgeglichen, damit keine widersprüchlichen Deklarationen mehr existieren.
+- Presets, die fünf Darstellungs-Toggles und Objektkategorien behalten ihre Funktion und Reihenfolge.
+
+## Installation
+
+`Sonnensystem-Delta-v59.zip` über einen vollständigen **v58**-Stand entpacken. Projektversion `59.0.0`; PWA-Cache `sonnensystem-shell-v59`.
+
+## Validierung
+
+`npm run check` prüft den Objektkatalog, bestehende Tests und den neuen Regressionstest `tests/layer-popover-width-v59.test.mjs`.
+
+---
+
+<a id="release-v58"></a>
+
+## Release v58
+
+# Delta v58 – SVG-Perspektivicons und Perspektivwechsel im AR-Modus
+
+**Basis:** v57.0.0. **Ziel:** v58.0.0. Das ZIP enthält nur die neuen oder gegenüber v57 geänderten Dateien.
+
+## Kamera zurücksetzen
+
+- Drei neue, eigenständige SVG-Icons ersetzen das alte Pfeil-/Ecken-Icon. **Schräg/oben:** Videokamera nach rechts unten. **Topdown:** Videokamera nach unten. **Seitlich:** frontal sichtbare Kameralinse.
+- Der Button zeigt immer das **Icon für die nächste Ansicht**. Die Reihenfolge ist **Schräg/oben → Topdown → Seitlich → Schräg/oben**. Ist die aktuelle Perspektive Schräg/oben, erscheint Topdown. Nach einem Klick auf Schräg/oben erscheint ebenfalls Topdown als nächstes Icon.
+- Bei manueller Kameraverschiebung, Rotation oder Zoom wird der nächste Schritt auf **Schräg/oben** zurückgesetzt und das Icon unmittelbar aktualisiert. Die Kamera-Preset-Winkel werden im Sonnensystem bei `.99` / `.16` / `1.54` Radiant Neigung angesetzt (Schräg/oben, Topdown, Seitlich); Planetenansichten beginnen in der Schrägansicht bei `.84`.
+- Die **Planetenansicht ohne AR** behält ihre bisherige Aktion: zurück zur Sonnensystemübersicht. Die drei Perspektivicons bleiben derselbe Button, kein weiterer Trigger.
+
+## Perspektiven im AR-Modus
+
+- Der Kamera-Button wechselt bei aktivem AR jetzt **ebenfalls zwischen Perspektiven**, ohne AR zu deaktivieren oder die Planetenszene zu verlassen.
+- Nach jedem Klick wird die **letzte gültige Sensorhaltung** neu am Kamera-Preset verankert. So ist das aktuelle Kamerabild in die neue Richtung ausgerichtet und reagiert anschließend wieder auf das Drehen/Neigen des Geräts. Es wird kein zweites Mal eine Sensorberechtigung angefragt.
+- **Nur Umsehen per Geräteausrichtung** ist keine translatorische Kamerabewegung. Der Preset-Zyklus läuft dadurch weiter. Manuelles Schwenken/Zoomen der virtuellen Kamera unterbricht den Zyklus und bietet als Nächstes die Schrägansicht an.
+- Die bestehende reine Sensor-Neuausrichtung `recenter()` ist als API-Funktion erhalten, aber nicht mehr auf dem sichtbaren Reset-Button hinterlegt.
+- **Einschränkung:** DeviceOrientation liefert nur die Drehung/Neigung, **nicht die 3D-Position** des Smartphones. Physische Translation des Telefons kann ohne AR-Positions-Tracking nicht zuverlässig erkannt werden.
+
+## Umsetzung / Tests
+
+- Geänderte Module: `src/renderer/camera.js`, `src/renderer/renderer.js`, `src/renderer/ar-mode.js`, `src/ui/scene-mode.js`, `src/app.js`.
+- Oberfläche: `index.html`, `css/styles.css`. Versionsdaten: `package.json`, `sw.js`.
+- Neue Tests: `tests/perspective-icons-ar-v58.test.mjs`; ältere Tests auf die neue Perspektivreihenfolge und neue AR-Buttonaktion aktualisiert. **300 automatisierte Tests bestanden.**
+- Katalog, Layer, Cinema und Satellitendaten unverändert. PWA-Cache `sonnensystem-shell-v58`.
+
+**Installation:** ZIP im Projektstamm einer vollständigen **v57-Installation** entpacken und gleichnamige Dateien ersetzen. Eine installierte PWA danach neu laden.
+
+---
+
+<a id="release-v57"></a>
+
+## Release v57
+
+# Delta v57 – Layer-Dropdown-Presets und Kamera zur Ansicht zurücksetzen
+
+**Basis:** Projektstand **v56.0.0**. **Ziel:** **v57.0.0**. Das Archiv `Sonnensystem-Delta-v57.zip` enthält nur neue und geänderte Dateien. Den Inhalt über eine vollständige v56-Installation entpacken und gleichnamige Dateien ersetzen.
+
+## Layer-Dropdown
+
+- Die sichtbare Überschrift **„Darstellung“** oberhalb der Darstellungsschalter und der Absatz `p.layer-note` mit den Standardwerten unter den Objektkategorien wurden entfernt. Der unsichtbare ARIA-Gruppenname bleibt bestehen.
+- Die drei Buttons **Beschriftung**, **Beleuchtung** und **Alle Monde** belegen die obere Reihe, die Buttons **Umlaufbahn** und **Kontrast** stehen zentriert in einer zweiten Reihe darunter. Die Objektkategorien folgen wie bisher.
+- **Alle** aktiviert **alle Objektlayer und alle fünf Darstellungsschalter**. Das entspricht `labels:true`, `lighting:'realistic'`, `fourMoons:false` (UI „Alle Monde“ ist somit **An**), `orbits:true`, `orbitContrast:true`.
+- **Standard** setzt Kategorien **und** Darstellungsschalter für die **aktuelle Ansicht** auf die von `createViewSettings(view)` definierten Vorgaben zurück. Sonnensystem: Beleuchtung optimiert, vier Monde je Planet, Beschriftung an, Bahnen an, Kontrast aus. Planetenansicht: Beleuchtung realistisch, alle Monde, Beschriftung an, Bahnen an, Kontrast aus. Eine manuelle Änderung hebt die Preset-Auswahl-Markierung auf. **Objekt**, **Bahn** und **Reihe** bleiben bei Presets unverändert; die andere Ansicht behält ihre eigenen Einstellungen.
+
+## Kamera bei Maßstabswechsel
+
+- Ein Klick auf **Objekt** oder **Bahn** führt auch nach manueller Kameraänderung die Kamera zur **Ausgangsperspektive der aktiven Szene** zurück. Dazu werden der manuelle Bewegungstatus und ein Fokus aufgehoben sowie eine aktive Folgen-Nachführung beendet.
+- **Sonnensystem:** Ziel `[0,0,0]`, Startwinkel `.63/.99`, Abstand aus `solarOverviewDistance()` gemäß neuem Maßstab.
+- **Planetenansicht:** Ziel `[0,0,0]`, Startwinkel `.63/.84`, Abstand aus `planetFrameDistance()`.
+- **Objekt-Reihe:** Ziel und Abstand des Anfangsframes `rowFrame()` / `rowDistance()`, Blickwinkel `0/1.5`.
+- Die bisherige Maßstab-Transition bleibt für Kamera und Objekte erhalten; die sanfte zeitversetzte Bahnwelle beim Ausschalten der Bahnabstände in der Planetenansicht wird nicht ersetzt.
+
+## Technische Umsetzung und Prüfung
+
+- `src/app.js`: `applyDisplayPreset` synchronisiert die fünf Darstellungszustände und den Preset-Status; `updateScale` ruft `renderer.resetViewCamera()` auf.
+- `src/data/layers.js`: reine Hilfsfunktionen `displayPreset` und `displayMatchesPreset`, explizite Liste der Darstellungseinstellungen.
+- `src/renderer/renderer.js`: `resetViewCamera` als szenenabhängige Startkamerasteuerung. `index.html`/`css/styles.css`: reduzierte Texte und 3+2-Raster.
+- `tests/layer-presets-camera-v57.test.mjs`: Regressionstests für beide Presets, Darstellungsschalter, Markierung, Schalter-/Szenenunabhängigkeit und animierte Kamera-Rückführung. Desktop-/Mobil-Layoutkontrolle in Headless Chromium.
+- Service-Worker-Cache **`sonnensystem-shell-v57`**, Projektversion **57.0.0**. Katalogdaten, Modellbahnen und API-Strukturen bleiben unverändert.
+
+**Installation:** `Sonnensystem-Delta-v57.zip` im Stammverzeichnis eines vollständigen v56-Standes entpacken und Dateien ersetzen. Bei installierter PWA nach dem Update die Seite erneut laden, damit der neue Offline-Cache wirksam wird.
+
+---
+
+<a id="release-v56"></a>
+
+## Release v56
+
+# Delta v56 – Katalogerweiterung und relevanzsortierte Suche
+
+**Basis:** vollständiger Projektstand **v55.0.0**. **Ziel:** **v56.0.0**. Die Datei `Sonnensystem-Delta-v56.zip` enthält ausschließlich neu angelegte und geänderte Dateien. **Kein vollständiges Projekt**: über eine vorhandene v55-Installation entpacken und Dateien ersetzen.
+
+## Objektkatalog (+18)
+
+| Kategorie | Ergänzungen |
+|---|---|
+| **Doppelasteroiden (2)** | **(65803) Didymos** und sein Begleiter **Dimorphos** |
+| **Jupitermonde (3)** | S/2003 J 2, S/2003 J 4, S/2018 J 2 |
+| **Saturnmonde (4)** | Loge, Skoll, Greip, Tarqeq |
+| **Neptunmonde (2)** | S/2002 N 5, S/2021 N 1 |
+| **Künstliche Erdsatelliten (7)** | Tiangong / Tianhe (NORAD 48274); GPS BIIF-6 (39741), GPS BIIF-10 (40730); NOAA-20 (43013), NOAA-21 (54234); GOES-16 (41866), GOES-18 (51850) |
+
+Der neue Typ **Doppelasteroiden** erscheint im Layer-Dropdown und lässt sich unabhängig von anderen Objektkategorien ein- und ausschalten. Beide Objekte haben eine hierarchische Bahn (Didymos um die Sonne, Dimorphos um Didymos). Die neuen natürlichen Monde befinden sich in den bereits vorhandenen Mond-Objektkategorien und sind an ihre jeweiligen Planeten gebunden. Die Erdsatelliten ergänzen den bestehenden Satelliten-Layer. Die Suche zeigt diese Objekte auch dann, wenn ihr Layer ausgeschaltet ist.
+
+Der Katalog umfasst jetzt **192 astronomische Objekte** mit **192 redaktionellen Artikeln**, `catalogVersion: 10.0.0` und 23 Quell-JSON-Dateien für Kategorien. Für alle neuen Einträge wurden Namen/Aliase, Bahndaten, Zuordnung zum Zentralkörper und Quellenbeschreibungen ergänzt.
+
+### Genauigkeit
+
+- **Didymos:** historische oskulierende Sonnenbahn; **Dimorphos:** modellhafte relative Umlaufbahn nach dem DART-Einschlag mit rund 11 Stunden 22 Minuten Umlaufzeit. Die dynamischen Auswirkungen sind vereinfacht.
+- **Weitere Monde:** Mittlere Bahnelemente aus einem NASA/JPL-Tabellensatz; keine Echtzeit-Ephemeriden. Für unsichere körperliche Radien steht bewusst `radiusKm: 0` (in der Anzeige `—`).
+- **Satelliten:** Die NORAD-IDs und typischen Bahnhöhen/Perioden dienen zur Identifizierung und einer illustrativen Darstellung. Knoten, Anfangsphase und Perizentrum sind schematisch. **Kein Live-TLE, keine reale aktuelle Satellitenposition und keine Bahnvorhersage.**
+
+Quellen: [NASA – Didymos/Dimorphos](https://science.nasa.gov/solar-system/asteroids/didymos/), [JPL – DART Bahnänderung](https://www.jpl.nasa.gov/news/nasa-study-asteroids-orbit-shape-changed-after-dart-impact/), [NASA/JPL – Satelliten-Bahnelemente](https://ssd.jpl.nasa.gov/sats/elem/), [CelesTrak – NORAD-Kataloggruppen](https://celestrak.org/NORAD/elements/).
+
+## Trefferreihenfolge
+
+`src/ui/object-list.js` behält die bestehende UND-Suche über einzelne Wörter und alle Suchfelder bei; bei nichtleerem Suchfeld gilt nun folgende Priorität:
+
+1. **Exakter Objektname, Alias oder ID:** z. B. wird `Saturn` immer als erster Treffer angezeigt.
+2. **Exakter Kategoriename** (Singular/Plural): z. B. `Planeten`, `Monde`, `Doppelasteroiden`.
+3. **Namenspräfix**, dann **Kategoriepräfix**.
+4. **Exakte Elternreferenz**, dann **Teiltreffer in Namen/ID/Alias**, danach Kategorie- oder Elternteiltreffer.
+5. **Verteilte Mehrworttreffer** (wie bisher), zuletzt im gemeinsamen Relevanzrang.
+
+Bei gleicher Treffergüte: **Planeten → Zwergplaneten → Monde → andere Objekte**, dann alphabetisch nach Name. Ohne Suchbegriff bleibt die kuratierte Listenanordnung erhalten. Die planetenbezogene Katalogfilterung und die unabhängig von Layern zugängliche Suche bleiben bestehen.
+
+## Umgesetzte technische Änderungen
+
+- Neue Dateien: `data/catalog/binary-asteroids-v56.json`, `data/catalog/moons-additions-v56.json`, `data/catalog/satellites-additions-v56.json`, `data/editorial/de-objects-v56.json`.
+- Manifest, Typnamen und Kategorienfarben, Layer-Checkbox, Sonnen- und Begleiterorbit, rekursive Positionierung, Detailstatistik (km/AE und Kleinkörpergrößen), Suchgewichtung und Offline-Cache aktualisiert.
+- Version **56.0.0**, Offline-Cache **`sonnensystem-shell-v56`**.
+- Integrationstests in `tests/catalog-search-v56.test.mjs` ergänzt, frühere Katalog-Zähltests an die nun vollständige Menge angepasst.
+
+**Installation:** `Sonnensystem-Delta-v56.zip` über das Stammverzeichnis von **v55** entpacken. Bei vorhandenem PWA-Offline-Cache die Seite einmal neu laden, damit der aktualisierte Service Worker die neuen JSON-Dateien vorlädt.
+
+---
+
+<a id="release-v55"></a>
+
+## Release v55
+
+# Delta v55 – Control-Panel ohne Maßstab-Dropdown
+
+**Basis:** vollständiger Projektstand **v54.0.0**. **Ziel:** **v55.0.0**. Die Datei `Sonnensystem-Delta-v55.zip` ist ein inkrementelles ZIP (kein Vollprojekt); über das Root einer v54-Installation entpacken und vorhandene Dateien ersetzen.
+
+## Änderungen
+
+1. **Direkte Maßstab-Schalter:** Die drei Toggle-Buttons **Objekt**, **Bahn** und **Reihe** stehen dauerhaft im oberen Control Panel neben **Layer** und **Zeit**. Icons, Beschriftungen und Aktivzustände bleiben vorhanden. Die Maßstab-Schaltfläche, ihre Dropdown-Box und die zugehörige Menü-Öffnungslogik sind entfernt.
+2. **Darstellungs-Optionen im Layer-Dropdown:** Nach den Presets **Alle/Standard**, aber **oberhalb** der Objektkategorien, steht die neue Gruppe **Darstellung** mit den fünf bisherigen Schaltern **Beschriftung**, **Beleuchtung**, **Alle Monde** (Icon aus neun Kreis-Punkten), **Umlaufbahn**, **Kontrast**. Die Kategorie-Liste beginnt weiter mit **Sterne** und enthält alle bisherigen Objektkategorien.
+3. **Unveränderte Funktion:** Alle Toggles behalten ihre Einstellungen und die bisherigen Zustandsrückmeldungen (Toast, `aria-pressed`, Tooltips). **Alle Monde**: Aus = höchstens vier größte Monde je Planet; An = alle natürlichen Monde des aktiven Mond-Layers. Cinema ist weiterhin nur mit **Reihe An / Objekt An / Bahn Aus** verfügbar; die Kamera-Zooms, Haltephasen und Stop-Rückkehr aus v54 bleiben unverändert.
+4. **Responsive Bedienung:** Die Hauptleiste darf auf schmalen Geräten umbrechen. Layer- und Zeit-Popover stehen unterhalb der Leiste, und die fünf Darstellungsschalter bleiben in einer gemeinsamen Zeile, ohne die Objektkategorien zu überlagern.
+
+## Geänderte Komponenten
+
+- `index.html`: Neu angeordnete direkte Maßstab-Schalter und Layer-Darstellungsgruppe.
+- `css/styles.css`: Hauptleiste, Layer-Toggles und responsive Popover-Positionen.
+- `src/app.js`: Entfernte Listener für das nicht mehr existierende Maßstab-Dropdown; die vorhandenen Toggles bleiben verbunden.
+- `package.json`, `sw.js`: Versionswechsel und neuer PWA-Cache.
+- `tests/`: Regressionsprüfungen für das v55-Layout, unveränderte Steuerungsfunktionen und bisherige App-Funktionen.
+- `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md`: aktualisierte Bedien- und Architekturhinweise.
+
+## Prüfung und Installation
+
+- **277 von 277 automatisierten Tests erfolgreich** (`npm run check`, inklusive Datenvalidierung).
+- Statische Chromium-Layoutprüfung für Desktop und mobile Viewports (1440, 390, 320 und 280 Pixel) sowie AR-/Cinema-Leistenvarianten: keine abgeschnittenen Schalter, kein horizontaler Überlauf. Die vollständige WebGL-Interaktion wurde in der Umgebung nicht ausgeführt.
+- Nach Installation ggf. die Anwendung neu laden, damit die neue PWA-Cache-Version aktiv wird.
+
+---
+
+<a id="release-v54"></a>
+
+## Release v54
+
+# Delta v54 – Cinema-Zoom und neues Maßstab-Panel
+
+**Basis:** vollständiger Projektstand **v53.0.0**. **Ziel:** **v54.0.0**. `Sonnensystem-Delta-v54.zip` ist ein inkrementelles ZIP, keine vollständige Anwendung. Über das Projekt-Root von v53 entpacken und vorhandene Dateien ersetzen.
+
+## Funktionsänderungen
+
+1. **Cinema-Play:** Sichtbar bei `row=true`, `scaleObjects=true` und `scaleOrbits=false`. Beim Aktivieren der Reihe wird der Objektgrößenmaßstab weiterhin automatisch aktiviert. Die bisherige Freigabe bei *beiden* ausgeschalteten Maßstäben entfällt.
+2. **Kamerafahrt:** Aufsteigende Reihenfolge nach physikalischem Katalogradius, passender Zoom pro sichtbarem Objekt einschließlich Saturns Ringen. Die Kamera hält **1.500 ms** pro Objekt und benötigt rund **1.300 ms** für einen sanften horizontalen Übergang mit logarithmischem Zoom. Hinzu kommt die bisherige 1.100-ms-Anfahrt; ein Film mit N Objekten hat daher etwa **N × 1,5 s + (N−1) × 1,3 s** reine Fahr-/Haltezeit (plus Anfahrt und kurzer Abschluss). Die angezeigten Größen bleiben physikalisch proportional; es ist keine Videowiedergabe.
+3. **Zeitleiste:** Ermittelt Ziel und Zoom aus derselben kontinuierlichen Filmposition und bleibt per Drag, Touch und Tastatur steuerbar. Stop und Ende stellen absteigende Größenreihenfolge und ursprüngliche Kamerapose wieder her. Ein Mondfilter-Wechsel während Cinema beendet die Tour ebenfalls.
+4. **Maßstab-Dropdown:** Drei Hauptbuttons in einer oberen Reihe: **Objekt**, **Bahn**, **Reihe**. Reihe besitzt eine sichtbare Beschriftung. Unter Objekt und Bahn bleiben die sekundären Icon-Schalter.
+5. **Mond-Toggle:** Das Icon besteht aus **neun im Kreis angeordneten Punkten**. Neuer Sinn: **Aus = maximal vier größte natürliche Monde pro Planet**, **An = alle natürlichen Monde** (sofern der entsprechende Objekt-Layer sichtbar ist). Die bisherige Begrenzungsvariable `fourMoons` wird intern unverändert verwendet, das sichtbare Schalterverhalten wird invertiert. Die Standardsichten behalten ihre alte tatsächliche Mondanzahl.
+
+## Änderungen und Tests
+
+- Geändert: `src/renderer/{cinema,renderer}.js`, `src/app.js`, `index.html`, `css/styles.css`, Release- und Dokumentationsdateien.
+- Neu: `tests/cinema-scale-controls-v54.test.mjs`. Historische Tests wurden dort aktualisiert, wo ihre ehemaligen UI-Erwartungen den nun ausdrücklich geänderten Anforderungen widersprechen.
+- `npm run check`: Katalogvalidierung und Node-Tests. Der Dropdown-Aufbau wurde zusätzlich mit Headless Chromium in 1440, 390, 320 und 280 Pixel Breite geprüft. Die vollständige WebGL-End-to-End-Interaktion ließ sich aufgrund einer Browser-Navigationssperre nicht ausführen.
+
+## Hinweise
+
+Die Gesamtdauer richtet sich nach der Anzahl **sichtbarer** Körper. Bei aktivierten zusätzlichen Mond- oder Asteroiden-Layern kann die Tour deutlich länger dauern als in v53, weil jeder Körper eine eigene Haltephase hat. Die Berechnung ist eine lokale WebGL-Animation; die Videoreferenz https://www.youtube.com/watch?v=HEheh1BH34Q wird nicht eingebettet.
+
+---
+
+<a id="release-v53"></a>
+
+## Release v53
+
+# Delta v53 – Cinema-Modus für Objekt-Reihen-Darstellung
+
+**Basis:** vollständiger Projektstand v52.0.0. **Ziel:** 53.0.0. **Installation:** `Sonnensystem-Delta-v53.zip` in das Projekt-Root über v52 entpacken und alle Änderungen überschreiben. Das Archiv ist ein **Delta**, keine vollständige Installation.
+
+## Funktionsumfang
+
+- Kontext-Play-Button in der horizontalen Control-Panel-Leiste **nur dann**, wenn `row=true`, `scaleObjects=false` und `scaleOrbits=false`. Vorherige v51-Voreinstellung der Reihe (Objektmaßstab zunächst an) bleibt erhalten.
+- Beim Start sortiert Cinema ausschließlich die **aktuell sichtbaren Himmelskörper der aktiven Szene** nach ihrem katalogisierten Radius **aufsteigend**. Die gewöhnliche absteigende Reihe wird nicht dauerhaft geändert. Schematische Objektradien werden fürs Bild beibehalten. Die Sonne bzw. der Zentralplanet und die Layerfilter wirken weiter.
+- Von links nach rechts wandernde virtuelle Kamera mit gleichmäßig nach Objektrang getakteter Abfahrt und sichtbarkeitsgerechtem Kameraabstand. 1100 ms Anfahrt, danach etwa 18–150 Sekunden Filmdauer abhängig von der Menge sichtbarer Objekte. Abrupte Tab-Reaktivierung springt nicht zum Ende.
+- Native HTML-Range-Zeitleiste unter der Szene. Position, Zeit und aktueller Name sind sichtbar und per Maus, Touch oder Tastatur steuerbar. Scrubbing unterbricht die automatische Bewegung vorübergehend.
+- **Stop** setzt die Sortierung zurück auf **groß → klein**, animiert die vorherige Kamera-Zielposition, Distanz und Blickwinkel und blendet die Zeitleiste aus. `Esc`, manuelle Kameraeingriffe, ein Maßstabs-/Ansichts-/Layerwechsel sowie die automatische Fertigstellung stoppen ebenfalls. Normale Zeit-Play/Pause und AR bleiben eigenständige Funktionen.
+- Desktop- und mobile Layouts nutzen den bestehenden Toolbar-Stil; die mobile Zeitleiste liegt oberhalb von Reset-Button und Bottom-Sheet.
+
+## Technische Änderungen
+
+- `src/renderer/cinema.js` neu: reine Steuerungs-/Framing- und Zeitformeln.
+- `src/renderer/transitions.js`: optionaler `asc`-Layout-Parameter ohne Änderung des bisherigen `desc`-Verhaltens.
+- `src/renderer/renderer.js`: Start/Stop/Scrub/Fortschritt, Kamera- und Layoutübergänge, Responsive-Verhalten.
+- `src/app.js`, `index.html`, `css/styles.css`: zustandsabhängiger Transport, Timeline, AR-Interlock, Tastatur und Mobile-Position.
+- `sw.js`, `package.json`, `README.md`, `docs/{ARCHITECTURE,HILFE}.md`: Release und Offline-Dateiliste aktualisiert.
+- `tests/cinema-v53.test.mjs` neu; Versionschecks in bestehenden Tests auf v53 aktualisiert.
+
+## Validierung
+
+`npm run check` führt Katalog-Validierung und die Node-Test-Suite aus. Für UI-Layout wurde das HTML/CSS zusätzlich mit Headless Chromium auf Desktop (1440×900) und Mobilbreite (390×844) hinsichtlich Position und Überlagerung geprüft. Eine vollständige End-to-End-WebGL-Wiedergabe im Browser war in der Testumgebung wegen einer Navigationssperre nicht durchführbar.
+
+**Videoreferenz:** https://www.youtube.com/watch?v=HEheh1BH34Q – nur Inspirationsbasis für die aufsteigende Größe und Kamerarichtung. Weder Video noch Ton werden in die App kopiert oder eingebettet.
+
+---
+
+<a id="release-v52"></a>
+
+## Release v52
+
+# Delta v52 – Layer-Dropdown und Objektkatalog
+
+## Installation
+
+`Sonnensystem-Delta-v52.zip` über eine **vollständige v51-Installation** direkt im Projektstamm entpacken; vorhandene Dateien überschreiben. Es handelt sich um ein **Delta**, nicht um ein vollständiges Projektarchiv. Danach ggf. eine installierte PWA neu öffnen, damit der Service Worker den neuen Katalog offline übernimmt. App-Version **52.0.0**, Offline-Cache `sonnensystem-shell-v52`, Katalogversion **9.0.0**.
+
+## Änderungen
+
+### Objektkategorien im Layer-Dropdown
+
+**Sterne** steht an erster Stelle. Reihenfolge: Sterne → Planeten → Monde → Zwergplaneten → Transneptunische Objekte → Asteroiden → Satelliten → Kometen → Raumsonden. Die neue Kategorie **Transneptunische Objekte** hat eine eigene Layer-Farbe und kann wie die anderen Kategorien aktiviert werden. Die Popover-Breite bleibt 145 px; die lange Bezeichnung wird bei Bedarf umgebrochen. Der Preset **Standard** bleibt auf Sterne und Planeten beschränkt; **Alle** aktiviert sämtliche Kategorien.
+
+### Neue Katalogobjekte
+
+| Kategorie | Neue Objekte | Anzahl |
+| --- | --- | ---: |
+| Asteroiden | (16) Psyche, (10) Hygiea, (162173) Ryugu, (25143) Itokawa, (243) Ida | 5 |
+| Kometen | 67P/Tschurjumow-Gerassimenko, 9P/Tempel 1, 103P/Hartley 2, 81P/Wild 2 | 4 |
+| Transneptunische Objekte | Quaoar, Orcus, Gonggong, Sedna, Arrokoth | 5 |
+
+**Gesamtbestand:** 174 Körper, 174 redaktionelle Einträge. Für alle Neuzugänge sind Namen, Typ, übergeordnetes Objekt (Sonne), physikalischer Radius, Bahnparameter/Epoche, Darstellung/Farbe, Beschreibung und Quellenlinks hinterlegt. Internationale Namen und historische Bezeichnungen sind als optionale `aliases` suchbar. Die neuartigen TNO-Körper und ihre Sonnenbahnen folgen denselben Rendering- und Filterregeln wie die bisherigen solaren Kleinkörper. Auch in der Objektsuche und den Details sind sie auswählbar.
+
+### Datenherkunft und Grenzen
+
+- **Asteroiden und Quaoar, Orcus, Gonggong, Sedna:** katalogisierte oskulierende Bahnelemente aus dem öffentlichen Stellarium-Kleinkörperdatensatz (astronomische Quelle JPL/MPC), einschließlich der dort angegebenen Epochen.
+- **Kometen:** veröffentlichte Element- und Periheldaten aus astronomischen Kleinobjektquellen, für den Katalog in Kepler-Elemente mit einer angenäherten Phase umgerechnet.
+- **Arrokoth:** gerundete historische Elemente mit grob geschätzter Bahnphase; Darstellung als vereinfachte Kugel, nicht als physikalisches Kontakt-Doppelkörper-3D-Modell.
+- Radien sind überwiegend gerundete Literaturwerte. **Alle 14 Sonnenbahnen sind zweikörperbasierte Simulationen**, keine aktuellen präzisen Ephemeriden; Planeteneinflüsse und nichtgravitative Kometeneffekte werden nicht fortgerechnet. Bahnmodelle und Quellen sind in den Detaildaten kenntlich gemacht.
+
+Weiterführende Ursprünge: [Stellarium-Kleinkörperdaten](https://github.com/Stellarium/stellarium/blob/master/data/ssystem_minor.ini), [NASA/JPL Small-Body-Orbits](https://ssd.jpl.nasa.gov/sb/orbits.html). Zusätzliche Herkunftslinks stehen in den jeweiligen `provenance`-Feldern und Artikeln.
+
+### Technische Dateien
+
+- `data/catalog/manifest.json` + drei neue Katalogdateien + `data/editorial/de-objects-v52.json`: Katalog auf v9.0.0 erweitert und getrennt validiert.
+- `src/data/{bodies,catalog,layers,orbital-math}.js`: neuer Typ `tno`, Quell-/Alias-Validierung, Category-Layer und schematische Größen.
+- `src/ui/{object-list,object-details}.js`: TNO-Suche, Aliase und Modellhinweise.
+- `src/renderer/{solar-view,labels}.js`: solare TNO-Bahnen und Objektbeschriftungen.
+- `index.html`, `css/styles.css`: Sterne zuerst, TNO-Checkbox mit textlichem Umbruch und App-Version.
+- `sw.js`, `package.json`: Version 52 und Manifest-gesteuerter Offline-Katalog.
+- Dokumentation und Tests für den neuen Stand.
+
+## Qualitätssicherung
+
+`npm run check` validiert Schema, Quellen-URLs, eindeutige IDs und Elternbeziehungen und führt automatisierte Regressionstests für bestehende und neue Funktionen aus. Zusätzlich zum bestehenden Testumfang deckt `tests/category-delta-v52.test.mjs` die Reihenfolge der Checkboxen, Katalogzählung, alle 14 Namen/Typen, Orbits an mehreren Zeitpunkten, Filter, Suche und neue Datenpfade ab.
+
+---
+
+<a id="release-v51"></a>
+
+## Release v51
+
+# Delta v51 – Größen in Reihe und sanfte Bahnwelle
+
+## Installation
+
+`Sonnensystem-Delta-v51.zip` im Projektstamm über die **vollständige v50-Installation** entpacken und betroffene Dateien ersetzen. Das ZIP enthält nur neue und geänderte Dateien gegenüber v50. Anwendungsversion **51.0.0**; Offline-PWA-Cache **sonnensystem-shell-v51**. Bei installierter PWA App nach Aktualisierung neu öffnen, damit der neue Service Worker aktiv wird.
+
+## Objekt-Reihendarstellung
+
+- Beim Umschalten **von Umlaufbahnen in die Reihe** wird **Objekt: maßstabsgetreu** automatisch eingeschaltet. Die vor dem Umschalten gezeichneten Positionen und Größen werden vor der Änderung gespeichert, damit der animierte Eintritt nahtlos bleibt.
+- Die beiden Szenen teilen die Objektgrößen-Einstellung wie zuvor. `scaleObjects` wird deshalb für Sonnensystem und Planetenansicht gesetzt; die aktive UI zeigt unmittelbar den eingeschalteten Schalter. `Bahn` und andere Darstellungsoptionen ändern sich nicht.
+- Manuelles Umschalten der Objektgrößen während einer Reihe bleibt möglich. Beim Verlassen bleibt der zuletzt gewählte Maßstab erhalten; erst ein erneutes Aktivieren von Reihe stellt Maßstabsgetreu wieder als Standard her.
+
+## Animation beim Ausschalten der Bahnabstände in der Planetenansicht
+
+- **Nur** für `Bahn: An → Aus` bei geöffneter Planetenansicht (und außerhalb der Reihendarstellung) ersetzt eine glatte, monotone Kurve den bisher stärker sichtbaren Gummiband-Effekt. Die Bahnradien schwingen nicht mehr über ihren Zielwert hinaus.
+- Sichtbare Bahnen werden nach ihrem physischen Abstand zum Zentralplaneten sortiert. Die innerste Bahn beginnt zuerst, die äußerste bis zu **0,20 × 980 ms ≈ 196 ms** später. Alle Bahnen erreichen nach **980 ms** denselben endgültigen schematischen Maßstab. Monde/Satelliten nutzen dieselbe Verzögerung wie ihre Bahnen; Orbitlinien und Kugelpositionen bleiben synchron.
+- Erneute Änderungen während einer Animation starten von der zuletzt sichtbaren Position und dem zuletzt sichtbaren Bahn-Radius. Der Gegenweg (Bahn aus → an), Änderungen in der Sonnenansicht, Größen-/Reihenwechsel und Ansichtsübergänge behalten die bisherige Federanimation. Bei `prefers-reduced-motion` findet keine Animationswelle statt. Keine Änderungen an Keplerparametern oder Katalogdaten.
+
+## Prüfung
+
+Neue automatische Tests für Skalierungs-Standard der Reihe in beiden Ansichten, `aria-pressed`-Synchronität, manuelle Änderung und erneutem Eintritt, korrekte Auswahl der Animationsart, monotone und nach Distanz gestaffelte Bahnen, synchronisierte Kugel-/Bahn-Geometrie, Unterbrechungsfreiheit und Bewegung-reduzieren. Bestehende Regressionen und PWA-Cache-/Versionsprüfungen bleiben erhalten. Zum Prüfen `npm run check` ausführen.
+
+---
+
+<a id="release-v50"></a>
+
+## Release v50
+
+# Delta v50 – Kamera zurücksetzen im AR-Modus
+
+## Installation
+
+`Sonnensystem-Delta-v50.zip` im Projektstamm über eine **vollständige v49-Installation** entpacken und vorhandene Dateien ersetzen. Das Archiv enthält ausschließlich geänderte oder neue Dateien. Version nach Aktualisierung: **50.0.0**; der PWA-Cache lautet **sonnensystem-shell-v50**.
+
+## Verhalten
+
+- **AR aktiv:** Der vorhandene Button **Kamera zurücksetzen** unten rechts dient nun der **Neuausrichtung des AR-Blicks** statt des Wechsels der Standard-Kameraperspektiven. Die letzte gültige Geräteorientierung wird zur neuen Referenz. Die aktuelle Kamerabasis der Szene wird als neue neutrale Blickrichtung verwendet; die Perspektive richtet sich unmittelbar dorthin aus. Weitere Drehungen des Smartphones wirken relativ zu diesem neuen Ausgangspunkt.
+- **Kein Ortswechsel:** Augenposition, Kameradistanz und aktuelle Szene bleiben bestehen. AR bleibt eingeschaltet, Sensorereignisse laufen weiter und es ist keine erneute Berechtigungsabfrage nötig. Mehrfaches Neuausrichten ist möglich. Eine kurze Snackbar bestätigt die Aktion.
+- **AR aus oder noch nicht bereit:** Der Reset-Button verhält sich wie zuvor: in der Sonnensystemansicht Wechsel zwischen drei Kamerapositionen bzw. nach manueller Bewegung Rückkehr zur Standardperspektive, in der Planetenansicht Rückkehr zur Gesamtübersicht.
+- **Bedienbarkeit:** Tooltip und Screenreader-Beschriftung des Buttons passen sich dem AR-Zustand an. Nicht unterstützte Smartphones zeigen wie bisher keinen AR-Button.
+
+## Prüfumfang
+
+Automatisierte Tests für AR-Rekalibrierung nach Bewegung, unveränderte Kameraposition, erneute Gerätebewegung und wiederholte Resets, Berechtigung/Session-/Sensorlistener, AR-Off-Verhalten und korrekte App-Verdrahtung. Bestehende Regressionstests und v50-Version/Cache werden geprüft. Zusätzlich wird das Delta als Overlay über v49 auf Byte-Gleichheit mit dem aktualisierten Projekt verglichen.
+
+---
+
+<a id="release-v49"></a>
+
+## Release v49
+
+# Delta v49 – schmalere Control-Panel-Buttons und Reihen-Beschriftung
+
+## Installation
+
+`Sonnensystem-Delta-v49.zip` **über die vollständige v48** im Projektstamm entpacken und Dateien ersetzen. Aktuelle Version: **49.0.0**, PWA-Cache **sonnensystem-shell-v49**. Das ZIP enthält ausschließlich neue/geänderte Dateien gegenüber v48.
+
+## Control Panel
+
+- Die nur mit einem Icon versehenen Buttons **AR** (optional), **Maßstab** und **Objektlayer** werden bei üblicher Breite von **58 px auf 49 px** reduziert (−9 px bzw. rund **15,5 %**). Höhe und Icongröße bleiben gleich.
+- Die **Zeitsteuerung** bleibt bei **58 px Breite**; ihre Dropdown-Funktionen und Datumstexte bleiben unverändert.
+- Panelbreite mit drei Buttons: **172 px statt 190 px**; mit AR-Button: **229 px statt 256 px** (jeweils bei 8 px Abstand). Die drei Menüs bleiben am gleichen rechten Viewportrand ausgerichtet und verdecken die Trigger nicht. Auf sehr kleinen Displays gilt die bisherige reduzierte Breite ab 245 px weiterhin.
+
+## Reihenansicht
+
+- **Beschriftungen:** Für den nach realem Radius sortierten Reihenindex werden Labels abwechselnd **oben** (gerade Indizes) und **unten** (ungerade Indizes) positioniert. Dies gilt sowohl für das Sonnensystem als auch für die Planetenansicht und ist unabhängig von der Labelpriorität. Beim Verlassen der Reihe gilt wieder die freie, stabile Beschriftungsposition.
+- **Abstände:** Erste Lücke (größtes zum zweitgrößten Objekt) unverändert; die größenabhängigen Lücken ab dem zweiten Objekt sind um **30 %** erweitert. Die Reihe bleibt bei kleinen Objekten verdichtet.
+- **Saturnringe:** Für die Kollisionsvermeidung der Körper wird Saturns äußerer sichtbarer Ringradius von **1,20 × Ringskalierung** berücksichtigt. Auch die Label-Freiheit und das Reihen-Kameraframing verwenden den visuellen Außenradius. Der Planet selbst wird dabei **nicht** künstlich vergrößert.
+- Reihenfolge, enger Ausschnitt des größten Körpers, Pan/Zoom und vorhandene Wechselanimationen bleiben erhalten.
+
+## Prüfungen
+
+Automatisierte v49-Regressionen sowie die bestehenden Tests. Nach dem Packen wird ein Overlay v48 + Delta v49 auf Byte-Gleichheit mit v49 und Test-Erfolg geprüft.
+
+---
+
+<a id="release-v48"></a>
+
+## Release v48
+
+# Delta v48 – AR-Modus / Bewegungsgeste zum Umsehen
+
+## Installation
+
+`Sonnensystem-Delta-v48.zip` über eine **vollständige v47-Version** im Projektstamm entpacken; vorhandene Dateien ersetzen. Nach dem Aktualisieren der Webseite/PWA ist die Version **48.0.0** aktiv (Cache `sonnensystem-shell-v48`). Das Archiv enthält nur neue oder geänderte Dateien gegenüber v47.
+
+## Steuerung
+
+- **Links im Control Panel:** Neuer SVG-Button mit Fadenkreuz/AR-Symbol. Er wird nur eingeblendet, wenn ein sicheres Browserfenster, eine Geräteausrichtungs-API und ein grobes Touch-Eingabeprofil auf einem mobilen Bildschirm vorhanden sind. Ohne diese Merkmale bleibt das ursprüngliche Control Panel mit drei Menüs erhalten. Startwert **Aus**.
+- **Ein:** Tippen aktiviert die sensorbasierte Steuerung. Auf iOS und einigen Browsern wird die Motion-Berechtigung **erst innerhalb des Tipps** angefragt. Nach der ersten gültigen Sensorprobe wird die Blickrichtung kalibriert und der Button aktiv. Anschließend lenkt die reale Gerätebewegung die Blickrichtung in der 3D-Szene (Gier, Nick, Roll). Die Augenposition wird nicht um den selektierten Körper bewegt – man schaut vom aktuellen Standpunkt aus herum.
+- **Aus:** Erneut tippen. Sensorlistener werden abgemeldet; letzte Blickrichtung wird in die Standard-Kamera zurückübertragen. Ein-Finger-Pan, Zwei-Finger-Umsehen/Pinch-Zoom und die Desktopsteuerung bleiben weiterhin vorhanden.
+- **Fehlerfälle:** Bei verweigerter Berechtigung, fehlenden Sensorwerten oder Verlassen des Vordergrunds erfolgt keine weitere Sensorverarbeitung. Eine Snackbar nennt den aktuellen Status oder Fehler. Es wird **kein Kamerabild** angefordert und werden **keine Sensordaten** verschickt. Der AR-Blickmodus ist daher keine Kamera-Overlay-Augmented-Reality-Funktion.
+- **Layout:** Der Zusatzbutton wird ausschließlich bei Unterstützung ganz links eingefügt. Die drei vorhandenen Dropdowns sind unabhängig davon weiterhin rechtsbündig am Bildschirmrand befestigt.
+
+## Prüfung
+
+Automatisierte Regressionen und neue Tests für Sensorverfügbarkeit, Berechtigungen, Kalibrierung, Quaternion-Drehung, Projektion und Ressourcensäuberung. Das ZIP wird als Overlay über der v47-Installation geprüft.
+
+---
+
+<a id="release-v47"></a>
+
+## Release v47
+
+# Delta v47 – Raumsteuerung und verdichtete Objekt-Reihe
+
+## Installation
+
+Archiv **`Sonnensystem-Delta-v47.zip`** über eine vollständige **v46-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Anschließend Webseite/PWA neu laden. Projektversion **47.0.0**, Offline-Cache **`sonnensystem-shell-v47`**. Das ZIP enthält nur neu hinzugekommene/geänderte Dateien, keine vollständige Grundinstallation.
+
+## Navigation (Maus und Touch)
+
+| Eingabe | Neue Wirkung |
+| --- | --- |
+| **Linke Maustaste ziehen** | Blickpunkt über die horizontale Bahnebene verschieben |
+| **Rechte Maustaste ziehen** | Umschauen: Kamerawinkel und Neigung ändern |
+| **Shift + links ziehen** | Alternative zum rechten Mausziehen: umschauen |
+| **Ein Finger wischen** | Blickpunkt über die Bahnebene verschieben |
+| **Zwei Finger gemeinsam wischen** | Umschauen durch Änderung des Kamerawinkels |
+| **Zwei Finger auseinander/zusammen** | Stufenlos zoomen; keine unbeabsichtigte Rotation bei symmetrischem Pinch |
+| **Mausrad / Pfeiltasten** | Weiterhin Zoomen / bodenparallel bewegen |
+| **Linksklick / Antippen** | Weiterhin Objektauswahl ohne unbeabsichtigte Auswahl nach Drag/Gestenwechsel |
+
+Gezieltes Verschieben beendet bei aktivem Folgen weiterhin die Nachführung; Drehung/Zoom nicht. Das Browser-Kontextmenü bleibt über der 3D-Bühne deaktiviert, damit Rechtsziehen zum Umschauen verwendet werden kann.
+
+## Reihenansicht – nah herangezoomt
+
+- **Sortierung:** unverändert absteigend nach hinterlegten tatsächlichen Radien; nur sichtbare Körper nehmen teil. Die Darstellungsradien folgen dem aktiven Objekt-Maßstab (schematisch / physikalisch).
+- **Lücken:** nicht mehr konstant. Der freie Abstand ergibt sich aus **14 % der Summe benachbarter Darstellungsradien** (mit sehr kleinem Mindestabstand und Begrenzung nach oben). Große Körper dürfen mehr Abstand haben, kleine Nachbarn werden dicht gereiht. Kein Überlappen der Kugeln.
+- **Kamera:** Die größte Kugel beginnt außerhalb des linken Bildausschnitts. Nur ihre letzten ca. **12 % des Durchmessers** reichen in die sichtbare Reihe hinein. Das Blickziel und der Zoom werden so berechnet, dass die folgenden größeren Körper gut erkennbar sind. Das erste Segment (bis zu sechs Folgeobjekte) wird bildfüllend gerahmt; die übrigen Objekte bleiben per Verschieben erreichbar, statt alle winzig auf eine Bildschirmbreite zu quetschen.
+- **Ansichten:** Dasselbe Framing funktioniert im Sonnensystem und in der isolierten Planetenansicht sowie bei allen vier Maßstabs-Kombinationen; im Hochformat wird der Distanzwert an das engere Blickfeld angepasst.
+- **Übergänge:** Positions- und Größenanimationen sowie Orbitfades/Gummibandeffekt aus v45/v46 bleiben bestehen. Die Kamera fährt weich zum neuen Ausschnitt.
+
+## Prüfung
+
+Automatisierte Eingabe-, Kamera-, Reihen-, Ansicht- und Regressionstests einschließlich symmetrischem Pinch, rein horizontaler Zwei-Finger-Geste, Auswahl nach Tippen, variabler Körperabstände, Foto-/Hochformat, physikalischem Maßstab und Szenenwechsel. Delta-Installation über v46 wird gesondert durch vollständige Datei- und Testprüfung abgesichert.
+
+---
+
+<a id="release-v46"></a>
+
+## Release v46
+
+# Delta v46 – sichtbare Gummiband-Übergänge für Maßstab und Ansichten
+
+## Installation
+
+`Sonnensystem-Delta-v46.zip` **über eine vollständige v45-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Das Archiv enthält ausschließlich gegenüber v45 geänderte oder neue Dateien. Die App bzw. PWA anschließend neu laden. Release **46.0.0**, Service-Worker-Cache **`sonnensystem-shell-v46`**.
+
+## Verhalten
+
+- **Schema ↔ Maßstab:** Positionen und Bahnradien werden stetig interpoliert. Kugelradien und Saturnringe wachsen bzw. schrumpfen weich. Die Zielgeometrie wird nach ungefähr **980 ms** mit leichtem elastischem Überschwingen erreicht.
+- **Umlaufbahnen ↔ Reihe:** Die Objekte wandern in bzw. aus der nach Größe sortierten Reihe. Die Bahnlinien verblassen und erscheinen wieder, ohne beim direkten Zurückschalten ihre Helligkeit abrupt zu ändern. Die Orbits bleiben während der Bewegung an der Sonne bzw. am gewählten Zentralplaneten verankert.
+- **Sonnensystem ↔ Planetenansicht:** Körper aus der bisherigen Szene bleiben vorübergehend als transparente Darstellung erhalten und verblassen; neue Körper erscheinen nach und nach. Dasselbe gilt für die vorher sichtbaren und neu hinzukommenden Bahnen. Auch die alten Orbitlinien können sich dabei mit der Szene bewegen; ihre historischen Radien werden nicht plötzlich auf den neuen Szenenmaßstab gesetzt.
+- **Schneller erneuter Wechsel:** Ausgangspunkt sind die gerade angezeigten Koordinaten, Größen und Deckkräfte. Auch teilweise verblasste Körper und Bahnen werden weiter interpoliert, statt zu blinken oder zu springen.
+- **Kamera und Bedienung:** Kameraziel, Abstand und Blickwinkel werden weiter weich nachgeführt. Manuelle Kamerabewegungen haben Vorrang; Objektfokus und Folgen bleiben nutzbar.
+- **Barrierefreiheit:** Mit `prefers-reduced-motion: reduce` werden Übergänge weggelassen.
+
+Die Änderung betrifft nur die **Darstellung**; Zeitsteuerung, Orbitalparameter, Katalog, Layer- und Maßstabsschalter sowie die beiden Ansichtsmodi bleiben erhalten. Es werden keine Bahndaten interpoliert oder überschrieben.
+
+## Implementierung
+
+- `src/renderer/renderer.js`: Sichtbarkeits-Snapshots vor Ansichtswechseln, Quell- und Ziel-Szenenüberblendung, Opazitäts-Interruption ohne Sprung, Tiefenpuffer-Schutz für transparente Objekte.
+- `src/renderer/shaders.js`: `uOpacity` für Kugeln und Saturnringe.
+- `src/renderer/orbits.js`: eigene Quell-Geometrie und Deckkraft für ausblendende Bahnlinien.
+- `src/renderer/planet-view.js`, `solar-view.js`: animierte Bahnmittelpunkte.
+- `tests/spring-view-transitions-v46.test.mjs`: sieben gezielte Regressionstests für Szenenblenden, unterbrechbare Opazitäten, Orbitzentrierung, Rendering-Fades und reduzierte Bewegung. Zusätzlich bestehen alle bestehenden Projektprüfungen.
+
+## Grenzen der Prüfung
+
+Die Rechenwege und Zeichnungsaufrufe sind durch automatisierte Tests abgedeckt. Ein vollständiger WebGL-Browserstart war in der verfügbaren Headless-Chromium-Umgebung mangels WebGL-Kontext nicht möglich.
+
+---
+
+<a id="release-v45"></a>
+
+## Release v45
+
+# Delta v45 – Reihe und Übergangsanimationen
+
+## Installation
+
+`Sonnensystem-Delta-v45.zip` über eine **vollständige v44-Installation** in denselben Projektstamm entpacken und vorhandene Dateien überschreiben. Dieses Archiv enthält nur neue bzw. geänderte Dateien. Anschließend Seite/PWA neu laden. Version **45.0.0** und Cache **`sonnensystem-shell-v45`**.
+
+## Neuer Schalter „Reihe“
+
+- Unter den beiden Bahndarstellungs-Schaltern **Umlaufbahn** und **Kontrast** sitzt ein neuer Toggle mit **drei von links nach rechts kleiner werdenden SVG-Punkten**; er belegt die Breite der Bahn-Spalte.
+- **Standard Aus**, getrennt in der Sonnensystem- und isolierten Planetenansicht. `aria-pressed`, Aktiv-Stil, Tooltip und Snackbar geben den Zustand wieder.
+- **An:** Alle durch den Layerfilter und ggf. die 4-Monde-Regel tatsächlich sichtbaren Körper werden horizontal **nach ihren hinterlegten physikalischen Radien absteigend** gereiht. Bei identischem Radius sortiert die ID deterministisch. Unbekannte Radien werden nicht geschätzt und stehen am Ende.
+- Zwischen benachbarten Kugeln bleibt freier Raum. Ihre angezeigten Radien richten sich weiterhin nach **Objekt Aus/An**; die Aufreihung verändert weder reale Radien noch Bahnelemente. Auch der Platzbedarf im Hochformat wird beim Kameraframing berücksichtigt.
+- Beim Aktivieren werden die Orbitlinien weich ausgeblendet; bei Deaktivierung erscheinen sie zurück, sofern **Umlaufbahn** weiterhin aktiviert ist. Die Option **Kontrast** und die dauerhafte Kategoriepalette bleiben unverändert. Das Sonnenglühen bleibt an der animierten Sonnenposition.
+
+## Übergangsanimationen
+
+Beim Wechsel der **Objekt-/Bahn-Maßstäbe**, der **Reihenansicht** sowie zwischen der **Sonnensystem-** und **Planetenansicht** wird der gerade gerenderte Zustand eingefroren und ca. **980 ms** in die neue Zielgeometrie überführt:
+
+- **Positionen:** Kepler-/Horizons-Zielpositionen bleiben rechnerisch unverändert; die Grafik interpoliert zu den neuen Koordinaten.
+- **Körper und Bahnen:** Kugelradien, Saturnring-Skalierung und gezeichnete Bahnradien verwenden denselben Interpolationsfortschritt. Ein leichter Überschwinger (unter 5 %) sorgt für den Gummiband-Effekt und endet exakt am Ziel.
+- **Kamera:** Ziel und Distanz werden wie bisher weich nachgeführt; beim Reihen- und Szenenwechsel wird außerdem der Blickwinkel animiert. Objektfokus und globales Folgen bleiben auch während des Animationswegs nutzbar.
+- **Schnelles Zurückschalten:** Neue Übergänge beginnen an der gerade dargestellten Zwischenposition und verhindern harte Sprünge. Benutzerbedienung der Kamera hat Vorrang vor einer laufenden Winkelanimation.
+- **Barrierefreiheit:** Bei `prefers-reduced-motion: reduce` werden die Gummiband-Übergänge nicht ausgeführt.
+
+Der Reihenmodus betrifft ausschließlich die 3D-Szenengeometrie. Er sortiert weder den Objektkatalog um noch ändert er die Simulation, Zeitsteuerung, gespeicherte Bahndaten oder den physischen Maßstab.
+
+## Qualitätssicherung
+
+- Bestehende Regressionstests und neue v45-Tests für den neuen Button, geometrische Sortierung, Kugelabstände, Hochformat-Framing, Planetenansicht, Zeit-/Ansichtsinterpolation, Orbit-Fades, Unterbrechbarkeit, Fokus/Folgen und reduzierte Bewegung.
+- Isolierte Browserprüfung der Menüausrichtung bei Desktop- und Mobilbreiten sowie des Toggle- und Snackbar-Verhaltens.
+- Delta-ZIP wird nach der Erstellung über eine unveränderte v44-Kopie installiert und auf byteidentische Wiederherstellung der v45-Arbeitskopie geprüft.
+
+---
+
+<a id="release-v44"></a>
+
+## Release v44
+
+# Delta v44 – Optimierte Größenverhältnisse
+
+## Installation
+
+Dieses Overlay-Delta baut auf einer **vollständigen v43-Installation** auf. `Sonnensystem-Delta-v44.zip` direkt in den Projektstamm entpacken, vorhandene Dateien überschreiben und die PWA beziehungsweise den Browser neu laden. Es werden nur neue/geänderte Dateien ausgeliefert.
+
+## Neues Verhalten bei Objekt an / Bahn aus
+
+Bei **maßstabsgetreuen Objektgrößen** und **schematischen Bahnen** verwendet die Sonnensystem-Ansicht den Modus **„Optimierte Größenverhältnisse“**:
+
+1. **Sonne:** Radius genau `4 × renderRadius(sun)` = **4,52 Szeneneinheiten**, gegenüber 1,13 im Standard-Schema. Die Größe ist der Radius, nicht der Durchmesser.
+2. **Planeten:** ihre Radien folgen demselben linearen Größenfaktor wie die Sonne: `radiusKm / 696340 × 4,52`. Dadurch bleiben die korrekten Größenverhältnisse aller Planeten untereinander und zur Sonne erhalten; für Objekte ohne bekannte physikalische Radien bleibt die Kugelgröße null.
+3. **Bahnabstände:** jeder bislang schematisch berechnete Bahn-Halbachsenradius wird mit **4** multipliziert, ohne die Orbitalelemente oder ihre relativen Entfernungsverhältnisse zu verändern. Die vergrößerte Sonne überlappt damit die Merkurbahn nicht. Auch die Kepler-Positionen sowie gegebenenfalls eingespielte Horizons-Vektoren und Orbitlinien nutzen dieselbe Regel.
+4. **Übersichtskamera:** Start-/Reset-Abstand 188 statt 47 Einheiten, maximaler Abstand 400 statt 100. Beim Wechsel in/aus dem Modus wird die Kamera automatisch neu gerahmt, sofern sie nicht manuell bewegt wurde. Manuelle Kameraführung, Objektfokus und Tracking bleiben erhalten.
+5. **Bedienung:** Es gibt **keinen zusätzlichen Schalter**. Die bisherige Kombination der beiden Toggles aktiviert den Modus automatisch. Der Tooltip nennt „Optimierte Größenverhältnisse“; die Status-Snackbar zeigt den Modus beim Einschalten an.
+
+## Bewusst unverändert
+
+- **Objekt aus / Bahn aus:** bisherige schematische Größen und Bahnabstände, weiterhin beim Start aktiv.
+- **Objekt aus / Bahn an:** schematische Objektgrößen mit physikalischen Bahnradien.
+- **Objekt an / Bahn an:** physikalische Größen und Bahnabstände in derselben Maßeinheit; die astronomischen Größen-/Abstandsverhältnisse bleiben unverändert.
+- **Isolierte Planetenansicht:** planetenzentrierte Radien und Orbitabstände sind weiterhin unabhängig von der speziellen solarzentrischen Optimierung; hier bleibt die bestehende lokale Kombination aus echten Körperradien und schematischen Mondbahnen bestehen.
+- Layer, Beleuchtung, Farbpalette, Dropdown-Anordnung und alle sieben Toggle-Buttons.
+
+## Mathematische Grundlage
+
+Das Sonnenradius-Referenzmaß von **696340 km** ist aus `data/catalog/stars.json` übernommen. `OPTIMIZED_ORBIT_FACTOR = 4` multipliziert die vorhandene, nichtlineare **schematische** Distanzfunktion – dies ist keine Umstellung auf physikalisch korrekte Abstände. Insbesondere sind Größen und Bahnen in der optimierten Variante **bewusst nicht** mit demselben realen Kilometermaßstab gekoppelt. Das ist erst im Modus Objekt an / Bahn an der Fall. Die grafische Optimierung verbessert weder Bahnparameter noch Genauigkeit oder Aktualität der Daten.
+
+## Qualitätssicherung
+
+Die Tests überprüfen alle vier Toggle-Kombinationen, die tatsächlichen Größenverhältnisse, die vierfach erweiterten Umlaufbahnen, den freien Raum an der Merkurbahn, simulierte und externe Positionen, die unveränderte Planetenansicht sowie den automatischen Kamerawechsel und die Statusmeldungen. Die Installation wird durch Überlagern einer frischen v43-Kopie geprüft.
+
+Version **44.0.0**, Service-Worker-Cache `sonnensystem-shell-v44`.
+
+---
+
+<a id="release-v43"></a>
+
+## Release v43
+
+# Delta v43 – Kompaktes Maßstab-Menü und Status-Snackbars
+
+## Installation
+
+Dies ist ein **Overlay-Delta für eine vollständige v42-Installation**. Den Inhalt von `Sonnensystem-Delta-v43.zip` direkt ins Stammverzeichnis der bestehenden App entpacken und gleichnamige Dateien ersetzen. Danach neu laden bzw. die installierte PWA aktualisieren. Das Archiv enthält nur neue/geänderte Dateien; unveränderte Daten, Texturen, Servermodule und Icons bleiben aus v42 erhalten.
+
+## Änderungen
+
+1. **Maßstab-Popover platzsparender:** Die Überschrift „Maßstab“ sowie `p.scale-popover-note` wurden vollständig entfernt. Die Status-Anzeigen „An/Aus“ innerhalb der ursprünglich acht Toggles wurden entfernt. Der Klickzustand bleibt über aktives Styling, aktualisierte Tooltips und `aria-pressed` erkennbar.
+2. **Kompakte Zweispalten-Gruppierung:** Unter „Objekt“ stehen **Beschriftung** und **Beleuchtung** nebeneinander, **4 Monde** folgt als breite Zeile. Unter „Bahn“ stehen **Umlaufbahn** und **Kontrast** nebeneinander. Große Symbol-Buttons: 68 px Höhe für die Maßstabs-Toggles, 44 px für die Zusatz-Toggles. Das Maßstab-Popover ist 192 px breit und an derselben rechten Viewport-Kante wie die anderen beiden Dropdowns ausgerichtet.
+3. **Farben immer an:** Der bisherige Farben-Schalter entfällt. `createViewSettings()` verwaltet kein `orbitColors` mehr. `orbitAppearance()` verwendet unabhängig von alten Einstellungen immer die Kategoriepalette (`CATEGORY_COLORS`), für die Erdumlaufbahn weiterhin `EARTH_ORBIT_COLOR`. `orbitContrast` verändert nur Linienstärke und Deckkraft.
+4. **Status-Snackbars unten rechts:** Die sieben verbliebenen Buttons melden jede nutzerinitiierte Änderung mit Bezeichnung und aktuellem Zustand (Maßstab: schematisch/maßstabsgetreu; Beleuchtung: Optimiert/Realistisch). Eine dedizierte Live-Region zeigt die aktuelle Snackbar für rund 2,4 s; rasche Folgeaktionen ersetzen die vorherige Meldung und starten die Zeit neu. Der bereits vorhandene API-Toast bleibt unverändert.
+5. **Release:** Versionskennung `V43.0`, Paketversion `43.0.0`, Service-Worker-Cache `sonnensystem-shell-v43`.
+
+## Unverändert
+
+- Die Start- und Umschaltwerte der beiden Szenen: Beleuchtung im Sonnensystem aus, in der Planetenansicht an; die übrigen Toggle-Defaults werden beibehalten.
+- Der direkte Wechsel zwischen den drei Popovers und ihre gemeinsame Rechtsausrichtung.
+- Die gemeinsame Objekt- und Bahn-Skalierung über beide Szenen sowie die bisherige Kamera-/Zoomlogik.
+- Die für Monde hinterlegte Kategorie-Farbe `#E6EDF5`.
+
+## Qualitätssicherung
+
+Die bestehenden Regressionstests wurden an die entfernten Anzeigeelemente und die neue Version angepasst. Neue v43-Tests sichern sieben sichtbare Toggles, Grid-Gruppierung, dauerhaft farbige Orbitlinien, Bedienrückmeldungen, Snackbar-Timer und ARIA-Zustände ab.
+
+---
+
+<a id="release-v42"></a>
+
+## Release v42
+
+# Delta v42 – maßstabsbezogene Darstellungsoptionen
+
+## Änderungen gegenüber v41
+
+1. **Control Panel:** Die drei 58×54-px-Auslöser stehen oben rechts in der Reihenfolge **Maßstab → Objektlayer → Zeitsteuerung** (8 px Abstand). Alle drei Dropdowns liegen wie zuvor mit ihrer rechten Kante direkt am rechten Viewportrand, ohne die Buttonreihe zu verdecken. Die Breiten bleiben 186/145/120 px.
+2. **Maßstab-Dropdown:** Zwei Spalten. Links steht der große Toggle **Objekt** über drei eigenständigen Schaltern für **Beschriftung** (SVG: Tab-Label), **Beleuchtung** (SVG: Taschenlampe) und **4 Monde** (SVG: vier Punkte). Rechts steht der große Toggle **Bahn** über **Umlaufbahn** (SVG: konzentrische Kreise), **Kontrast** (SVG: schwarz-weißer Kreis) und **Farben** (SVG: Farbpalette). Die sechs Zusatzschalter sind aus dem Layer-Dropdown entfernt. Jede Taste behält ihre ID und Funktion, den aktiven An/Aus-Zustand, `aria-pressed`, Tooltip und einen zugänglichen Namen.
+3. **Beleuchtungs-Standard:** Sonnensystemansicht weiterhin **Aus / Optimiert**; Planetenansicht nun **An / Realistisch**. Beide Ansichten behalten ihre voneinander unabhängigen Beleuchtungszustände, auch beim Umschalten. Andere Defaults bleiben unverändert (Objekt-/Bahn-Maßstab beide Aus; 4 Monde im Sonnensystem An, in der Planetenansicht Aus).
+4. **Mond-Kategoriefarbe:** `#E6EDF5`. Der Wert war bereits im v41-Quellcode unter `CATEGORY_COLORS.moon` hinterlegt und wird weiterhin konsistent in Kategorieindikatoren und orbitbezogener Färbung verwendet; keine Material-/Texturfarben wurden geändert.
+5. **Versionierung:** Anwendung `42.0.0`, PWA-Shell-Cache `sonnensystem-shell-v42`.
+
+## Dateien und Test
+
+Geändert: `index.html`, `css/styles.css`, `src/app.js`, `src/data/layers.js`, `package.json`, `sw.js`, `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md` sowie ältere Tests mit versionsbezogenen oder veralteten DOM-Annahmen. Neu: `docs/DELTA-V42.md`, `tests/control-panel-v42.test.mjs`.
+
+**187/187** automatisierte Tests bestanden. Browser-Layoutkontrolle mit Chromium bei **1280×800, 375×812, 320×480 und 245×640**: Die drei Popovers sind rechtsbündig, liegen unter den Triggern und die horizontale Reihenfolge bleibt erhalten.
+
+## Installation
+
+Das Archiv **Sonnensystem-Delta-v42.zip** über eine **vollständige v41-Installation** entpacken und die geänderten Dateien überschreiben. Danach App/PWA neu laden; der neue PWA-Cache ersetzt den vorherigen.
+
+---
+
+<a id="release-v41"></a>
+
+## Release v41
+
+# Delta v41 – Control-Panel „Maßstab“
+
+## Änderungen gegenüber v40
+
+- Das obere, rahmenlose Control-Panel enthält jetzt **drei horizontale Buttons**: **Objektlayer**, **Maßstab** und **Zeitsteuerung**. Alle drei bleiben 58 px breit und 54 px hoch, mit je 8 px Abstand; die Leiste ist 190 px breit.
+- Der neue **Maßstab-Button** verwendet ein SVG mit waagerechtem Doppelpfeil und zwei seitlichen Begrenzungsstrichen. Sein 186 px breites Dropdown öffnet wie die beiden bestehenden Menüs unterhalb der Buttonzeile und **rechts bündig zur Viewportkante**. Die vorhandenen Dropdownbreiten von Layer (145 px) und Zeit (120 px) bleiben unverändert.
+- Im Dropdown stehen zwei **unabhängige Toggle-Buttons nebeneinander**: **„Objekt“** mit großem vertikalem Doppelpfeil und **„Bahn“** mit großem horizontalem Doppelpfeil; jeweils mit kleinem Label und An/Aus-Indikator.
+- **Aus (Standard)**: Die bisherige schematische Darstellung. **An**: die jeweilige Dimension ist nach den vorhandenen Katalogdaten **physikalisch proportional**. Der Objekt-Toggle beeinflusst nur die Körperradien, der Bahn-Toggle nur die Abstände. Beide können gleichzeitig aktiviert werden.
+- Bei aktivem Objekt-Maßstab berechnet der Renderer die Kugelgrößen aus `radiusKm`; bei aktivem Bahn-Maßstab wird die große Halbachse aus `a` ohne bisherige logarithmische/Wurzelkompression dargestellt. Sonnensystem: 1 AE = 3,4 Szeneneinheiten. Planetenansicht: Radius des Zentralkörpers = 1,28 Szeneneinheiten. Bei **beiden Schaltern auf An** teilen sich Größen und Abstände dieselbe physikalische Einheit innerhalb der Szene.
+- Kugeln, Saturnringe, Trefferradien, Labels, Ortsberechnung und Bahnraster verwenden die passenden Skalierungswerte. In der Planetenansicht erweitert sich bei echten Abständen der mögliche Kamerabereich und die Clip-Distanz. Bei echten Objektgrößen ermöglichen engerer Nahzoom, angepasste Kamerafokussierung und eine dynamische Near-Clipping-Ebene das Betrachten kleiner Körper. Der Wechsel der Bahnskalierung passt eine noch nicht manuell geänderte Übersichtsansicht an.
+- Die beiden Maßstabsschalter gelten für **beide Ansichtsarten gemeinsam**, während die übrigen Layer-/Bahndarstellungsoptionen szenenspezifisch bleiben. Menüwechsel mit nur einem Klick, Klick außerhalb und `Escape` unterstützen nun alle drei Menüs.
+- Version **41.0.0**, PWA-Cache `sonnensystem-shell-v41`.
+
+## Wissenschaftliche und praktische Grenzen
+
+Das Umschalten ändert ausschließlich die **geometrische Skalierung**, nicht die Genauigkeit der zugrundeliegenden Ephemeriden oder die Herkunft der Bahndaten. Bei echten Größen sind viele Planeten, Monde und Satelliten im Überblick extrem klein oder nicht sichtbar; Labels bleiben zur Orientierung erhalten. Für unbekannte Radien (`radiusKm: 0`) wird **keine Größe erfunden**. Die reale Distanzskalierung kann in Planetensystemen eine deutlich größere Zoomstufe erfordern.
+
+## Dateien
+
+Geändert: `index.html`, `css/styles.css`, `src/app.js`, `src/data/layers.js`, `src/data/orbital-math.js`, `src/renderer/{camera.js,controls.js,index.js,labels.js,orbits.js,planet-view.js,renderer.js,scene.js}`, `package.json`, `sw.js`, `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md`. Neu: `docs/DELTA-V41.md`, `tests/scale-v41.test.mjs`. Die bisherigen Tests mit festen v40-Versions- oder DOM-Annahmen wurden aktualisiert.
+
+## Prüfung
+
+**182/182** automatisierte Tests bestanden, einschließlich v41-Skalierung, UI und Nahzoom.
+
+## Installation
+
+**Sonnensystem-Delta-v41.zip** in das Verzeichnis einer vollständigen **v40-Installation** entpacken und die Dateien überschreiben; anschließend die Anwendung/PWA neu laden. Das Archiv enthält nur neue und geänderte Dateien, nicht das komplette Projekt.
+
+---
+
+<a id="release-v40"></a>
+
+## Release v40
+
+# Delta v40 – horizontales Control-Panel
+
+## Änderungen gegenüber v39
+
+- Die zwei Auslöser **Objektlayer** und **Zeitsteuerung** stehen oben rechts **horizontal nebeneinander**, beide 58 px breit und 54 px hoch, mit 8 px Abstand. Das schwebende Control-Panel bleibt ohne Rahmen und Hintergrund (Gesamtbreite 124 px).
+- Beide Dropdown-Panels öffnen **unterhalb der gesamten Buttonreihe**. Ihre **rechten Kanten liegen exakt an der rechten Viewport-/Bildschirmkante**: Das Layer-Menü bleibt 145 px breit, das Zeit-Menü 120 px. So bleibt ein möglichst großer Bereich der 3D-Ansicht frei.
+- Beim Klick auf den anderen Auslöser wird das derzeit geöffnete Dropdown automatisch geschlossen und das andere direkt geöffnet – **kein voriges Schließen erforderlich**. Die bereits vorhandene Ein-Menü-Logik in `src/app.js` bleibt dafür unverändert; durch die horizontale Anordnung verdeckt kein Dropdown mehr den jeweils anderen Auslöser.
+- Desktop und Mobil verwenden dieselbe Zeile. Berücksichtigt werden Safe-Area-Abstände der Auslöser, begrenzte Menühöhen und scrollbar bleibende Panelinhalte. Klick außerhalb, `Escape`, Slider-, Layer- und Szenenfunktionen bleiben bestehen.
+- Versionswechsel auf **40.0.0** und PWA-Cache `sonnensystem-shell-v40`.
+
+## Geänderte Dateien
+
+- `css/styles.css` – horizontale Trigger und gemeinsame rechte Popover-Kante
+- `index.html`, `package.json`, `sw.js` – Version und Cache
+- `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md`, `docs/DELTA-V40.md` – Dokumentation
+- `tests/control-panel-v40.test.mjs` – Regressionen für Layout und Menüwechsel
+- bestehende Tests mit v39-Versionsannahmen – erwartete Versions-/Cache-Kennungen auf v40 angehoben
+
+## Prüfung
+
+`npm run check`: Katalogvalidierung und **174/174 Node-Tests bestanden**. Die Layoutpositionierung wurde zusätzlich rechnerisch für beide Dropdown-Anker geprüft; eine vollständige visuelle Chromium-Prüfung war in der Ausführungsumgebung nicht möglich.
+
+## Installation
+
+Das **Delta-v40-ZIP** über eine vollständige v39-Installation entpacken, vorhandene Dateien ersetzen und die Anwendung neu laden. Das ZIP enthält ausschließlich neu angelegte oder geänderte Dateien, nicht das vollständige Projekt.
+
+---
+
+<a id="release-v39"></a>
+
+## Release v39
+
+# Delta v39 – Folgen öffnet das übergeordnete Planetensystem
+
+## Änderungen gegenüber v38
+
+- Beim **Einschalten** von **Folgen** für ein Objekt mit direktem Parent vom Typ `planet` oder `dwarf` wird automatisch dessen isolierte Planetenansicht geöffnet (z. B. Mond → Erde, Charon → Pluto, ISS → Erde).
+- Die **Auswahl bleibt beim Kindobjekt**; die Kamera verfolgt dieses Kind und nicht den übergeordneten Planeten.
+- Ist bereits die Planetenansicht des richtigen Parents geöffnet, erfolgt kein redundanter Szenenwechsel.
+- Der Szenenwechsel erfolgt nur beim **Einschalten** von Folgen. Ein erneuter Klick schaltet den globalen Toggle aus und belässt die aktuelle Szene.
+- Bei Objekten ohne direkten (Zwerg-)Planeten als Parent wird Folgen wie bisher aktiviert, ohne eine Planetenansicht zu öffnen.
+- Beim Szenenwechsel werden Kontrollpanel, Layer und Zeitsteuerung über `updateMode()` mit der Planetenansicht synchronisiert. Bestehende Abbruchregeln für aktives Folgen (Kameraschwenk und zu schnelle Bewegung), Zoom, Perspektivwechsel sowie der globale Toggle bleiben erhalten.
+- Versionswechsel auf **39.0.0** und PWA-Cache `sonnensystem-shell-v39`.
+
+## Installation
+
+Das Delta über eine bestehende v38-Installation entpacken, vorhandene Dateien ersetzen und die Anwendung neu laden.
+
+---
+
+<a id="release-v38"></a>
+
+## Release v38
+
+# Delta v38 – kompakter Planetenansicht-Button und globales Folgen
+
+## Änderungen gegenüber v37
+
+- **Planetenansicht öffnen → Planetenansicht:** Die Beschriftung ist einzeilig; die bisherige Aufzählung von Monden und künstlichen Satelliten im Button wurde entfernt. Die Funktion für Planeten, Zwergplaneten und Monde bleibt erhalten; ein bereits aktives Planetensystem lässt sich weiterhin neu zentrieren.
+- **Zentrieren → Folgen:** Fadenkreuz-Icon unverändert. Der Button ist ein globaler Toggle mit `aria-pressed` und aktiver Markierung, statt mit der gerade verfolgten Objekt-ID verknüpft zu sein.
+- Ist Folgen eingeschaltet, wird die Kamera auf jedes neu selektierte, positionierbare Objekt ausgerichtet. Der globale Zustand bleibt beim Objektwechsel und beim Wechsel der Szene bestehen; die Geschwindigkeitsmessung wird dabei neu begonnen, sodass ein Zielwechsel nicht fälschlich als sehr schnelle Bewegung zählt.
+- Drehbewegungen, manuelle Perspektivenwechsel, Reset-Perspektiven und Zoom mit Mausrad oder Pinch deaktivieren das Folgen nicht mehr. Bei Pinch ignoriert die Steuerung unabsichtliche Mittelpunktverschiebungen; bewusstes Zwei-Finger-Schwenken bleibt möglich.
+- Bewusstes Verschieben der Kamera (Rechtsziehen, Shift+Ziehen, Pfeiltasten, Zwei-Finger-Pan) und die bestehende Grenze für zu schnelle Bewegung (> eine projizierte Bildschirmhöhe je Realzeitsekunde) schalten Folgen aus.
+- Bei Auswahl einer Raumsonde ohne Ephemeride oder beim Aufheben der Auswahl wird das Ziel pausiert, ohne den globalen Toggle auszuschalten. Die nächste positionierbare Auswahl wird automatisch verfolgt.
+- Die bisherige mobile Fokusprojektion oberhalb des halb geöffneten Sheets bleibt während des Folgens erhalten; das gilt auch nach Zoom und Drehung.
+- Versionswechsel auf **38.0.0**; PWA-Cache `sonnensystem-shell-v38`.
+
+## Tests
+
+- Fortgeführte Regressionstests sowie neue Tests für globale Auswahl-/Szenenwechsel, Zoom, Drehung, Pinch, bewusstes Schwenken, Geschwindigkeitsabbruch und die reduzierten Objektdetails.
+- Kompatibel mit einer bestehenden v37-Installation.
+
+## Installation
+
+Delta v38 über die v37-Installation entpacken und bestehende Dateien ersetzen. Die Anwendung neu laden, damit der neue PWA-Cache aktiviert wird.
+
+---
+
+<a id="release-v37"></a>
+
+## Release v37
+
+# Delta v37 – kompakte Dropdowns und Objekt-Nachführung
+
+## Änderungen
+
+- Layer-Dropdown von **166 px auf 145 px** verkleinert.
+- Zeitsteuerungs-Dropdown von **160 px auf 120 px** verkleinert; der 182-px-Regler und die seitlichen Min-/Max-Werte bleiben erhalten, Labels können umbrechen.
+- Neuer **Zentrieren**-Button in den Objektdetails direkt neben **Planetenansicht öffnen** (für andere darstellbare Objekte als alleinige Aktion).
+- Aktiviert einen automatischen Kamera-Fokus auf das ausgewählte Objekt und aktualisiert die Kamera-Zielposition während dessen Bewegung (Sonnensystem und isolierte Planetenansicht).
+- Beendet die Nachführung bei manueller Kamerabewegung (Drehen, Schwenken, Zoom, Tastatur), Wechsel des ausgewählten Objekts, Szenen-/Presetwechsel, erneutem Klick oder Bewegung von mehr als einer projizierten Bildschirmhöhe pro Realzeitsekunde.
+- Die Nachführung nutzt weiterhin die geglättete Kamera und die mobile Zentrierung über dem halb geöffneten Bottom-Sheet. Bloße Auswahl bleibt einmaliger Fokus ohne Tracking.
+- Für Raumsonden ohne berechnete Position gibt es keine Nachführung; es werden keine Positionen erfunden.
+- PWA-Cache `sonnensystem-shell-v37`, Paketversion 37.0.0.
+
+## Installation
+
+Delta v37 über bestehende v36-Installation entpacken und Dateien ersetzen. PWA neu laden, damit der neue Cache aktiviert wird.
+
+---
+
+<a id="release-v36"></a>
+
+## Release v36
+
+# Delta v36 – Zeitsteuerung: Reglerlänge und seitliche Endwerte
+
+## Änderungen
+
+- Vertikaler Geschwindigkeitsregler in der Zeitsteuerung: **132 auf 182 px** (+50 px) verlängert, die zugehörige Schiene von **150 auf 200 px**.
+- **Min-/Max-Beschriftung rechts neben dem Regler**: Max oben und Min unten, mit den Regler-Enden vertikal ausgerichtet. Die beiden Beschriftungen stehen nicht mehr ober- bzw. unterhalb des Sliders.
+- Das Zeit-Dropdown wurde dafür von **116 auf 160 px** verbreitert; der 58-px-Auslöser bleibt unverändert.
+- Auf niedrigen Bildschirmen (Höhe bis 690 px) ebenfalls um 50 px verlängert: Schiene 116 → 166 px, Regler 98 → 148 px. Das Popover bleibt bei Platzmangel scrollbar.
+- Keine Änderung an Range, Geschwindigkeitsskala, Standardwert, Play/Pause, Datum, Desktop-/Mobile-Sheet oder Layer-Dropdown.
+- Versionsnummer v36, Offline-Cache `sonnensystem-shell-v36`.
+
+## Installation
+
+**Delta v36** über eine bestehende **v35**-Installation entpacken und Dateien ersetzen. PWA neu laden, damit die neue Cache-Version aktiviert wird.
+
+---
+
+<a id="release-v35"></a>
+
+## Release v35
+
+# Delta v35 – Sichtbare Höhe des eingeklappten Mobile-Sheets
+
+## Änderung
+
+- **Geschlossenes Mobile-Sheet:** `--sheet-visible` von **52 px** auf **45 px** reduziert.
+- **Kopfzeile:** die Tab-Leiste ist 44 px hoch; mit dem 1 px unteren Rahmen beträgt die gemessene Sheet-Höhe **45 px**. Beim Laden und bei erneutem Einklappen verwendet die Sheet-Steuerung diesen Messwert.
+- **Kamera-Schaltfläche:** erhält dieselbe neue `--sheet-visible`-Höhe und bleibt unverändert 12 px (mindestens) über dem Sheet.
+- **Unverändert:** halb und voll geöffnetes Sheet, Drag-/Wischgesten, Verlauf-Zurück, Desktop.
+- CSS-Fallbacks für Sheet und Kamera-Schaltfläche angepasst. PWA-Cache zu `sonnensystem-shell-v35` erhöht.
+
+## Prüfung
+
+`npm run check` und Delta-Overlay über v34.
+
+## Installation
+
+**Delta v35** über eine vorhandene **v34**-Installation entpacken und gleichnamige Dateien ersetzen. Seite/PWA neu laden, damit der neue Cache aktiv wird.
+
+---
+
+<a id="release-v34"></a>
+
+## Release v34
+
+# Delta v34 – Beleuchtung als An/Aus-Schalter
+
+## Änderung
+
+Im Control-Panel / Layer-Dropdown zeigt der Toggle **Beleuchtung** nur noch **Aus** oder **An**:
+
+- **Aus (Standard):** optimierter Beleuchtungsmodus; hellere unbeleuchtete Planetenseite.
+- **An:** realistische Beleuchtung wie in v28.
+
+`aria-pressed` und die aktive Schalterdarstellung folgen dem Zustand **An = Realistisch**. Titel und barrierefreier Name sind darauf abgestimmt. Die Standard-Beleuchtung bleibt intern `optimized` und wird weiterhin getrennt für Sonnensystem- und Planetenansicht verwaltet. Keine Änderung an Shader, Lichtberechnung oder den anderen Toggles.
+
+## Geänderte Dateien
+
+`src/app.js`, `index.html`, `package.json`, `sw.js`, `README.md`, `docs/HILFE.md`, `docs/DELTA-V34.md` und Regressionstests.
+
+## Installation
+
+**Delta v34** über eine vorhandene **v33**-Installation entpacken und die gleichnamigen Dateien ersetzen. Danach die Seite / PWA neu laden, damit `sonnensystem-shell-v34` aktiv wird.
+
+---
+
+<a id="release-v33"></a>
+
+## Release v33
+
+# Delta v33 – Mobiles Sheet über Browser-/Android-Zurück schließen
+
+## Änderung gegenüber v32
+
+- Beim Übergang **geschlossen → halb/voll** des mobilen Sheets legt die App mit `history.pushState` genau einen temporären Verlaufseintrag für das Sheet an. Die URL ändert sich dabei nicht; ein vorhandenes Objekt in `history.state` wird erhalten.
+- **Browser-Zurück, Android-System-Zurück und PWA-Zurück** erreichen den `popstate`-Listener, der das Sheet aus **halb** oder **voll** direkt auf **geschlossen** setzt. Die Seite bleibt offen.
+- Wechsel zwischen **Objekte/Details**, **halb/voll**, Drehung oder Größenänderung des Displays erzeugen keine weiteren Einträge.
+- Schließen per Header, Wischen, Scrim, Escape, Kamera-Reset oder Ansichtswechsel ruft `history.back()` auf, um den temporären Eintrag zu verbrauchen. Wiederholtes Öffnen/Schließen stapelt keine zusätzlichen Einträge. Wird während eines noch ausstehenden Zurück-Vorgangs erneut geöffnet, wartet die neue Verlaufseintragung auf dessen Abschluss.
+- **Vorwärts** zu einem noch vorhandenen Sheet-Eintrag stellt das mobile Sheet wieder halb geöffnet her. Ein Wechsel zur Desktopansicht entfernt einen offenen temporären Eintrag.
+- Falls die History API im jeweiligen Kontext nicht verfügbar ist, bleiben die vorhandenen Bedienelemente des Sheets funktionsfähig.
+- **Version/PWA:** Anwendung `33.0.0`, Cache `sonnensystem-shell-v33`. Keine Datenmigration.
+
+## Installation
+
+Delta v33 über einer **vollständigen Installation von v32** entpacken und bestehende Dateien ersetzen. Das ZIP ist keine Vollversion. Danach neu laden (bei installierter PWA auf Übernahme des neuen Service Workers achten).
+
+## Prüfung
+
+`npm run check` validiert den Katalog und führt die Regressionstests einschließlich der neuen History-Tests aus. Browserprüfung für mobiles Sheet: Zurück aus halb und voll, Vorwärts, manuelles Schließen, erneutes Öffnen sowie Desktopwechsel.
+
+---
+
+<a id="release-v32"></a>
+
+## Release v32
+
+# Delta v32 – Kategoriepunkte im Objektkatalog
+
+## Änderungen gegenüber v31
+
+- **Kategoriepunkt vor dem Objektnamen:** Jeder Listeneintrag besitzt direkt vor dem Namen einen **7 px großen, vertikal zentrierten Punkt**, dessen Farbe aus `CATEGORY_COLORS` für die Objektkategorie stammt. Der Punkt ist rein dekorativ (`aria-hidden`).
+- **Objektsymbol:** Die 28 px große Kugel links verwendet die individuelle `body.color`-Eigenschaft statt der Kategoriefarbe. Für fehlende oder ungültige Farbangaben wird neutrales `#9ba9bc` genutzt. Der bestehende Shader-/Verlaufseffekt bleibt erhalten.
+- **Anordnung:** Der neue Punkt bleibt auch bei abgeschnittenen langen Objektnamen sichtbar. Das Layout gilt in der Desktop-Seitenleiste und im mobilen Sheet.
+- **Version/PWA:** Anwendung `32.0.0`, Cache `sonnensystem-shell-v32`. Keine Datenmigration.
+
+## Installation
+
+Delta v32 über einer **vollständigen Installation von v31** entpacken und bestehende Dateien ersetzen. Das ZIP ist keine Vollversion. Danach neu laden (bei installierter PWA auf die Übernahme des neuen Service Workers achten).
+
+## Prüfung
+
+`npm run check` validiert den Katalog und führt die Regressionstests aus. Zusätzliche v32-Tests überprüfen die Farben und die HTML-Struktur der Katalogeinträge und den neutralen Fallback. Die Darstellung wird auf Desktop und Mobil geprüft.
+
+---
+
+<a id="release-v31"></a>
+
+## Release v31
+
+# Delta v31 – Layer-Dropdown und mobiler Objektfokus
+
+## Änderungen gegenüber v30
+
+- **Layer-Popover:** Die feste Breite des Dropdowns im Control-Panel wurde von **188 px auf 166 px** reduziert. Dies gilt für Desktop und Mobilgeräte; die bestehende maximale Höhe und Scrollbarkeit bleiben erhalten.
+- **Objektfokus auf Mobilgeräten:** Bei Auswahl eines Objekts aus dem Katalog öffnet sich wie bisher der Detail-Tab im halb geöffneten Bottom-Sheet. Die Kamera richtet den selektierten Himmelskörper nun auf die **Mitte der sichtbaren Szene oberhalb der Sheet-Oberkante** aus, nicht auf die verdeckte Mitte der gesamten Canvas.
+- **Dynamische Geometrie:** Die tatsächlichen Bounding-Rects von Canvas und Sheet werden bei der Darstellung berücksichtigt. Der Zielmittelpunkt bleibt damit auch während des Sheet-Einrastens, beim Ziehen sowie bei einer Änderung der Bildschirmgröße passend zur freien Fläche.
+- **Begrenzter Eingriff:** Die Szene nutzt eine vertikal verschobene Perspektivprojektion (off-axis). Die ursprüngliche Fokus-Zoomstufe und 3D-Position ändern sich nicht. Auf Desktop, bei geschlossenem Sheet, nach manueller Kamerabewegung sowie beim Kamera-Reset ist die reguläre Kameramitte aktiv. Ausgewählte Körper, Bahnen, Beschriftungen und Objekt-Picking nutzen dieselbe Projektionsmatrix.
+- **Version/PWA:** Anwendung `31.0.0`, Cache `sonnensystem-shell-v31`. Keine Datenmigration.
+
+## Installation
+
+Delta v31 über einer **vollständigen Installation von v30** entpacken und die vorhandenen Dateien ersetzen. Dieses ZIP enthält nur neue oder geänderte Dateien gegenüber v30 und ist keine Vollversion. Danach neu laden (bei installierter PWA auf Übernahme des neuen Service Workers achten).
+
+## Prüfung
+
+`npm run check` validiert den Katalog und führt Regressionstests aus. Tests für v31 prüfen unter anderem die exakt reduzierte Dropdown-Breite, die mittige Projektion auf verschiedene sichtbare Bereiche und das Zurücksetzen des Fokus bei manuellen Kamerabewegungen.
+
+---
+
+<a id="release-v30"></a>
+
+## Release v30
+
+# Delta v30 – Objektdetails und mobiler Kamera-Button
+
+## Änderungen gegenüber v29
+
+- **„Objekt hinzufügen“ entfernt:** Der Footer mit JPL-SBDB-Suchfeld, Submit-Button und Erklärung unter der Objektliste entfällt in der Desktop-Seitenleiste und im mobilen Bottom-Sheet. Es gibt keine Submit-Listener mehr für die entfernten DOM-Elemente. Die normale Suchleiste, Objektliste und Objektdetails bleiben unverändert. Vorhandene Asteroiden beziehen beim Auswählen weiterhin bei Bedarf aktualisierte NASA/JPL-SBDB-Daten; die zugehörige API bleibt erhalten.
+- **Kamera zurücksetzen auf Mobilgeräten:** `.viewport-actions` übernimmt jetzt mit `--sheet-visible` die tatsächlich angezeigte Höhe des mobilen Sheets. Der Button bleibt mit mindestens 12 px Abstand oberhalb der Sheet-Oberkante – insbesondere im halb geöffneten Zustand. Während einer Ziehbewegung werden beide Höhen synchron nachgeführt. Beim Wechsel zwischen geschlossen und halb geöffnet folgen die Positionen derselben Animation; reduzierte Bewegung wird respektiert.
+- **Voll geöffnetes Sheet:** Die Kameraaktion verschwindet mit der Szene hinter bzw. oberhalb des vollständig geöffneten Sheets und wird aus der Tastaturnavigation genommen. Bei geschlossenem Sheet und auf dem Desktop ist sie normal bedienbar.
+- **Version/PWA:** Anwendung `30.0.0`, Cache `sonnensystem-shell-v30`. Keine Datenmigration erforderlich.
+
+## Installation
+
+Delta v30 auf die **vollständige Installation v29** entpacken und alle bestehenden Dateien überschreiben. Das ZIP enthält ausschließlich seit v29 neue oder geänderte Dateien; es ist keine eigenständige Vollversion. Danach die Browserseite bzw. installierte PWA neu laden, damit der neue Service Worker übernommen wird.
+
+## Prüfung
+
+`npm run check` führt Katalogvalidierung und alle Regressionstests aus, einschließlich neuer Tests zum entfernten Formular und zum synchronen Kameraabstand beim Ziehen und Einrasten.
+
+---
+
+<a id="release-v29"></a>
+
+## Release v29
+
+# Delta v29 – Beleuchtung und vier größte Monde
+
+## Änderungen gegenüber v28
+
+- **Control-Panel:** Im Objektlayer-Dropdown stehen unter **Beschriftung** zwei neue Toggle-Buttons. **Beleuchtung** wechselt zwischen **Optimiert** und **Realistisch**, **4 Monde** zwischen **An** und **Aus**. Status und `aria-pressed` synchronisieren bei jedem Wechsel der Szene.
+- **Beleuchtung:** Der Fragment-Shader verwendet in der Einstellung **Realistisch** unverändert die bisherige Beleuchtungsrechnung (`.13 + .89 * diffuse`, auf `.08 ... 1.0` begrenzt). **Optimiert** erhöht die Umgebungshelligkeit der dunklen Planetenseite auf mindestens 50 %, ohne das beleuchtete Maximum zu erhöhen. Die Sonne bleibt selbstleuchtend; lokale Texturen und prozedurale Oberflächen verwenden denselben Beleuchtungsmodus.
+- **Voreinstellungen:** Beide Ansichten starten mit **Beleuchtung = Optimiert**. Der Schalter **4 Monde** steht in der Sonnensystemübersicht zunächst auf **An**, in der Planetenansicht auf **Aus**. Werte sind pro Ansicht unabhängig und bleiben beim Wechsel gespeichert.
+- **4 Monde:** Der Renderer ermittelt nach jedem Katalogupdate die vier natürlichen Monde mit dem größten `radiusKm` **je übergeordnetem Planeten oder Zwergplaneten**. Ein aktiver Filter begrenzt **Körper, Klickziele, Beschriftungen und (in der Planetenansicht) deren Umlaufbahnen**. Ausgeblendete Monde bleiben im Katalog und in den Detaildaten; ihre Auswahl setzt die Filterung nicht außer Kraft. Bei deaktiviertem Filter zeigt ein aktivierter Mond-Layer alle vorhandenen Monde.
+- **Layer-Kompatibilität:** Der normale Mond-Layer bleibt eine eigene Voraussetzung. **4 Monde = An** aktiviert die Monde nicht eigenständig. Das voreingestellte Sonnensystem-Layerpreset **Sterne + Planeten** und das Planeten-Layerpreset **Planeten + Monde + Satelliten** bleiben unverändert. Künstliche Satelliten zählen nicht als Monde.
+- **PWA/Version:** Anwendung `29.0.0`, Cache `sonnensystem-shell-v29`. Das Layer-Menü ist für längere Zustandsbeschriftungen leicht verbreitert und bleibt scrollfähig.
+
+## Aktualisierung
+
+Delta v29 über eine **vollständige v28-Installation** entpacken; bestehende Dateien überschreiben. In diesem Delta sind nur seit v28 neue oder geänderte Dateien enthalten. Der lokale Katalog benötigt keine Datenmigration. Im Browser die PWA neu laden bzw. die installierte App aktualisieren, damit der neue Service-Worker-Cache aktiv wird.
+
+## Testabdeckung
+
+`npm run check` prüft Katalogvalidierung, bestehende Regressionstests und neue Tests für Beleuchtungs- und Mondschalter, die sichtbaren Körper, Umlaufbahnen und Ansichtsvoreinstellungen.
+
+---
+
+<a id="release-v28"></a>
+
+## Release v28
+
+# Delta v28 – Drei Kameraperspektiven
+
+## Änderungen gegenüber v27
+
+- Der runde Button `#reset-camera` innerhalb von `.viewport-actions` zeigt nun vier **nach außen gerichtete Pfeile** statt einer Zoom-Out-Lupe. Position, Größe und Zugänglichkeit des Buttons bleiben erhalten.
+- Ohne zwischenzeitliche manuelle Kameraänderung wechselt die Taste zyklisch **Schräg/oben (phi 0,99)** → **Von der Seite (phi 1,54)** → **Draufsicht (phi 0,16)** → **Schräg/oben**. Die Blickrichtung (`theta 0,63`), Distanz (47) und Zielposition (Sonne/Ursprung) werden jeweils auf die Preset-Werte gesetzt.
+- Nach manueller Bewegung durch Drehen, Schwenken, Zoom, Touchgesten oder Pfeiltasten wird die Perspektivenfolge unterbrochen: Der folgende Klick stellt **Schräg/oben** wieder her, danach darf wieder durchgeschaltet werden. Reine Klicks ohne Bewegung setzen den Zustand nicht zurück.
+- Aus einer isolierten Planetenansicht führt die Taste weiterhin unmittelbar zurück zur Sonnensystemübersicht (Schräg/oben). Ein sonstiger programmatischer Reset bleibt ein Reset auf Schräg/oben.
+- PWA-Version und Cache-Kennung auf v28 erhöht, damit bestehende Offlineinstallationen die Änderung erhalten.
+
+## Delta-Dateien
+
+`index.html`, `src/app.js`, `src/renderer/renderer.js`, `src/renderer/controls.js`, `package.json`, `sw.js`, `README.md`, `docs/HILFE.md`, `docs/DELTA-V28.md` sowie aktualisierte und neue Tests in `tests/`.
+
+**Installation:** Delta v28 auf die vollständige bisherige v27-Arbeitskopie entpacken und gleichnamige Dateien ersetzen. Das ZIP enthält nur veränderte/neue Dateien.
+
+---
+
+<a id="release-v27"></a>
+
+## Release v27
+
+# Delta v27 – Viewport, Detailindex und mobiles Sheet
+
+## Änderungen gegenüber v26
+
+### Viewport-Aktionen
+
+- Der einzige gerahmte, kreisrunde Kamera-Reset (`#reset-camera`) bleibt an `.viewport-actions` gebunden, wird aber von oben rechts nach **unten rechts** verschoben.
+- Mobil liegt die Taste über dem geschlossenen Sheet-Header, um erreichbar zu bleiben. Beim Öffnen des Sheets wird die entsprechende Szenenfläche wie bisher überdeckt.
+
+### Control-Panel
+
+- `.viewport>.control-panel`: **width: 58px; padding: 0; border: 0; background: none**; auch Schatten und Hintergrundunschärfe des Panel-Containers entfallen.
+- Die zwei Auslöser (`#layer-btn`, `#speed-btn`) besitzen **keine Dropdown-Pfeile** mehr. Alle SVG-Hauptsymbole, Texte, ARIA-Informationen und Klickfunktionen bleiben.
+- Das Layer-Popover bleibt 152 px breit. Das Zeit-Popover ist bewusst **116 px breit**, unabhängig von der 58-px-Auslösertaste, damit Slider, Play/Pause, Heute und Datum weiterhin nutzbar sind.
+
+### Objektdetails
+
+- Im `detail-top` ergänzt eine Pfeilnavigation (`#detail-prev` / `#detail-next`) den Index (`#detail-index`). Die Elemente sind betitelte Buttons mit SVG-Pfeilen und zugänglichen Namen.
+- Vorheriges/nächstes Objekt bezieht sich auf dieselbe **Objektkategorie** wie der angezeigte Index, einschließlich Raumsonden. Die Navigation ist zyklisch. Bei fehlender Auswahl oder nur einem Objekt sind beide Tasten deaktiviert.
+- Ein Klick übernimmt das neue Objekt über den bestehenden `selectBody`-Pfad für Details, Katalog, Szene und mobile Anzeige.
+
+### Mobile Ansicht
+
+- Das separate DOM-Element `#sheet-handle` mit dem `.sheet-grabber` ist entfernt.
+- Der gesamte Header `#sheet-header` übernimmt Wischgesten; ein Tipp auf freie Flächen oder die Tastatur (Eingabe/Leertaste) schaltet die Snap-Stufen weiter. Die Tabs wählen weiterhin unabhängig Katalog oder Details.
+- **Scroll-Fix:** Das unten fixierte Sheet erhält bei `closed`/`half`/`full` die tatsächliche sichtbare Höhe über `--sheet-visible`, statt eine unsichtbare Vollhöhe nur zu verschieben. Für `half` entspricht damit die scrollbare Höhe genau dem sichtbaren Inhaltsbereich. Katalog- und Details-Scrollbereiche erreichen ihre letzten Einträge; Safe-Area-Padding bleibt erhalten.
+
+## Geänderte Dateien
+
+- `index.html`, `css/styles.css`
+- `src/app.js`, `src/ui/object-details.js`, `src/ui/bottom-sheet.js`
+- `package.json`, `sw.js`
+- `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md`, `docs/DELTA-V27.md`
+- Aktualisierte Versions-/Verhaltenstests unter `tests/`, einschließlich `viewport-detail-sheet-v27.test.mjs`
+
+## Prüfung
+
+- `npm run check`: Katalogvalidierung und 122 Node-Tests bestanden.
+- Isolierte Chromium-Layoutprüfung bei **320, 375, 920 und 1360 px**: Panel 58 px, transparent und rahmenlos; Reset unten rechts; beide Popover innerhalb des Viewports.
+- Bei 320/375 px: das halb geöffnete Sheet kann in Katalog und Details bis zum letzten Eintrag gescrollt werden; Header-Klick wechselt zum Vollbild; geschlossen ist ausschließlich der Header sichtbar.
+- Die vollständige GPU-/WebGL-Integration wurde nicht über einen echten Server im Browser ausgeführt.
+
+**Installation:** Das Delta v27 direkt über die bestehende vollständige v26-Arbeitskopie entpacken und Dateien ersetzen. Das ZIP enthält nur neue oder geänderte Dateien, kein vollständiges Projekt.
+
+---
+
+<a id="release-v26"></a>
+
+## Release v26
+
+# Delta v26 – Kamera-Reset, schlankes Control-Panel und erweiterte Planetenansicht
+
+## Änderungen gegenüber v25
+
+### Allgemein
+
+- **Hilfe-Button entfernt und ersetzt:** `#reset-camera` liegt jetzt oben rechts in `.viewport-actions` (statt innerhalb von `.scene-tools`). Er ist 40 × 40 px groß, kreisrund und gerahmt. Das neue SVG zeigt eine Lupe mit Minuszeichen (Zoom-Out). `title` und `aria-label` bleiben dynamisch: im Sonnensystem „Kamera zurücksetzen“, in einer isolierten Ansicht „Zurück zum Sonnensystem“.
+- Das bisherige Hilfe-Modal und seine Ereignisbehandler wurden entfernt. Die Anleitung bleibt unter `docs/HILFE.md`.
+
+### Control-Panel
+
+- Das vollständige Control-Panel (`#view-mode-status`) ist einschließlich Padding und Rahmen **100 px** breit, sowohl auf Desktop als auch auf Mobilgeräten.
+- Das bisherige `#view-mode-select` samt Label und Change-Handler ist entfernt. Systemwechsel erfolgen ausschließlich über den Button in den Objektdetails sowie Kamera-Reset zur Rückkehr in die Sonnensystemübersicht.
+- Der Objektlayer-Auslöser zeigt nur noch das gestapelte SVG-Icon und den Dropdown-Pfeil; `#layer-summary` wurde entfernt. Der zugängliche Name enthält weiterhin die aktuelle Preset-/Layerauswahl. Das eigentliche Layer-Menü behält 152 px Breite.
+- Das Zeit-Dropdown, die ansichtsspezifische Geschwindigkeit und beide Layerzustände funktionieren wie zuvor.
+
+### Objektdetails und Rendering
+
+- Der Button „Planetenansicht öffnen“ erscheint bei **Planeten** und **Zwergplaneten**; ein Zwergplanet kann selbst das Zentrum der isolierten Ansicht sein (z. B. Pluto mit Charon, Nix, Hydra, Kerberos und Styx).
+- Bei **Monden** erscheint der gleiche Button, wenn deren Parent ein Planet oder Zwergplanet ist. Der Klick öffnet das **Elternsystem** und wählt das Zentralobjekt in der Detailansicht aus; z. B. Mond → Erde oder Charon → Pluto.
+- Renderer, Positionsermittlung und verfügbarer Layerkatalog erlauben nun `dwarf` als isolierten Szenenmittelpunkt. Beim Öffnen wird seine zentrale Kategorie für die Planetenansicht aktiviert. Die bestehenden Standardfilter für gewöhnliche Planeten bleiben erhalten.
+
+### Mobile Ansicht
+
+- Der separate Menübutton `#mobile-menu` wurde entfernt. Das bestehende Bottom-Sheet mit „Objekte“ und „Details“ lässt sich weiter über Griff und Tabs öffnen.
+- Kamera-Reset und Control-Panel liegen rechts oben übereinander; die Menüs bleiben auch auf kleinen Bildschirmen im sichtbaren Viewport.
+
+## Dateien
+
+- `index.html`, `css/styles.css` – DOM-Änderungen, Zoom-Out-Icon, 100-px-Panel und Responsive-Positionierung
+- `src/app.js`, `src/ui/scene-mode.js`, `src/ui/object-details.js` – Ereignisse, ARIA, Parent-Ziele und Detailaktionen
+- `src/renderer/renderer.js`, `src/renderer/scene.js`, `src/data/orbital-math.js`, `src/data/layers.js` – lokales Zwergplanetensystem und Layerverfügbarkeit
+- `package.json`, `sw.js` – Version und PWA-Cache
+- `README.md`, `docs/ARCHITECTURE.md`, `docs/HILFE.md` – Dokumentation
+- `tests/` – aktualisierte Regressionstests plus `scene-actions-v26.test.mjs`
+
+## Prüfung
+
+- Gesamter Katalog wird über `npm run check` validiert.
+- Node-Regressionstests decken Standardlayer, PWA-Cache, Bedienung, neue Zwergplanetenansicht und den Parent-Wechsel von Monden ab.
+- Responsive Layout isoliert im Headless-Browser bei 320, 375, 920 und 1360 px geprüft. Ein vollständiger GPU-/WebGL-End-to-End-Test ist davon zu unterscheiden.
+
+**Installation:** Das v26-Delta direkt über die vollständige v25-Arbeitskopie entpacken und Dateien ersetzen. Kein vollständiges Projekt-ZIP.
+
+---
+
+<a id="release-v25"></a>
+
+## Release v25
+
+# Delta v25 – Objektlayer-Standards und kompaktes Dropdown
+
+**Basis:** v24. Dieses Delta wird in das vorhandene Projektverzeichnis über v24 entpackt; andere Projektdateien bleiben unverändert.
+
+## Neue Standardfilter
+
+| Ansicht | Standardmäßig aktiv | Standardmäßig inaktiv |
+| --- | --- | --- |
+| Sonnensystem | **Sterne, Planeten** | Monde, Zwergplaneten, Asteroiden, Satelliten, Kometen, Raumsonden |
+| Planetenansicht | **Planeten, Monde, Satelliten** | alle übrigen, sofern sie beim aktuellen Planeten überhaupt vorkommen |
+
+`STANDARD_LAYERS` ist jetzt `['star','planet']`; `PLANET_STANDARD_LAYERS` bleibt `['planet','moon','satellite']`. Beide Ansichten besitzen weiter unabhängige gespeicherte Renderlayer- und Bahneinstellungen. Die Anzeige im Objektkatalog bleibt unabhängig von den Renderfiltern.
+
+## Layer-Dropdown
+
+- **Breite:** 152 px statt 227 px (−33 %); auf Mobilgeräten weiterhin an die Viewport-Breite begrenzt und bei Bedarf scrollbar.
+- **Presets:** „Alle“ und „Standard“ erscheinen als zwei zusammenhängende Segmente eines Schalters mit gemeinsamem Hintergrund und aktiver Hervorhebung. Die Trennlinie unter den Presets entfällt; Checkboxen bleiben einzeln wählbar. Bei individuellen Kombinationen ist kein Preset-Segment aktiviert.
+- **Überschriften:** die sichtbaren Texte „Objektlayer“, „Umlaufbahnen“ und „Beschriftung“ wurden entfernt. Zugängliche Gruppenbeschriftungen bleiben erhalten.
+- **Orbit-Steuerung:** „Umlaufbahn“ bleibt der Hauptschalter; „Kontrast“ und „Farben“ sind leicht eingerückt. Der zusätzliche Hinweisabsatz `.orbit-popover-note` wurde entfernt.
+- **Beschriftungen:** Der ursprüngliche Toggle bleibt unverändert, nur die darüberliegende Zwischenüberschrift entfällt.
+- **Hinweistext:** `#layer-note` zeigt die modusspezifische Standardauswahl kompakt an.
+
+## Betroffene Dateien
+
+- `src/data/layers.js` – modusspezifische Standardliste
+- `index.html` – segmentierter Umschalter, reduzierte Überschriften, eingerückte Unteroptionen, Solar-Checkbox-Startwerte
+- `css/styles.css` – schmaleres Dropdown und kompakter Umschalter
+- `src/app.js` – knapper modusspezifischer Standardhinweis
+- `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md` – Dokumentation
+- `sw.js`, `package.json` – PWA-Cache und Paketversion v25
+- `tests/` – aktualisierte Bestandsprüfungen und v25-Regressionstests
+
+Prüfung mit `npm run check`.
+
+---
+
+<a id="release-v24"></a>
+
+## Release v24
+
+# Delta v24 – unabhängiger Objektkatalog und erweiterte Suche
+
+**Basis:** v23. Delta-Update direkt über eine installierte v23-Installation im Workspace-Root entpacken. Die Objekt- und Renderdaten sind unverändert; das Paket enthält ausschließlich geänderte oder neue Dateien.
+
+## Objektkatalog
+
+- Der **gesamte geladene Objektbestand** erscheint unabhängig davon, welche Layer der aktiven 3D-Ansicht eingeschaltet sind. Die Layer-Einstellungen betreffen weiterhin nur den WebGL-Renderer (Körper, Bahnen, Labels, Picking).
+- Die Auswahl eines Katalogobjekts bleibt bestehen, wenn seine Renderer-Kategorie ausgeblendet wird. Ein so verborgenes Objekt kann im Katalog und in den Details angesehen werden, ist aber nicht zwangsläufig in der 3D-Ansicht sichtbar oder anklickbar.
+- In der **Planetenansicht** steht rechts neben dem Suchfeld ein kompakter **SVG-Planetensymbol-Toggle**, ohne sichtbaren Text. Der Schalter besitzt einen zugänglichen Namen und `aria-pressed`, startet auf **Aus** und filtert bei Aktivierung auf den aktuellen Zentralplaneten sowie über `parentId` zugeordnete Objekte, bei Bedarf auch indirekte Nachfahren. Die Wahl gilt für den Katalog und ändert keine Layer.
+- Beim Wechsel zu einem anderen Planeten bezieht sich eine aktive Einschränkung automatisch auf den neuen Planeten. In der Sonnensystemansicht ist der Button verborgen und der gesamte Katalog sichtbar. Der letzte Katalogfilterzustand bleibt für die nächste Planetenansicht erhalten.
+- Das Suchfeld und der Toggle werden als eine Zeile angeordnet. Die mobile Ansicht verwendet das vorhandene Katalog-Element im Bottom-Sheet, daher ist kein doppeltes Element nötig.
+
+## Erweiterte Suche
+
+- Die Suchanfrage wird akzent- und groß/kleinschreibungsunabhängig normalisiert und an Leerzeichen in Suchwörter zerlegt. **Jedes Wort** muss in **mindestens einem** Suchfeld vorkommen (UND). Suchfelder: Objektname, ID, Katalogfeld, Kategorie in Singular/Plural, Elternname/-ID.
+- `uranus c` findet im vorhandenen lokalen Katalog die **neun Uranus-Monde** mit „c“ im Namen: Puck, Cordelia, Bianca, Cressida, Cupid, Caliban, Sycorax, Trinculo und Francisco. Auch `c uranus` funktioniert.
+- Suche und Planetentoggle können gemeinsam benutzt werden; **Renderer-Layer schränken die Ergebnisse niemals ein**.
+
+## Umsetzung und Prüfung
+
+- `src/ui/object-list.js`: von Render-Layern unabhängige Listenauswahl, optionaler Planetenbezug, wortweise Suche.
+- `src/app.js`: separater Katalogfilterzustand, Toolbar-Synchronisierung bei Ansichtswechsel, keine Aufhebung der Katalogauswahl durch Render-Layer.
+- `index.html`, `css/styles.css`: responsiver Suchbereich mit reinem SVG-Icon-Button, sichtbarem Aktivzustand und zugänglicher Beschriftung.
+- `README.md`, `docs/HILFE.md`, `docs/ARCHITECTURE.md`: Dokumentation aktualisiert.
+- `package.json`, `sw.js`: Versionsstand v24 und Offline-Cache `sonnensystem-shell-v24`.
+- `tests/catalog-search-v24.test.mjs` und angepasste Bestandsprüfungen: Katalogunabhängigkeit, Planetenselektion, Wortsuche und UI-Anbindung.
+
+```bash
+npm run check
+```
+
+---
+
+<a id="release-v23"></a>
+
+## Release v23
+
+# Delta v23 – getrennte Objektlayer und 5 Tage/s
+
+**Basis:** v22. Dieses Delta-ZIP enthält ausschließlich neue oder geänderte Dateien. Direkt über eine v22-Installation im Workspace-Root entpacken und bestehende Dateien ersetzen. Katalogdaten, Texturen und Server-APIs sind unverändert.
+
+## Sonnensystem: Zeitsteuerung
+
+- Die Standardgeschwindigkeit der **Sonnensystemansicht** beträgt jetzt **5 simulierte Tage pro realer Sekunde** (`SPEED_MODES.solar.defaultSpeed = 5`). Der Start- und Dropdownwert im HTML zeigt `5 Tage / s`.
+- Der vorhandene 241-Stufen-Regler bleibt logarithmisch. Sein Standardpunkt liegt bei **Stufe 101** (statt 23), damit die Sprünge unterhalb und oberhalb des neuen Standards ähnlich groß sind. Die Grenzen bleiben **1 Stunde/s** bis **10 Jahre/s**.
+- Die **Planetenansicht** startet weiterhin mit **1 Stunde/s**, von **1 Minute/s** bis **1 Jahr/s**. Selbst gewählte Geschwindigkeiten bleiben wie bisher je Ansicht getrennt erhalten; Play/Pause und Simulationszeit werden nicht zurückgesetzt.
+
+## Objektlayer: unabhängige Ansichten
+
+- `S.viewSettings.solar` und `S.viewSettings.planet` verwalten jeweils eine eigene Auswahl für **Objektkategorien**, **Umlaufbahn ein/aus**, **Kontrast**, **Farben** und **Beschriftung**. Ein Ansichtswechsel aktiviert die bereits vorhandenen Werte des betreffenden Modus; er überschreibt die Werte des anderen Modus nicht.
+- **Standard Sonnensystem:** Planeten, Monde und Satelliten **sowie Sterne**, damit die Sonne als Zentrum weiterhin sichtbar ist.
+- **Standard Planetenansicht:** Planeten, Monde und Satelliten. Nicht vorhandene Kategorien erscheinen nicht als Optionen, behalten aber ihren Filterzustand für andere Planeten mit derselben Ansicht.
+- Die **Planetenansicht zeigt nur Kategorien, die im Datensatz zum aktuellen Planeten vorkommen:** die Kategorie des Zentralplaneten und die Typen seiner direkten Kindobjekte (`parentId === planetId`). Der lokale Bestandskatalog bietet beispielsweise bei **Erde** Planeten, Monde und Satelliten, bei **Jupiter** Planeten und Monde. Sterne, Asteroiden, Zwergplaneten usw. fehlen in diesen Listen, solange keine passenden direkten Kindobjekte vorhanden sind.
+- Änderungen an dynamisch geladenen Katalogdaten aktualisieren diese Verfügbarkeit. Sollte künftig z. B. ein Asteroid mit `parentId: 'earth'` vorkommen, wird dessen Kategorie für Erde angeboten und der Planet-Renderer berücksichtigt diesen direkten Orbiter.
+- Die Voreinstellungen **Standard**, **Alle** und **Individuell** werden pro Ansicht getrennt berechnet. **Alle** aktiviert alle bekannten Typen im jeweiligen Ansichtsstatus; im Dropdown bleiben davon nur die vor Ort vorhandenen Typen sichtbar. Es kann nicht versehentlich die letzte in der aktuellen Szene verfügbare Kategorie abgewählt werden.
+- Katalog und WebGL verwenden unverändert denselben gerade aktiven Layerstatus. Der Objektkatalog bleibt durchsuchbar; die dynamische Typenverfügbarkeit betrifft die **Checkboxen des Layer-Dropdowns**.
+
+## Technische Änderungen
+
+- `src/data/layers.js`: Standards pro Ansicht, Verfügbarkeit anhand der Eltern-Kind-Daten, unabhängige Zustandserzeugung und Schutz vor einer vollständig leeren lokalen Auswahl.
+- `src/app.js`: aktiven Zustand beim Szenenwechsel wechseln; Dropdown-Optionen dynamisch zeigen/ausblenden; Kategorie-/Bahn-/Label-Toggles im jeweils aktuellen Zustand halten.
+- `src/renderer/planet-view.js`: lokal gerenderte Begleiter aus allen direkt zugeordneten, positionierbaren Kategorien ableiten (bisher fest auf Monde/Satelliten beschränkt).
+- `src/ui/timeline.js`, `index.html`: neuer Sonnensystem-Startwert und Slider-Pivot.
+- `css/styles.css`: nicht verfügbare Layer-Optionen zuverlässig per `[hidden]` ausblenden.
+- `package.json`, `sw.js`, `index.html`: Versionskennzeichnung v23 und neues PWA-Cache-Präfix `sonnensystem-shell-v23`.
+- `tests/view-layers-speed-v23.test.mjs`: neue Regressionstests für die beiden Presets, verfügbare Kategorien, den Filter-/Orbit-/Label-Zustand, Renderbarkeit und 5 Tage/s. Bestehende Tests wurden an die neue Standardwahl angepasst.
+
+## Prüfen
+
+```bash
+npm run check
+```
+
+Die Testausführung validiert den Katalog und prüft anschließend die Node-Regressionssuite. Offline-PWA-Installationen verwenden mit v23 einen neuen Cache und aktualisieren nach Neuladen der App-Shell die geänderten Module.
+
+---
+
+<a id="release-v22"></a>
+
+## Release v22
+
+# Delta v22 – linke Tab-Seitenleiste und vollständige Sonnenbahnen
+
+**Basis:** v21. Dieses ZIP enthält nur neue und geänderte Dateien; über das Workspace-Root einer v21-Installation entpacken und vorhandene Dateien ersetzen. Die Katalog-JSON, Texturen, lokalen API-Endpunkte und der Zeitregler sind unverändert.
+
+## Allgemein
+
+- Die globale **Topbar entfällt vollständig**. Die 3D-Ansicht und linke Seitenleiste beginnen am oberen Fensterrand.
+- Der bestehende Hilfetext liegt zusätzlich als lesbare Dokumentation unter **`docs/HILFE.md`**, ergänzt um die neue Tab-Anordnung und die Bahndarstellung.
+- Damit die Bedienung zugänglich bleibt, stehen der **Hilfe-Button** und mobil der **Objekte-Button** als kleine Schaltflächen oben links über der 3D-Ansicht. Es gibt keine neue horizontale Leiste.
+
+## Linke Sidebar
+
+- Der Objektkatalog und die Objektdetails teilen sich auf Desktop eine **einzige linke Seitenleiste** mit den Tabs **„Objekte“** und **„Details“**. Die gesonderte rechte Detailspalte entfällt.
+- Die Tabs nutzen dieselben, unvervielfältigten `#catalog`- und `#detail`-Elemente wie das mobile Bottom-Sheet. Beim Wechsel der Bildschirmbreite werden beide Elemente zwischen Sidebar und Sheet verschoben, ohne den aktuellen Tab zu verlieren.
+- Beim Start ist **Objekte** aktiv. Eine gezielte Objektwahl aus dem Katalog oder der Szene öffnet **Details**. Suche und Tastenkürzel `/` öffnen den Katalog.
+- Beide Tab-Gruppen lassen sich mit Pfeiltasten links/rechts sowie Home/End bedienen. `aria-selected`, Tastaturfokus und Sichtbarkeit bleiben synchron.
+
+## 3D-Sonnensystem
+
+- Wenn **Umlaufbahn** aktiviert ist, werden **alle** verfügbaren sonnenzentrierten Bahnen aktiver Layer gezeichnet: Planeten, Zwergplaneten, Asteroiden und Kometen. Die bisherige Beschränkung auf ausgewählte Asteroiden/Kometen bzw. einzelne Zwergplaneten ist entfernt.
+- Bahnen werden durch `solarOrbitBodies()` anhand von `parentId === 'sun'`, Layerstatus und vorhandenen gültigen Bahndaten bestimmt. Ihre Linien verwenden den Ursprung `[0,0,0]` (Sonne). Das Bahnen-Toggle schaltet sie gemeinsam ab.
+- Monde und künstliche Satelliten haben stattdessen **planetenbezogene** Bahnen. In der Sonnenübersicht werden deshalb keine falschen Sonnenkreise für sie gezeichnet; ihre lokalen Umlaufbahnen bleiben in der jeweiligen Planetenansicht erhalten. Für Raumsonden werden ohne echte Ephemeriden weiterhin keine Bahnen erfunden.
+- In der Sonnenübersicht werden je Planet **höchstens vier Mondnamen** zur Beschriftung zugelassen, nach physikalischem Radius (größte zuerst). Ein explizit ausgewählter kleinerer Mond erhält weiterhin ein Label, ersetzt aber den viertgrößten der Gruppe. In der isolierten Planetenansicht gilt diese neue Beschränkung nicht. Die bestehenden Bewegungs- und Bildschirmdichtefilter bleiben zusätzlich aktiv.
+
+## Dateien und Tests
+
+- `index.html`, `css/styles.css`: zweispaltiger Seitenaufbau, gemeinsame Sidebar-Tabs und Ansicht ohne Topbar.
+- `src/ui/bottom-sheet.js`, `src/app.js`: Tab-Synchronisation und responsive DOM-Übernahme, keine Topbar-Abhängigkeit.
+- `src/renderer/solar-view.js`: alle aktiven, verfügbaren Sonnenbahnen statt Auswahl-/Listenlimit.
+- `src/renderer/labels.js`: pro Planet maximal vier Mondbeschriftungen in der Übersicht.
+- `docs/HILFE.md`: Hilfetext; `README.md` und `docs/ARCHITECTURE.md`: aktuelle Beschreibung.
+- `package.json`: `22.0.0`; `sw.js`: Cache `sonnensystem-shell-v22`.
+- Neue Regressionen in `tests/desktop-tabs-orbits-v22.test.mjs`; Versions- und Sidebar-Tests aktualisiert.
+
+## Prüfung
+
+`npm run check` validiert Daten und führt die Node-Regressionssuite aus. Das Layout wurde mit isoliert geladenem HTML/CSS und Tab-Steuerung in Chromium bei 320, 375, 920 und 1360 px geprüft. Ein direkter lokaler HTTP-Aufruf in Chromium wird in dieser Umgebung von der Browsersicherheitsrichtlinie blockiert; deshalb ist dies keine vollständige WebGL-End-to-End-Prüfung.
+
+---
+
+<a id="release-v21"></a>
+
+## Release v21
+
+# Delta v21 – kompakte Zeitsteuerung und dynamische Sliderfüllung
+
+**Basis:** v20. Dieses Delta enthält nur neue oder geänderte Dateien. Ins Root einer vorhandenen v20-Installation entpacken und gleichnamige Dateien überschreiben. Texturen, Katalogdaten und Renderer sind unverändert.
+
+## Änderungen
+
+1. **Zentrierter Reglergriff:** Der logarithmische Range-Slider bleibt vertikal bedienbar, wird aber browserübergreifend als um 90 Grad gedrehter nativer Horizontalregler gerendert. Griff (26 × 26 px) und 6 px breite Spur liegen auf einer gemeinsamen Mittelachse; Beschriftungen und Grenzen bleiben erhalten.
+2. **Füllfarbe:** Der bereits durchlaufene Bereich wird von unten bis zum Griff bernsteinfarben dargestellt. `syncControls` setzt `--speed-progress` passend zum aktuellen Slider-Schritt (0–240); die Darstellung reagiert auf Änderungen in Sonnen- und Planetenansicht.
+3. **Heute-Button:** Nur das Rücksetzsymbol ist sichtbar. Der bestehende zugängliche Name, Tooltip und die Klickfunktion für die aktuelle lokale Zeit bleiben bestehen.
+4. **Menüanordnung:** Einspaltiges Popup mit Slider, darunter zwei gleich breite Buttons (Play/Pause und Zurücksetzen), darunter Datum und Uhrzeit in zwei Zeilen. Keine seitliche Zwei-Spalten-Anordnung mehr.
+5. **Breite:** Das Zeit-Popup ist exakt so breit wie der auslösende Dropdown-Button – auf Desktop und Mobilgeräten; auf niedrigen Viewports wird die Höhe angepasst.
+
+## Technische Details
+
+- `index.html`: Slider-Slot und Button-Reihe, Icon-only Reset, Versionslabel.
+- `css/styles.css`: einspaltiges Dropdown, zentrierter gedrehter Range-Input, Track-Gradient und kompakte Größen.
+- `src/ui/timeline.js`: synchronisierter Füllstand als CSS-Variable.
+- `package.json`: `21.0.0`; `sw.js`: neuer Cache `sonnensystem-shell-v21` zum Ausrollen des Updates.
+- Bestehende Strukturtests aktualisiert; zusätzliche Tests prüfen die neuen Layout- und Füllanforderungen.
+
+## Kontrolle
+
+`npm run check` für Datenvalidierung und Node-Regressionen. Das Aussehen des Sliders wurde in Chromium bei mobilen (320/375 px) und Desktop-Breiten überprüft. Änderungen an Geschwindigkeit, Simulation, Pause und Datum wurden nicht vorgenommen.
+
+---
+
+<a id="release-v20"></a>
+
+## Release v20
+
+# Delta v20 – Zeitregler, Beschriftung und mobiles Control-Panel
+
+**Basis:** v19. Dieses ZIP enthält ausschließlich die neuen oder geänderten Dateien. Für die Installation direkt im vorhandenen v19-Workspace-Root entpacken und die gleichnamigen Dateien überschreiben. `textures/standard/`, Katalog-JSON und Server-APIs bleiben unverändert.
+
+## Änderungen
+
+1. **Zeitsteuerung:** Der vertikale 241-Stufen-Range-Slider hat in Chromium/WebKit und Firefox einen **26 × 26 px großen, hellen Griff** mit dunklem Rand und farblichem Außenring. Die Spur bleibt dunkel, der Touch-Bereich ist 44 px breit. Geschwindigkeit, Grenzen und Play/Pause-/Heute-Verhalten bleiben unverändert.
+2. **Objektlayer:** Der **Beschriftung**-Schalter (An/Aus) wurde mit seiner bestehenden `toggle-labels`-ID und Renderer-Anbindung in das Layer-Dropdown versetzt. Ein zugänglicher gedrückter Zustand und die sichtbare Anzeige werden bei jedem Umschalten aktualisiert. „Übersicht“ bleibt als eigener Button im Control-Panel.
+3. **Standardansicht:** Der Startwert für **Umlaufbahn-Kontrast ist aus** (`orbitContrast:false`). Umlaufbahn und Farben bleiben aktiviert; Beschriftungen ebenfalls. Der Kontrastschalter zeigt von Beginn an „Aus“ und lässt sich unabhängig einschalten.
+4. **Mobil bis 770 px:** Das Sheet besitzt nur noch **Objekte** und **Details**; der Tab „Steuerung“ entfällt. Das **vollständige Control-Panel** mit Ansicht, Objektlayer, Zeit und Übersicht bleibt im Viewport oben rechts und wird nicht mehr in das Sheet verschoben. Dropdowns öffnen wie auf Desktop rechtsbündig unter ihren Auslösern. Die Layerliste kann auf kleinen Geräten intern gescrollt werden. Bei Öffnen eines Sheet-Tabs werden offene Menüs geschlossen.
+
+## Technische Änderungen
+
+- Markup: `index.html`; responsive Styles und Range-Slider-Pseudoelemente: `css/styles.css`.
+- Zustand und Schalter-Synchronisation: `src/app.js`; nur noch zwei mobile Sheet-Panels und kein DOM-Verschieben des Übersicht-Buttons: `src/ui/bottom-sheet.js`.
+- Version: `package.json` = `20.0.0`, Header `V20.0`, Service-Worker-Cache `sonnensystem-shell-v20`.
+- Aktualisierte Regressionstests und zusätzliche v20-Prüfungen; `README.md` beschreibt die neue Steuerung.
+
+## Verifikation
+
+`npm run check` prüft Katalog, Anwendungsmodule, PWA und UI-/Steuerungs-Regressionen. Der Renderer und die logarithmischen Bereiche werden nicht verändert. Die visuellen Browserprüfungen sind von der Ausführungsumgebung abhängig.
+
+---
+
+<a id="release-v19"></a>
+
+## Release v19
+
+# Delta v19 – Rechtsbündige Dropdowns und kompakte Zeitsteuerung
+
+**Basis:** v18. Die im ZIP enthaltenen geänderten Dateien direkt in das v18-Workspace-Root entpacken und überschreiben. Frühere Deltas sind in dieser Datei nicht erneut enthalten. `textures/standard` wird nicht verändert.
+
+## Steuerung und Positionierung
+
+- **Layer-Dropdown:** Direkt unter dem Layer-Button, rechte Kante mit Button ausgerichtet. Auf dem Desktop 227 px breit und bei niedrigem Bildschirm scrollbar. Innerhalb des Layer-Menüs: Alle/Standard, die acht Objektkategorien und darunter **Umlaufbahn**, **Kontrast** und **Farben** als drei unabhängige Ein/Aus-Schalter. Der eigenständige Bahnen-Button und sein Popover entfallen. Bestehende Statuswerte, Farbcodes und Standardvorgaben (alle drei an) bleiben erhalten.
+- **Zeit-Dropdown:** Direkt unter dem Zeit-Button, ebenfalls rechtsbündig. Breite 196 px auf Desktop, mobil bis 220 px. Der Header zeigt ausschließlich die aktuelle Geschwindigkeit (ohne „Zeitsteuerung“). Der Body hat zwei Spalten: **links** den 241-stufigen vertikalen Geschwindigkeitsregler; **rechts** Play/Pause, Heute, lokales Datum und lokale Uhrzeit in zwei Zeilen. Die obere zweizeilige Trigger-Beschriftung bleibt Geschwindigkeit plus Datum ohne Uhrzeit.
+- **Mobil:** Beide Menüs öffnen im dritten Tab „Steuerung“ und bleiben im normalen Layoutfluss. Das Zeitmenü ist innerhalb seines Triggers rechts ausgerichtet. Das Sheet wird bei Bedarf vollständig ausgeklappt; Wechsel zum Katalog oder zu Details schließt offene Menüs. Der Übersicht-Button bleibt im Bild.
+
+## Unveränderte Semantik
+
+- Logarithmische Geschwindigkeiten, getrennt für Sonnensystem (3 h/s Standard; 1 h/s bis 10 Jahre/s) und Planetenansicht (1 h/s Standard; 1 min/s bis 1 Jahr/s).
+- Heute setzt die Simulation auf `Date.now()` in lokaler Browserzeit, ohne Play/Pause, Ansicht oder Kamera zu verändern.
+- Objektlayer-Voreinstellung „Standard“: nur Sonne und Planeten.
+- Umlaufbahn, Kontrast und Farben sind weiterhin getrennte Optionen. Kein Eingriff in WebGL, Katalogdaten oder lokale Texturen.
+
+## Technische Änderungen
+
+`index.html`, `css/styles.css`, `src/app.js`, `src/ui/timeline.js`, `src/ui/bottom-sheet.js`, `package.json`, `sw.js`. Tests wurden an das Layout angepasst und um `tests/popovers-v19.test.mjs` ergänzt. Cache-Version: `sonnensystem-shell-v19`.
+
+**Validierung:** `npm run check`, mit zusätzlichem Layout- und DOM-Strukturtest. Ein echter interaktiver Browsertest ist getrennt zu beurteilen, da die Headless-Umgebung zeitweise keine lokale Navigation zulässt.
+
+---
+
+<a id="release-v18"></a>
+
+## Release v18
+
+# Delta v18 – Kompakte Zeitsteuerung
+
+**Basis:** v17. ZIP direkt in das installierte v17-Workspace-Root entpacken und die gleichnamigen Dateien überschreiben. Dieses Delta enthält ausschließlich geänderte oder neue Dateien; lokale Texturen (`textures/standard`) und Katalogdaten werden nicht verändert.
+
+## UI
+
+- **Eingeklappt:** Ein einziger, zweizeiliger Knopf im vertikalen Desktop-Control-Panel: oben `3 Std. / s` (bei neuer Ansicht entsprechend dynamisch), darunter das lokale Datum `DD.MM.YYYY`. **Keine Uhrzeit im Knopf**, kein separater Play- oder Heute-Button außerhalb des Menüs.
+- **Ausgeklappt:** Kompaktes Zeitmenü mit Geschwindigkeitsanzeige, lokalem Datum einschließlich Uhrzeit (`DD.MM.YYYY hh:mm`), vertikalem 241-Stufen-Regler, Play/Pause als SVG-Symbol und dem Button **Heute**. Auf Desktop liegt es links vom schmalen Panel. Der vertikale Regler bietet die bestehenden logarithmischen Bereiche und unabhängige Geschwindigkeiten je Ansicht.
+- **Mobil:** Dasselbe DOM-Element befindet sich im dritten Bottom-Sheet-Tab **Steuerung**; das Menü wird inline geöffnet und das Sheet vergrößert. Der Übersicht-Button bleibt wie bisher über der Szene.
+- **Bedienung:** Außenklick schließt das Menü. `Escape` schließt es und stellt den Fokus auf den Zeitknopf zurück. Das Öffnen von Layer-/Umlaufbahn-Menüs schließt das Zeitmenü. Play/Pause schaltet den Laufzustand um; „Heute“ setzt `Date.now()` ohne Zeitumrechnung auf UTC zurück.
+
+## Beibehaltener Geschwindigkeitsbereich
+
+| Ansicht | Minimum | Standard | Maximum |
+|---|---:|---:|---:|
+| Sonnensystem | 1 h/s | 3 h/s | 10 Jahre/s |
+| Planetensystem | 1 min/s | 1 h/s | 1 Jahr/s |
+
+## Technische Umsetzung
+
+- `index.html`, `css/styles.css`, `src/ui/timeline.js`, `src/app.js` – kompakter Trigger, Menü und synchronisierte lokale Datumsformate.
+- `package.json`: Version `18.0.0`.
+- `sw.js`: Offline-Cache `sonnensystem-shell-v18`.
+- Angepasste Legacy-Regressionstests und neue Tests in `tests/time-dropdown-v18.test.mjs` prüfen Struktur, Datumsformat inkl. Mitternachtswechsel in verschiedenen Zeitzonen, Geschwindigkeitsgrenzen und PWA-Cache.
+
+## Prüfung und Grenzen
+
+`npm run check` validiert den Katalog und führt alle Tests aus. Eine vollständige grafische Interaktionsprüfung per Chromium war in dieser Umgebung bislang nicht möglich; automatisierte Logik- und DOM-Strukturprüfungen sowie die saubere Delta-Installation werden stattdessen verwendet. Der bestehende WebGL-Renderer, die planetaren Daten und lokale Texturdateien bleiben unverändert.
+
+---
+
+<a id="release-v17"></a>
+
+## Release v17
+
+# Delta v17 – Standardansicht und Umlaufbahn-Optionen
+
+**Basis:** v16. Das ZIP enthält nur geänderte und neue Dateien. Über das vollständige v16-Workspace-Root entpacken; `textures/standard` bleibt erhalten.
+
+## Standardansicht
+
+- Voreinstellung **Standard**: Sonne und acht Planeten (`star`, `planet`), **keine Monde**.
+- „Alle“ und die freie Kategoriemehrfachauswahl bleiben unverändert. Mond-/Satellitenbahnen erscheinen erst, wenn der entsprechende Layer eingeschaltet ist.
+- Die Auswahl wirkt weiterhin auf Katalog, Objekte, Orbits, Labels und Anklickbarkeit. Die Planetenansicht folgt derselben Layer-Auswahl.
+
+## Umlaufbahn-Dropdown
+
+- Das bestehende Bahnen-SVG ist jetzt ein Menüknopf. Das Dropdown enthält exakt drei unabhängige Umschalter: **Umlaufbahn**, **Kontrast**, **Farben**; alle sind standardmäßig **An**.
+- **Umlaufbahn**: Ein/Aus ohne Verlust der beiden Darstellungsoptionen. **Kontrast**: gut sichtbare, gegenüber v16 breitere Linien mit höherer Deckkraft. Echte projizierte 2D-Dreiecke (2,4 px normal / 3,4 px ausgewählt) statt browserabhängiger `gl.lineWidth`-Werte. Wenn Kontrast aus ist, werden die dünnen früheren Linien verwendet.
+- **Farben**: Kategorienpalette an/aus; bei Aus werden alle Bahnen einheitlich graublau angezeigt. Die ausgewählte Bahn bleibt durch zusätzliche Breite/Helligkeit unterscheidbar.
+- Das Menü öffnet auf Desktop **links** vom 110-px-Panel und auf Mobilgeräten **innerhalb** des dritten Tabs „Steuerung“. Layer-Menü, Geschwindigkeitsregler und Umlaufbahn-Menü schließen einander.
+- Die Bahnfarben ändern nicht die lokalen Oberflächentexturen oder die natürlichen Planetenfarben.
+
+## Farbpalette
+
+| Kategorie | Bezeichnung | Hex-Code |
+|---|---|---|
+| Planeten | Weiß | `#E6EDF5` |
+| Erdumlaufbahn | Klares Blau | `#4DA3FF` |
+| Zwergplaneten | Violett | `#B68CFF` |
+| Monde | Weiß | `#E6EDF5` |
+| Asteroiden | Bernstein | `#E9B44C` |
+| Kometen | Korallrosa | `#FF7597` |
+| Künstliche Satelliten | Limettengrün | `#A7D86D` |
+| Raumsonden | Orange | `#FF8B4A` |
+| Sterne | Warmgelb | `#FFE5A0` |
+
+Die blaue Farbe gilt für die Sonnenumlaufbahn **der Erde**, während alle übrigen Planetenbahnen weiß sind. Raumsonden sind weiterhin katalogbasiert, bis reale Ephemeriden vorhanden sind.
+
+## Version, Validierung und Grenzen
+
+- Version `17.0.0`; PWA-Cache `sonnensystem-shell-v17`.
+- `npm run check` enthält bestehende Regressionstests plus v17-Prüfungen für Palette, Layer, Orbit-Liniengeometrie und die Oberfläche.
+- Die Darstellung wurde nicht in einem vollständigen interaktiven Browserlauf verifiziert, weil die lokale Chromium-Navigation in der Testumgebung blockiert war. Die automatisierten Modell- und Komponententests sind separat ausgeführt.
+
+---
+
+<a id="release-v16"></a>
+
+## Release v16
+
+# Delta v16 – Standard-Sterne und stabile Label-Dichte
+
+Basis: v15. Installieren: ZIP direkt über v15 entpacken und gleichnamige Dateien ersetzen. Lokale Texturen bleiben unverändert.
+
+## Layer
+
+- `Standard`: Planeten + Monde + Sterne (einschließlich Sonne).
+- `Alle` und individuelle Kategorien bleiben unverändert.
+- Katalog, Szene, Labels und Orbitlayer verwenden weiterhin dieselbe Layer-Auswahl.
+
+## Beschriftungen
+
+- Entfernt die automatische Unterdrückung wegen Überlappung von Texten oder Planetenscheiben.
+- Pro Zelle von 160 × 110 CSS-Pixeln maximal zwei nicht ausgewählte Beschriftungen; ausgewählte Objekte sind zusätzlich immer zulässig.
+- Prioritätsreihenfolge und Bonus für bislang sichtbare Labels bleiben erhalten.
+- Die Rasterzelle bleibt bei kleinen Bewegungen über Zellgrenzen durch 18 px Randpuffer stabil.
+- Die bisherige Label-Seite bleibt erhalten und ändert sich nur, um den sichtbaren Bildschirm nicht zu verlassen.
+- Der unabhängige Geschwindigkeitsfilter und der manuelle Namen-Schalter bleiben erhalten.
+
+## Validierung
+
+- `npm run check`: 71 automatische Prüfungen einschließlich vier neuer v16-Tests.
+- Das Delta enthält keine Texturdateien und ändert keine Katalogdaten.
+
+---
+
+<a id="release-v15"></a>
+
+## Release v15
+
+# Delta v15 – Kompaktes Control-Panel und Objektlayer
+
+## Installation
+
+Delta v15 direkt **über v14** im Workspace-Root entpacken und vorhandene Dateien ersetzen. Nur geänderte bzw. neue Dateien sind im ZIP enthalten; der lokale Ordner `textures/standard/`, astronomische Katalogdaten und vorhandene Bilder werden nicht verändert. Für eine Neuinstallation: v8 → v9.1 → v10 → v11 → v12 → v13 → v14 → v15.
+
+## Control-Panel
+
+- Desktop-Panel von **184 auf 110 Pixel** reduziert (−40,2 %), weiterhin oben rechts. Die Zeitsteuerung bleibt vertikal; das Datum wird kompakt innerhalb des Buttons angezeigt.
+- Die sichtbare Beschriftung **„Ansicht“** oberhalb der Ansichtsauswahl ist entfernt, die zugängliche Beschriftung bleibt erhalten.
+- Neues **Layer-Dropdown** zwischen Ansicht und Zeitsteuerung. Auf Desktop öffnet es nach links; auf Mobilgeräten erweitert es sich innerhalb des dritten Bottom-Sheet-Tabs „Steuerung“.
+- Die bestehenden SVG-Buttons Bahnen, Namen und Übersicht bleiben erhalten; mobil bleibt weiterhin nur Übersicht über der Szene sichtbar.
+
+## Kategorie-Layer
+
+- Preset **Standard (Startwert): Planeten + Monde**.
+- Preset **Alle:** alle acht katalogisierten Kategorien.
+- Beliebige Einzel- und Mehrfachkombinationen per Checkbox; mindestens eine Kategorie aktiv.
+- Wirkt sowohl auf die Objektliste als auch auf gerenderte Objekte, Orbitlinien, Labels und Trefferauswahl in beiden 3D-Ansichten. Ausgeblendete Objekte können nicht per Canvas-Klick ausgewählt werden.
+- Sind aktive Objekte durch einen Layerwechsel ausgeblendet, wird die aktuelle Objektauswahl aufgehoben; Kamera und Simulation bleiben unangetastet.
+- Die Sonne gehört zur Kategorie Sterne und ist deshalb im Standard-Preset nicht sichtbar; das rein dekorative Hintergrund-Sternenfeld bleibt erhalten.
+- Raumsonden bleiben ohne Ephemeriden ausschließlich als redaktionelle Katalogeinträge verfügbar.
+
+## Katalogsuche
+
+- Alte Kategorie-Filterchips unter dem Suchfeld entfernt.
+- Die Freitextsuche durchsucht zusätzlich zur Objekt-ID, Name und Katalognummer die **deutsche Kategoriebezeichnung** (z. B. `Mond` / `Monde`) und **Name/ID des direkten Mutterobjekts** (z. B. `Erde`, `Jupiter`).
+- Groß-/Kleinschreibung und Akzente werden ignoriert. Der Layerfilter bleibt auch bei Suchanfragen wirksam.
+
+## Kompatibilität und Tests
+
+- Keine Änderungen an Katalog-JSON, Texturbildern, Server-APIs oder Simulationsgeschwindigkeiten.
+- PWA-Cache-Version auf `sonnensystem-shell-v15` angehoben; `src/data/layers.js` wird offline mit ausgeliefert.
+- Automatisierte Regressionstests für Presets, Checkbox-Mehrfachauswahl, Suche nach Eltern/Kategorien, WebGL-Layer, Mobil-/Desktop-Struktur und PWA.
+- Browser-Sichtprüfung: Desktop, Tablet, Mobil (inkl. geöffneter Layer-Auswahl); die dynamische WebGL-Laufzeit kann im Headless-Browser dieser Umgebung wegen einer lokalen Navigationssperre nicht vollständig geprüft werden.
+
+---
+
+<a id="release-v14"></a>
+
+## Release v14
+
+# Delta v14 – Schmales Control-Panel und mobile Steuerung
+
+## Installation
+
+Delta v14 direkt über **v13** im Workspace-Root entpacken und bestehende Dateien ersetzen. Nur neue oder geänderte Dateien befinden sich im ZIP; der lokale Texturordner `textures/standard` und sämtliche Astronomiedaten bleiben erhalten. Die bisherige Installationsreihenfolge für Neuinstallationen ist v8 → v9.1 → v10 → v11 → v12 → v13 → v14.
+
+## Desktop und Tablet ab 771 px
+
+- Control-Panel bleibt **oben rechts**, aber rund **180–184 px schmal**.
+- Ansicht-Dropdown bleibt bestehen; Play/Pause, Geschwindigkeit und Datum sind **untereinander** angeordnet.
+- **Bahnen, Namen und Übersicht** werden als reine SVG-Icon-Buttons dargestellt. `aria-label`, Tooltips und `aria-pressed` bleiben für Bedienbarkeit und Zustandsanzeige erhalten.
+- Der logarithmische Geschwindigkeitsregler mit 241 Stufen öffnet links neben dem schmalen Panel.
+- Bei 771–1030 px Bildschirmbreite beginnt die überlagernde Detailansicht unter dem erweiterten Panel, um die Werkzeug-Buttons nicht zu verdecken.
+
+## Mobil bis 770 px
+
+- Drei Bottom-Sheet-Tabs: **Objekte, Details, Steuerung** (statt der bisherigen Registerkarte „Zeit“).
+- Der dritte Tab enthält die **vollständige Ansicht- und Zeitsteuerung** sowie die Bahnen-/Namen-Schalter. Es werden keine zweiten Bedienelemente erzeugt.
+- Nur der bestehende **Übersicht-Button** bleibt schwebend im Sichtbereich der 3D-Szene. Er folgt beim Öffnen und Ziehen dem oberen Rand des Bottom-Sheets und bleibt erreichbar, solange Bühne sichtbar ist.
+- Beim Zurückwechseln zu Desktop werden Panel und Übersicht-Button an ihre ursprünglichen Positionen versetzt, ohne Ereignisbehandler oder gesetzte Geschwindigkeiten zu verlieren.
+- Das Öffnen des Geschwindigkeitsreglers vergrößert das Bottom-Sheet automatisch auf volle Höhe, damit der komplette vertikale Regler bedienbar ist. Beim Tab-Wechsel wird ein eventuell offener Popover geschlossen.
+
+## Kompatibilität
+
+Keine Änderungen an 3D-Bewegung, Katalogdaten, Texturdateien, API-Routen, Simulation oder den bisherigen Geschwindigkeitsbereichen. Die PWA-Cache-Kennung wurde auf `sonnensystem-shell-v14` geändert.
+
+## Verifikation
+
+Automatische Tests für mobile DOM-Verlagerung, Tabzustand, SVG-Steuerung, dynamisch nachgeführten Übersicht-Button und Bestandsregressionen; zusätzlich statische Layout- und Browserprüfungen für mehrere Viewport-Größen. Diese prüfen nicht die reale WebGL-Szene.
+
+---
+
+<a id="release-v13"></a>
+
+## Release v13
+
+# Delta v13 – Control-Panel, Objekt-Registerkarten und reduzierte Navigation
+
+## Installation
+
+Delta v13 über **v12** im Workspace-Root entpacken. Bestehende Dateien werden ersetzt. `textures/standard/` und der astronomische Katalog werden nicht verändert. Das Delta enthält ausschließlich geänderte/neue Dateien. Für ein frisches System zunächst v8 und die folgenden Deltas nacheinander installieren: v9.1 → v10 → v11 → v12 → v13.
+
+## Control-Panel (oben rechts)
+
+- Der bisherige Text zur heliozentrischen Ansicht entfällt. Stattdessen zeigt ein zugängliches **Ansicht-Dropdown** die heliozentrische, ausdrücklich nicht maßstabsgetreue Darstellung sowie die acht Planetensysteme. Die Auswahl synchronisiert sich nach jedem Ansichtswechsel; ein Wechsel zu einem Planetensystem wählt den entsprechenden Planeten aus.
+- **Play/Pause, Geschwindigkeit und Heute** befinden sich zusammen mit dem Ansicht-Dropdown im Control-Panel. Play/Pause bleibt ein reiner SVG-Icon-Button. Die Geschwindigkeit zeigt **nur den gewählten Wert**; der Regler öffnet mit logarithmischen Stufen. Der Heute-Button zeigt nur das Datum (lokal `DD.MM.YYYY hh:mm`) und das Zurücksetzen-Symbol; das Wort „Heute“ entfällt.
+- Die bisherigen Buttons **Bahnen, Namen, Übersicht** sind in die untere Zeile des Panels umgezogen. Bestehende Funktionen und die getrennten Geschwindigkeitsbereiche bleiben erhalten.
+- Auf Mobilgeräten bleibt die vorhandene Bottom-Sheet-Funktion für die drei Zeitbuttons erhalten („Zeit“), damit die kompakte Szene nicht durch die Zeitleiste verdeckt wird. Die Ansichts- und Szenenwahl bleibt oben rechts.
+- Die dekorativen `camera-hints` wurden aus Markup und Styles entfernt.
+
+## Objektdetails
+
+- Die obere Überschrift lautet jetzt **Name des gewählten Objekts**, nicht mehr „02 / Objektdetails“.
+- **Objekttyp und Zuordnung** (z. B. `PLANET / SONNENSYSTEM`) sind als `hero-ref` direkt im Objekt-Schaubild eingeblendet. Das alte Feld für die interne Ziel-ID entfällt.
+- **Wissen** zeigt die redaktionelle Beschreibung, Artikelabschnitte und Quellenlinks.
+- **Daten** zeigt physikalische Werte, Orbitdetails, zugehörige Objekte, den Horizons-Abgleich sowie die Datenquellen. Auch Raumsonden trennen ihre Missionsbeschreibung von den Fakten.
+- Beim Wechsel des gewählten Objekts wird „Wissen“ wieder aktiv; die Tabs unterstützen Pfeiltasten, Home und End sowie sichtbare Fokusmarkierungen.
+- `detail-sources` befindet sich **innerhalb von `detail-scroll`** unter den Daten und ist nicht mehr fixiert. Es scrollt mit den astronomischen Werten.
+- Im Sidebar-Katalog entfällt `catalog-intro`. Die Suche steht direkt oben.
+
+## Daten und Kompatibilität
+
+Das Update verändert keine Katalog-Einträge, Datenquellen, lokalen Texturpfade oder 3D-Bahnmodelle. Die Service-Worker-Cache-Version wird auf `sonnensystem-shell-v13` erhöht, damit installierte PWAs neue HTML-, CSS- und JavaScript-Dateien beziehen.
+
+## Prüfungen
+
+Automatisierte Node-Regressionstests einschließlich v13-UI-Struktur, Ansichts-Synchronisation, zugänglichem Tabzustand und Katalogvalidierung. Die Browser-Sichtprüfung einer direkt per URL geladenen Anwendung ist in dieser Umgebung durch Browser-Netzwerkregeln blockiert; statische Desktop/Tablet-/Mobil-Layout-Screenshots wurden separat geprüft.
+
+---
+
+<a id="release-v12"></a>
+
+## Release v12
+
+# Delta v12 – lokale Texturen, Raumsonden und Zeitleiste
+
+## Installation
+
+Delta v12 über v11 entpacken. Eigene Texturdateien liegen in `textures/standard/` und werden nicht mit diesem Delta überschrieben oder mitgeliefert. Der Server liefert sie direkt vom lokalen Dateisystem. Unterstützt: `.jpg`, `.jpeg`, `.png`, `.webp`; Basisname ist die Objekt-ID (z. B. `earth.jpg`, `moon.png`, `titan.webp`); zusätzlich werden einige bekannte originale 2K-Dateinamen wie `2k_earth_daymap.jpg` erkannt. Die Auflösung wird bei der GPU-Übertragung begrenzt: mobil 512, Sonnensystem 2048, Planetenansicht 4096 Pixel. Die Auflösung einer kleineren Quelldatei wird nicht künstlich erhöht.
+
+**Keine CORS- oder externen Texturzugriffe:** v11-Fallback auf Fremdhosts und v11-Server-Downloadproxy entfallen. Fehlende Karten werden schematisch dargestellt. Die eigenen Bilddateien sind nicht Bestandteil dieses Deltas. Bei anderen Dateinamen müssen Dateien entsprechend umbenannt werden.
+
+## Raumsonden
+
+Die Kategorie **Raumsonden** enthält Voyager 1/2, Pioneer 10/11, New Horizons, Cassini, Galileo und Huygens mit Startdatum, Zielen, Missionsstatus und Link zur NASA-Quellseite. Missionsdaten sind getrennt von künstlichen Erdsatelliten. **Keine erfundenen Positionsdaten oder Keplerbahnen:** Für die Sonden werden keine 3D-Positionen gezeichnet. Missionsstatus sind redaktionelle Momentaufnahmen, keine Live-Telemetrie.
+
+## Zeitleiste
+
+Play/Pause ist ein reiner Icon-Button mit SVG-Pfad. Das Datum wird nach `DD.MM.YYYY hh:mm` in der lokalen Browser-Zeitzone im Heute-Button angezeigt. „Heute“ setzt den Zeitsimulationswert auf `Date.now()`. Die obere Zeile „Zeitreise“ wurde entfernt. Die separat gespeicherten Geschwindigkeitsbereiche aus v10 bleiben bestehen.
+
+### Aufräumen nach dem Update
+
+Die beiden v11-Dateien `server/providers/textures.mjs` und `scripts/cache-textures.mjs` werden in v12 nicht mehr importiert bzw. aufgerufen. Beim Überlagern eines Delta-ZIPs bleiben ältere, nicht mehr benötigte Dateien auf der Festplatte; sie können daher gelöscht werden. Die Anwendung führt unabhängig davon keine externen Texturabrufe aus.
+
+---
+
+<a id="release-v11"></a>
+
+## Release v11
+
+# Delta v11 – Objekt-Auswahl und Oberflächenbilder
+
+**Basis:** vollständiger v8-Workspace-Root, Delta v9.1, danach Delta v10. Das v11-Delta enthält **nur geänderte und neue Dateien** und wird direkt ins Workspace-Root entpackt.
+
+## Objekt-Auswahl
+
+- Ein kurzer linker Mausklick oder Tipp auf den leeren 3D-Himmel hebt eine vorherige Objektauswahl auf (`SolarRenderer.pick → onClearSelect → state.selected=null`). Treffer auf Himmelskörper wählen diese weiterhin aus. Rotation, Zoom und Panning ändern die Auswahl nicht.
+- Die Detailanzeige und Katalogmarkierung werden nach dem Abwählen aktualisiert. Die aktuelle Planetenansicht und Kameraposition bleiben bestehen.
+- Bei ausgewähltem Objekt setzt die Label-Priorität keine automatischen Unterdrückungen mehr durch: schnelle Satelliten, Durchflüge, Text-/Körperkollision und temporäre Sichtüberdeckung blenden dieses Label nicht aus. Seine Positionsseite bleibt stabil. Bei **manuell deaktivierter Beschriftung** bleibt auch das ausgewählte Label unsichtbar.
+- Alle bisherigen v9/v10-Hysterese- und Kollisionsregeln gelten weiterhin für *nicht ausgewählte* Labels. Die Regressionstests wurden entsprechend präzisiert.
+
+## Oberflächentexturen
+
+- UV-Sphäre (neues Vertex-Layout mit acht Floats), Shader-Sampling `uDiffuse`/`uHasTexture`; prozedurale Texturen als jederzeit funktionsfähiger Fallback.
+- Registrierte equirektangulare Bilder: NASA-basierte Solar-System-Scope-Karten aller acht Planeten, Sonne und Mond; NASA/JPL- und USGS-Mosaike für Phobos, Deimos und die großen Monde der äußeren Planeten; Cassini-Mosaik für Titan und OSIRIS-REx-Fotomosaik für Bennu.
+- Dynamischer Qualitätsmodus: **2K** für Standardansicht, **bis 4K** für Körper mit verfügbarer hochaufgelöster Karte in der Planetenansicht, **512 px** für mobile/speicherschwache Geräte. Nicht höher als das verfügbare Originalbild und das Gerätelimit.
+- Quellen in `src/renderer/texture-sources.js` fest zugelassen; Browser lädt über `/textures/<tier>/<id>.jpg`, Node-Proxy prüft echte HTTPS-Ursprünge, Datenformat und Größe. Private Dateiablage unter `.texture-cache/`. Bildanzeige im GPU-Cache mit begrenzter Parallelität/LRU.
+- PWA auf `sonnensystem-shell-v11` umgestellt: neue Module gehören zur App-Shell, Bilder werden **erst nach erfolgreicher Anfrage** in den Cache aufgenommen.
+- Texturquellen werden als Attribution/Quellenlink in der Detailansicht angezeigt. Alle Quellen und Rechteangaben sind in [TEXTURE-SOURCES.md](TEXTURE-SOURCES.md) dokumentiert.
+
+**Einschränkung:** Die Bilddateien sind **nicht Bestandteil des ZIPs**, können hier nicht direkt von den Quellenservern geladen und daher nicht live visuell verifiziert werden. Erster Online-Abruf über den mitgelieferten Node-Server (`npm start`) erforderlich; andernfalls bleibt die bisherige schematische Optik erhalten. Die tatsächliche Größe der JPL-Missionstexturen liegt teilweise unter 2K; Uranus und Neptun besitzen im Register keine hochauflösenden 4K-Varianten. Für die Mehrzahl der kleinen Monde und Asteroiden ist noch kein kartografisch passendes Raster registriert.
+
+## Tests
+
+`npm run check`: bestehende v2–v10-Regressionen und neue v11-Tests für Auswahl, immer sichtbare ausgewählte Labels in beiden Modi, Quellen-Allowlist, Sicherheit, UV-/Shader-Integration, GPU-Downscaling, Details-Attribution, PWA-Integration und Textur-Stufen.
+
+## Installation
+
+1. Im bestehenden v10-Workspace das ZIP `Sonnensystem-Delta-v11.zip` entpacken und Dateien überschreiben. **Nicht** als eigenständiges Projekt starten.
+2. `npm run check` ausführen.
+3. `npm start`; anschließend im Browser neu laden. Bei einer vorhandenen installierten PWA auf Aktivierung des `v11`-Service-Workers achten.
+4. Bei Onlinezugang optional `npm run textures:cache` zum Vorwärmen der Standardbilder ausführen.
+
+---
+
+<a id="release-v10"></a>
+
+## Release v10
+
+# Delta v10.0 – Ruhige Labels und smarte Zeitleiste
+
+Dieses **inkrementelle** Update setzt auf dem **vollständigen Workspace-Root v8 plus Delta v9.1** auf. Es enthält ausschließlich geänderte und neue Dateien. Die 160 astronomischen Objekte und 160 Artikel bleiben unverändert.
+
+## Installation
+
+1. Das bestehende Workspace-Root mit v8 und Delta v9.1 beibehalten.
+2. `Sonnensystem-Delta-v10.zip` **direkt in diesem Workspace-Root** entpacken (bestehende Dateien überschreiben, keine Dateien löschen).
+3. `npm run check` ausführen und mit `npm start` starten.
+4. Eine installierte PWA neu öffnen/neu laden; `sw.js` wechselt auf `sonnensystem-shell-v10` und entfernt alte Shell-Caches.
+
+## 1. Smarte Labels – Positionen stabilisieren
+
+* Ein je Objekt persistierter Seitenanker (rechts / links / oben / unten) verhindert Seitenwechsel durch kurzlebige Überlagerungen – gerade im dichten Satellitenfeld um die Erde.
+* Ist die gewählte Seite blockiert, wird das betreffende Label vorübergehend **ausgeblendet**, nicht sofort umgehängt. Bei dauerhaft blockierter Seite wird erst nach **650 ms** anhaltender Blockade und **1300 ms** Seitenhaltezeit eine alternative Position erwogen; sie muss weitere **180 ms** frei bleiben.
+* Wieder freie ursprüngliche Positionen werden bevorzugt. Historische Anker verfallen nach 6 Sekunden außerhalb der Projektion. Bereits sichtbare Labels haben innerhalb ihrer Kategorie einen kleinen Bestandsbonus.
+* Die v9-Regeln für Kollisionen mit anderen Labels/Himmelskörpern und das Ausblenden schnell bewegter Beschriftungen (>220 Pixel/s, Wiedereinblenden <140 Pixel/s nach 140 ms) bleiben aktiv.
+* Bei dauerhaftem Platzmangel wird lieber **kein** Label gezeigt als ein überlappendes oder häufig springendes Label. Objekte selbst bleiben sichtbar und auswählbar.
+
+## 2. Smarte Zeitleiste – drei Buttons
+
+* **Play/Pause**: startet bzw. hält die Simulation an. Der Geschwindigkeitswert bleibt auch beim Pausieren und Einstellen erhalten.
+* **Geschwindigkeit**: öffnet einen vertikalen, logarithmischen Slider mit **241 diskreten Positionen** von unten langsam bis oben schnell. Der gewählte Wert wird direkt auf dem Button und im Popover gezeigt; Escape und Klick außerhalb schließen das Popover.
+* **Heute**: setzt das Simulationsdatum auf die **aktuelle Systemzeit** (`Date.now()`) zurück und lässt Ansicht, Kamera, Pausezustand und Geschwindigkeit unverändert.
+* Im Kopf der Zeitleiste bleiben simuliertes Datum und Uhrzeit in UTC lesbar. Der bisherige Datumspicker und der horizontale Slider sind entfernt.
+
+| Ansicht | Minimum | Default | Maximum |
+|---|---:|---:|---:|
+| Sonnensystem | 1 h / s | **3 h / s** | 10 Jahre / s |
+| Planetenansicht | 1 min / s | **1 h / s** | 1 Jahr / s |
+
+Die logarithmische Positionierung nutzt zwei Segmente, sodass **beide Standardgeschwindigkeiten** exakt auf einem Slider-Schritt liegen. Die Ansichten merken sich ihre manuell gewählten Geschwindigkeiten getrennt; beim ersten Wechsel wird der jeweilige Default verwendet.
+
+## Geänderte und neue Dateien
+
+* `src/renderer/labels.js` – Seitenanker, Wechsel-Hysterese und Bestandsbonus.
+* `src/ui/timeline.js`, `src/app.js` – neue Geschwindigkeitsbereiche, Formatierung, Play/Pause und Moduswechsel.
+* `index.html`, `css/styles.css` – drei Bedienelemente, Popover, responsives Layout.
+* `sw.js`, `package.json`, `server/server.mjs` – Release v10 und PWA-Cache.
+* `README.md`, `docs/ARCHITECTURE.md`, `docs/DELTA-V10.md` – Dokumentation.
+* `tests/smart-timeline-v10.test.mjs`, `tests/stable-labels-v10.test.mjs` – neue Tests.
+* Bestehende Tests – Anpassung der erwarteten Version sowie des Datumsformats.
+
+## Prüfung und Grenzen
+
+Der Testlauf `npm run check` validiert die unveränderten Katalogdaten und prüft die alten UI-/Renderer-Regeln sowie die neuen Mindest-/Maximalwerte, logarithmischen Stufen, Moduswechsel und Seitenanker. Der Renderer bleibt eine **schematische astronomische Visualisierung**, keine Echtzeit-Ephemeride. Bei extrem beschleunigter Zeitsimulation oder hohem Projektionsspeed können Satelliten-Labels bewusst länger ausgeblendet bleiben.
+
+---
+
+<a id="release-v9"></a>
+
+## Release v9
+
+# Delta v9.0 – Smarte Labels
+
+Dieses Paket ist ein **inkrementelles Update** auf die vollständige Workspace-Root-Version des Sonnensystems v8.0. Es enthält nur geänderte und hinzugefügte Dateien – **kein** vollständiges Projekt und keinen neuen Objektkatalog.
+
+## Einspielen
+
+1. Das **Delta-v9-ZIP** im Stammverzeichnis der entpackten v8-Version öffnen.
+2. Die enthaltenen Pfade (`src/`, `tests/`, `docs/` usw.) **mit derselben Ordnerstruktur** darüberkopieren und vorhandene Dateien ersetzen. **Nicht** den kompletten v8-Bestand löschen.
+3. Im Workspace-Root `npm run check` ausführen und mit `npm start` starten.
+4. Bei PWA-Installationen die Anwendung nach dem Update neu öffnen bzw. neu laden. `sw.js` schaltet den Offline-App-Cache auf `sonnensystem-shell-v9` um.
+
+## Neu
+
+- **Prioritäten statt starrer Auswahl:** Ausgewähltes Objekt zuerst, in der Planetenansicht danach der Zentralplanet, dann wichtige Objekte und größere Monde. Auch Monde außerhalb der bisherigen 14er-Grenze und mehr als fünf Satelliten dürfen Labels erhalten, **wenn Platz ist**. Die 3D-Objekte bleiben unverändert sichtbar.
+- **Überlagerungsfilter:** Der Text wird mit der tatsächlichen Canvas-Textbreite vermessen. Vier Positionen (rechts, links, oberhalb, unterhalb) werden geprüft. Labels überlagern sich nicht, berühren keine größeren projizierten Körper und werden nur innerhalb des Canvas gezeichnet. Bei zu viel Enge gewinnt die höhere Priorität.
+- **Geschwindigkeitsfilter:** Beschriftungen werden ausgeblendet, sobald ihre projizierte Bewegung **220 CSS-Pixel/s** überschreitet, auch beim Kamera-Schwenken oder bei beschleunigter Simulation. Beim Abbremsen unter **140 CSS-Pixel/s** werden sie nach **140 ms** wieder eingeblendet; dazwischen verhindert eine Hysterese Flackern.
+- **Bessere Erkennbarkeit:** Mindestens 11 px Textgröße (12 px bei Auswahl), hellerer Kontrast und eine dunkle Textkontur. Lange Namen werden sinnvoll gekürzt, nicht abgeschnitten. Der Hervorhebungsring für die Auswahl bleibt erhalten, solange ihr Label angezeigt wird.
+- **Beide Modi:** Für heliozentrische und planetenzentrierte Ansicht ist die Logik identisch; bei Szenenwechsel, Viewportänderung und dem Beschriftungs-Schalter wird die Bewegungsmessung neu begonnen.
+
+## Technische Grenzen
+
+- Geschwindigkeiten sind **Darstellungsgeschwindigkeiten in Bildschirm-Pixeln**, keine realen Bahngeschwindigkeiten. Bei sehr großen Zeitsprüngen und kurzen Simulation-Frames können dynamische Positionen unterabgetastet sein.
+- Ein ausgewähltes Objekt besitzt die höchste Priorität, kann aber aus Lesbarkeitsgründen dennoch **vorübergehend ohne Label** bleiben (schnelle Bewegung, Abschattung, zu wenig freier Platz).
+- Das Label-System vermeidet Beschriftungen über Himmelskörpern und anderen Labels. Es erkennt jedoch nicht sämtliche außerhalb des Canvas gerenderten HTML-Bedienflächen.
+- Katalog und Redaktion sind unverändert **v8.0.0 (160 Körper, 160 Artikel)**; die **App/Version des Code-Releases** ist v9.0.0.
+
+## Geänderte / neue Dateien
+
+| Datei | Art |
+|---|---|
+| `src/renderer/labels.js` | neue Prioritäten, Layout, Bewegungserkennung und Canvas-Styling |
+| `src/renderer/renderer.js` | hält zurücksetzbaren Label-Zustand |
+| `sw.js` | neuer Offline-Cache `sonnensystem-shell-v9` |
+| `server/server.mjs` | Ausgabe der neuen Code-Version am Serverstart |
+| `index.html` | Versionsanzeige V9.0 |
+| `package.json` | Code-Version 9.0.0 |
+| `README.md`, `docs/ARCHITECTURE.md`, `docs/DELTA-V9.md` | Dokumentation |
+| `tests/smart-labels-v9.test.mjs` | neue Regressionstests für beide Ansichten und Bewegung |
+| `tests/structure-and-server.test.mjs`, `tests/catalog-expansion-v8.test.mjs` | Aktualisierung der erwarteten v9-PWA-Version |
+
+## Tests
+
+`npm run check` führt die bisherigen Struktur-, Daten-, Kamera-, Renderer- und PWA-Tests sowie die neuen v9-Labeltests aus. Prüffälle: Label-Kollisionen; Reihenfolge nach Priorität; Ausweichpositionen an Kanten; Hindernisse durch Körper; zu schnelle Bewegung und Wiederaufnahme; Zeit-/Szenenwechsel; Auswahl eines Mondes außerhalb der bisherigen Begrenzung; Canvas-DPR und Lesbarkeit; Umschalten und Kürzung langer Namen.
+
+---
+
+<a id="release-v8"></a>
+
+## Release v8
+
+# Sonnensystem v8.0 – echter Katalogbestand und Redaktion
+
+## Inhalt gegenüber v7
+
+- **123 reale neue Objekte**: 120 Planetenmonde, `(3) Juno`, `1P/Halley`, `2P/Encke`.
+- **160 Objekte insgesamt**: Stern 1, Planeten 8, Monde 136, Zwergplaneten 5, Asteroiden 6, Kometen 2, künstliche Satelliten 2.
+- **160 deutsche Artikel**: alle 37 bisherigen Texte erhalten und erweitert, 123 neue Texte, für 69 Objekte zusätzlicher wissenschaftlicher Hintergrund.
+- **Neue Datenpakete**: neun Mond-Kategoriedateien und je eine Asteroiden- und Kometendatei; zwei zusätzliche Redaktionsdateien.
+- **Loader**: Unterstützt mehrere redaktionelle Dateien pro Sprache mit globaler Duplikatprüfung; Datenherkunft und Bahnmodell werden an das UI weitergegeben.
+- **Detailansicht**: Zeigt bei JPL-Importen die Einschränkungen des verwendeten Bahnmodells.
+- **Offline-PWA**: Neuer Cache `sonnensystem-shell-v8`; manifestgesteuert werden alle JSON-Dateien offline gespeichert.
+- **Bestehende Funktionen**: Kamera, Gesten, Pfeiltasten, Planetensystemansicht, API-Proxies und Workspace-Root bleiben erhalten.
+
+## Quellen
+
+- NASA/JPL – [Planetary Satellite Mean Elements](https://ssd.jpl.nasa.gov/sats/elem/sep.html)
+- NASA/JPL – [Physical Parameters of Natural Satellites](https://ssd.jpl.nasa.gov/sats/phys_par/)
+- NASA/JPL – [Small-Body Element Tables](https://ssd.jpl.nasa.gov/sb/elem_tables.html)
+- NASA Science – Direktverweise in den einzelnen Redaktionsartikeln
+
+### Einschränkungen
+
+- Schematische Darstellung **keine aktuelle Ephemeride**. Bezugsrahmen der Mond-Tabellen wurden nicht vollständig transformiert. Historische Kometenbahnen unterliegen nicht der dynamischen Störungsrechnung.
+- Fehlende Radien wurden nicht erfunden (`radiusKm: 0` ist ein technisches Fehlwert-Sentinel).
+- Artikelstatus `imported` statt ungeprüftem `published`.
+- Bei sehr vielen weiteren Objekten sind Performance-/Renderer-Optimierungen notwendig.
+
+## Prüfschritte
+
+`npm run check:data` validiert Katalog und redaktionelle Verweise. `npm run check` prüft auch Schemafehler, Duplikate, Loader, Layout-Logik, Bedienung, planetenzentrierte Ansicht, PWA-Offline-Dateiliste und HTTP-Auslieferung.
+
+Das Projekt wird als **vollständiges ZIP ohne übergeordneten Ordner** geliefert und wird direkt in das Workspace-Root entpackt. Eine v7-Installation kann durch Überlagern der neuen Dateien aktualisiert werden; nicht mehr benötigte Dateien bleiben dann aber liegen. Sauberer ist ein frischer Workspace-Ordner, in den bei Bedarf die `.env` übernommen wird.
+
+---
+
+<a id="release-v7"></a>
+
+## Release v7
+
+# Version 7.0 – Datenarchitektur und Redaktionsschicht
+
+**Basis:** Vollständiges v6.1 Workspace-Root-Projekt. **Auslieferung:** vollständiges Projekt, kein Delta.
+
+## Neu
+
+- Die 37 v6.1-Himmelskörper wurden ohne hinzugefügte Fantasiedaten in kategorisierte JSON-Dateien migriert (`data/catalog/`). Kometen sind als leere Kategorie vorbereitet.
+- Ein versioniertes Manifest organisiert die astronomischen Dateien und den Sprachbestand.
+- Sämtliche 37 alten Beschreibungen wurden unter `data/editorial/de.json` als `imported` übernommen. Redaktionelle Felder sind von physikalischen Daten getrennt; längere Artikelabschnitte und Quellenlinks werden unterstützt.
+- Der Schema-Validator prüft Typen, Datenfelder, Einheiten, Orbitbedingungen, Parent-IDs, Zyklen, doppelte IDs und Redaktionsreferenzen; `npm run check:data` stellt ein CLI bereit.
+- `src/data/catalog.js` kapselt den neuen Ladeweg, den Renderer-Adapter und das Merge-Verhalten, sodass externe API-Antworten redaktionelle Texte nicht überschreiben.
+- Der Root-Node-Server liefert ausschließlich erlaubte JSON-Dateien aus `data/catalog/` und `data/editorial/` mit korrektem MIME-Typ.
+- Der Service Worker verwendet `sonnensystem-shell-v7` und lädt Daten-Dateien dynamisch aus dem Manifest in den Offline-Cache.
+- Die UI bietet einen vorbereiteten Kometenfilter und zeigt veröffentlichte redaktionelle Abschnitte und Quellen in den Objekt-Details.
+
+## Unverändert
+
+- 3D-Ansicht, Planetenansicht und „Übersicht“;
+- bodenparallele Maus-, Touch- und Pfeiltastenbewegung;
+- WebGL-Shader, Anzeige vorhandener Körper, Simulation und Zusatzdaten-APIs;
+- Start über `npm start`, weiterhin ohne npm-Abhängigkeiten und ohne Frontend-Bundler;
+- Einstiegspunkte direkt im Workspace-Root (kein `public/`).
+
+## Noch nicht Bestandteil von v7
+
+- Zusätzliche echte Himmelskörper und eigenständig recherchierte redaktionelle Artikel;
+- automatischer Batch-Import aus externen Datenbanken bzw. ein CMS-Backend;
+- Renderoptimierung für sehr große Kataloge oder hyperbolische Kometenbahnen.
+
+Hinweise für Datenimporte und Quellennachweise: `docs/DATA-ARCHITECTURE.md`.
+
+---
+
+<a id="release-v6"></a>
+
+## Release v6
+
+# Version 6 – Vollständige Umstrukturierung
+
+**Ausgangsbasis:** vollständiger Projektstand v5 (mit allen vorherigen v2–v5 Änderungen). **Art:** komplette Ausgabe, **kein Delta-ZIP**.
+
+## Änderungen
+
+* Die ursprüngliche Root-Oberfläche wurde nach `public/` verschoben, die Stilvorlage nach `public/css/`.
+* Der einst monolithische 3D-Renderer wurde in separate Module für WebGL, Shader, Geometrie, Kamerasteuerung, Umlaufbahnen, Labels sowie die beiden Darstellungsmodi geteilt.
+* Startdaten, Bahnberechnung und Daten-Normalisierung sind jetzt getrennt in `src/data/` organisiert.
+* Katalog, Objekt-Details, Mobilmenü, Ansichtsmodus, Zeitleistenformate und Provider-Status sind in `src/ui/` ausgelagert.
+* Die Browser-API-Anbindung ist in `src/services/` untergebracht.
+* Der Node-Server wurde in `server/` nach HTTP-Routing, externen Providern, Konfiguration und Cache aufgeteilt. Die Startdatei ist `server/server.mjs`.
+* Die PWA-Cache-Liste enthält nun **alle** statischen Browser-Module aus `src/`; Cache-Schlüssel `sonnensystem-shell-v6`.
+* Tests wurden nach `tests/` verschoben und um Integrations-, Architektur- und Sicherheitsprüfungen ergänzt.
+* `.env.example` und eine `.gitignore` sind enthalten.
+
+## Nicht geändert
+
+Das Benutzerverhalten aus v5 bleibt erhalten: Sonnen- und Planetenansicht, natürlicher und künstlicher Satellitenkatalog, rechte Maus, Shift-Maus, Pfeiltasten, Ein-/Zwei-Finger-Gesten, Bodenebenennavigation, Zeitreise, Suchfilter, mobile Menüs, PWA und alle vier externen Datenquellen.
+
+Die Visualisierung bleibt bewusst schematisch und ist kein wissenschaftlicher Orbit-Simulator.
+
+## Installation / Wechsel von v5
+
+**Nicht** einfach auf die alte v5-Dateistruktur überlagern: Die alten Root-Dateien werden in v6 nicht mehr verwendet. Stattdessen:
+
+1. Das vollständige `Sonnensystem-v6.zip` in ein neues Verzeichnis entpacken.
+2. Die eigene `.env` bei Bedarf in das neue Projektverzeichnis kopieren. Keine privaten Schlüssel ins ZIP legen.
+3. `npm start` aus dem Projektverzeichnis aufrufen.
+4. Im Browser `http://localhost:4173` öffnen und bei bereits installierter PWA neu laden.
+5. `npm run check` ausführen, um die lokale Runtime zu prüfen.
+
+## Testumfang
+
+* Regressionstests aus v2–v5: 37 Startkörper, Orbitberechnung, Maus-/Touch-/Pfeiltastenbewegung, neigungsunabhängiges Verschieben, Planetenszenen, Mobile-Bottom-Sheet, Offline-PWA.
+* Neue Tests: Validierung aller relativen Modul-Imports, vollständige Offline-Dateiliste, HTTP-Auslieferung, API-Status und Fehlerrouten, Schutz privater Serverdateien, Provider-Normalisierung und UI-Ausgabe.
+* **Noch offen:** visueller Chromium-End-to-End-Test sowie Prüfung auf echten mobilen Geräten. Der Browserzugriff war in der aktuellen Laufzeitumgebung eingeschränkt; die Tests wurden daher ohne visuelle Behauptungen abgeschlossen.
+
+---
+
+<a id="release-v5"></a>
+
+## Release v5
+
+# Delta v5 – Planetenansicht mit Monden und Satelliten
+
+Dieses ZIP aktualisiert ein **bestehendes Sonnensystem-v4-Projekt** auf v5. Es enthält nur Dateien, die gegenüber v4 geändert wurden, sowie den neuen v5-Test und diese Anleitung. Die Dateien `data.js`, `server.mjs`, `manifest.webmanifest`, die Icons und die v2-Tests bleiben unverändert.
+
+## Installation
+
+1. Das bestehende Projekt **v4** beibehalten.
+2. `Sonnensystem-Delta-v5.zip` in das Projektstammverzeichnis entpacken, also dorthin, wo `app.js`, `renderer.js` und `server.mjs` liegen. Vorhandene Dateien ersetzen.
+3. Seite neu laden. Bei installierter PWA gegebenenfalls ein zweites Mal neu laden, bis der aktualisierte Service Worker aktiv ist (`sonnensystem-shell-v5`).
+4. Optional testen: `npm run check` (Node.js 20 oder neuer).
+
+**Wichtig:** Nur über v4 installieren. Bei älterem Projekt vorher die Deltas v3 und v4 in der richtigen Reihenfolge einspielen.
+
+## Neu in v5
+
+- In den **Objektdetails eines Planeten** erscheint der Button **„Planetenansicht öffnen“**. In Details anderer Objekttypen wird dieser Button nicht gezeigt.
+- Die **3D-Planetenansicht** zeigt ausschließlich den ausgewählten Planeten und alle zum jeweiligen Zeitpunkt im Atlas geladenen natürlichen Monde sowie künstlichen Satelliten des Planeten. Dazu gehören auch später nachgeladene Objekte aus Solar OpenData bzw. CelesTrak.
+- Die lokale Szene benutzt eigene, nicht maßstabsgetreue Größen und Bahnradius-Skalierungen sowie einen passenden Kameraabstand, damit Begleitobjekte besser erkennbar sind. Zeitsteuerung, Zoomen, Drehen, horizontales Verschieben, Bahnen und Namen bleiben nutzbar.
+- Ein Klick auf ein Begleitobjekt öffnet dessen Details **ohne** die Planetenansicht zu verlassen. Die Auswahl eines anderen Planeten wechselt direkt zu dessen System. Die Auswahl eines Objekts außerhalb des Systems führt zurück in den Sonnensystemmodus und fokussiert dieses Objekt.
+- **„Übersicht“ (Kamera zurücksetzen)** wechselt **sofort** zurück zur vollständigen Sonnensystemansicht und setzt die Kamera zurück. „Heute“ setzt wie bisher ebenfalls die Kamera zurück.
+- Auf Mobilgeräten schließt sich das Bottom Sheet beim Umschalten in die Planetenansicht bzw. beim Wechsel zur Übersicht, sodass die Szene bedienbar ist.
+- Der Anzeigemodus wird in der Bühne benannt; auf schmalen Mobilgeräten ist der Name sichtbar, solange die Planetenansicht aktiv ist.
+
+## Darstellungs- und Datenhinweise
+
+Die Planetenansicht zeigt nur **im Atlas vorhandene** Monde und Satelliten, keinen vollständigen wissenschaftlichen Katalog. Bei vollen API-Katalogen werden alle geladenen Begleitobjekte dargestellt; um die Szene lesbar zu halten, sind die Anzahl der gleichzeitig beschrifteten Objekte und der gezeichneten Orbitlinien begrenzt. CelesTrak-Orbits bleiben illustrative Näherungen, keine genaue Satellitenortung. Es wurden **keine** neuen API-Endpunkte oder externen Bibliotheken ergänzt.
+
+## Prüfungen
+
+`npm run check` führt Syntax- und Regressionstests für v2, v3, v4 und v5 durch. Neu getestet werden unter anderem die planetenzentrierte Auswahl, die direkte Rückkehr per Übersicht, Mond- und Satellitenpositionen, Zeitfortschritt, Kamerarahmen, Rendering-Filter sowie die UI-Ereignisse des Buttons.
+
+---
+
+<a id="release-v4"></a>
+
+## Release v4
+
+# Delta v4 – Sonnensystem: Bewegungen in der Umlaufbahnebene
+
+Dieses Paket aktualisiert ein **Sonnensystem-v3-Projekt** auf v4. Es enthält ausschließlich
+Dateien, die sich gegenüber der vorherigen `Sonnensystem-Delta-v3.zip` geändert haben,
+sowie einen neuen Test und diese Anleitung.
+
+## Installation
+
+1. Vorhandenes Sonnensystem **v3** nicht löschen.
+2. Die Dateien aus `Sonnensystem-Delta-v4.zip` im **Stammverzeichnis** des Projekts
+   entpacken (neben `renderer.js`, `index.html`, `server.mjs`), bestehende Dateien ersetzen.
+3. Falls der Server bereits läuft, Anwendung im Browser neu laden. Bei installierter PWA
+   nach Aktualisierung des Service Workers gegebenenfalls **nochmals** neu laden.
+   Der Offline-Cache heißt nun `sonnensystem-shell-v4`.
+4. Optional: `npm run check` (Node.js 20+).
+
+**Voraussetzung:** v3 ist bereits installiert. Für ein Projekt auf v2 zuerst
+`Sonnensystem-Delta-v3.zip`, danach dieses Delta einspielen.
+
+## Steuerung v4
+
+Alle manuellen Verschiebungen laufen **parallel zur Umlaufbahnebene (X/Z)**,
+also wie bei einer Draufsicht. Sie richten sich nach der **horizontalen Blickrichtung**
+(`theta`), aber **nicht** nach dem Kameraneigungswinkel (`phi`). Die Blickhöhe (Y) bleibt
+beim Verschieben konstant, auch bei sehr flachem Blickwinkel.
+
+- **Rechte Maustaste ziehen** oder **Umschalt + links ziehen**: Szene folgt dem Zug;
+  keine Verzögerung oder Höhenverschiebung.
+- **Pfeiltasten**: Kamera bewegt sich im Feld nach links/rechts/vorn/zurück.
+  Gehaltene Tasten bewegen kontinuierlich, diagonal ohne Geschwindigkeitsgewinn.
+- **Zwei Finger gemeinsam wischen**: Verschiebung über dasselbe Feld;
+  gleichzeitiges Spreizen/Zusammenziehen zoomt weiterhin.
+- **Unverändert:** Linke Maustaste/ein Finger zum Umschauen, Mausrad bzw.
+  Spreizbewegung zum Zoomen, Auswahl und automatischer Fokus.
+
+## Delta-Dateien
+
+- `renderer.js` – einheitliche X/Z-Bewegungsbasis statt neigungsabhängiger Bildebene
+- `index.html` – Versionsanzeige und Bedienhinweise
+- `sw.js` – neuer Service-Worker-Cache für PWA-Updates
+- `README.md` – aktuelle Steuerungsbeschreibung
+- `package.json` – v4 und neuer Testlauf
+- `test-v3.mjs` – bestehende Regressionstests an neue Navigation und Version angepasst
+- `test-v4.mjs` – neue Tests der Neigungswinkelunabhängigkeit für alle Eingabewege
+- `DELTA-V4.md` – dieses Änderungsprotokoll
+
+Keine neuen Abhängigkeiten. Alle übrigen Dateien bleiben unverändert.
+
+---
+
+<a id="release-v3"></a>
+
+## Release v3
+
+# Delta v3 – Sonnensystem: Kamerasteuerung
+
+Dieses Delta baut auf **Sonnensystem v2** auf. Es ersetzt nur Dateien, die sich gegenüber dem
+beigefügten Projektstand `Sonnensystem.zip` (v2) geändert haben, und ergänzt den neuen Test.
+
+## Installation
+
+1. Das vorhandene Sonnensystem-v2-Projekt beibehalten (nicht löschen).
+2. Alle Dateien aus `Sonnensystem-Delta-v3.zip` **in das Stammverzeichnis des Projekts** kopieren
+   (dort, wo `index.html`, `renderer.js`, `sw.js` und `server.mjs` liegen), vorhandene Dateien ersetzen.
+3. `node server.mjs` ausführen, anschließend `http://localhost:4173` öffnen.
+4. Bei bereits installierter PWA die Anwendung online neu laden. Der Service Worker wechselt auf
+   Cache `sonnensystem-shell-v3`, damit die bisherige Steuerungslogik nicht offline weiterläuft.
+5. Optional prüfen: `npm run check` (Node.js 20 oder neuer).
+
+## Steuerung in v3
+
+| Eingabe | Verhalten |
+|---|---|
+| Linke Maustaste ziehen / Mobil: ein Finger wischen | Ansicht drehen (wie zuvor) |
+| Mausrad | Hinein- / herauszoomen (wie zuvor) |
+| Rechte Maustaste ziehen oder Umschalt + linke Maustaste | In der aktuellen Kameraebene in Zugrichtung verschieben, ohne Verzögerung |
+| Pfeiltasten halten | Kameraposition kontinuierlich links / rechts / hoch / runter bewegen |
+| Zwei Finger spreizen / zusammenführen | Vergrößern / verkleinern nach Abstand der Finger |
+| Zwei Finger gemeinsam wischen | In Wischrichtung verschieben, kombinierbar mit Pinch-Zoom |
+
+Weitere Details:
+
+- Bewegung orientiert sich an den aktuellen Kameraachsen. Horizontale und vertikale Züge sind
+  nicht länger an starre X-/Z-Koordinaten gekoppelt.
+- Manuelles Verschieben ist direkt; die animierte automatische Kamerafahrt bei Objektauswahl
+  und „Übersicht“ bleibt erhalten.
+- Die Zwei-Finger-Erkennung wird beim Hinzufügen oder Entfernen eines Fingers neu angesetzt;
+  ein Mehrfingergestus löst keine unbeabsichtigte Objektauswahl aus.
+- Pfeiltasten greifen nicht in Textfeldern, bei fokussierten Bedienelementen oder bei
+  geöffneter Hilfe ein. Sondertasten-Kombinationen des Browsers bleiben unberührt.
+- Die Hilfetexte, Versionsanzeige, README und der Offline-Cache wurden aktualisiert.
+
+## Enthaltene Dateien (nur Delta)
+
+- `renderer.js` – Maus-/Touch-Eingaben, kursorgetreue Kameraverschiebung, Pfeiltasten.
+- `index.html` – Hilfe, zugängliche Kamerafläche und Versionsanzeige.
+- `styles.css` – sichtbarer Tastaturfokus auf der Kamerafläche.
+- `sw.js` – Cache-Version v3, damit geänderte Module zuverlässig geladen werden.
+- `package.json` – Version und Testskript.
+- `README.md` – Bedienung und PWA-Hinweise.
+- `test-v3.mjs` – Regressionstests für Maus, Pfeiltasten, Touch und Pick-Verhalten.
+- `DELTA-V3.md` – diese Änderungs- und Installationsanleitung.
+
+Die übrigen Dateien aus v2, einschließlich `app.js`, `data.js`, `server.mjs`, Manifest, Icons
+und `test-v2.mjs`, bleiben unverändert erhalten. Keine zusätzlichen Abhängigkeiten.
+
+---
+
+<a id="release-v2"></a>
+
+## Release v2
+
+# Delta v2 – Sonnensystem
+
+Ersetzt die bisherige App-Bezeichnung „ORBITAL“ durch **Sonnensystem**, entfernt die drei Texte
+„Live-Rendering / 3D Szene“, „Das Sonnensystem.“ und „Eine Reise durch Raum und Zeit“
+aus der sichtbaren 3D-Ansicht und ergänzt die PWA-Funktionen sowie das mobile Bottom Sheet.
+
+## Installation des Delta-ZIPs
+
+1. Das ursprüngliche ZIP `ORBITAL-WebGL-App.zip` entpacken, falls noch nicht geschehen.
+2. Den Inhalt dieses Delta-ZIPs **über den Ordner `helio-webgl/`** kopieren und die vorhandenen Dateien ersetzen.
+3. Im Ordner `helio-webgl/` `node server.mjs` aufrufen.
+4. `http://localhost:4173` öffnen und bei einem zuvor installierten App-Stand neu laden.
+
+Das Delta enthält nur geänderte oder hinzugefügte Dateien. Die unveränderten Module
+`renderer.js`, `data.js`, `test.mjs`, `.env.example` und `.gitignore` verbleiben aus v1.
+Keine weiteren Dependencies. Für PWA-Installation außerhalb von localhost ist HTTPS erforderlich.
+
+## Änderungen
+
+- Name, HTML-Metadaten, App-Icon und Serverkennung aktualisiert
+- Bisheriger Szenentitel entfernt (semantische Überschrift bleibt für Screenreader erhalten)
+- Mobile Menüs unter 770 px als gemeinsames Bottom Sheet mit drei Reitern, Griff, Swipe- und Snap-Zuständen
+- Mobile Menüs beim Start eingeklappt; Auswahl öffnet Details, Zeitsteuerung wird im Sheet angezeigt
+- Manifest, Service Worker, PNG-Icons und Offline-Fallback für den integrierten Katalog
+- Server liefert neue PWA-Dateien mit geeigneten MIME-Typen aus; API-Cache bleibt unverändert
+
+---
+
+<a id="hotfix-v61"></a>
+
+## Hotfix v6.1
+
+# Sonnensystem v6.1 - Workspace-Root / Service Worker
+
+## Behobenes Problem
+
+In v6 lagen `index.html`, `sw.js`, `manifest.webmanifest`, die CSS-Datei und die Icons
+unter `public/`. Eine IDE-Vorschau oder ein statischer Dateiserver mit dem Workspace-Root
+als Document Root kann dann `./sw.js` nicht finden ("Failed to fetch sw.js").
+
+## Korrekturen
+
+- Alle Dateien und Unterordner aus `public/` liegen jetzt direkt im Workspace-Root.
+- `public/` entfällt. Die modularen Ordner `src/`, `server/`, `tests/` und `docs/` bleiben bestehen.
+- `server/static.mjs` liest die statischen Webdateien aus dem Root und gibt weiter nur
+  explizit erlaubte Pfade frei (keine `.env`, keine Tests/Serverquellen).
+- Die relativen Referenzen in HTML, PWA-Manifest und Service Worker bleiben gültig.
+- Die Offline-Cache-Version wurde auf `sonnensystem-shell-v6.1` angehoben.
+- README, Architektur- und Regressionstests wurden aktualisiert.
+
+## Installation
+
+Das ZIP enthält **keinen zusätzlichen äußeren Projektordner**. Es muss direkt im
+gewünschten Workspace-Root entpackt werden: `index.html`, `sw.js` und `package.json`
+liegen dort auf derselben Ebene. Bei einer bestehenden v6-Installation muss der alte
+Ordner `public/` entfernt werden. Danach Server oder Vorschau neu starten und die
+Seite einmal neu laden; falls der alte Service Worker die Seite kontrolliert, erneut
+laden oder die bisherige PWA-Installation aktualisieren.
+
+Start mit Node.js 20+: `npm start`; Prüfung: `npm run check`.
+Ohne den Node-Server zeigt ein statischer Workspace-Server die eingebauten Objekte,
+aber die Endpunkte `/api/...` stehen dann nicht zur Verfügung.

@@ -1,9 +1,11 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 
-const read=async filename=>readFile(new URL('../'+filename,import.meta.url),'utf8');
+const read=async filename=>readProjectSource(filename);
 const between=(source,begin,end)=>{
   const a=source.indexOf(begin),b=source.indexOf(end,a+begin.length);
   assert.ok(a>=0&&b>a,`${begin} occurs before ${end}`);
@@ -45,7 +47,7 @@ test('v43: labels synchronize titles, active styling and aria-pressed after togg
     classList:{toggle(name,enabled){if(enabled)classes.add(name);else classes.delete(name);}}
   };
   const state={settings:{labels:true}};
-  const context=vm.createContext({S:state,$:()=>control});
+  const context=vm.createContext({syncToggleState,S:state,$:()=>control});
   vm.runInContext(fn+'\nthis.syncLabelControl=syncLabelControl;',context);
   state.settings.labels=false;context.syncLabelControl();
   assert.equal(attrs['aria-pressed'],'false');

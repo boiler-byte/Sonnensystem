@@ -1,8 +1,9 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 
 test('v30: Objekt hinzufügen is removed from both desktop catalog and mobile sheet',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),css=await read('css/styles.css');

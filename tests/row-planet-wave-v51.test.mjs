@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -39,11 +41,11 @@ function mockControl(view='solar'){
   };
   const S={viewSettings,settings,time};
   const notices=[];
-  const context=vm.createContext({$,S,renderer,notifyToggle:notice=>notices.push(notice)});
+  const context=vm.createContext({syncToggleState,$,S,renderer,notifyToggle:notice=>notices.push(notice)});
   return {context,viewSettings,settings,elements,renderer,snapshots,notices,$};
 }
 
-const appSource=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+const appSource=await readAppSource();
 const scaleFunctions=appSource.slice(appSource.indexOf('function syncScaleControls(){'),appSource.indexOf('function syncOrbitControls(){'));
 
 test('v51: entering Reihe auto-enables physical object sizes in both views and updates accessible control',()=>{

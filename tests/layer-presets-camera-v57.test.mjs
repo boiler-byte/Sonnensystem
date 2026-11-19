@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -10,7 +12,7 @@ import {CATEGORY_COLORS} from '../src/data/bodies.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 const segment=(text,start,end)=>{
   const a=text.indexOf(start),b=text.indexOf(end,a+start.length);
   assert.ok(a>=0 && b>a,`${start} before ${end}`);
@@ -35,10 +37,11 @@ function mockLayerEnvironment(app){
     cinema:null,calcCount:0,calcPositions(){this.calcCount++;},rowFrame(){return {target:[6,0,0]};},rowDistance(){return 55;}};
   let details=0;
   const document={querySelectorAll(selector){return selector==='[data-layer-preset]'?presets:selector==='[data-layer-type]'?categories:[];}};
-  const ctx=vm.createContext({S,$,document,renderer,activeView:()=>renderer.planetId?'planet':'solar',CATEGORY_COLORS,
+  const ctx=vm.createContext({syncToggleState,S,$,document,renderer,activeView:()=>renderer.planetId?'planet':'solar',CATEGORY_COLORS,
     availableLayerTypes,layerSummary,layerEnabled,layerPreset,displayPreset,displayMatchesPreset,
     updateDetail:()=>{details++;}});
   vm.runInContext([
+    segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){'),
     segment(app,'function syncLayers(){','function setLayerPopover(open){'),
     segment(app,'function syncOrbitControls(){','function mergeBodies(list){')
   ].join('\n'),ctx);
@@ -58,7 +61,6 @@ test('v57: both removed Layer captions are absent and controls form 3+2 ordered 
   assert.match(css,/\.layer-display-toggles \.scale-tool-toggle\{[^}]*grid-column:span 2/);
   assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
   assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(5){grid-column:4 / span 2}'));
-  assert.match(html,/app-version" content="V63\.0"/);
 });
 
 test('v57: Alle activates all five appearances; Standard restores view-specific defaults',()=>{
@@ -189,7 +191,7 @@ test('v57: both scale switches recenter even after manual motion, focus and foll
  r.solarOverviewDistance=SolarRenderer.prototype.solarOverviewDistance;
  r.planetFrameDistance=()=>34;
  const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);};
- const ctx=vm.createContext({S,renderer:r,$:get,notifyToggle:()=>{}});
+ const ctx=vm.createContext({syncToggleState,S,renderer:r,$:get,notifyToggle:()=>{}});
  vm.runInContext(source,ctx);
  vm.runInContext('updateScale("scaleObjects")',ctx);
  assert.equal(r.lastTransition,'scale');

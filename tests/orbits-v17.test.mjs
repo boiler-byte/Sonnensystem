@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -6,7 +7,7 @@ import { layerPreset, STANDARD_LAYERS, layerEnabled } from '../src/data/layers.j
 import { orbitAppearance, orbitRibbonVertices, drawOrbitLine } from '../src/renderer/orbits.js';
 import { INITIAL_BODIES } from './helpers/catalog-fixture.mjs';
 
-const read = path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read = path=>readProjectSource(path);
 const IDENTITY=new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 
 test('v25: solar Standard includes only Sun and planets',()=>{

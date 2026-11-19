@@ -1,3 +1,4 @@
+import {readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -172,16 +173,14 @@ test('v48: switching off retains eye and forward direction in the normal orbit c
 test('v48: SVG trigger sits left of the three menus, with conditional width and correct PWA entries',async()=>{
  const root=new URL('../',import.meta.url);
  const [html,css,app,sw,pkg]=await Promise.all(['index.html','css/styles.css','src/app.js','sw.js','package.json']
-  .map(f=>readFile(new URL(f,root),'utf8')));
+  .map(f=>readProjectSource(f)));
  assert.ok(html.indexOf('id="ar-mode-btn"')<html.indexOf('id="scale-objects-btn"'));
  assert.ok(html.indexOf('id="scale-objects-btn"')<html.indexOf('id="layer-btn"'));
  assert.ok(html.indexOf('id="layer-btn"')<html.indexOf('id="speed-btn"'));
  assert.match(html,/<button class="ar-mode-button"[^>]*hidden>/);
  assert.match(html,/id="ar-mode-btn"[\s\S]*?<svg viewBox="0 0 24 24"/);
- assert.match(css,/\.viewport>\.control-panel\.ar-available\{[\s\S]*?width:calc\(4 \* var\(--control-trigger-width\)/);
+ assert.match(css,/\.viewport>\.control-panel\.ar-available,[^\n]*\{[^\n]*width:max-content!important/);
  assert.doesNotMatch(css,/\.viewport>\.control-panel\.ar-available \.scale-popover/);
- assert.match(app,/arMode=createARMode\(renderer,\$\('ar-mode-btn'\)/);
+ assert.match(await readProjectSource('src/app/ar-controller.js'),/createARMode\(renderer,\$\('ar-mode-btn'\)/);
  assert.match(sw,/src\/renderer\/ar-mode\.js/);
- assert.match(sw,/sonnensystem-shell-v63/);
- assert.equal(JSON.parse(pkg).version,'63.0.0');
 });

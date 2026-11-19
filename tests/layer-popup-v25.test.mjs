@@ -1,10 +1,11 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {STANDARD_LAYERS, PLANET_STANDARD_LAYERS, LAYER_TYPES, createViewSettings, availableLayerTypes, layerEnabled, layerPreset, updateLayerSelection} from '../src/data/layers.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=async path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=async path=>readProjectSource(path);
 const popover=html=>html.split('id="layer-popover"')[1].split('id="time-panel"')[0];
 
 test('v25: solar standard contains only Sun/star and planets; renderer layer mask is independent',()=>{
@@ -81,7 +82,7 @@ test('v25: dropdown is about one third narrower; preset switch shares border and
   assert.match(css,/\.layer-preset\.active/);
   assert.match(css,/\.layer-options\{display:grid;gap:3px\}/);
   assert.doesNotMatch(css,/\.layer-options\{[^\n]*border-top/);
-  assert.match(css,/\.layer-orbit-section \.orbit-option\.orbit-suboption\{margin-left:9px;width:calc\(100% - 9px\)/);
+  assert.doesNotMatch(css,/\.layer-orbit-section|\.orbit-suboption/,'removed orbit submenu has no remaining CSS');
   assert.doesNotMatch(css,/\.layer-section-title\{|\.orbit-popover-note\{|\.layer-popover-title\{/);
   assert.match(css,/\.viewport>\.control-panel \.layer-popover\{[\s\S]*?overflow-y:auto/);
 });

@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -5,7 +6,7 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {formatLocalDate, formatLocalDateTime, syncControls, SPEED_MODES, speedAtStep} from '../src/ui/timeline.js';
 
-const read=async path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=async path=>readProjectSource(path);
 
 test('v18: two-line trigger shows speed and browser-local date without time; expanded menu shows time',()=>{
   const previous=globalThis.document;

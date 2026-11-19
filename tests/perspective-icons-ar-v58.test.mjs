@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -145,7 +146,7 @@ test('v58: manually moving or zooming an AR camera returns next action to obliqu
 });
 
 test('v58: AR switch uses the existing sensor session rather than requesting new permission',async()=>{
- const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const app=await readAppSource();
  assert.match(app,/if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?arMode\.alignToPerspective\(\);/);
  assert.doesNotMatch(app,/if\(arMode\?\.active\)\{\s*arMode\.recenter\(\)/);
  assert.match(app,/onCameraChange:\(\)=>syncSceneMode\(S,renderer,arMode\?\.active\)/);

@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -6,7 +7,7 @@ import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 import {SolarRenderer} from '../src/renderer/index.js';
 
 const byId=id=>INITIAL_BODIES.find(body=>body.id===id);
-const handlerSource=readFile(new URL('../src/app.js',import.meta.url),'utf8').then(app=>{
+const handlerSource=readAppSource().then(app=>{
   const start=app.indexOf("  $('center-object-btn').addEventListener('click',()=>{");
   const end=app.indexOf("  $('reset-camera').addEventListener('click'",start);
   assert.ok(start>=0 && end>start,'Follow handler present in app.js');

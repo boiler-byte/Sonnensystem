@@ -1,17 +1,22 @@
 import { esc } from './formatters.js';
 const $=id=>document.getElementById(id);
 const statusLabels = { catalog:'Lokaler Katalog',solar:'Solar OpenData',sbdb:'NASA / SBDB',celestrak:'CelesTrak',horizons:'JPL Horizons' };
+function showTimedNotice(element,message,duration,previousTimer){
+  element.textContent=message;
+  element.classList.add('show');
+  clearTimeout(previousTimer);
+  return setTimeout(()=>element.classList.remove('show'),duration);
+}
 let noticeTimer=0;
-export function notify(message,isError=false){const t=$('toast');t.textContent=message;t.classList.toggle('error',isError);t.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>t.classList.remove('show'),4600);}
-// Separate bottom-right snackbar for scale and display toggles. Fast successive
-// clicks replace the last message and restart its dismissal timer.
+export function notify(message,isError=false){
+  const element=$('toast');
+  element.classList.toggle('error',isError);
+  noticeTimer=showTimedNotice(element,message,4600,noticeTimer);
+}
+// The independent toggle snackbar keeps its shorter dismissal interval.
 let toggleNoticeTimer=0;
 export function notifyToggle(message){
-  const t=$('toggle-toast');
-  t.textContent=message;
-  t.classList.add('show');
-  clearTimeout(toggleNoticeTimer);
-  toggleNoticeTimer=setTimeout(()=>t.classList.remove('show'),2400);
+  toggleNoticeTimer=showTimedNotice($('toggle-toast'),message,2400,toggleNoticeTimer);
 }
 export function changeStatus(status,provider,state,label){status[provider]=[state,label];renderStatus(status);}
 export function renderStatus(status){const host=$('source-status');host.innerHTML=Object.entries(statusLabels).map(([id,label])=>{

@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -7,7 +9,7 @@ import {CATEGORY_COLORS,EARTH_ORBIT_COLOR} from '../src/data/bodies.js';
 import {orbitAppearance} from '../src/renderer/orbits.js';
 import {notify,notifyToggle} from '../src/ui/status.js';
 
-const read=name=>readFile(new URL('../'+name,import.meta.url),'utf8');
+const read=name=>readProjectSource(name);
 const segment=(source,start,end)=>{
   const a=source.indexOf(start),b=source.indexOf(end,a+start.length);
   assert.ok(a>=0&&b>a,`Expected ordered markers: ${start} / ${end}`);
@@ -110,8 +112,9 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
     return elements.get(id);
   };
   const notices=[],solar=createViewSettings('solar'),S={settings:solar};
-  const ctx=vm.createContext({S,$:get,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg),renderer:null});
-  vm.runInContext(controlsSource+handlers,ctx);
+  const ctx=vm.createContext({syncToggleState,S,$:get,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg),renderer:null});
+  const rowCameraSource=segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){');
+  vm.runInContext(rowCameraSource+controlsSource+handlers,ctx);
   for(const [id,label,defaultPressed] of [
     ['toggle-labels','Beschriftung',true],['toggle-lighting','Beleuchtung',false],
     ['toggle-four-moons','Alle Monde',false],['orbit-visibility-btn','Umlaufbahn',true],

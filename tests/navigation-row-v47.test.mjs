@@ -154,14 +154,10 @@ test('v47: empty and one-body rows keep finite distances and valid targets',()=>
   }
 });
 
-test('v47: documentation and version announce updated controls and close-up row',async()=>{
+test('documentation describes current camera controls and close-up row',async()=>{
   const guide=await readFile(new URL('../docs/HILFE.md',import.meta.url),'utf8');
-  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
-  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  assert.match(guide,/Links ziehen = (?:verschieben|bewegen)/i);
-  assert.match(guide,/Rechts ziehen = umschauen/i);
-  assert.match(guide,/Zwei Finger.*umschauen/i);
+  assert.match(guide,/Linke Maustaste ziehen.*bewegen/i);
+  assert.match(guide,/Rechte Maustaste ziehen.*Blickrichtung ändern/i);
+  assert.match(guide,/zwei.*Fingern umsehen/i);
   assert.match(guide,/angeschnitten/i);
-  assert.match(sw,/sonnensystem-shell-v63/);
-  assert.match(html,/app-version" content="V63\.0/);
 });

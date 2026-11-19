@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -9,7 +10,7 @@ import {SPEED_MODES, speedAtStep, stepForSpeed, formatSpeed, syncSpeedMode} from
 import {planetChildrenFor} from '../src/renderer/planet-view.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 
 test('v23: 5 simulated days per real second is the exact initial solar speed', async()=>{
   assert.equal(SPEED_MODES.solar.defaultSpeed,5);

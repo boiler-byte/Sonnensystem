@@ -27,7 +27,7 @@ test('v22: topbar removed; the same catalog and details panels use desktop tabs 
   assert.match(sheet,/const allTabs=\[\.\.\.desktopTabs,\.\.\.mobileTabs\]/);
   assert.match(sheet,/function showPanel\(next\)/);
   assert.match(sheet,/btn\.addEventListener\('keydown'/);
-  for(const phrase of ['Navigation','Zeitreise','Live-Daten','Darstellung'])assert.match(help,new RegExp(phrase));
+  for(const phrase of ['Navigation','Zeitreise','Live-Daten','Darstellungsoptionen'])assert.match(help,new RegExp(phrase));
 });
 
 test('v22: the solar overview draws every enabled Sun-centered orbit, not only selected objects',()=>{

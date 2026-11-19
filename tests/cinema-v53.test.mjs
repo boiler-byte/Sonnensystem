@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -131,7 +133,7 @@ test('v53: manual panning and invalid toggles cancel Cinema, rather than battlin
 test('v53: UI contains context-only cinema button and dragable bottom transport',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
- const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const app=await readAppSource();
  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
  assert.match(html,/id="cinema-btn"[^>]*aria-label="Cinema-Kamerafahrt starten"[^>]*hidden/);
  assert.match(html,/id="cinema-timeline"[^>]*hidden/);
@@ -148,7 +150,7 @@ test('v53: UI contains context-only cinema button and dragable bottom transport'
 
 // The gating hook is also checked with a minimal UI mock (not only text assertions).
 test('v53: Cinema button and timeline visibility react to current row and renderer state',async()=>{
- const source=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+ const source=await readAppSource();
  const excerpt=source.slice(source.indexOf('function syncCinemaControl(){'),source.indexOf('function syncOrbitControls(){'));
  const els=new Map();
  const $=id=>{
@@ -161,7 +163,7 @@ test('v53: Cinema button and timeline visibility react to current row and render
  };
  const S={settings:{row:false,scaleObjects:false,scaleOrbits:false}};
  const renderer={cinema:null};
- const ctx=vm.createContext({$,S,renderer,byId:()=>null,cinemaClock});
+ const ctx=vm.createContext({syncToggleState,$,S,renderer,byId:()=>null,cinemaClock});
  vm.runInContext(excerpt,ctx);
  vm.runInContext('syncCinemaControl()',ctx);
  assert.equal($('cinema-btn').hidden,true);

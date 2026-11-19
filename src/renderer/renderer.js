@@ -11,6 +11,7 @@ import { drawSceneLabels } from './labels.js';
 import { computePositions } from './scene.js';
 import { drawPlanetSystemScene, planetChildrenFor, planetFrameDistance } from './planet-view.js';
 import { drawSolarSystemScene, solarOrbitBodies } from './solar-view.js';
+import {planetOrbitIds} from './scene-objects.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
 import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaObjectAt, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
@@ -223,11 +224,7 @@ export class SolarRenderer {
   if(this.settings?.orbits===false)return [];
   if(!this.planetId)return solarOrbitBodies(this.bodies,this.settings?.layers).filter(b=>this.shouldDraw(b));
   const children=this.planetChildren().filter(b=>this.shouldDraw(b));
-  const moons=children.filter(b=>b.type==='moon').sort((a,b)=>b.radiusKm-a.radiusKm);
-  const satellites=children.filter(b=>b.type==='satellite');
-  const other=children.filter(b=>b.type!=='moon'&&b.type!=='satellite');
-  const ids=new Set([...moons.slice(0,80),...satellites.slice(0,35),...other,this.byId.get(this.selectedId)]
-    .filter(Boolean).map(b=>b.id));
+  const ids=planetOrbitIds(children,this.byId.get(this.selectedId));
   return children.filter(b=>ids.has(b.id) && b.a && b.periodDays);
  }
  /** Incoming bodies begin at their previous visible alpha; reversing stays seamless. */
@@ -429,24 +426,45 @@ export class SolarRenderer {
  }
  updateKeyboard(now=performance.now()){moveCameraWithKeyboard(this,now);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();const w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));this.dpr=Math.min(window.devicePixelRatio||1,1.8);
-  this.width=w;this.height=h;this.canvas.width=Math.round(w*this.dpr);this.canvas.height=Math.round(h*this.dpr);
-  this.labels.width=this.canvas.width;this.labels.height=this.canvas.height;
+  this.width=w;this.height=h;
+  const pixelWidth=Math.round(w*this.dpr),pixelHeight=Math.round(h*this.dpr);
+  // Assigning canvas.width/height recreates its framebuffer and 2D context.
+  // ResizeObserver can fire again even when both pixel dimensions are unchanged.
+  if(this.canvas.width!==pixelWidth || this.canvas.height!==pixelHeight ||
+     this.labels.width!==pixelWidth || this.labels.height!==pixelHeight){
+   this.canvas.width=pixelWidth;this.canvas.height=pixelHeight;
+   this.labels.width=pixelWidth;this.labels.height=pixelHeight;
+   this.gl.viewport(0,0,pixelWidth,pixelHeight);
+  }
   this.canvas.style.width=w+'px';this.canvas.style.height=h+'px';this.labels.style.width=w+'px';this.labels.style.height=h+'px';
-  this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
   if(this.cinema?.active){
    this.cinema.track=cinemaTrack(this.rowGeometry(),this.width,this.height);
    const pose=cinemaPoseAt(this.cinema.track,this.cinema.progress);
    this.camera.desiredTarget=pose.target;
    this.camera.desiredDist=pose.distance;
   }
-  this.textures?.setMobile(preferredMobileQuality());
+  const mobile=preferredMobileQuality();
+  if(this.textures && this.textures.mobile!==mobile)this.textures.setMobile(mobile);
  }
  setBodies(list){this.bodies=list;this.byId=new Map(list.map(o=>[o.id,o]));
+  this._sceneRevision=(this._sceneRevision||0)+1;
+  this._orbitGeometryCache?.clear(); // Drop stale geometry from replaced live catalogs.
+  this._childrenSource=list;
+  this._childrenByParent=new Map();
+  for(const body of list){
+    if(!body.parentId || body.type==='probe')continue;
+    if(!this._childrenByParent.has(body.parentId))this._childrenByParent.set(body.parentId,[]);
+    this._childrenByParent.get(body.parentId).push(body);
+  }
   this.fourMoonIds=largestMoonIds(list);
   if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
  }
  /** The planet and its direct natural/artificial orbiters form an isolated scene. */
- planetChildren(id=this.planetId){return planetChildrenFor(this.bodies,id);}
+ planetChildren(id=this.planetId){
+  return this._childrenSource===this.bodies
+    ? (this._childrenByParent?.get(id)||[])
+    : planetChildrenFor(this.bodies,id); // Support embedders that set bodies directly.
+ }
  planetFrameDistance(id=this.planetId){return planetFrameDistance(this.width,this.height,this.byId.get(id),this.planetChildren(id),this.settings);}
   showPlanetSystem(id){if(!['planet','dwarf'].includes(this.byId.get(id)?.type))return false;
   const animated=this.canAnimateLayout();
@@ -505,7 +523,7 @@ export class SolarRenderer {
     if(this.followEnabled)this.followSelectedBody();
   }
  }
- setOverride(id,date,vector){this.overrides.set(id,{date,vector});}
+ setOverride(id,date,vector){this.overrides.set(id,{date,vector});this._sceneRevision=(this._sceneRevision||0)+1;}
  calcPositions(timeMs){
   computePositions(this,timeMs);
   if(this.settings?.row){
@@ -534,7 +552,18 @@ export class SolarRenderer {
   if(b.type==='moon' && this.settings?.fourMoons===true && !this.fourMoonIds?.has(b.id))return false;
   return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
  }
- start(time,selected,settings){this.simTime=time;this.selectedId=selected;this.settings=settings;this.calcPositions(time);}
+ start(time,selected,settings){
+  this.simTime=time;this.selectedId=selected;this.settings=settings;
+  const layers=settings?.layers;
+  const rowLayers=settings?.row ? (layers?.mode==='all' ? 'all' : [...(layers?.types||[])].sort().join(',')) : '';
+  const frameKey=[time,this.planetId||'solar',!!settings?.scaleOrbits,!!settings?.scaleObjects,
+    !!settings?.row,settings?.row?!!settings?.fourMoons:'',rowLayers,this._sceneRevision||0].join('|');
+  // The camera and GPU still render each frame. Only Kepler world positions are
+  // reused when simulated time and scene geometry did not change.
+  if(!this.transition && !this.cinema?.active && this.positions?.size && this._lastPositionFrameKey===frameKey)return;
+  this.calcPositions(time);
+  this._lastPositionFrameKey=(!this.transition && !this.cinema?.active)?frameKey:null;
+ }
   minCameraDistance(){return this.settings?.scaleObjects || this.settings?.row ? 0.000005 : 2.2;}
   maxCameraDistance(){
     if(this.settings?.row)return Math.max(100,this.rowDistance()*2.8);
@@ -554,44 +583,59 @@ export class SolarRenderer {
     const far=Math.max(350,this.camera.dist*4,this.camera.desiredDist*4,this.maxCameraDistance()*1.5);
     return cameraView(this.camera,this.width,this.height,this.focusOffsetY,far);
   }
+  /** A linked shader has stable uniform and attribute locations for its lifetime. */
+  uniform(program,name){
+   const locations=this._uniformLocations??=new Map();
+   let record=locations.get(program);
+   if(!record){record=new Map();locations.set(program,record);}
+   if(!record.has(name))record.set(name,this.gl.getUniformLocation(program,name));
+   return record.get(name);
+  }
+  attribute(program,name){
+   const locations=this._attributeLocations??=new Map();
+   let record=locations.get(program);
+   if(!record){record=new Map();locations.set(program,record);}
+   if(!record.has(name))record.set(name,this.gl.getAttribLocation(program,name));
+   return record.get(name);
+  }
   useLineProgram(vp){const gl=this.gl,p=this.lineProgram;gl.useProgram(p);
-  gl.uniformMatrix4fv(gl.getUniformLocation(p,'uVP'),false,vp);
+  gl.uniformMatrix4fv(this.uniform(p,'uVP'),false,vp);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.lineVB);
-  const a=gl.getAttribLocation(p,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
+  const a=this.attribute(p,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
   return p;
  }
  orbitLine(b,center,vp,alpha,selected,options){drawOrbitLine(this,b,center,vp,alpha,selected,options);}
-  drawStars(vp){const gl=this.gl,p=this.starsProgram;gl.useProgram(p);gl.uniformMatrix4fv(gl.getUniformLocation(p,'uVP'),false,vp);
-  gl.uniform1f(gl.getUniformLocation(p,'uPixelRatio'),this.dpr);
+  drawStars(vp){const gl=this.gl,p=this.starsProgram;gl.useProgram(p);gl.uniformMatrix4fv(this.uniform(p,'uVP'),false,vp);
+  gl.uniform1f(this.uniform(p,'uPixelRatio'),this.dpr);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.starVB);
-  const pos=gl.getAttribLocation(p,'aPosition'),size=gl.getAttribLocation(p,'aSize');gl.enableVertexAttribArray(pos);gl.enableVertexAttribArray(size);
+  const pos=this.attribute(p,'aPosition'),size=this.attribute(p,'aSize');gl.enableVertexAttribArray(pos);gl.enableVertexAttribArray(size);
   gl.vertexAttribPointer(pos,3,gl.FLOAT,false,16,0);gl.vertexAttribPointer(size,1,gl.FLOAT,false,16,12);
   gl.depthMask(false);gl.drawArrays(gl.POINTS,0,this.starCount);gl.depthMask(true);
  }
  drawSphere(body,p,vp,options={}){const gl=this.gl,program=this.bodyProgram;gl.useProgram(program);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.sphereVB);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.sphereIB);
-  const a=gl.getAttribLocation(program,'aPosition'),n=gl.getAttribLocation(program,'aNormal'),uv=gl.getAttribLocation(program,'aUV');
+  const a=this.attribute(program,'aPosition'),n=this.attribute(program,'aNormal'),uv=this.attribute(program,'aUV');
   gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(n);gl.enableVertexAttribArray(uv);
   gl.vertexAttribPointer(a,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(n,3,gl.FLOAT,false,32,12);
   gl.vertexAttribPointer(uv,2,gl.FLOAT,false,32,24);
   const r=options.radius ?? this.bodyRadius(body); // No selected-body enlargement in physical-size mode.
   const opacity=clamp(options.opacity ?? this.sceneBodyOpacity(body),0,1);
   if(opacity<=.001)return;
-  gl.uniform1f(gl.getUniformLocation(program,'uOpacity'),opacity);
+  gl.uniform1f(this.uniform(program,'uOpacity'),opacity);
   if(opacity<.999)gl.depthMask(false);
-  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1))));
-  const color=hex(body.color);gl.uniform3f(gl.getUniformLocation(program,'uBase'),...color);
-  const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));gl.uniform3f(gl.getUniformLocation(program,'uLight'),...light);
-  gl.uniform1f(gl.getUniformLocation(program,'uStyle'),STYLES[body.style]??1);
-  gl.uniform1f(gl.getUniformLocation(program,'uOptimizedLighting'),this.settings?.lighting==='realistic'?0:1);
+  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,model(p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1))));
+  const color=hex(body.color);gl.uniform3f(this.uniform(program,'uBase'),...color);
+  const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));gl.uniform3f(this.uniform(program,'uLight'),...light);
+  gl.uniform1f(this.uniform(program,'uStyle'),STYLES[body.style]??1);
+  gl.uniform1f(this.uniform(program,'uOptimizedLighting'),this.settings?.lighting==='realistic'?0:1);
   let seed=0;for(let i=0;i<body.id.length;i++)seed+=body.id.charCodeAt(i)*.11;
-  gl.uniform1f(gl.getUniformLocation(program,'uSeed'),seed);
-  gl.uniform1f(gl.getUniformLocation(program,'uTime'),this.simTime/DAY);
+  gl.uniform1f(this.uniform(program,'uSeed'),seed);
+  gl.uniform1f(this.uniform(program,'uTime'),this.simTime/DAY);
   const texture=this.textures?.get(body,this.planetId,this.selectedId);
-  gl.uniform1f(gl.getUniformLocation(program,'uHasTexture'),texture?1:0);
+  gl.uniform1f(this.uniform(program,'uHasTexture'),texture?1:0);
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D,texture||null);
-  gl.uniform1i(gl.getUniformLocation(program,'uDiffuse'),0);
+  gl.uniform1i(this.uniform(program,'uDiffuse'),0);
   gl.drawElements(gl.TRIANGLES,this.sphereCount,gl.UNSIGNED_SHORT,0);
   if(opacity<.999)gl.depthMask(true);
  }
@@ -604,10 +648,10 @@ export class SolarRenderer {
   return previous===undefined?target:Math.max(0,previous+(target-previous)*this.transition.amount);
  }
  drawRings(p,vp,options={}){const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
-  gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);const a=gl.getAttribLocation(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
+  gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);const a=this.attribute(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
   const ringScale=options.scale ?? this.ringScale();
-  gl.uniform1f(gl.getUniformLocation(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
-  gl.uniformMatrix4fv(gl.getUniformLocation(program,'uMVP'),false,matMul(vp,model(p,ringScale,.41)));
+  gl.uniform1f(this.uniform(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
+  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,model(p,ringScale,.41)));
   gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,200*6);gl.depthMask(true);
  }
  drawLabels(vp){drawSceneLabels(this,vp);}

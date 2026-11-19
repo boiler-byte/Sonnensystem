@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -5,7 +6,7 @@ import { catalogMatches, filteredBodies } from '../src/ui/object-list.js';
 import { layerPreset, updateLayerSelection } from '../src/data/layers.js';
 import { INITIAL_BODIES } from './helpers/catalog-fixture.mjs';
 
-const read=async name=>readFile(new URL('../'+name,import.meta.url),'utf8');
+const read=async name=>readProjectSource(name);
 const ids=bodies=>new Set(bodies.map(b=>b.id));
 const byId=new Map(INITIAL_BODIES.map(b=>[b.id,b]));
 

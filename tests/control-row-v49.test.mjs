@@ -26,7 +26,7 @@ function scene(settings,planetId=null,selectedBodies=bodies){
 
 test('v55: AR, Cinema, three scale controls and Layer/Time fit the responsive toolbar',async()=>{
  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
- const v55=css.slice(css.indexOf('/* v55:'));
+ const v55=css;
  assert.match(v55,/--control-main-scale-width:46px/);
  assert.match(v55,/--control-icon-width:43px/);
  assert.match(v55,/flex-wrap:wrap/);

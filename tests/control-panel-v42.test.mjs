@@ -23,7 +23,7 @@ test('v55: three scale toggles precede Layer and Time, without scale dropdown',a
   assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"/);
   assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
   assert.match(panel,/id="speed-btn"[^>]*aria-controls="speed-popover"/);
-  const v55=css.slice(css.indexOf('/* v55:'));
+  const v55=css;
   assert.match(v55,/\.scale-main-controls\{/);
   assert.match(v55,/flex-wrap:wrap/);
   assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);

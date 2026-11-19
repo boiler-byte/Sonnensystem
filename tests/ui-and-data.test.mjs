@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -66,7 +67,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
 });
 
 test('App event wiring still exposes planet-view and overview actions',async()=>{
-  const app=await readFile(new URL('../src/app.js',import.meta.url),'utf8');
+  const app=await readAppSource();
   assert.ok(app.includes("$('planet-view-btn').addEventListener('click'"));
   assert.ok(app.includes('openPlanetScene(center?.id)'));
   assert.ok(app.includes("selected?.type==='moon'?byId(selected.parentId):selected"));

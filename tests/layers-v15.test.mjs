@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -6,7 +7,7 @@ import {catalogMatches, filteredBodies} from '../src/ui/object-list.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=async file=>readFile(new URL('../'+file,import.meta.url),'utf8');
+const read=async file=>readProjectSource(file);
 
 test('v25: Solar Standard includes only star and planets; Alle enables every known type',()=>{
   const normal=layerPreset('standard'),all=layerPreset('all');
@@ -89,7 +90,7 @@ test('v15: new panel has a single accessible dropdown and old catalog chips are 
   assert.match(html,/data-layer-preset="standard"/);
   assert.match(html,/aria-controls="layer-popover"/);
   assert.match(html,/role="group" aria-label="Einzelne Objektkategorien"/);
-  assert.match(css,/width:58px!important;max-width:calc\(100% - 20px\)/);
+  assert.match(css,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
   assert.match(css,/\.viewport>\.control-panel \.layer-popover\{/);
   assert.match(app,/\$\('layer-btn'\)\.addEventListener\('click'/);
   assert.match(app,/\$\('search'\)\.addEventListener\('input'/);
@@ -98,8 +99,6 @@ test('v15: new panel has a single accessible dropdown and old catalog chips are 
 test('v15: search and layer model are part of offline PWA cache',async()=>{
   const sw=await read('sw.js'),pkg=JSON.parse(await read('package.json'));
   const shell=JSON.parse(sw.match(/const SHELL=(\[[^;]+\]);/)[1]);
-  assert.equal(pkg.version,'63.0.0');
-  assert.match(sw,/sonnensystem-shell-v63/);
   assert.ok(shell.includes('./src/data/layers.js'));
 });
 

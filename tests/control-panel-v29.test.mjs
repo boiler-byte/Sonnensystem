@@ -1,3 +1,5 @@
+import {syncToggleState} from '../src/ui/control-state.js';
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -7,7 +9,7 @@ import {SolarRenderer} from '../src/renderer/renderer.js';
 import {BODY_FS} from '../src/renderer/shaders.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
-const read=file=>readFile(new URL('../'+file,import.meta.url),'utf8');
+const read=file=>readProjectSource(file);
 const byId=id=>INITIAL_BODIES.find(b=>b.id===id);
 
 function mockRenderer(){
@@ -146,7 +148,7 @@ test('v29: new toggles follow labels, expose states, and synchronize for each vi
       classList:{toggle(name,enabled){if(enabled)buttons[id].classes.add(name);else buttons[id].classes.delete(name);}}};
   }
   const S={settings:createViewSettings('solar')};
-  const ctx=vm.createContext({S,$:id=>buttons[id]});
+  const ctx=vm.createContext({syncToggleState,S,$:id=>buttons[id]});
   vm.runInContext(app.slice(start,end)+'\nthis.syncControlsV29=()=>{syncLightingControl();syncFourMoonsControl()};',ctx);
   ctx.syncControlsV29();
   assert.match(buttons['toggle-lighting'].title,/Aus \(Optimiert\)/);

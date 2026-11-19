@@ -1,8 +1,9 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {syncControls, SPEED_MODES} from '../src/ui/timeline.js';
-const read=async name=>readFile(new URL('../'+name,import.meta.url),'utf8');
+const read=async name=>readProjectSource(name);
 
 const within=(text,start,end)=>{
   const a=text.indexOf(start), b=text.indexOf(end,a+start.length);
@@ -46,12 +47,12 @@ test('v21: time menu header has only speed, and a stacked slider precedes two ac
 
 test('v20: both menus remain aligned under triggers on desktop and mobile',async()=>{
   const css=await read('css/styles.css'),html=await read('index.html');
-  const v19=css.slice(css.indexOf('/* v19:'));
+  const v19=css;
   assert.match(v19,/\.control-panel \.layer-popover\{\s*top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto;/);
   assert.match(v19,/\.control-panel \.time-panel \.speed-popover\{\s*position:absolute;top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto;/);
   assert.match(v19,/\.viewport>\.control-panel \.layer-popover\{/);
   assert.match(v19,/\.viewport>\.control-panel \.time-panel \.time-trigger\{/);
-  assert.match(v19,/\.control-panel \.scene-tools\{grid-template-columns:minmax\(0,1fr\)/);
+  assert.doesNotMatch(v19,/\.control-panel \.scene-tools\{/,'removed scene tools have no remaining CSS');
   assert.equal((html.match(/id="layer-btn"/g)||[]).length,1);
   assert.equal((html.match(/id="speed-btn"/g)||[]).length,1);
 });

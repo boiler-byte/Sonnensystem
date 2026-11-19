@@ -1,8 +1,9 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
 
-const read = path => readFile(new URL('../'+path,import.meta.url),'utf8');
+const read = path => readProjectSource(path);
 const part = (text,start,end) => {
   const a=text.indexOf(start),b=text.indexOf(end,a+start.length);
   assert.ok(a>=0&&b>a,`Segment missing: ${start} before ${end}`);
@@ -65,7 +66,7 @@ test('v55: the removed scale popup has no script event or dangling references',a
 
 test('v57: small viewports wrap the toolbar and the Layer switches form three plus two rows',async()=>{
  const css=await read('css/styles.css');
- const v55=css.slice(css.indexOf('/* v55:'));
+ const v55=css;
  assert.match(v55,/flex-wrap:wrap/);
  assert.match(v55,/max-width:calc\(100% - var\(--control-right-inset\) - 8px\)!important/);
  assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);

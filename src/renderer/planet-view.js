@@ -1,5 +1,6 @@
 import { displayOrbitRadius } from '../data/orbital-math.js';
 import { CAMERA_FOV, clamp, projected } from './math.js';
+import {drawSceneBodies,planetOrbitIds} from './scene-objects.js';
 
 /** Isolated planet scene: planet and the direct children present in catalog data. */
 export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
@@ -9,17 +10,12 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
    if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
     // All bodies remain visible. Limit the number of orbit strokes for dense live catalogs.
-    const moons=children.filter(b=>b.type==='moon').sort((a,b)=>b.radiusKm-a.radiusKm);
-    const satellites=children.filter(b=>b.type==='satellite');
-    const otherChildren=children.filter(b=>b.type!=='moon'&&b.type!=='satellite');
-    const orbitIds=new Set([...moons.slice(0,80),...satellites.slice(0,35),...otherChildren,selected].filter(Boolean).map(b=>b.id));
+    const orbitIds=planetOrbitIds(children,selected);
     const animatedCenter=renderer.positions.get(renderer.planetId)||[0,0,0];
     for(const b of children)if(orbitIds.has(b.id))renderer.orbitLine(b,animatedCenter,vp,b.id===selectedId?.70:.22,b.id===selectedId);
     gl.depthMask(true);
    }
-   renderer.rendered=[planet,...children].filter(b=>b && renderer.shouldDraw(b) && renderer.positions.has(b.id));
-   for(const b of renderer.rendered){const pos=renderer.positions.get(b.id);if(b.id==='saturn')renderer.drawRings(pos,vp);renderer.drawSphere(b,pos,vp);}
-   renderer.drawLabels(vp);
+   drawSceneBodies(renderer,[planet,...children],vp);
    // The Sun's halo belongs to the outgoing solar scene: let it fade
    // along with the solar sphere instead of disappearing on the first frame.
    const previousSun=renderer.transition?.kind==='view'

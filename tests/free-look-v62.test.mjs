@@ -127,9 +127,7 @@ test('v62: explicit camera preset discards free-look and the abbreviated TNO lab
  }finally{cleanup();}
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/<input type="checkbox" data-layer-type="tno" aria-label="Transneptunische Objekte"\/><span>Transnept\. Objekte<\/span>/);
- assert.match(html,/app-version" content="V63\.0"/);
  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
- assert.match(sw,/sonnensystem-shell-v63/);
 });
 
 

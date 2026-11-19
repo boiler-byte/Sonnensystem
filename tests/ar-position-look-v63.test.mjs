@@ -1,3 +1,4 @@
+import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -5,7 +6,7 @@ import {cameraView,lookAroundFixedEye} from '../src/renderer/camera.js';
 import {SolarRenderer} from '../src/renderer/renderer.js';
 import {attachCameraControls} from '../src/renderer/controls.js';
 
-const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
+const read=path=>readProjectSource(path);
 const approx=(a,b,t=1e-9)=>assert.ok(Math.abs(a-b)<t,`${a} !== ${b}`);
 function camera(){return {theta:.63,phi:.99,target:[4,0,7],desiredTarget:[4,0,7],dist:47,desiredDist:47};}
 
@@ -30,7 +31,7 @@ function setup(selectedId=null){
  return {r,emit,cleanup};
 }
 
-test('v63: AR and camera reset share the same bottom action container, not the upper panel',async()=>{
+test('v64: AR and camera reset share the same bottom action container, not the upper panel',async()=>{
  const html=await read('index.html');
  const actions=html.split('<div class="viewport-actions"')[1].split('</div>')[0];
  const control=html.split('id="view-mode-status"')[1].split('</section>')[0];
@@ -43,14 +44,14 @@ test('v63: AR and camera reset share the same bottom action container, not the u
  assert.match(html,/id="ar-mode-btn"[^>]*aria-pressed="false"[^>]*hidden>/);
 });
 
-test('v63: AR hidden/mobile offsets share the camera-reset sheet movement and inert state',async()=>{
+test('v64: AR hidden/mobile offsets share the camera-reset sheet movement and inert state',async()=>{
  const [css,sheet]=await Promise.all([read('css/styles.css'),read('src/ui/bottom-sheet.js')]);
- const v63=css.slice(css.indexOf('/* v63:'));
- assert.match(v63,/\.viewport-actions\{[\s\S]*?left:max\(15px,env\(safe-area-inset-left\)\)/);
- assert.match(v63,/justify-content:space-between/);
- assert.match(v63,/\.viewport-actions \.camera-reset-button\{margin-left:auto\}/);
- assert.match(v63,/\.viewport-actions \.ar-mode-button\[hidden\]\{display:none!important\}/);
- assert.match(v63,/@media\(max-width:770px\)/);
+ const v64=css; 
+ assert.match(v64,/\.viewport-actions\{[\s\S]*?left:max\(15px,env\(safe-area-inset-left\)\)/);
+ assert.match(v64,/justify-content:space-between/);
+ assert.match(v64,/\.viewport-actions \.camera-reset-button\{margin-left:auto\}/);
+ assert.match(v64,/\.viewport-actions \.ar-mode-button\[hidden\]\{display:none!important\}/);
+ assert.match(v64,/@media\(max-width:770px\)/);
  assert.match(css,/\.viewport-actions\{\s*bottom:calc\(var\(--sheet-visible,45px\)/);
  assert.match(sheet,/const cameraActions = \$\('reset-camera'\)\.parentElement/);
  assert.match(sheet,/cameraActions\.style\.setProperty\('--sheet-visible',height\)/);
@@ -58,7 +59,7 @@ test('v63: AR hidden/mobile offsets share the camera-reset sheet movement and in
  assert.match(sheet,/cameraActions\.classList\.add\('sheet-dragging'\)/);
 });
 
-test('v63: free look inverts Y without changing camera eye, X direction or sensor orientation',()=>{
+test('v64: free look inverts Y without changing camera eye, X direction or sensor orientation',()=>{
  const a=camera(),b=camera();
  const eye=cameraView(a,1100,720).eye;
  lookAroundFixedEye(a,80,65);
@@ -73,7 +74,7 @@ test('v63: free look inverts Y without changing camera eye, X direction or senso
  assert.equal(a.phi,.99);assert.equal(a.theta,.63);
 });
 
-test('v63: right mouse drag applies inverted vertical free look only if unselected',()=>{
+test('v64: right mouse drag applies inverted vertical free look only if unselected',()=>{
  for(const selected of [null,'earth']){
   const {r,emit,cleanup}=setup(selected);
   try{
@@ -91,7 +92,7 @@ test('v63: right mouse drag applies inverted vertical free look only if unselect
  }
 });
 
-test('v63: a two-finger downward swipe looks downward at a fixed eye',()=>{
+test('v64: a two-finger downward swipe looks downward at a fixed eye',()=>{
  const {r,emit,cleanup}=setup();
  try{
   const eye=cameraView(r.camera,1100,720).eye;

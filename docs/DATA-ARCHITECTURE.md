@@ -1,4 +1,8 @@
-## Erweiterung v56 – Doppelasteroiden, neun Monde und sieben Erdsatelliten
+# Datenmodell und redaktionelle Inhalte (aktuell: Katalog 10.0.0)
+
+> **Aktueller Stand (v68):** Katalogversion `10.0.0`, Schema `1`, **192 Himmelskörper** und **192 redaktionelle Einträge**. Das Manifest lädt 23 Kategorien-Dateien und fünf deutschsprachige Redaktionsdateien. Gegenüber dem historischen v8-Stand sind die Typen `tno` und `binary` sowie weitere Monde und Satelliten hinzugekommen. Die folgenden als v8/v52 gekennzeichneten Zahlen und Beispiele beschreiben **historische Ausbaustufen**, nicht die aktuelle Gesamtanzahl. Maßgeblich ist `data/catalog/manifest.json`.
+
+## Historische Katalogerweiterung v56 – Doppelasteroiden, neun Monde und sieben Erdsatelliten
 
 Das Manifest enthält jetzt **23 Kategoriedateien** und **5 deutsche Redaktionsdateien** (`catalogVersion: 10.0.0`). Drei zusätzliche, unverändert validierbare JSON-Kategoriedateien und ein Redaktionspaket ergänzen den bestehenden Katalog um **18 Objekte** auf insgesamt **192**. Das Schema (`schemaVersion: 1`) wurde nicht geändert.
 
@@ -11,8 +15,6 @@ Das Manifest enthält jetzt **23 Kategoriedateien** und **5 deutsche Redaktionsd
 Die neue Oberkategorie `binary` wird in `src/data/bodies.js` und `src/data/layers.js` geführt. Die Relativbahn von **Dimorphos** ist mit `parentId: didymos` an Didymos gebunden. Der Orbitalrechner verwendet für dessen Abstände Kilometereinheiten; für Didymos selbst, dessen `parentId: sun` lautet, gelten Astronomische Einheiten. Die Formate der Detailansicht zeigen Größen unter einem Kilometer in Metern an. Ein Radius von `0` bedeutet weiterhin **unbekannt**, nicht einen punktförmigen Körper.
 
 **Quellen:** [NASA – Didymos](https://science.nasa.gov/solar-system/asteroids/didymos/), [JPL – Bahnänderung durch DART](https://www.jpl.nasa.gov/news/nasa-study-asteroids-orbit-shape-changed-after-dart-impact/), [NASA/JPL – Planetary Satellite Mean Elements](https://ssd.jpl.nasa.gov/sats/elem/), [CelesTrak – NORAD Orbital Elements](https://celestrak.org/NORAD/elements/). Die Angaben werden nicht laufend synchronisiert.
-
-# Datenmodell und redaktionelle Inhalte – v9.0 (App v52)
 
 ## Erweiterung v52: 14 neue Objekte
 
@@ -29,7 +31,7 @@ Die Astronomie und die Redaktion bleiben unabhängig und sind über **stabile ID
 - `data/editorial/*.json`: `schemaVersion: 1`, `locale`, `revision`, `articles` mit `id`, `status`, `title`, `summary`, `sections` und `references`.
 - `src/data/catalog.js`: prüft alle Datensätze, Elternbeziehungen, Einheiten, Schemata, Links und doppelte IDs; fügt pro Locale **alle** gelisteten redaktionellen JSON-Dateien zusammen und erzeugt die bisherigen Renderer-Felder.
 
-### v8-Dateien
+### Historischer Stand v8 (nicht der aktuelle Bestand)
 
 Der astronomische Bestand ist 160 Objekte groß, davon 37 aus v7 und **123 neue**. Acht thematische `moons-*-jpl.json`-Dateien enthalten 120 neue Monde (Jupiter, Saturn, Uranus, Neptun, Pluto), `asteroids-jpl.json` einen neuen Asteroiden und `comets-jpl.json` zwei Kometen.
 
@@ -93,14 +95,14 @@ Beispiel in `data/editorial/de-moons.json`:
 }
 ```
 
-Die Punkte `…` sind nur Kürzungen in diesem Doku-Beispiel. Der tatsächlich ausgelieferte Artikel enthält vollständige Texte. Alle **160** Katalogkörper haben sichtbare Artikel mit mindestens einer Sektion und einer HTTPS-Referenz; **69** enthalten außerdem einen individuell verfassten thematischen Hintergrundabschnitt. Die Astronomie-Texte sind paraphrasiert; keine längeren Quellentexte werden kopiert.
+Die Punkte `…` sind nur Kürzungen in diesem Doku-Beispiel. Der tatsächlich ausgelieferte Artikel enthält vollständige Texte. Im historischen v8-Stand hatten alle **160** Katalogkörper sichtbare Artikel mit mindestens einer Sektion und einer HTTPS-Referenz; **69** enthalten außerdem einen individuell verfassten thematischen Hintergrundabschnitt. Die Astronomie-Texte sind paraphrasiert; keine längeren Quellentexte werden kopiert.
 
 **Status:** `draft` wird nicht gezeigt, `imported` ist sichtbar, aber noch nicht abschließend redaktionell freigegeben, `published` ist sichtbar und für geprüfte/freigegebene Texte vorgesehen. v8 setzt die zusätzlichen und erweiterten Artikel **bewusst auf `imported`**: Quellenlinks und Plausibilitätsprüfungen ersetzen keine inhaltliche wissenschaftliche Endredaktion. `revision` dient der Versionierung pro Artikel und Datei. URLs müssen HTTPS nutzen; HTML wird im UI escaped.
 
 ## Neue Einträge hinzufügen
 
 1. Eine zuverlässige Quelle prüfen und eindeutige `id` (Kleinbuchstaben/Zahlen/Bindestriche) auswählen. Bei unbekannten Werten **nicht raten**.
-2. In einer passenden Kategoriedatei oder einer neuen Datei der gleichen Kategorie ein Objekt ergänzen. Bei neuen Dateien `manifest.categories` erweitern. Die vorhandenen Objekttypen sind `star`, `planet`, `moon`, `dwarf`, `asteroid`, `comet`, `satellite`.
+2. In einer passenden Kategoriedatei oder einer neuen Datei der gleichen Kategorie ein Objekt ergänzen. Bei neuen Dateien `manifest.categories` erweitern. Die vorhandenen Objekttypen sind `star`, `planet`, `moon`, `dwarf`, `asteroid`, `binary`, `comet`, `satellite` und `tno`.
 3. In einer passenden Redaktionsdatei mit derselben `id` `summary`, Abschnitte, `references` und `status` anlegen. Für größere Bestände sind weitere `de-*.json`-Dateien möglich; diese in `manifest.editorial` ergänzen.
 4. `npm run check:data` und `npm run check` ausführen. Doppelte IDs, unbekannte Eltern, falsche Orbiteinheiten, Zyklen, ungültige Epochen oder fehlerhafte Links werden abgelehnt.
 5. Bei einem Release `catalogVersion` im Manifest und `CACHE_NAME` in `sw.js` erhöhen. Alle JSON-Dateien werden automatisch anhand des Manifests offline vorgehalten.
