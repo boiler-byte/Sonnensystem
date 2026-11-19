@@ -19,7 +19,7 @@ const newMoonIds=['s2003-j2','s2003-j4','s2018-j2','loge','skoll','greip','tarqe
 const newSatelliteIds=['sat-48274','sat-39741','sat-40730','sat-43013','sat-54234','sat-41866','sat-51850'];
 
 test('v56: manifest loads exactly 18 additions with complete editorial details',()=>{
-  assert.equal(version,'10.0.0');
+  assert.equal(version,'10.1.0');
   assert.equal(bodies.length,192);
   assert.equal(articles.size,bodies.length);
   for(const id of ['didymos','dimorphos',...newMoonIds,...newSatelliteIds]){

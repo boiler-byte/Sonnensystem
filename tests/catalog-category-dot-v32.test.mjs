@@ -8,7 +8,7 @@ import { INITIAL_BODIES } from './helpers/catalog-fixture.mjs';
 const read=relative=>readFile(new URL('../'+relative,import.meta.url),'utf8');
 
 function rowsFor(state){
-  const elements=new Map(['object-list','object-count','list-label'].map(id=>[id,{innerHTML:'',textContent:'',querySelectorAll:()=>[]}]));
+  const elements=new Map(['object-list','object-count','list-label','catalog-sort'].map(id=>[id,{innerHTML:'',textContent:'',dataset:{},setAttribute(){},querySelectorAll:()=>[]}]));
   const original=globalThis.document;
   globalThis.document={getElementById:id=>elements.get(id)};
   try { renderCatalog(state,()=>{}); }

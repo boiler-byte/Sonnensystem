@@ -15,6 +15,7 @@ import {planetOrbitIds} from './scene-objects.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
 import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaObjectAt, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
+import { rowHoveredBody, rowInspectionRadius, ROW_INSPECTION_ANIMATION_MS } from './row-inspection.js';
 
 export class SolarRenderer {
  constructor(canvas, labelCanvas, glow, callbacks={}) {
@@ -33,15 +34,48 @@ export class SolarRenderer {
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.focusedBodyId=null;this.focusOffsetY=0;
   this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
-  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
+  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false,rowOrder:'size'};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.transitionsEnabled=true;this.transition=null;this.cameraFlight=null;this._rowPreviousAngles=null;
   this.cinema=null;this._cinemaRestoreFocus=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
+  this.rowPointer=null;this.rowHoveredId=null;this.rowHoverStartedAt=0;this.rowHoverLevels=new Map();this.rowHoverFrameAt=null;
   this.attachEvents();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
  }
  attachEvents(){attachCameraControls(this);}
+ /** Track hover without interfering with drag/pinch, selection or camera controls. */
+ setRowPointer(point){this.rowPointer=point;}
+ /** Animate the inspected sphere instead of altering the sorted layout's positions. */
+ advanceRowInspection(vp,now=performance.now()){
+  this.vp=vp;
+  const reducedMotion=typeof window!=='undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  const permitted=this.settings?.row && !this.cinema?.active && !this.camera?.arView && !this.transition;
+  const target=permitted?rowHoveredBody(this,this.rowPointer):null;
+  const id=target?.id??null;
+  if(id!==this.rowHoveredId){this.rowHoveredId=id;this.rowHoverStartedAt=now;}
+  const delta=this.rowHoverFrameAt===null||this.rowHoverFrameAt===undefined?16:clamp(now-this.rowHoverFrameAt,0,100);
+  this.rowHoverFrameAt=now;
+  const speeds=reducedMotion?1:1-Math.exp(-delta/(ROW_INSPECTION_ANIMATION_MS*.35));
+  const levels=this.rowHoverLevels??=new Map();
+  if(id&&!levels.has(id))levels.set(id,0);
+  for(const [bodyId,level] of levels){
+   const value=level+((bodyId===id?1:0)-level)*speeds;
+   if(bodyId!==id && value<.003)levels.delete(bodyId);
+   else levels.set(bodyId,value);
+  }
+ }
+ rowInspectedRadius(body,radius){
+  const level=this.settings?.row?this.rowHoverLevels?.get(body?.id)||0:0;
+  if(level<=0 || !this.vp)return radius;
+  const position=this.positions.get(body.id);
+  const proj=position&&projected(position,this.vp,this.width,this.height);
+  return proj?rowInspectionRadius(radius,proj.depth,this.height,level):radius;
+ }
+ rowRenderedRadiusPx(body,screen){
+  const original=this.bodyRadius(body),current=this.rowInspectedRadius(body,original);
+  return current*this.height/(2*Math.tan(CAMERA_FOV/2)*screen.depth);
+ }
  panByPixels(dx,dy){if(dx || dy){this.markCameraMoved({positionChanged:true});panCameraByPixels(this.camera,dx,dy,this.height);}}
  /** Rotation and zoom change the view but must not disable the global follow toggle. */
  markCameraMoved({positionChanged=false}={}){
@@ -179,9 +213,11 @@ export class SolarRenderer {
   const candidates=this.planetId
     ? [this.byId?.get(this.planetId),...this.planetChildren()].filter(Boolean)
     : this.bodies.filter(b=>b.type!=='probe');
-  return rowLayout(candidates.filter(b=>this.shouldDraw(b)),b=>this.targetBodyRadius(b),
+  return rowLayout(candidates.filter(b=>this.shouldDraw(b) && Number.isFinite(b.radiusKm) && b.radiusKm>0),
+   b=>this.targetBodyRadius(b),
    (body,radius)=>body.id==='saturn'?Math.max(radius,1.20*this.targetRingScale()):radius,
-   this.cinema?.active?'asc':'desc');
+   this.cinema?.active && this.cinema.reorder ? 'asc' : this.settings?.rowOrder==='distance'?'distance':'desc',
+   this.planetId||'sun');
  }
  /** Notify the UI without using global DOM state inside WebGL. */
  cinemaNotice(active=this.cinema?.active===true){
@@ -198,8 +234,9 @@ export class SolarRenderer {
     theta:this.camera.theta,phi:this.camera.phi,
     cameraManuallyMoved:this.cameraManuallyMoved,focusedBodyId:this.focusedBodyId};
   this.stopFollowing();
-  this.beginTransition('cinema',now); // Snapshot descending layout before sorting ascending.
-  this.cinema={active:true,progress:0,elapsedMs:0,lastAt:now,
+  const reorder=this.settings?.rowOrder!=='distance';
+  this.beginTransition('cinema',now); // Capture camera and positions, even when no reorder occurs.
+  this.cinema={active:true,reorder,progress:0,elapsedMs:0,lastAt:now,
     lastNoticeAt:now,seeking:false,endedMs:0,saved,track:null};
   this._cinemaRestoreFocus=null;
   this.heldArrows?.clear();this.focusedBodyId=null;
@@ -218,7 +255,7 @@ export class SolarRenderer {
  stopCinema(now=performance.now()){
   const c=this.cinema;
   if(!c?.active)return false;
-  this.beginTransition('cinema',now); // Capture the ascending layout currently on screen.
+  this.beginTransition('cinema',now); // Smoothly restore the saved camera; distance row remains in place.
   this.cinema=null;
   this._cinemaRestoreFocus=c.saved.focusedBodyId;
   this.setCameraAngles(c.saved.theta,c.saved.phi);
@@ -606,6 +643,14 @@ export class SolarRenderer {
   }
  }
   shouldDraw(b){
+  if(this.settings?.row){
+    // The row shows only the view's center and its immediate children, not
+    // nested moons in the Solar scene or nested binary companions.
+    const centerId=this.planetId||'sun';
+    if(b.id!==centerId && b.parentId!==centerId)return false;
+    // Unknown / placeholder sizes must not create tiny visual dots or movie stops.
+    if(!Number.isFinite(b.radiusKm)||b.radiusKm<=0)return false;
+  }
   if(!layerEnabled(this.settings?.layers,b.type))return false;
   // Categories are actual scene layers, not only catalog filters.
   // The four-moons cap affects actual spheres, labels, picking and orbit strokes.
@@ -636,10 +681,10 @@ export class SolarRenderer {
    return previous===undefined?target:Math.max(0,previous+(target-previous)*this.transition.amount);
   }
   makeVP(visibleFocusOffset=this.visibleFocusOffset??0){this.updateKeyboard();
-    // Only automatic object focus is reframed. Manual rotation/pan/zoom restores
-    // the ordinary centered camera; desktop and closed sheet supply offset 0.
-    const offset=this.focusedBodyId!=null && this.focusedBodyId===this.selectedId?clamp(visibleFocusOffset,0,1):0;
-    this.focusOffsetY=lerp(this.focusOffsetY||0,offset,.14);
+    // Keep the CURRENT scene center (or free-look gaze) in the uncovered part
+    // of the canvas whenever the mobile sheet moves, including manual cameras.
+    // Its measured CSS height already animates, so avoid additional easing lag.
+    this.focusOffsetY=clamp(visibleFocusOffset,0,1);
     const far=Math.max(350,this.camera.dist*4,this.camera.desiredDist*4,this.maxCameraDistance()*1.5);
     return cameraView(this.camera,this.width,this.height,this.focusOffsetY,far);
   }
@@ -678,7 +723,8 @@ export class SolarRenderer {
   gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(n);gl.enableVertexAttribArray(uv);
   gl.vertexAttribPointer(a,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(n,3,gl.FLOAT,false,32,12);
   gl.vertexAttribPointer(uv,2,gl.FLOAT,false,32,24);
-  const r=options.radius ?? this.bodyRadius(body); // No selected-body enlargement in physical-size mode.
+  const ordinaryRadius=options.radius ?? this.bodyRadius(body);
+  const r=options.radius===undefined?this.rowInspectedRadius(body,ordinaryRadius):ordinaryRadius; // HUD hover never changes the row layout.
   const opacity=clamp(options.opacity ?? this.sceneBodyOpacity(body),0,1);
   if(opacity<=.001)return;
   gl.uniform1f(this.uniform(program,'uOpacity'),opacity);
@@ -709,7 +755,11 @@ export class SolarRenderer {
  }
  drawRings(p,vp,options={}){const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);const a=this.attribute(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
-  const ringScale=options.scale ?? this.ringScale();
+  const ordinaryRingScale=options.scale ?? this.ringScale();
+  const saturn=this.byId.get('saturn');
+  const ordinarySphere=saturn?this.bodyRadius(saturn):0;
+  const ringScale=options.scale===undefined && ordinarySphere>0
+    ?ordinaryRingScale*this.rowInspectedRadius(saturn,ordinarySphere)/ordinarySphere:ordinaryRingScale;
   gl.uniform1f(this.uniform(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
   gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,model(p,ringScale,.41)));
   gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,200*6);gl.depthMask(true);
@@ -727,6 +777,7 @@ export class SolarRenderer {
   }
   if(!this.cinema?.active)this.updateFollowTarget();
   const {vp}=this.makeVP();this.vp=vp;
+  this.advanceRowInspection(vp);
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   this.drawStars(vp);
   this.drawDepartingScene(vp);
@@ -736,8 +787,9 @@ export class SolarRenderer {
   pick(x,y){if(!this.vp)return;let best=null,dist=Infinity;
   for(const b of this.rendered){const pos=this.positions.get(b.id);if(!pos)continue;
    const p=projected(pos,this.vp,this.width,this.height);if(!p?.visible)continue;
-   const radius=this.bodyRadius(b)*this.height/(this.camera.dist*.6);
-   const d=Math.hypot(x-p.x,y-p.y);const threshold=Math.max(12,Math.min(radius+5,40));
+   const radius=this.settings?.row?this.rowRenderedRadiusPx(b,p)
+     :this.bodyRadius(b)*this.height/(this.camera.dist*.6);
+   const d=Math.hypot(x-p.x,y-p.y);const threshold=Math.max(12,Math.min(radius+5,this.settings?.row?90:40));
    if(d<threshold&&d<dist){best=b;dist=d;}
   }
   if(best){this.callbacks.onSelect?.(best.id);}

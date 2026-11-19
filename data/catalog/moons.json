@@ -13,7 +13,13 @@
       "name": "Mond",
       "parentId": "earth",
       "physical": {
-        "radiusKm": 1737.4
+        "radiusKm": 1737.4,
+        "temperatureMinK": 95,
+        "temperatureMaxK": 390,
+        "temperatureMeanK": 253.15,
+        "surfaceGravityMs2": 1.6,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+        "temperatureRangeSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
       },
       "orbit": {
         "semiMajorAxis": 384400,
@@ -24,7 +30,8 @@
         "ascendingNodeDeg": 125.1,
         "periapsisDeg": 318.15,
         "meanAnomalyDeg": 115.4,
-        "epoch": "2000-01-01T12:00:00.000Z"
+        "epoch": "2000-01-01T12:00:00.000Z",
+        "meanDistance": 384400
       },
       "appearance": {
         "color": "#bcbab5",
@@ -358,7 +365,9 @@
       "name": "Charon",
       "parentId": "pluto",
       "physical": {
-        "radiusKm": 606
+        "radiusKm": 606,
+        "surfaceGravityMs2": 0.29,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html"
       },
       "orbit": {
         "semiMajorAxis": 19596,

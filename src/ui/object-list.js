@@ -1,9 +1,61 @@
-import { TYPES, FEATURED_IDS, CATEGORY_COLORS } from '../data/bodies.js';
+import { TYPES, FEATURED_IDS, CATEGORY_COLORS, AU_KM } from '../data/bodies.js';
 import { clean } from '../data/normalization.js';
-import { esc } from './formatters.js';
+import { esc, formatInt, formatDecimal } from './formatters.js';
 const $=id=>document.getElementById(id);
 const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','binary','comet','satellite','probe'];
 const TYPE_ORDER = new Map(['planet','dwarf','moon','star','tno','asteroid','binary','comet','satellite','probe'].map((type,index)=>[type,index]));
+
+// Distance sorting always uses AU internally. The list can show km and,
+// without a query or planet filter, place moons at their parent's distance.
+export const CATALOG_SORT_MODES=Object.freeze(['default','distance','size']);
+export const nextCatalogSort=mode=>CATALOG_SORT_MODES[(Math.max(0,CATALOG_SORT_MODES.indexOf(mode))+1)%CATALOG_SORT_MODES.length];
+export function catalogDistanceAu(body){
+  if(!body?.parentId)return null; // The Sun has no parent distance.
+  const distance=body.meanDistanceToParent??body.a;
+  if(typeof distance!=='number'||!Number.isFinite(distance)||distance<=0)return null;
+  const unit=body.meanDistanceUnit||(body.parentId==='sun'?'AU':'km');
+  return unit==='AU'?distance:unit==='km'?distance/AU_KM:null;
+}
+/** Shared sort/display distance. In the unfiltered full atlas, moons share
+ * their parent's mean distance so they appear in the same distance range.
+ * Search and isolated planet views use each moon's own orbital separation.
+ */
+export function catalogListingDistance(body,{byId=null,useParentForMoons=false}={}){
+  const parent=useParentForMoons && body?.type==='moon' ? byId?.get(body.parentId) : null;
+  return {au:catalogDistanceAu(parent||body),fromParent:parent?.name||null};
+}
+export function catalogDiameterKm(body){
+  const radius=body?.radiusKm;
+  // 0 is the catalog's placeholder for unknown spacecraft/satellite sizes.
+  return typeof radius==='number'&&Number.isFinite(radius)&&radius>0?radius*2:null;
+}
+export function catalogMetric(body,mode,listedDistance=null){
+  if(mode==='distance'){
+    const {au,fromParent}=listedDistance||catalogListingDistance(body);
+    const description=fromParent?`Mittlere Entfernung wie ${fromParent} (zu dessen Zentralkörper)`
+      :'Mittlere Entfernung zum Elternkörper';
+    if(au===null)return {value:'—',label:`${description}: unbekannt`};
+    // The threshold is inclusive. Above 0.2 AE, preserve the earlier AE display.
+    const distanceKm=au*AU_KM;
+    const value=au<=0.2
+      ?`${distanceKm<0.0001
+        ?new Intl.NumberFormat('de-DE',{notation:'scientific',maximumSignificantDigits:3}).format(distanceKm)
+        :distanceKm<10?formatDecimal(distanceKm,3):formatInt(distanceKm)} km`
+      :`${au<0.0001
+        ?new Intl.NumberFormat('de-DE',{notation:'scientific',maximumSignificantDigits:3}).format(au)
+        :new Intl.NumberFormat('de-DE',{maximumSignificantDigits:5}).format(au)} AE`;
+    return {value,label:`${description}: ${value}`};
+  }
+  if(mode==='size'){
+    const km=catalogDiameterKm(body);
+    if(km===null)return {value:'—',label:'Durchmesser: unbekannt'};
+    const readable=km>=10?formatInt(km):km>=0.001?formatDecimal(km,4)
+      :new Intl.NumberFormat('de-DE',{notation:'scientific',maximumSignificantDigits:3}).format(km);
+    const value=`${readable} km`;
+    return {value,label:`Durchmesser: ${value}`};
+  }
+  return null;
+}
 
 /** Each whitespace-separated word must match an object's own or its parent's metadata.
  * Thus "uranus c" matches Uranus moons with "c" in their name, irrespective of word order.
@@ -60,7 +112,21 @@ export function filteredBodies(state,{planetId=null}={}) {
     return false;
   };
   const list=state.bodies.filter(b=>belongsToPlanet(b) && catalogMatches(b,query,byId));
-  if(!query){
+  const mode=CATALOG_SORT_MODES.includes(state.catalogSort)?state.catalogSort:'default';
+  if(mode!=='default'){
+    // In the global atlas (also when the filter button is off in a planet
+    // scene), moon rows inherit their parent's distance, not their orbit radius.
+    const useParentForMoons=!query&&!planetOnly;
+    const metric=mode==='distance'
+      ?b=>catalogListingDistance(b,{byId,useParentForMoons}).au
+      :catalogDiameterKm;
+    const direction=mode==='distance'?1:-1;
+    list.sort((a,b)=>{
+      const ma=metric(a),mb=metric(b);
+      if(ma===null||mb===null)return ma===null?(mb===null?0:1):-1; // unknown last
+      return direction*(ma-mb)||a.name.localeCompare(b.name,'de')||a.id.localeCompare(b.id);
+    });
+  }else if(!query){
     list.sort((a,b)=>{const ia=FEATURED_IDS.indexOf(a.id),ib=FEATURED_IDS.indexOf(b.id);
       if(ia!==-1||ib!==-1)return ia===-1?1:ib===-1?-1:ia-ib;
       return MAIN_TYPES.indexOf(a.type)-MAIN_TYPES.indexOf(b.type)||a.name.localeCompare(b.name,'de');});
@@ -70,15 +136,29 @@ export function filteredBodies(state,{planetId=null}={}) {
   return list;
 }
 export function renderCatalog(state,onSelect,{planetId=null}={}){
- const byId=id=>state.bodies.find(x=>x.id===id),list=filteredBodies(state,{planetId}),host=$('object-list');
+ const byIdMap=new Map(state.bodies.map(body=>[body.id,body]));
+ const byId=id=>byIdMap.get(id),list=filteredBodies(state,{planetId}),host=$('object-list');
+ const mode=CATALOG_SORT_MODES.includes(state.catalogSort)?state.catalogSort:'default';
+ const useParentForMoons=!clean(state.search)&&!(planetId&&state.catalogPlanetOnly);
  host.innerHTML=list.map(b=>{
   const active=b.id===state.selected,desc=b.type==='probe'?(b.targets||'Mission'):b.parentId?byId(b.parentId)?.name||b.parentId:'Zentrum des Systems';
   // The large preview shows the object's own appearance; only the small dot encodes its category.
   const objectColor=/^#[0-9a-f]{6}$/i.test(b.color||'')?b.color:'#9ba9bc';
   const categoryColor=CATEGORY_COLORS[b.type]||'#E6EDF5';
-  return `<button class="object-row ${active?'selected':''}" role="option" aria-selected="${active}" data-id="${esc(b.id)}"><span class="object-symbol" aria-hidden="true" style="--orb-color:${objectColor}"></span><span class="object-copy"><span class="object-title"><span class="object-category-dot" aria-hidden="true" style="--category-color:${categoryColor}"></span><span class="object-name">${esc(b.name)}</span></span><span class="object-sub">${esc(TYPES[b.type]?.label||'Objekt')} <i>·</i> ${esc(desc)}</span></span><span class="row-arrow" aria-hidden="true">↗</span></button>`;
+  const metric=catalogMetric(b,mode,mode==='distance'
+    ?catalogListingDistance(b,{byId:byIdMap,useParentForMoons}):null);
+  const right=metric?`<span class="object-metric" title="${esc(metric.label)}">${esc(metric.value)}</span>`
+    :'<span class="row-arrow" aria-hidden="true">↗</span>';
+  return `<button class="object-row ${active?'selected':''}" role="option" aria-selected="${active}" data-id="${esc(b.id)}"><span class="object-symbol" aria-hidden="true" style="--orb-color:${objectColor}"></span><span class="object-copy"><span class="object-title"><span class="object-category-dot" aria-hidden="true" style="--category-color:${categoryColor}"></span><span class="object-name">${esc(b.name)}</span></span><span class="object-sub">${esc(TYPES[b.type]?.label||'Objekt')} <i>·</i> ${esc(desc)}</span></span>${right}</button>`;
  }).join('') || '<div class="empty-results">Keine Objekte gefunden.<br>Suche oder Planetenfilter anpassen.</div>';
  $('object-count').textContent=String(list.length).padStart(2,'0');
- $('list-label').textContent='OBJEKTE IM ATLAS';
+ const labels={default:'OBJEKTE IM ATLAS',distance:'ENTFERNUNG ↑',size:'GRÖSSE ↓'};
+ const names={default:'Standard',distance:'Entfernung (nah bis fern)',size:'Größe (groß bis klein)'};
+ const button=$('catalog-sort');
+ button.dataset.sort=mode;
+ const next=nextCatalogSort(mode);
+ button.setAttribute('aria-label',`Sortierung: ${names[mode]}. Nächste Sortierung: ${names[next]}`);
+ button.title=`Sortierung: ${names[mode]}. Klicken für ${names[next]}`;
+ $('list-label').textContent=labels[mode];
  for(const b of host.querySelectorAll('[data-id]'))b.addEventListener('click',()=>onSelect(b.dataset.id,true));
 }

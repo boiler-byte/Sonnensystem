@@ -31,7 +31,8 @@ test('v55: Reihe remains third always-visible scale button with accessible label
  assert.ok(a>=0&&a<b&&b<c,'row appears as third top-level scale option');
  assert.match(controls.slice(c),/<span class="scale-option-label">Reihe<\/span>/);
  assert.match(controls,/id="orbit-row-btn"[^>]*aria-label="Reihe[^>]*aria-pressed="false"/);
- assert.match(controls,/class="row-order-icon"[\s\S]*?cx="5\.5"[^>]*r="4\.1"[\s\S]*?cx="14\.5"[^>]*r="2\.7"[\s\S]*?cx="21"[^>]*r="1\.15"/);
+ assert.match(controls,/class="row-order-icon row-icon-size"[\s\S]*?cx="5\.5"[^>]*r="4\.1"[\s\S]*?cx="14\.5"[^>]*r="2\.7"[\s\S]*?cx="21"[^>]*r="1\.15"/);
+ assert.match(controls,/class="row-order-icon row-icon-distance"[\s\S]*?cx="4\.5"[^>]*r="4\.1"[\s\S]*?cx="22"[^>]*r="1\.35"/);
  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
  assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
  const app=await readAppSource();

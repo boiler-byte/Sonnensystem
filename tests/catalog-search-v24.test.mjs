@@ -95,7 +95,7 @@ test('v24: icon-only planet filter is visible only in planet mode and shares the
   assert.match(html,/<div class="catalog-search-row">/);
   assert.match(css,/\.catalog-search-row\{display:flex/);
   assert.match(css,/\.catalog-planet-filter\[hidden\]\{display:none!important\}/);
-  assert.match(app,/catalogPlanetOnly:false/);
+  assert.match(app,/catalogPlanetOnly:true/);
   assert.match(app,/toggle\.hidden=!planetId/);
   assert.match(app,/renderCatalog\(S,selectBody,\{planetId\}\)/);
   assert.match(app,/\$\('catalog-planet-filter'\)\.addEventListener\('click'/);

@@ -32,6 +32,9 @@ export function attachCameraControls(renderer) {
   const c=renderer.canvas;
   c.addEventListener('contextmenu',e=>e.preventDefault());
   c.addEventListener('pointerdown',e=>{
+    // A normal click can still select a magnified body. Clear on real drag,
+    // touch/pinch or right-button look-around, not on the left-button press.
+    if(e.pointerType==='touch' || e.button!==0)renderer.setRowPointer?.(null);
     if(e.target!==c || (e.pointerType==='mouse' && e.button!==0 && e.button!==2))return;
     renderer.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,button:e.button});
     c.setPointerCapture(e.pointerId);
@@ -49,8 +52,14 @@ export function attachCameraControls(renderer) {
     }
   });
   c.addEventListener('pointermove',e=>{
+    if((e.pointerType==='mouse'||e.pointerType==='pen') && e.buttons===0 && !renderer.pointers.size){
+      const rect=c.getBoundingClientRect();
+      renderer.setRowPointer?.({x:e.clientX-rect.left,y:e.clientY-rect.top});
+    }
     const point=renderer.pointers.get(e.pointerId);
     if(!point)return;
+    if(renderer.rowPointer && Math.hypot(e.clientX-(renderer.drag?.startX??e.clientX),e.clientY-(renderer.drag?.startY??e.clientY))>3)
+      renderer.setRowPointer?.(null);
     const dx=e.clientX-point.x,dy=e.clientY-point.y;
     point.x=e.clientX;point.y=e.clientY;
     if(renderer.pointers.size>=2){
@@ -120,6 +129,7 @@ export function attachCameraControls(renderer) {
       renderer.drag={id,button:point.button,startX:point.x,startY:point.y,moved:true};
     }else if(renderer.pointers.size===0)renderer.drag=null;
   };
+  c.addEventListener('pointerleave',()=>renderer.setRowPointer?.(null));
   c.addEventListener('pointerup',e=>finishPointer(e,false));
   c.addEventListener('pointercancel',e=>finishPointer(e,true));
   c.addEventListener('wheel',e=>{

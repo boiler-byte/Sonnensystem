@@ -1,9 +1,19 @@
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v71 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v80 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 
+- [v80 – Reihenvermessung, Parent-Pfeil und AR-Neuausrichtung](#release-v80)
+- [v79 – Fix: Abstandspfeil in der Reihendarstellung](#release-v79)
+- [v78 – Animierter Reihen-Scanner und Entfernungspfeil](#release-v78)
+- [v77 – Reihenmodi und kompakte Objektdetails](#release-v77)
+- [v76 – Kompakte Temperaturkachel](#release-v76)
+- [v75 – Entfernung in km und Mondgruppierung](#release-v75)
+- [v74 – SVG-Detailwerte und Related-Kataloglink](#release-v74)
+
+- [v73 – Sortier-Toggle und Planetenfilter als Standard](#release-v73)
+- [v72 – Objektphysik und kleineres Mobile-Sheet](#release-v72)
 - [v71 – Zwei-Finger-Blickrichtung und AR-Vertikalbewegung korrigiert](#release-v71)
 - [v70 – Kamerafahrten beim Perspektivwechsel und invertiertes vertikales AR-Umsehen](#release-v70)
 - [v69 – Kamerasymbole zeigen die aktuelle Blickrichtung](#release-v69)
@@ -75,6 +85,118 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [v3 – Sonnensystem: Kamerasteuerung](#release-v3)
 - [v2 – Sonnensystem](#release-v2)
 - [Hotfix v6.1](#hotfix-v61)
+
+---
+
+<a id="release-v80"></a>
+
+## Release v80 – Reihenvermessung und AR-Neuausrichtung
+
+**Basis:** v79.0.0. **Ziel:** v80.0.0. **Paket:** `Sonnensystem-Delta-v80.zip`. **Cache:** `sonnensystem-shell-v80`.
+
+- Die Hover-Anzeige ersetzt `SCAN // AKTIV` durch den Durchmesser und verbreitert die Eckmarkierungen mit animierten Messpfeilen. Die physikalische Messkarte bleibt bestehen.
+- Die Beschriftung „Abstand zum Parent“ entfällt; die km-/AE-Zahl bleibt. Der SVG-Pfeil reicht ohne die frühere 300px-Grenze bis zum Parent-Zentrum oder zu dem Bildschirmrand, hinter dem das Zentrum liegt.
+- Bei aktivem AR richtet die Auswahl eines Katalogobjekts mit Fokus sowie „Planetenansicht“ in den Objektdetails die Sensorblickbasis auf die aktuelle Kameraansicht aus. Kein erneuter Permission-Dialog, keine Änderung der AR-Neigungsrichtung.
+- Neue Regressionstests für Bildschirmkanten, echte Zentrum-X-Koordinaten, Durchmesser-HUD und Sensor-Rekalibrierung; bestehende v78/v79-Tests erhalten die neue HUD-Test-ID.
+
+---
+
+<a id="release-v79"></a>
+
+## Release v79 – Fix: Abstandspfeil in der Reihendarstellung
+
+**Basis:** v78.0.0. **Ziel:** v79.0.0. **Paket:** `Sonnensystem-Delta-v79.zip`. **Cache:** `sonnensystem-shell-v79`.
+
+- Der animierte Abstandspfeil war trotz berechneter Geometrie nicht sichtbar, weil das SVG-Element sein `hidden`-Attribut behielt. Die Anzeige entfernt nun beim Rendern das echte SVG-Attribut und setzt es beim Ausblenden wieder.
+- Der Pfeil zeigt weiterhin zum Parent, die Distanz wird km/AE formatiert. Scanner, Animation, Reihenpositionen, Katalog und Cinema sind unverändert.
+- Regressionstest mit DOM-naher SVG-Attributsemantik, anschließend vollständige Projektsuite und Overlay-Prüfung gegen die veröffentlichte v78-Basis.
+
+---
+
+<a id="release-v78"></a>
+
+## Release v78 – Animierter Reihen-Scanner und Entfernungspfeil
+
+**Basis:** v77.0.0. **Ziel:** v78.0.0. **Paket:** `Sonnensystem-Delta-v78.zip` mit ausschließlich geänderten/neuen Dateien. **Cache:** `sonnensystem-shell-v78`. **Katalog:** unverändert, Schema 1.
+
+- Bei Maus-/Stift-Hover über ein tatsächlich sichtbares Reihenobjekt vergrößert sich die WebGL-Kugel animiert auf mindestens 160 px Durchmesser. Der physikalische Reihensatz, die Sortierung und die Cinema-Stoppfolge bleiben unverändert. Saturns Ring skaliert gemeinsam mit dem Planeten.
+- Ein Sci-Fi-Scanner mit Transparenz, Sichtmarkierungen, Sweep-Animation und Messkarte blendet **Durchmesser, Gravitation und mittlere Temperatur** aus den Katalogdaten ein. Nicht vorliegende Werte bleiben offen.
+- Ein unter dem Objekt ausfahrender Pfeil weist in Richtung des projizierten Parent-/Zentralobjekts. Das Entfernungslabel steht beim Objekt; km werden bis einschließlich 0,2 AE verwendet, sonst AE. Das Zentrum hat keinen Pfeil.
+- Die Hover-Ebene greift nicht in Canvas-Auswahl, Kamerasteuerung, Cinema oder AR ein; Bedienung mit Berührungsbildschirm unverändert. Reduzierte Bewegung wird respektiert. Regressionstests: `tests/row-inspection-v78.test.mjs`.
+
+---
+
+<a id="release-v77"></a>
+
+## Release v77 – Reihenmodi und kompakte Objektdetails
+
+**Basis:** v76.0.0. **Ziel:** v77.0.0. **Paket:** `Sonnensystem-Delta-v77.zip` mit neuen/geänderten Dateien gegenüber v76. **Cache:** `sonnensystem-shell-v77`.
+
+- Physikalische Temperaturwerte belegen eine halbe Rasterbreite. Tabs in Reihenfolge Daten/Wissen; Wissen bleibt als Starttab ausgewählt.
+- Reihe blendet verschachtelte Objekte und Objekte ohne bekannten positiven Radius aus. Dadurch keine leeren Cinema-Haltephasen.
+- Reihen-Toggle: Aus → Größe → Entfernung → Aus. Neues Entfernungssymbol: ein großer und drei kleine Punkte. Die Distanzreihe verläuft nach mittlerer Parent-Entfernung aufsteigend; Cinema fährt bei Play von links nach rechts ohne Umordnung. Die Größenreihe behält das Cinema-Verhalten von v76.
+
+<a id="release-v76"></a>
+
+## Release v76 – Kompakte Temperaturkachel
+
+**Basis:** v75.0.0 (v71 + Delta v72–v75). **Ziel:** v76.0.0. **Paket:** `Sonnensystem-Delta-v76.zip` mit den geänderten Dateien gegenüber v75.
+
+- **Mittelwert:** Halb gefülltes schwarzes SVG-Thermometer ohne hellen Kachelhintergrund; kontrastierende Kontur bleibt auf dunklem Untergrund erkennbar.
+- **Extremwerte:** Wenn verfügbar, werden Min. und Max. in kleinen Zeilen **untereinander rechts neben dem Mittelwert** angezeigt. Bei fehlenden Messwerten entfällt die betreffende Zeile. Die Kachel wird dadurch flacher und lässt sich auf schmalen Bildschirmen nutzen.
+- **Kompatibilität:** Datenformat und Messwerte unverändert (Katalog `10.1.0`, Schema `1`); App `76.0.0`, HTML `V76.0`, PWA-Cache `sonnensystem-shell-v76`.
+
+---
+
+<a id="release-v75"></a>
+
+## Release v75 – Entfernungssortierung und Mondentfernungen
+
+**Basis:** v74.0.0 (v71 + Delta v72, v73 und v74). **Ziel:** v75.0.0. **Paket:** `Sonnensystem-Delta-v75.zip`, nur neue oder geänderte Dateien gegenüber v74.
+
+- **Einheiten:** Bei Entfernungssortierung werden mittlere Abstände bis einschließlich **0,2 AE** als **km** angezeigt; darüber bleibt **AE**. Die numerische Sortierung bleibt einheitlich in AE.
+- **Monde:** Ohne Suche und ohne aktiven Planetenfilter erhalten Monde **für die Katalogliste** den Entfernungswert ihres Elternkörpers, um bei ihm einsortiert zu werden. Bei Suche oder aktiver Planetenfilterung verwenden sie wieder ihren eigenen Bahnradius. Andere Objekttypen, Datenwerte und Objektdetails bleiben unverändert.
+- **Kompatibilität:** Katalogdaten weiterhin `10.1.0`, Schema `1`; App `75.0.0`, HTML `V75.0`, Offline-Cache `sonnensystem-shell-v75`.
+
+---
+
+<a id="release-v74"></a>
+
+## Release v74 – SVG-Icons, Temperaturkarte und Related-Katalogsuche
+
+**Basis:** v73.0.0 (v71 + Delta v72 + Delta v73). **Ziel:** v74.0.0. **Paket:** `Sonnensystem-Delta-v74.zip`, ausschließlich Änderungen gegenüber v73.
+
+- **Physik-Kacheln:** Individuelle Inline-SVG-Symbole vor allen Datenwerten, inkl. Radius, Orbit, Periode, Exzentrizität, mittlerem Abstand, Druck und Gravitation (bei Sonden auch Start und Status).
+- **Temperatur:** Ein gemeinsamer Bereich statt drei getrennten Kacheln: große Mitteltemperatur mit halb gefülltem schwarzem Thermometer auf heller Fläche, kleine blaue Min.- und rote Max.-Angaben mit entsprechend niedriger/hoher Füllung. Unbekannte Werte bleiben `—`.
+- **Gravitation:** Anzeige als G relativ zu standardisierter Erdbeschleunigung (1 G = 9,80665 m/s²); intern unverändert in m/s². Bei Gasriesen weiterhin als Gravitation auf dem 1-bar-Niveau ausgewiesen.
+- **Zugehörige Objekte:** Über den physikalischen Daten; ein anklickbares `+N ↗` öffnet den Objektkatalog mit vorausgefüllter Suche nach dem ausgewählten Elternobjekt. Dies funktioniert in Desktop- und mobiler Sheet-Navigation.
+- **Kompatibilität:** Katalogdaten unverändert, Schema `1`, Katalogversion `10.1.0`; App `74.0.0`, HTML `V74.0`, Cache `sonnensystem-shell-v74`.
+
+---
+
+<a id="release-v73"></a>
+
+## Release v73 – Objektkatalog sortieren, Planetenfilter standardmäßig aktiv
+
+**Basis:** v72.0.0 (v71 + Delta v72). **Ziel:** v73.0.0. **Paket:** `Sonnensystem-Delta-v73.zip`, ausschließlich neue oder geänderte Dateien relativ zu v72.
+
+- **Katalogüberschrift als Toggle:** Bei jedem Klick Wechsel Standard → Entfernung (nah nach fern) → Größe (groß nach klein) → Standard. Die bisherige Feature-/Kategorie- und Suchrelevanz-Sortierung bleibt für Standard unverändert. Suche und Filter werden in allen Modi vor der Sortierung angewendet.
+- **Maßzahlen rechts:** Entfernung ist die mittlere Separation zum jeweiligen Parent (oder die große Halbachse als Modellwert), einheitlich als AE angezeigt; die Größe ist der physikalische Durchmesser aus `2 × radiusKm` in km. Sehr kleine Distanzen nutzen wissenschaftliche Notation, ungültige/fehlende Werte stehen als `—` am Ende.
+- **Planetenansicht:** Erfolgreiches Öffnen einer neuen Planetenszene setzt den Katalogfilter standardmäßig aktiv; manuelles Abschalten zeigt wieder alle Objekte. Außerhalb der Planetenansicht ist der Filter wirkungslos.
+- **Kompatibilität:** Keine Katalogänderung (`10.1.0`, Schema `1`). Paketversion `73.0.0`, HTML `V73.0`, PWA-Cache `sonnensystem-shell-v73`.
+
+---
+
+<a id="release-v72"></a>
+
+## Release v72 – Objektphysik und Mobile-Sheet
+
+**Basis:** v71.0.0. **Ziel:** v72.0.0. **Paket:** ausschließlich geänderte/neue Dateien in `Sonnensystem-Delta-v72.zip`, über das vollständige v71-Projekt legen.
+
+- **Objektkatalog 10.1.0:** Optionale Temperaturminimum-/maximum-/mittel-Werte in Kelvin, Druck in Pa, Gravitation in m/s² sowie mittlerer Elternkörperabstand in Orbiteinheiten. Datensätze werden auf gültige Messwerte, Temperaturreihenfolge und HTTPS-Belege geprüft. Die Objekt-Detailansicht zeigt alle Maße und die Quellen; unbelegte Werte bleiben `—`.
+- **Beispieldaten:** NASA/NSSDCA-Grunddaten für Sonne, acht Planeten, Erdmond, Pluto und Charon; extreme Tag-/Nachttemperaturen nur für Merkur und Erdmond. Gasriesenwerte sind 1-bar-Referenzen, keine festen Oberflächenmessungen. Als mittlerer Abstand wird ohne individuellen Dateneintrag die große Halbachse des Modellorbits verwendet.
+- **Mobile-Sheet:** Halb-Snap von 56 % auf **39 %** verringert. Sichtfeldmittelpunkt folgt dem offenen/gezogenen Sheet auch ohne Objektfokus und bei manuell veränderter Kamera, statt nur automatisch fokussierte Körper zu berücksichtigen.
+- **Versionen:** `72.0.0`, Katalog `10.1.0`, PWA-Cache `sonnensystem-shell-v72`. Bestehendes Daten-Schema 1 bleibt kompatibel.
 
 ---
 

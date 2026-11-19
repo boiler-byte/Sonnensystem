@@ -47,12 +47,28 @@ export function parseCategory(doc, expectedType, path='') {
     if(item.aliases!==undefined)ensure(Array.isArray(item.aliases) && item.aliases.every(validString),`${where}: aliases müssen eine Liste von Namen sein`);
     ensure(isObj(item.physical) && okNumber(item.physical.radiusKm) && item.physical.radiusKm>=0,`${where}: radiusKm ungültig`);
     if (item.physical.temperatureK !== undefined) ensure(okNumber(item.physical.temperatureK) && item.physical.temperatureK>0,`${where}: temperatureK ungültig`);
+    // Physical properties are optional: never replace an unknown value with zero.
+    // Kelvin and Pa are used in the catalog, independent of the UI's display units.
+    for(const key of ['temperatureMinK','temperatureMaxK','temperatureMeanK','atmosphericPressurePa','surfaceGravityMs2']){
+      const value=item.physical[key];
+      if(value!==undefined && value!==null)ensure(okNumber(value) && value>=0,`${where}: ${key} muss eine nichtnegative Zahl oder null sein`);
+    }
+    const {temperatureMinK:min,temperatureMaxK:max,temperatureMeanK:mean}=item.physical;
+    if(min!=null && max!=null)ensure(min<=max,`${where}: Temperatur-Minimum > Maximum`);
+    if(mean!=null && min!=null)ensure(mean>=min,`${where}: mittlere Temperatur < Minimum`);
+    if(mean!=null && max!=null)ensure(mean<=max,`${where}: mittlere Temperatur > Maximum`);
+    for(const key of ['dataSourceUrl','temperatureRangeSourceUrl']){
+      const url=item.physical[key];
+      if(url!==undefined)ensure(typeof url==='string' && /^https:\/\/[^\s]+$/i.test(url),`${where}: ${key} muss eine HTTPS-URL sein`);
+    }
     ensure(isObj(item.orbit),`${where}: orbit fehlt`);
     const o=item.orbit;
     ensure(['AU','km'].includes(o.unit),`${where}: unit muss AU oder km sein`);
     ensure(okNumber(o.semiMajorAxis) && o.semiMajorAxis>=0 && okNumber(o.periodDays) && o.periodDays>=0,`${where}: Bahnradius/Periode ungültig`);
     ensure(item.parentId===null || (o.semiMajorAxis>0 && o.periodDays>0),`${where}: kein gültiger Umlauf um parentId`);
     ensure(o.unit===(item.parentId && item.parentId!=='sun'?'km':'AU'),`${where}: Einheit passt nicht zu parentId`);
+    if(o.meanDistance!==undefined && o.meanDistance!==null)
+      ensure(okNumber(o.meanDistance) && (item.parentId===null?o.meanDistance===0:o.meanDistance>0),`${where}: meanDistance ungültig`);
     for(const key of ['eccentricity','inclinationDeg','ascendingNodeDeg','periapsisDeg','meanAnomalyDeg'])ensure(okNumber(o[key]),`${where}: ${key} ungültig`);
     if (o.referenceFrame!==undefined) ensure(validString(o.referenceFrame),`${where}: referenceFrame ungültig`);
     if (o.model!==undefined) ensure(validString(o.model),`${where}: orbit model ungültig`);
@@ -64,12 +80,18 @@ export function parseCategory(doc, expectedType, path='') {
       id:item.id,name:item.name,type:expectedType,parentId:item.parentId,
       ...(item.aliases===undefined?{}:{aliases:item.aliases}),
       a:o.semiMajorAxis,periodDays:o.periodDays,radiusKm:item.physical.radiusKm,
+      // By convention the semimajor axis is the catalog's characteristic mean
+      // parent separation; an explicit meanDistance may override it.
+      meanDistanceToParent:item.parentId===null?null:(o.meanDistance??o.semiMajorAxis),
+      meanDistanceUnit:o.unit,meanDistanceEstimated:o.meanDistance==null,
       color:item.appearance.color,style:item.appearance.style,
       e:o.eccentricity,i:o.inclinationDeg,node:o.ascendingNodeDeg,peri:o.periapsisDeg,
       M:o.meanAnomalyDeg,epoch:Date.parse(o.epoch),source:doc.provenance.source,
       ...(o.referenceFrame===undefined?{}:{orbitFrame:o.referenceFrame}),
       ...(o.model===undefined?{}:{orbitModel:o.model}),
       ...(item.physical.temperatureK===undefined?{}:{temperatureK:item.physical.temperatureK}),
+      ...Object.fromEntries(['temperatureMinK','temperatureMaxK','temperatureMeanK','atmosphericPressurePa','surfaceGravityMs2','dataSourceUrl','temperatureRangeSourceUrl']
+        .filter(key=>item.physical[key]!==undefined).map(key=>[key,item.physical[key]])),
       ...(item.externalIds?.norad===undefined?{}:{catalog:item.externalIds.norad}),
       description:''
     };
@@ -155,6 +177,8 @@ export function mergeLiveBodies(current, updates) {
     const index=indexes.get(fresh.id);
     if(index===undefined){indexes.set(fresh.id,result.length);result.push(fresh);continue;}
     const previous=result[index],merged={...previous,...fresh};
+    if(previous.meanDistanceEstimated && typeof fresh.a==='number' && Number.isFinite(fresh.a))
+      merged.meanDistanceToParent=fresh.a;
     if(previous.editorial){merged.editorial=previous.editorial;merged.description=previous.editorial.summary;}
     result[index]=merged;
   }

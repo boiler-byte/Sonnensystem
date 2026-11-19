@@ -13,7 +13,7 @@ export function createViewSettings(view = 'solar') {
   return {
     orbits:true, orbitContrast:false, labels:true,
     lighting:view === 'planet' ? 'realistic' : 'optimized', fourMoons:view !== 'planet',
-    scaleObjects:false, scaleOrbits:false, row:false,
+    scaleObjects:false, scaleOrbits:false, row:false, rowOrder:'size',
     layers:layerPreset('standard',view)
   };
 }

@@ -54,7 +54,7 @@ export function initMobileSheets() {
     // from the viewport rather than the current sheet height.
     const full=window.innerHeight;
     const closed=header.getBoundingClientRect().height;
-    return {closed,half:clamp(window.innerHeight*.56,Math.min(closed+105,full),full),full};
+    return {closed,half:clamp(window.innerHeight*.39,Math.min(closed+105,full),full),full};
   }
   function setVisibleHeight(visible){
     const height=`${visible}px`;
@@ -233,8 +233,16 @@ export function initMobileSheets() {
   // Measure the rendered sheet edge each frame (not just the snap target):
   // this stays correct during opening animations, dragging and screen rotation.
   function focusOffsetFor(canvas){
-    if(!mobile() || snap!=='half' || !canvas)return 0;
-    return visibleCanvasFocusOffset(canvas.getBoundingClientRect(),sheet.getBoundingClientRect().top);
+    if(!mobile() || !canvas)return 0;
+    const sceneRect=canvas.getBoundingClientRect();
+    const sheetRect=sheet.getBoundingClientRect();
+    // Use the *actual* animated/dragged edge, not the snap target. This keeps
+    // the current gaze centered in the visible scene even without a selection.
+    // Fade out the small correction for the collapsed 45px header.
+    const collapsed=levels().closed;
+    const visibleSheet=Math.max(0,sceneRect.bottom-sheetRect.top);
+    const blend=clamp((visibleSheet-collapsed)/collapsed,0,1);
+    return visibleCanvasFocusOffset(sceneRect,sheetRect.top)*blend;
   }
   return {open,close,expand,focusOffsetFor};
 }

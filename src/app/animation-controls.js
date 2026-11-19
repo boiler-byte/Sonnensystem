@@ -42,31 +42,40 @@ export function refreshRowCameraFrame(){
 }
 export function syncRowControl(){
   const enabled=S.settings.row===true,button=$('orbit-row-btn');
-  syncToggleState(button,enabled,`Reihe: ${enabled?'An – nach Größe sortiert':'Aus – Umlaufbahnen'}`);
+  const order=enabled&&S.settings.rowOrder==='distance'?'distance':enabled?'size':'off';
+  const title=order==='off'?'Reihe: Aus – Umlaufbahnen'
+    :order==='distance'?'Reihe: Nach Entfernung (nah nach fern)'
+    :'Reihe: Nach Größe (groß nach klein)';
+  syncToggleState(button,enabled,title);
+  button.setAttribute('data-row-mode',order);
+  button.setAttribute('aria-label',`${title}. Nächster Modus: ${order==='off'?'Größe':order==='size'?'Entfernung':'Aus'}`);
 }
 export function updateRow(){
   if(renderer?.cinema?.active)renderer.stopCinema();
   renderer?.beginTransition?.('row');
-  const enabled=!S.settings.row;
+  const wasEnabled=S.settings.row===true;
+  const wasOrder=S.settings.rowOrder==='distance'?'distance':'size';
+  const enabled=!wasEnabled || wasOrder==='size';
+  const order=!wasEnabled?'size':wasOrder==='size'?'distance':'size';
   // Entry to the lineup always starts with true physical object proportions.
-  // Both scenes share these scale toggles; manual changes while in the row
-  // remain possible and leaving the row keeps the chosen object scale.
-  if(enabled && !S.settings.scaleObjects){
+  // Both scenes share these scale toggles; leaving the row retains the chosen scale.
+  if(enabled && !wasEnabled && !S.settings.scaleObjects){
     S.viewSettings.solar.scaleObjects=true;
     S.viewSettings.planet.scaleObjects=true;
     syncScaleControls();
   }
   S.settings.row=enabled;
+  S.settings.rowOrder=order;
   syncRowControl();syncCinemaControl();
-  notifyToggle(`Reihe: ${enabled?'An (groß nach klein)':'Aus (Umlaufbahnen)'}`);
+  notifyToggle(`Reihe: ${!enabled?'Aus (Umlaufbahnen)':order==='distance'?'Nach Entfernung (nah nach fern)':'Nach Größe (groß nach klein)'}`);
   if(!renderer)return;
   renderer._labelState=null;
-  if(enabled){
+  if(enabled && !wasEnabled){
     renderer._rowPreviousAngles=[renderer.camera.theta,renderer.camera.phi];
     renderer.setCameraAngles?.(0,1.5);
     renderer.cameraPresetIndex=2;
     renderer.cameraManuallyMoved=false;
-  }else{
+  }else if(!enabled){
     const previous=renderer._rowPreviousAngles||[.63,renderer.planetId?.84:.99];
     renderer.setCameraAngles?.(...previous);
     renderer.cameraPresetIndex=0;
@@ -89,10 +98,12 @@ export function syncCinemaControl(){
   button.hidden=!available;
   syncToggleState(button,active,active
     ? 'Cinema stoppen und zur Ausgangsansicht zurückkehren'
-    : 'Cinema-Modus starten: von klein nach groß');
+    : S.settings.rowOrder==='distance'?'Cinema-Modus starten: von links nach rechts':'Cinema-Modus starten: von klein nach groß');
   button.setAttribute('aria-label',active?'Cinema-Kamerafahrt stoppen':'Cinema-Kamerafahrt starten');
   $('view-mode-status').classList.toggle('cinema-available',available);
   $('cinema-timeline').hidden=!active;
+  $('cinema-start-label').textContent=S.settings.rowOrder==='distance'?'Nah':'Klein';
+  $('cinema-end-label').textContent=S.settings.rowOrder==='distance'?'Fern':'Groß';
   if(!active)$('cinema-seek').value='0';
 }
 export function updateCinemaTimeline({active,progress=0,durationMs=0,objectId=null}){

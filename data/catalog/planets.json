@@ -13,7 +13,13 @@
       "name": "Merkur",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 2439.7
+        "radiusKm": 2439.7,
+        "temperatureMinK": 93.15,
+        "temperatureMaxK": 703.15,
+        "temperatureMeanK": 440.15,
+        "surfaceGravityMs2": 3.7,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+        "temperatureRangeSourceUrl": "https://science.nasa.gov/mercury/facts/"
       },
       "orbit": {
         "semiMajorAxis": 0.387098,
@@ -36,7 +42,11 @@
       "name": "Venus",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 6051.8
+        "radiusKm": 6051.8,
+        "temperatureMeanK": 737.15,
+        "atmosphericPressurePa": 9200000,
+        "surfaceGravityMs2": 8.9,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 0.723332,
@@ -60,7 +70,11 @@
       "parentId": "sun",
       "physical": {
         "radiusKm": 6371,
-        "temperatureK": 288
+        "temperatureK": 288,
+        "temperatureMeanK": 288.15,
+        "atmosphericPressurePa": 100000,
+        "surfaceGravityMs2": 9.8,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 1,
@@ -83,7 +97,11 @@
       "name": "Mars",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 3389.5
+        "radiusKm": 3389.5,
+        "temperatureMeanK": 208.15,
+        "atmosphericPressurePa": 1000,
+        "surfaceGravityMs2": 3.7,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 1.523679,
@@ -106,7 +124,10 @@
       "name": "Jupiter",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 69911
+        "radiusKm": 69911,
+        "temperatureMeanK": 163.15,
+        "surfaceGravityMs2": 23.1,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 5.2044,
@@ -129,7 +150,10 @@
       "name": "Saturn",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 58232
+        "radiusKm": 58232,
+        "temperatureMeanK": 133.15,
+        "surfaceGravityMs2": 9.0,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 9.5826,
@@ -152,7 +176,10 @@
       "name": "Uranus",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 25362
+        "radiusKm": 25362,
+        "temperatureMeanK": 78.15,
+        "surfaceGravityMs2": 8.7,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 19.2184,
@@ -175,7 +202,10 @@
       "name": "Neptun",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 24622
+        "radiusKm": 24622,
+        "temperatureMeanK": 73.15,
+        "surfaceGravityMs2": 11.0,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 30.11,

@@ -42,41 +42,35 @@ test('v31: off-axis projection centers the focused object above half-open sheet'
   near(p.y,(h-sheetVisible)/2,.01);
 });
 
-test('v31: only focused selection is shifted; manual move and reset restore normal centering',()=>{
+test('v72: the current gaze is recentered for any camera mode while the mobile sheet is open',()=>{
   const renderer=Object.create(SolarRenderer.prototype);
   renderer.width=390;renderer.height=750;renderer.camera=camera();
   renderer.byId=new Map([['earth',{id:'earth',type:'planet'}],['mars',{id:'mars',type:'planet'}]]);
   renderer.positions=new Map([['earth',[0,0,0]],['mars',[5,0,-5]]]);
   renderer.selectedId='earth';renderer.planetId=null;renderer.focusedBodyId=null;renderer.focusOffsetY=0;
   renderer.updateKeyboard=()=>{};
-  for(let i=0;i<100;i++)renderer.makeVP(.56);
-  near(renderer.focusOffsetY,0);
+  renderer.makeVP(.39); // No automatic focus: still reframe the visible scene.
+  near(renderer.focusOffsetY,.39);
+  near(projected([0,0,0],renderer.makeVP(.39).vp,390,750).y,750*(1-.39)/2,.01);
   renderer.setSelected('earth',{focus:true});
-  for(let i=0;i<110;i++)renderer.makeVP(.56);
-  near(renderer.focusOffsetY,.56,.0001);
-  const projectedY=projected(renderer.positions.get('earth'),renderer.makeVP(.56).vp,390,750).y;
-  near(projectedY,165,.01);
-  // Closing the sheet (offset zero) restores full-viewport centering.
-  for(let i=0;i<110;i++)renderer.makeVP(0);
-  near(renderer.focusOffsetY,0,.0001);
-  renderer.setSelected('mars',{focus:true});
-  assert.equal(renderer.focusedBodyId,'mars');
+  renderer.makeVP(.39);
+  near(renderer.focusOffsetY,.39);
   renderer.markCameraMoved();
-  assert.equal(renderer.focusedBodyId,null);
-  for(let i=0;i<100;i++)renderer.makeVP(.56);
-  near(renderer.focusOffsetY,0,.0001);
-  renderer.setSelected('earth',{focus:true});
-  renderer.applyCameraPreset(0);
-  assert.equal(renderer.focusedBodyId,null);
+  renderer.makeVP(.39);
+  near(renderer.focusOffsetY,.39);
   renderer.setSelected(null);
-  for(let i=0;i<100;i++)renderer.makeVP(.56);
-  near(renderer.focusOffsetY,0,.0001);
+  renderer.camera.freeLook={theta:renderer.camera.theta,phi:renderer.camera.phi,
+    forward:[-.5,-.55,-.669],up:[0,1,0]};
+  renderer.makeVP(.39);
+  near(renderer.focusOffsetY,.39);
+  renderer.makeVP(0); // Sheet closes: full viewport center is restored.
+  near(renderer.focusOffsetY,0);
 });
 
 test('v31: app feeds mobile sheet geometry to the shared rendering pipeline',async()=>{
   const app=await read('src/app.js'),sheet=await read('src/ui/bottom-sheet.js'),renderer=await read('src/renderer/renderer.js');
   assert.match(app,/renderer\.visibleFocusOffset=mobileSheets\?\.focusOffsetFor\(renderer\.canvas\)\?\?0/);
-  assert.match(sheet,/snap!=='half'/);
-  assert.match(sheet,/canvas\.getBoundingClientRect\(\),sheet\.getBoundingClientRect\(\)\.top/);
-  assert.match(renderer,/focusedBodyId!=null && this\.focusedBodyId===this\.selectedId/);
+  assert.match(sheet,/const blend=clamp\(\(visibleSheet-collapsed\)\/collapsed,0,1\)/);
+  assert.match(sheet,/visibleCanvasFocusOffset\(sceneRect,sheetRect\.top\)/);
+  assert.match(renderer,/this\.focusOffsetY=clamp\(visibleFocusOffset,0,1\)/);
 });

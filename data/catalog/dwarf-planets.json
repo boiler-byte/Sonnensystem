@@ -36,7 +36,11 @@
       "name": "Pluto",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 1188.3
+        "radiusKm": 1188.3,
+        "temperatureMeanK": 48.15,
+        "atmosphericPressurePa": 1,
+        "surfaceGravityMs2": 0.6,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
       },
       "orbit": {
         "semiMajorAxis": 39.482,

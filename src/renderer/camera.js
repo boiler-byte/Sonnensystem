@@ -158,8 +158,8 @@ export function cameraView(camera, width, height, focusOffsetY=0, far=350) {cons
   const eye=[cam.target[0]+r*Math.sin(phi)*Math.sin(th),cam.target[1]+r*Math.cos(phi),cam.target[2]+r*Math.sin(phi)*Math.cos(th)];
   // Shift the perspective's optical center upward when the mobile detail sheet
   // covers the lower viewport. All scene objects, labels and picking use this VP.
-  // With focusOffsetY=.56, the camera target projects to 22% of canvas height:
-  // the center of the 44% of the canvas left visible above the sheet.
+  // With focusOffsetY=.39, the camera target projects to 30.5% of canvas height:
+  // the center of the 61% of canvas still visible above the sheet.
   // Very small bodies need a closer near plane when the physical-size toggle is on.
   const near=Math.min(.1,Math.max(1e-7,cam.dist*.12));
   const projection=perspective(CAMERA_FOV,width/height,near,far);

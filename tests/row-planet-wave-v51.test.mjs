@@ -65,10 +65,14 @@ test('v51: entering Reihe auto-enables physical object sizes in both views and u
     assert.deepEqual(f.snapshots,[{kind:'row',scaleObjects:false,scaleOrbits:false,row:false}],
       'capture original layout before the automatic scale change');
     vm.runInContext('updateRow()',f.context);
-    assert.equal(f.settings.row,false);
+    assert.equal(f.settings.row,true,'second click selects distance mode');
+    assert.equal(f.settings.rowOrder,'distance');
+    assert.equal(f.$('orbit-row-btn').attrs['data-row-mode'],'distance');
+    vm.runInContext('updateRow()',f.context);
+    assert.equal(f.settings.row,false,'third click exits the row');
     assert.equal(f.settings.scaleObjects,true,'leaving Reihe retains the chosen object scale');
     assert.equal(f.$('orbit-row-btn').attrs['aria-pressed'],'false');
-    assert.equal(f.renderer.calcCalls,2);
+    assert.equal(f.renderer.calcCalls,3);
   }
 });
 
@@ -78,7 +82,7 @@ test('v51: manually disabling size scale in Reihe remains possible; next entry r
   assert.equal(f.settings.row,true);
   assert.equal(f.settings.scaleObjects,false);
   assert.equal(f.viewSettings.solar.scaleObjects,false);
-  vm.runInContext('updateRow();updateRow()',f.context);
+  vm.runInContext('updateRow();updateRow();updateRow()',f.context);
   assert.equal(f.settings.scaleObjects,true);
   assert.equal(f.settings.row,true);
   assert.equal(f.$('scale-objects-btn').attrs['aria-pressed'],'true');

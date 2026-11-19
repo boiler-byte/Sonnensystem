@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V71.0" />
+  <meta name="app-version" content="V80.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -32,7 +32,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-24 12 12)"/></svg>
           </button>
         </div>
-        <div class="list-header"><span id="list-label">OBJEKTE IM ATLAS</span><span id="object-count">—</span></div>
+        <div class="list-header"><button id="catalog-sort" class="list-sort-button" type="button" data-sort="default" aria-controls="object-list" aria-label="Sortierung: Standard. Nächste Sortierung: Entfernung" title="Sortieren: Standard → Entfernung → Größe → Standard"><span id="list-label">OBJEKTE IM ATLAS</span><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6 3v14m-3-3 3 3 3-3M14 17V3m-3 3 3-3 3 3"/></svg></button><span id="object-count">—</span></div>
         <div id="object-list" class="object-list" role="listbox" aria-label="Himmelskörper"></div>
       </aside>
       <aside class="detail" id="detail" role="tabpanel" aria-labelledby="sidebar-tab-detail" hidden>
@@ -58,8 +58,8 @@
             </button>
           </div>
           <div class="detail-tabs" role="tablist" aria-label="Objektinformationen">
-            <button class="detail-tab active" id="detail-tab-wissen" type="button" role="tab" data-detail-tab="wissen" aria-controls="detail-wissen" aria-selected="true" tabindex="0">Wissen</button>
             <button class="detail-tab" id="detail-tab-daten" type="button" role="tab" data-detail-tab="daten" aria-controls="detail-daten" aria-selected="false" tabindex="-1">Daten</button>
+            <button class="detail-tab active" id="detail-tab-wissen" type="button" role="tab" data-detail-tab="wissen" aria-controls="detail-wissen" aria-selected="true" tabindex="0">Wissen</button>
           </div>
           <div class="detail-tab-panel" id="detail-wissen" role="tabpanel" aria-labelledby="detail-tab-wissen" tabindex="0">
             <p id="detail-description" class="detail-description"></p>
@@ -67,8 +67,9 @@
             <div id="editorial-content" class="editorial-content" hidden></div>
           </div>
           <div class="detail-tab-panel" id="detail-daten" role="tabpanel" aria-labelledby="detail-tab-daten" tabindex="0" hidden>
+            <div id="related" class="related"></div>
             <div class="facts-title">PHYSIKALISCHE DATEN <span>↗</span></div><div id="stats-grid" class="stats-grid"></div>
-            <div class="detail-divider"></div><div class="facts-title">ORBIT &amp; ZUGEHÖRIGKEIT</div><div class="orbit-facts" id="orbit-facts"></div><div id="related" class="related"></div>
+            <div class="detail-divider"></div><div class="facts-title">ORBIT &amp; ZUGEHÖRIGKEIT</div><div class="orbit-facts" id="orbit-facts"></div>
             <div class="detail-divider"></div><div class="facts-title">PRÄZISIONSDATEN</div><button id="horizons-btn" class="horizons-btn" type="button"><span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span></button><p class="source-hint" id="horizons-note">Position für das gewählte Datum von NASA/JPL abrufen.</p>
             <div class="detail-sources"><div class="source-head"><span>DATENQUELLEN</span><span>LIVE / FALLBACK</span></div><div class="source-status" id="source-status"></div></div>
           </div>
@@ -95,6 +96,35 @@
         <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: links ziehen oder ein Finger verschiebt, rechts ziehen oder zwei Finger schauen um (ohne Auswahl am festen Kamerastandort), Mausrad und Zwei-Finger-Geste zoomen"></canvas>
         <div class="space-glow" id="space-glow"></div>
         <canvas id="labels-canvas" aria-hidden="true"></canvas>
+        <div class="row-inspection" id="row-inspection" aria-hidden="true" hidden>
+          <svg id="row-inspection-vector-svg" class="row-inspection-vector-svg" aria-hidden="true" preserveAspectRatio="none" hidden>
+            <path id="row-inspection-vector-line" class="row-inspection-vector-line"/>
+            <path id="row-inspection-vector-head" class="row-inspection-vector-head"/>
+            <circle id="row-inspection-vector-origin" r="3" class="row-inspection-vector-origin"/>
+          </svg>
+          <div id="row-inspection-scanner" class="row-inspection-scanner">
+            <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+              <circle cx="100" cy="100" r="89" class="row-inspection-ring"/>
+              <circle cx="100" cy="100" r="95" class="row-inspection-dashes"/>
+              <path class="row-inspection-brackets" d="M47 28H14V58 M153 28H186V58 M47 172H14V142 M153 172H186V142"/>
+              <path class="row-inspection-diameter-rule" d="M13 16H187 M24 9L13 16L24 23 M176 9L187 16L176 23"/>
+              <path class="row-inspection-cross" d="M100 0V13 M100 187V200 M0 100H13 M187 100H200"/>
+              <path class="row-inspection-sweep" d="M100 100L100 11A89 89 0 0 1 169 44Z"/>
+            </svg>
+            <span id="row-inspection-scan-tag" class="row-inspection-scan-tag" aria-label="Durchmesser"></span>
+          </div>
+          <div id="row-inspection-panel" class="row-inspection-panel">
+            <div class="row-inspection-panel-top"><span class="row-inspection-live-dot"></span> OBJEKTANALYSE <span class="row-inspection-panel-bars">▮▯▮▯</span></div>
+            <div id="row-inspection-name" class="row-inspection-name"></div>
+            <div class="row-inspection-object-id">IDENTIFIKATION <span id="row-inspection-id"></span></div>
+            <div class="row-inspection-metrics">
+              <div><span>Ø DURCHMESSER</span><strong id="row-inspection-diameter"></strong></div>
+              <div><span>GRAVITATION</span><strong id="row-inspection-gravity"></strong></div>
+              <div><span>Ø TEMPERATUR</span><strong id="row-inspection-temperature"></strong></div>
+            </div>
+          </div>
+          <div id="row-inspection-distance" class="row-inspection-distance" hidden><strong id="row-inspection-distance-value"></strong></div>
+        </div>
         <h1 class="sr-only">Sonnensystem</h1>
         <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
           <button class="cinema-button" id="cinema-btn" type="button" aria-label="Cinema-Kamerafahrt starten" aria-pressed="false" title="Cinema-Modus starten" hidden>
@@ -111,7 +141,8 @@
                     <span class="scale-option-label">Bahn</span>
                   </button>
             <button class="scale-option scale-row-toggle" id="orbit-row-btn" type="button" title="Reihe: Aus" aria-label="Reihe – Objekte nach Größe aufreihen" aria-pressed="false">
-                    <svg class="row-order-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="4.1"/><circle cx="14.5" cy="12" r="2.7"/><circle cx="21" cy="12" r="1.15"/></svg>
+                    <svg class="row-order-icon row-icon-size" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="4.1"/><circle cx="14.5" cy="12" r="2.7"/><circle cx="21" cy="12" r="1.15"/></svg>
+                    <svg class="row-order-icon row-icon-distance" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="4.5" cy="12" r="4.1"/><circle cx="12" cy="12" r="1.35"/><circle cx="17" cy="12" r="1.35"/><circle cx="22" cy="12" r="1.35"/></svg>
                     <span class="scale-option-label">Reihe</span>
                   </button>
           </div>
@@ -192,7 +223,7 @@
         <div class="cinema-timeline" id="cinema-timeline" aria-label="Cinema-Kamerafahrt" hidden>
           <div class="cinema-timeline-header"><span id="cinema-object">Cinema-Modus</span><output id="cinema-time" for="cinema-seek">00:00 / 00:00</output></div>
           <input id="cinema-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Cinema-Zeitleiste – Position der Kamerafahrt" aria-valuetext="0 Prozent" />
-          <div class="cinema-timeline-ends" aria-hidden="true"><span>Klein</span><span>Groß</span></div>
+          <div class="cinema-timeline-ends" aria-hidden="true"><span id="cinema-start-label">Klein</span><span id="cinema-end-label">Groß</span></div>
         </div>
         <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
       </section>

@@ -1,6 +1,39 @@
-# Datenmodell und redaktionelle Inhalte (aktuell: Katalog 10.0.0)
+# Datenmodell und redaktionelle Inhalte (aktuell: Katalog 10.1.0)
 
-> **Aktueller Stand (v71; Katalog unverändert seit v68):** Katalogversion `10.0.0`, Schema `1`, **192 Himmelskörper** und **192 redaktionelle Einträge**. Das Manifest lädt 23 Kategorien-Dateien und fünf deutschsprachige Redaktionsdateien. Gegenüber dem historischen v8-Stand sind die Typen `tno` und `binary` sowie weitere Monde und Satelliten hinzugekommen. Die folgenden als v8/v52 gekennzeichneten Zahlen und Beispiele beschreiben **historische Ausbaustufen**, nicht die aktuelle Gesamtanzahl. Maßgeblich ist `data/catalog/manifest.json`.
+> **Aktueller Stand (v75):** Katalogversion `10.1.0`, Schema `1`, **192 Himmelskörper** und **192 redaktionelle Einträge**. Das Manifest lädt 23 Kategorien-Dateien und fünf deutschsprachige Redaktionsdateien. Gegenüber dem historischen v8-Stand sind die Typen `tno` und `binary` sowie weitere Monde und Satelliten hinzugekommen. Die folgenden als v8/v52 gekennzeichneten Zahlen und Beispiele beschreiben **historische Ausbaustufen**, nicht die aktuelle Gesamtanzahl. Maßgeblich ist `data/catalog/manifest.json`.
+
+## Entfernungssortierung im Objektkatalog (v75; keine Datenmigration)
+
+Die Katalogfelder `orbit.meanDistance` und `orbit.unit` bleiben unverändert. Die Sortierung normalisiert in AE, die **Anzeige** verwendet für Distanzen **bis einschließlich 0,2 AE km**, darüber AE. Im vollständig geöffneten Atlas **ohne Suchtext und ohne aktiven Planetenfilter** erben Monde lediglich in der **Liste** die mittlere Entfernung ihres direkten Elternkörpers. Eine Suche oder ein aktiver Planetenfilter zeigt und sortiert nach der **eigenen Bahnentfernung** des Mondes. Messwerte, Stern- und Planetenbahnen und physikalische Objektdetails sind davon nicht betroffen. Diese kontextabhängigen Listenwerte sind keine zusätzlichen astronomischen Messungen.
+
+## Zusätzliche physikalische Katalogfelder (v72)
+
+Die **192 Katalogobjekte bleiben erhalten**; `schemaVersion: 1` bleibt gültig. Die folgenden Felder sind **optional**. Fehlende oder explizit auf `null` gesetzte Werte sind unbekannt (`—`), kein Nullmesswert. Ein numerischer Wert `0` ist dagegen ein echter Mess-/Modellwert. `src/data/catalog.js` prüft numerische Grenzen, die Reihenfolge Min. ≤ Mittel ≤ Max. (soweit vorhanden), Einheiten und HTTPS-Quellenangaben.
+
+```json
+{
+  "physical": {
+    "radiusKm": 6371,
+    "temperatureMinK": null,
+    "temperatureMaxK": null,
+    "temperatureMeanK": 288.15,
+    "atmosphericPressurePa": 100000,
+    "surfaceGravityMs2": 9.8,
+    "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
+  },
+  "orbit": {
+    "semiMajorAxis": 1,
+    "unit": "AU",
+    "meanDistance": 1
+  }
+}
+```
+
+Der JSON-Ausschnitt zeigt **nur die betroffenen Felder**; vollständige Objekte benötigen die bisherigen Orbit- und Aussehensangaben. `orbit.meanDistance` übernimmt die Einheit von `orbit.unit`: **AE für eine Sonnenbahn**, **km für eine Parent-Bahn** (z. B. Monde und Satelliten). Falls nicht gesetzt, wird die vorhandene **große Halbachse** als charakteristische mittlere Bahndistanz angezeigt und explizit als **Modellwert** gekennzeichnet. Dieser Bahnradius ist kein minutengenauer Abstand und kein echtes zeitgewichtetes Abstandsmittel. Bei der Sonne selbst gibt es keinen Parent-Abstand. Bei aktualisierten Live-Bahnelementen wird der Halbachsen-Fallback mit aktualisiert; ausdrücklich hinterlegte Werte bleiben stabil.
+
+Im Daten-Tab (ab v74 als gemeinsame Temperaturkachel) stehen Temperaturminimum, -maximum und -mittel in **°C**, Druck in **bar/Pa**, Gravitation in **G** (standardisierte Erdbeschleunigung, 1 G = 9,80665 m/s²), mittlerer Abstand in **AE/km**. Die Gravitation wird **nur für die Anzeige** aus dem gespeicherten SI-Wert in m/s² umgerechnet. Gespeichert werden stets **Kelvin und Pascal**, damit Einheiten eindeutig sind. Der bestehende Wert `physical.temperatureK` wird für Altbestände weiter gelesen; `temperatureMeanK` hat Vorrang. Bei Gasriesen gelten NASAs Temperaturen und Schwerebeschleunigungen für das **1-bar-Niveau**; dort existiert kein definierter fester Oberflächendruck. Raketen-/Raumsondeneinträge sind keine Oberflächenkörper und erhalten keine erfundenen Physikwerte.
+
+v72 enthält belegte Beispielwerte für **Sonne, acht Planeten, Erdmond, Pluto und Charon** (12 Katalogobjekte). Spezifische Min-/Max-Temperaturen sind vorerst nur für **Merkur** (NASA Science: Tages-/Nacht-Extrema) und den **Mond** (NASA NSSDCA: äquatorialer Tagesgang) eingetragen. Sie sind **nicht** dieselbe statistische Größe wie ein planetenweit gemitteltes Temperaturminimum/maximum. Alle übrigen Temperaturgrenzen bleiben unbekannt. Auch Druck und Gravitation werden nur dort gepflegt, wo sie begründet sind. Quellen-URLs werden pro physikalischem Objekt hinterlegt: [NASA/NSSDCA Planetary Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/), [NASA Mercury Facts](https://science.nasa.gov/mercury/facts/), [NASA Moon Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html) und [NASA Pluto Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html). Andere Körper werden nicht stillschweigend geschätzt.
 
 ## Historische Katalogerweiterung v56 – Doppelasteroiden, neun Monde und sieben Erdsatelliten
 

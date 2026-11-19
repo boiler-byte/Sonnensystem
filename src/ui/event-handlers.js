@@ -4,6 +4,7 @@ import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl
 import {syncLayers,setLayerPopover} from './layer-panel.js';
 import {syncOrbitControls,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
+import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
 import {alignHorizons} from '../app/object-catalog.js';
@@ -25,9 +26,9 @@ export function initControls(){
   $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();syncCinemaControl();
   $('cinema-btn').addEventListener('click',()=>{
     if(!renderer)return;
-    if(renderer.cinema?.active){renderer.stopCinema();notifyToggle('Cinema: Beendet – Reihe wieder groß nach klein');return;}
+    if(renderer.cinema?.active){renderer.stopCinema();notifyToggle(S.settings.rowOrder==='distance'?'Cinema: Beendet – Entfernungsreihe bleibt bestehen':'Cinema: Beendet – Reihe wieder groß nach klein');return;}
     if(arMode?.active||arMode?.pending)arMode.stop(); // Sensor look cannot override the movie camera.
-    if(renderer.startCinema())notifyToggle('Cinema: Kamerafahrt von klein nach groß');
+    if(renderer.startCinema())notifyToggle(S.settings.rowOrder==='distance'?'Cinema: Kamerafahrt von links nach rechts':'Cinema: Kamerafahrt von klein nach groß');
   });
   const seek=$('cinema-seek');
   seek.addEventListener('pointerdown',()=>renderer?.setCinemaScrubbing(true));
@@ -47,6 +48,10 @@ export function initControls(){
       changeLayers(next);syncLayers(); // Restore the last checkbox if it was the only active layer.
     });
   $('search').addEventListener('input',e=>{S.search=e.target.value;updateCatalog();});
+  $('catalog-sort').addEventListener('click',()=>{
+    S.catalogSort=nextCatalogSort(S.catalogSort);
+    updateCatalog();$('object-list').scrollTop=0;
+  });
   $('catalog-planet-filter').addEventListener('click',()=>{S.catalogPlanetOnly=!S.catalogPlanetOnly;updateCatalog();});
   for(const [id,key] of [['detail-prev','previousId'],['detail-next','nextId']]){
     $(id).addEventListener('click',()=>{
@@ -59,7 +64,7 @@ export function initControls(){
     tab.addEventListener('keydown',e=>{
       if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
       e.preventDefault();
-      const next=e.key==='Home'?'wissen':e.key==='End'?'daten':tab.dataset.detailTab==='wissen'?'daten':'wissen';
+      const next=e.key==='Home'?'daten':e.key==='End'?'wissen':tab.dataset.detailTab==='wissen'?'daten':'wissen';
       setDetailTab(next);$('detail-tab-'+next).focus();
     });
   }
@@ -125,7 +130,11 @@ export function initControls(){
     if(!openPlanetScene(center?.id))return;
     S.selected=center.id;
     renderer.setSelected(center.id);
-    setDetailTab('wissen');updateMode();updateCatalog();updateDetail();mobileSheets?.close();
+    setDetailTab('wissen');updateMode();
+    // Isolating a planet resets the orbit preset; in AR the sensor gaze must
+    // adopt that view instead of retaining the previous scene's direction.
+    if(arMode?.active)arMode.alignToPerspective();
+    updateCatalog();updateDetail();mobileSheets?.close();
   });
   $('play-btn').addEventListener('click',()=>{S.playing=!S.playing;updateTime();});
   $('speed-btn').addEventListener('click',()=>{

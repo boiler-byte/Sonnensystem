@@ -1,5 +1,6 @@
 import {$,S,renderer,mobileSheets} from './state.js';
 import {updateTime} from './view-mode.js';
+import {updateRowInspectionHUD} from '../ui/row-inspection.js';
 
 let lastTimeReadoutAt=0;
 export function loop(now){
@@ -14,6 +15,7 @@ export function loop(now){
   try{
     renderer.visibleFocusOffset=mobileSheets?.focusOffsetFor(renderer.canvas)??0;
     renderer.draw(S.time,S.selected,S.settings);
+    updateRowInspectionHUD(renderer,now);
   }
   catch(e){console.error('Renderfehler:',e);$('canvas-error').hidden=false;return;}
   if(now-lastTimeReadoutAt>=250){lastTimeReadoutAt=now;updateTime();}

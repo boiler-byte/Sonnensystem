@@ -14,7 +14,10 @@
       "parentId": null,
       "physical": {
         "radiusKm": 696340,
-        "temperatureK": 5772
+        "temperatureK": 5772,
+        "temperatureMeanK": 5772,
+        "surfaceGravityMs2": 274,
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html"
       },
       "orbit": {
         "semiMajorAxis": 0,

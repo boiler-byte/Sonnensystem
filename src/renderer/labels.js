@@ -130,6 +130,7 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     ? solarMoonLabelIds(renderer.rendered,renderer.settings?.fourMoons===true?null:renderer.selectedId) : null;
 
   for (const body of renderer.rendered) {
+    if(rowActive && renderer.rowHoveredId===body.id)continue; // HUD supplies its name and measurements.
     if (moonLabels && body.type==='moon' && !moonLabels.has(body.id)) continue;
     const pos = renderer.positions.get(body.id);
     if (!pos) continue;

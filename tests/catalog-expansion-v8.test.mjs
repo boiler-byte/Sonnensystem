@@ -14,7 +14,7 @@ const clone=x=>structuredClone(x);
 const groupCounts={star:1,planet:8,moon:145,dwarf:5,asteroid:11,binary:2,satellite:9,comet:6,tno:5};
 test('v56 catalog retains prior objects and imports 18 additional v56 objects',async()=>{
   const catalog=await loadCatalog(readJSON);
-  assert.equal(catalog.version,'10.0.0');
+  assert.equal(catalog.version,'10.1.0');
   assert.equal(catalog.bodies.length,192);
   assert.equal(catalog.articles.size,192);
   assert.equal(editorialEntries.length,5);
