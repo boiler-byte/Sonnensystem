@@ -100,6 +100,8 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   if(timeout!==null){cancel(timeout);timeout=null;}
   win?.removeEventListener?.('deviceorientation',onOrientation);
   const wasOn=active;
+  // An AR camera ride may continue, but must not reactivate device look at its end.
+  if(renderer?.cameraFlight?.restoreAR)renderer.cameraFlight.restoreAR=false;
   active=false;pending=false;reference=null;latestOrientation=null;basis=null;
   if(renderer?.camera?.arView){
    restoreOrbitFromDeviceLook(renderer.camera);
@@ -118,6 +120,7 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   if(!reference){
    // The sensor takes over the last manually chosen, stationary direction
    // without snapping back to the old target-orbit orientation.
+   if(renderer.cameraFlight)renderer.cancelCameraFlight?.();
    if(renderer.camera.freeLook)restoreOrbitFromLook(renderer.camera);
    reference=current;basis=cameraLookBasis(renderer.camera);
    // Start at the current view, never snap to a compass heading.
@@ -130,6 +133,18 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
    notify('AR-Modus: An – Smartphone zum Umsehen bewegen');
    sync();
   }
+  if(renderer.cameraFlight?.restoreAR){
+   // During the flight, update the neutral phone posture instead of letting
+   // fresh sensor samples override its in-between view.
+   reference=current;
+   return;
+  }
+  if(!renderer.camera.arView){
+   // A manual gesture may have interrupted the flight. Resume sensor look
+   // at its current direction rather than jumping to the original preset.
+   reference=current;basis=cameraLookBasis(renderer.camera);
+  }
+  // Follow the device's natural pitch again: phone up = look up.
   const next=relativeDeviceLook(reference,current,basis);
   renderer.camera.arView=smoothLook(renderer.camera.arView,next);
  };
@@ -137,9 +152,12 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
  const alignToPerspective=()=>{
   if(!active||disposed||!latestOrientation||!renderer?.camera)return false;
   reference=latestOrientation;
-  basis=cameraLookBasis(renderer.camera);
-  // Jump to the new heading without interpolating from the previous AR gaze.
-  renderer.camera.arView={forward:basis.forward.slice(),up:basis.up.slice()};
+  const destination=renderer.cameraFlight?.restoreAR?renderer.cameraFlight.to:renderer.camera;
+  basis=cameraLookBasis(destination);
+  // The active flight already animates the gaze: only re-anchor the sensor.
+  // Without a flight, explicit AR realignment remains immediate.
+  if(!renderer.cameraFlight?.restoreAR)
+   renderer.camera.arView={forward:basis.forward.slice(),up:basis.up.slice()};
   return true;
  };
  /** Existing explicit realignment remains available for callers other than reset. */

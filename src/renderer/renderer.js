@@ -4,7 +4,7 @@ import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
-import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex } from './camera.js';
+import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex, CAMERA_FLIGHT_MS, cameraFlightPose, cameraFlightLook, orbitCameraLook } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
 import { drawOrbitLine } from './orbits.js';
 import { drawSceneLabels } from './labels.js';
@@ -34,7 +34,7 @@ export class SolarRenderer {
   this.focusedBodyId=null;this.focusOffsetY=0;
   this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
-  this.transitionsEnabled=true;this.transition=null;this._rowPreviousAngles=null;
+  this.transitionsEnabled=true;this.transition=null;this.cameraFlight=null;this._rowPreviousAngles=null;
   this.cinema=null;this._cinemaRestoreFocus=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
@@ -46,6 +46,7 @@ export class SolarRenderer {
  /** Rotation and zoom change the view but must not disable the global follow toggle. */
  markCameraMoved({positionChanged=false}={}){
   if(this.cinema?.active)this.stopCinema(); // Manual input always wins over the flythrough.
+  this.cancelCameraFlight();
   this.cameraManuallyMoved=true;
   if(this.transition)this.transition.cameraTo=null; // Manual rotation wins over an animated camera angle.
   if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
@@ -113,10 +114,65 @@ export class SolarRenderer {
  nextCameraPerspectiveIndex(){
   return nextCameraPerspectiveIndex(this.cameraPresetIndex,this.cameraManuallyMoved);
  }
- /** A manual camera displacement returns to oblique; look-only AR events do not. */
- cycleCameraPerspective({keepPlanetScene=false}={}){
-  if(this.planetId&&!keepPlanetScene){this.reset();return;}
-  this.applyCameraPreset(this.nextCameraPerspectiveIndex());
+ /** Manual displacement returns to oblique; every button-driven preset flies there. */
+ cycleCameraPerspective({keepPlanetScene=false,now=performance.now()}={}){
+  // A second click mid-flight must depart from the currently visible pose.
+  if(this.cameraFlight)this.advanceCameraFlight(now);
+  const animate=this.canAnimateLayout();
+  const arActive=Boolean(this.camera.arView || this.cameraFlight?.restoreAR);
+  let from=null,fromLook=null;
+  if(animate){
+   const look=this.camera.arView||this.camera.freeLook||this.camera.flightLook;
+   fromLook=look?.forward?{forward:look.forward.slice(),up:look.up.slice()}
+     :orbitCameraLook(this.camera.theta,this.camera.phi);
+   // Translate a look-around pose into orbit coordinates WITHOUT moving its eye.
+   // Retain the original gaze separately so even sensor roll does not jump.
+   if(this.camera.arView)restoreOrbitFromLook(this.camera,'arView');
+   if(this.camera.freeLook)restoreOrbitFromLook(this.camera);
+   if(this.camera.flightLook)restoreOrbitFromLook(this.camera,'flightLook');
+   from={theta:this.camera.theta,phi:this.camera.phi,dist:this.camera.dist,target:this.camera.target.slice()};
+  }
+  const next=this.nextCameraPerspectiveIndex();
+  if(this.planetId&&!keepPlanetScene)this.reset();
+  else this.applyCameraPreset(next);
+  if(!animate)return;
+  const angles=this.transition?.cameraTo||[this.camera.theta,this.camera.phi];
+  const to={theta:angles[0],phi:angles[1],dist:this.camera.desiredDist,target:this.camera.desiredTarget.slice()};
+  // Scene morphs may continue, but their angle tween must not race the flight.
+  if(this.transition)this.transition.cameraTo=null;
+  this.cameraFlight={at:now,duration:CAMERA_FLIGHT_MS,from,to,fromLook,
+    toLook:orbitCameraLook(to.theta,to.phi),restoreAR:arActive};
+  this.camera.theta=from.theta;this.camera.phi=from.phi;
+  this.camera.dist=from.dist;this.camera.target=from.target.slice();
+  this.camera.flightLook=fromLook;
+  this.camera.flightActive=true;
+ }
+ /** Stop a camera ride at its visible pose, preserving its current gaze. */
+ cancelCameraFlight(){
+  if(!this.cameraFlight)return false;
+  if(this.camera.flightLook)restoreOrbitFromLook(this.camera,'flightLook');
+  this.camera.flightActive=false;
+  this.cameraFlight=null;
+  return true;
+ }
+ /** Frame-rate-independent flight of gaze, position and zoom. */
+ advanceCameraFlight(now=performance.now()){
+  const flight=this.cameraFlight;
+  if(!flight)return;
+  const progress=this.canAnimateLayout()
+   ?clamp((now-flight.at)/flight.duration,0,1):1;
+  const pose=cameraFlightPose(flight.from,flight.to,progress);
+  this.camera.theta=pose.theta;this.camera.phi=pose.phi;
+  this.camera.target=pose.target;this.camera.dist=pose.dist;
+  this.camera.flightLook=cameraFlightLook(flight.fromLook,flight.toLook,progress);
+  if(progress>=1){
+   // At the endpoint the ordinary orbit and sensor-relative pose coincide.
+   this.camera.theta=flight.to.theta;this.camera.phi=flight.to.phi;
+   this.camera.target=flight.to.target.slice();this.camera.dist=flight.to.dist;
+   this.camera.flightLook=null;this.camera.flightActive=false;
+   if(flight.restoreAR)this.camera.arView=orbitCameraLook(flight.to.theta,flight.to.phi);
+   this.cameraFlight=null;
+  }
  }
   /** The camera frames the smaller bodies up close and crops most of the largest at the left. */
  rowGeometry(){
@@ -295,6 +351,7 @@ export class SolarRenderer {
  }
  /** Cache the *displayed* state before a mode change, including rapid re-toggles. */
  beginTransition(kind='scale',now=performance.now()){
+  this.cancelCameraFlight();
   if(!this.canAnimateLayout()){this.transition=null;return;}
   // Snapshot what was *actually displayed* (including a partially faded
   // previous view) before replacing the active transition.
@@ -342,6 +399,7 @@ export class SolarRenderer {
     fromView:this.planetId||'solar',cameraFrom:[this.camera.theta,this.camera.phi],cameraTo:null};
  }
  setCameraAngles(theta,phi){
+  this.cancelCameraFlight();
   // A deliberate scene, row, cinema or preset change supersedes free look.
   this.camera.freeLook=null;
   if(this.transition){this.transition.cameraFrom=[this.camera.theta,this.camera.phi];this.transition.cameraTo=[theta,phi];}
@@ -392,6 +450,7 @@ export class SolarRenderer {
  }
  /** Return to the origin of the current scene after an Objekt/Bahn scale change. */
  resetViewCamera(){
+  this.cancelCameraFlight();
   this.stopFollowing();
   this.focusedBodyId=null;
   this.cameraManuallyMoved=false;
@@ -406,6 +465,7 @@ export class SolarRenderer {
  }
  applyCameraPreset(index){
   if(!CAMERA_PERSPECTIVES[index])return false;
+  this.cancelCameraFlight();
   this.camera.freeLook=null;
   this.cameraPresetIndex=index;this.cameraManuallyMoved=false;
   const tracked=this.followEnabled && this.followedBodyId===this.selectedId;
@@ -657,6 +717,7 @@ export class SolarRenderer {
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
   this.advanceTransition();
+  this.advanceCameraFlight();
   this.advanceCinema();
   this.start(timeMs,selectedId,settings);
   // Keep a focused object centered while its animated world position changes.

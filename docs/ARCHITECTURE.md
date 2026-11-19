@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v68
+# Architektur – Sonnensystem v71
 
 ## Prinzipien
 
@@ -40,10 +40,12 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 - Texturen kommen aus erlaubten lokalen Pfaden unter `textures/standard/`; fehlen diese Dateien, verbleiben schematische Materialien. Ladevorgänge und GPU-Ressourcen werden aufgeräumt.
 - Die 2D-Label-Ebene priorisiert Auswahl und begrenzt gleichzeitige Beschriftungen.
 - Im Hintergrundtab pausiert die Animation, ohne Simulationszeit nachzuholen.
+- `cycleCameraPerspective()` steuert eine vom Layoutübergang getrennte 1.050-ms-Kamerafahrt (`cameraFlight`) über Blickrichtung, Position und Distanz. `cameraView()` nutzt in dieser Zeit die interpolierte Pose; währenddessen dürfen Layout-/AR-Updates die Fahrt nicht überschreiben. Ein manueller Eingriff kann sie bildsprungfrei beenden. Bei reduzierter Bewegung wird sie übersprungen.
+- Freies Umschauen per Zwei-Finger-Wischen invertiert nur die vertikale Touch-Mittelpunktsbewegung, bevor sie an `lookAroundFixedEye()` übergeben wird. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
 
 ## Offline-PWA
 
-`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v68`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
+`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v71`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
 
 ## Server und Sicherheit
 

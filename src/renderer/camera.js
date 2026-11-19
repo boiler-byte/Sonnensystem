@@ -1,6 +1,6 @@
-import { CAMERA_FOV, clamp, lerp, matMul, perspective, lookAt, vnorm } from './math.js';
+import { CAMERA_FOV, clamp, lerp, matMul, perspective, lookAt, vnorm, dot, cross } from './math.js';
 
-// Preset order is also the next-action icon order: oblique -> top-down -> side.
+// Preset order (and next button action): oblique -> top-down -> side.
 export const CAMERA_PERSPECTIVES=Object.freeze([
   Object.freeze({id:'oblique',name:'Schräg/oben',phi:.99,planetPhi:.84}),
   Object.freeze({id:'topdown',name:'Topdown',phi:.16,planetPhi:.16}),
@@ -8,6 +8,49 @@ export const CAMERA_PERSPECTIVES=Object.freeze([
 ]);
 export function nextCameraPerspectiveIndex(index=0,manuallyMoved=false){
   return manuallyMoved?0:((Number.isInteger(index)?index:0)+1)%CAMERA_PERSPECTIVES.length;
+}
+
+
+export const CAMERA_FLIGHT_MS=1050;
+
+/** Direction of an orbit camera; also the roll-free end pose of a camera flight. */
+export function orbitCameraLook(theta,phi){
+  return {
+    forward:[-Math.sin(phi)*Math.sin(theta),-Math.cos(phi),-Math.sin(phi)*Math.cos(theta)],
+    up:[-Math.cos(phi)*Math.sin(theta),Math.sin(phi),-Math.cos(phi)*Math.cos(theta)]
+  };
+}
+
+/** Ease a camera flight in and out; take the shortest horizontal rotation. */
+export function cameraFlightPose(from,to,progress){
+  const t=clamp(progress,0,1),ease=t*t*(3-2*t);
+  const turn=Math.atan2(Math.sin(to.theta-from.theta),Math.cos(to.theta-from.theta));
+  return {theta:from.theta+turn*ease,phi:lerp(from.phi,to.phi,ease),
+    dist:lerp(from.dist,to.dist,ease),
+    target:from.target.map((v,i)=>lerp(v,to.target[i],ease))};
+}
+
+/** Keep an AR camera's roll continuous while flying to the next orbit view. */
+function slerpDirection(from,to,t){
+  const a=vnorm(from),b=vnorm(to),cosine=clamp(dot(a,b),-1,1);
+  if(cosine>.9995)return vnorm(a.map((v,i)=>lerp(v,b[i],t)));
+  if(cosine<-.9995){
+    const helper=Math.abs(a[1])<.8?[0,1,0]:[1,0,0];
+    const side=vnorm(cross(a,helper));
+    return a.map((v,i)=>v*Math.cos(Math.PI*t)+side[i]*Math.sin(Math.PI*t));
+  }
+  const angle=Math.acos(cosine),sin=Math.sin(angle);
+  return a.map((v,i)=>(v*Math.sin((1-t)*angle)+b[i]*Math.sin(t*angle))/sin);
+}
+export function cameraFlightLook(from,to,progress){
+  const t=clamp(progress,0,1),ease=t*t*(3-2*t);
+  const forward=slerpDirection(from.forward,to.forward,ease);
+  const candidate=slerpDirection(from.up,to.up,ease);
+  const project=up=>up.map((v,i)=>v-forward[i]*dot(up,forward));
+  let up=project(candidate);
+  if(Math.hypot(...up)<1e-6)up=project(to.up);
+  if(Math.hypot(...up)<1e-6)up=project(Math.abs(forward[1])<.9?[0,1,0]:[1,0,0]);
+  return {forward,up:vnorm(up)};
 }
 
 
@@ -48,7 +91,8 @@ export function lookAroundFixedEye(camera,dx,dy,sensitivityX=.0051,sensitivityY=
     :initial?Math.acos(clamp(-vnorm(initial)[1],-1,1)):camera.phi;
   const theta=baseTheta-dx*sensitivityX;
   // Unlike target-orbit mode, free look can point above the horizon.
-  // Positive screen drag is now a downward gaze (inverse of v62).
+  // Positive mouse-drag dy looks down; the two-finger free-look caller
+  // reverses its touch delta so a downward swipe looks up instead.
   const phi=clamp(basePhi-dy*sensitivityY,.001,Math.PI-.001);
   const forward=[-Math.sin(phi)*Math.sin(theta),-Math.cos(phi),-Math.sin(phi)*Math.cos(theta)];
   const right=[Math.cos(theta),0,-Math.sin(theta)];
@@ -105,8 +149,11 @@ export function followMotionTooFast(previous, current, distance, viewportHeight,
 }
 
 /** Smooth focus changes; manual pan remains immediate. */
-export function cameraView(camera, width, height, focusOffsetY=0, far=350) {const cam=camera;cam.dist=lerp(cam.dist,cam.desiredDist,.075);
-  for(let i=0;i<3;i++)cam.target[i]=lerp(cam.target[i],cam.desiredTarget[i],.075);
+export function cameraView(camera, width, height, focusOffsetY=0, far=350) {const cam=camera;
+  if(!cam.flightActive){
+    cam.dist=lerp(cam.dist,cam.desiredDist,.075);
+    for(let i=0;i<3;i++)cam.target[i]=lerp(cam.target[i],cam.desiredTarget[i],.075);
+  }
   const r=cam.dist,phi=cam.phi,th=cam.theta;
   const eye=[cam.target[0]+r*Math.sin(phi)*Math.sin(th),cam.target[1]+r*Math.cos(phi),cam.target[2]+r*Math.sin(phi)*Math.cos(th)];
   // Shift the perspective's optical center upward when the mobile detail sheet
@@ -117,9 +164,9 @@ export function cameraView(camera, width, height, focusOffsetY=0, far=350) {cons
   const near=Math.min(.1,Math.max(1e-7,cam.dist*.12));
   const projection=perspective(CAMERA_FOV,width/height,near,far);
   projection[9]=-clamp(focusOffsetY,0,1);
-  // AR sensor and unselected-object manual look both rotate the gaze at a
-  // stationary eye. Otherwise render the usual target-orbit perspective.
-  const look=cam.arView || cam.freeLook;
+  // Sensor look, unselected-object free look and camera flights can orient
+  // the gaze independently; the flight also animates the eye itself.
+  const look=cam.arView || cam.freeLook || cam.flightLook;
   const gaze=look?.forward?eye.map((v,i)=>v+look.forward[i]):cam.target;
   const vp=matMul(projection,lookAt(eye,gaze,look?.up||[0,1,0]));
   return {vp,eye};

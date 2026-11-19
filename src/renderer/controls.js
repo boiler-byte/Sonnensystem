@@ -78,7 +78,10 @@ export function attachCameraControls(renderer) {
         }
         if(renderer.gestureLookActive){
           const last=renderer.gestureLookCenter||renderer.gestureOrigin||prev;
-          lookByPixels(renderer,next.x-last.x,next.y-last.y);
+          // In free look, a two-finger downward swipe tilts the gaze up.
+          // Keep mouse look and selected-object orbit gestures unchanged.
+          const swipeY=next.y-last.y;
+          lookByPixels(renderer,next.x-last.x,renderer.selectedId===null?-swipeY:swipeY);
           renderer.gestureLookCenter=next;
         }else if(renderer.gestureLookCenter && next.distance!==prev.distance){
           // Maintain the baseline during pinch-only gestures, avoiding a jump

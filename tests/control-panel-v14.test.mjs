@@ -20,7 +20,7 @@ test('v27: reset is separate from the compact control panel, with time controls 
   assert.ok(ids.map(id=>controls.indexOf(`id="${id}"`)).every((pos,i,all)=>pos>=0&&(i===0||all[i-1]<pos)), 'A time trigger opens the playback and today actions');
   assert.equal((controls.slice(0,controls.indexOf('id="speed-popover"')).match(/<button\b/g)||[]).length,1);
   const resetIconMarkup=scenes.slice(scenes.indexOf('id="reset-camera"'),scenes.indexOf('</button>',scenes.indexOf('id="reset-camera"')));
-  assert.equal((resetIconMarkup.match(/<svg /g)||[]).length,3,'Three perspective SVGs belong to the separate reset action');
+  assert.equal((resetIconMarkup.match(/<svg /g)||[]).length,4,'Three preset and one free-look SVG belong to the separate reset action');
   for(const id of ['reset-camera']){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,`${id} must not be duplicated`);
     assert.match(scenes,new RegExp(`<button[^>]*id="${id}"[^>]*aria-label="[^"]+"`));

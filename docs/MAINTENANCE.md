@@ -6,6 +6,18 @@
 
 Vor Auslieferung zusätzlich prüfen: ES-Module auflösbar, Offline-Shell vollständig, lokale Daten und Quellen validiert, keine toten relativen Dokumentationslinks und Delta-Paket auf Basis des **veröffentlichten** vorherigen Releases reproduzierbar. Ein automatisierter Test ersetzt keine visuelle Prüfung der tatsächlichen Oberfläche.
 
+## Änderung in v71
+
+Nur das **vertikale Zwei-Finger-Umschauen** in der freien Perspektive (`selectedId === null`) wird in `src/renderer/controls.js` gedreht: Wischen nach unten richtet den Blick nach oben. Rechtsklick-Umschauen, Objektorbit, horizontale Gesten und Pinch-Zoom bleiben unverändert. Im **AR-Modus** ist der Sensor-Pitch wieder wie in v69 nicht invertiert (`src/renderer/ar-mode.js`). Die sieben neuen Verhaltenstests in `tests/look-directions-v71.test.mjs` prüfen freie Gesten, unveränderte Nachbarfunktionen und die AR-Neigung in allen vier Bildschirmausrichtungen. Das vollständige v71-Paket verwendet `sonnensystem-shell-v71`.
+
+## Änderung in v70 (historisch; AR-Inversion in v71 zurückgenommen)
+
+Der Button **Kamera zurücksetzen** führt den Perspektivwechsel als 1.050-ms-Kamerafahrt aus (Blickrichtung, Kamerastandort und Zoom). Die reine Kamerafahrt ist von Szene-/Layouttransitions getrennt; erneute Wechsel übernehmen die sichtbare Zwischenpose und manuelle Eingaben beenden die Fahrt. In AR bleibt der Bewegungssensor erhalten, darf jedoch während des Flugs nicht die Kamerabasis überschreiben. Zusätzlich wurde die **vertikale AR-Sensorblickrichtung** für Hoch- und Querformat invertiert. Tests dazu: `tests/camera-flight-ar-v70.test.mjs`. Das vollständige v70-Paket verwendet `sonnensystem-shell-v70`.
+
+## Änderung in v69
+
+Die Bedienung des Kamera-Buttons zeigt nun über vier SVGs die **aktuelle Kamerarichtung** statt des nächsten Perspektiv-Icons: freie Kamera / Rückkehr zur Übersicht frontal, Schräg/oben schräg nach unten, Topdown nach unten, Seitlich nach links. Der Perspektivwechsel und die nächste Aktion in der `aria-label`-Beschriftung bleiben unverändert. Das vollständige Projekt kann aus dem v69-Archiv installiert werden; `sw.js` verwendet `sonnensystem-shell-v69`, damit die neue Oberfläche auch als PWA aktualisiert wird.
+
 ## Dokumentationsordnung seit v68
 
 | Datei | Inhalt |

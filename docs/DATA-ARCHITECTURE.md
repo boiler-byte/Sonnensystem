@@ -1,6 +1,6 @@
 # Datenmodell und redaktionelle Inhalte (aktuell: Katalog 10.0.0)
 
-> **Aktueller Stand (v68):** Katalogversion `10.0.0`, Schema `1`, **192 Himmelskörper** und **192 redaktionelle Einträge**. Das Manifest lädt 23 Kategorien-Dateien und fünf deutschsprachige Redaktionsdateien. Gegenüber dem historischen v8-Stand sind die Typen `tno` und `binary` sowie weitere Monde und Satelliten hinzugekommen. Die folgenden als v8/v52 gekennzeichneten Zahlen und Beispiele beschreiben **historische Ausbaustufen**, nicht die aktuelle Gesamtanzahl. Maßgeblich ist `data/catalog/manifest.json`.
+> **Aktueller Stand (v71; Katalog unverändert seit v68):** Katalogversion `10.0.0`, Schema `1`, **192 Himmelskörper** und **192 redaktionelle Einträge**. Das Manifest lädt 23 Kategorien-Dateien und fünf deutschsprachige Redaktionsdateien. Gegenüber dem historischen v8-Stand sind die Typen `tno` und `binary` sowie weitere Monde und Satelliten hinzugekommen. Die folgenden als v8/v52 gekennzeichneten Zahlen und Beispiele beschreiben **historische Ausbaustufen**, nicht die aktuelle Gesamtanzahl. Maßgeblich ist `data/catalog/manifest.json`.
 
 ## Historische Katalogerweiterung v56 – Doppelasteroiden, neun Monde und sieben Erdsatelliten
 

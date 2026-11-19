@@ -1,8 +1,12 @@
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v71 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
+
+- [v71 – Zwei-Finger-Blickrichtung und AR-Vertikalbewegung korrigiert](#release-v71)
+- [v70 – Kamerafahrten beim Perspektivwechsel und invertiertes vertikales AR-Umsehen](#release-v70)
+- [v69 – Kamerasymbole zeigen die aktuelle Blickrichtung](#release-v69)
 
 - [v67 – CSS-Bereinigung](#release-v67)
 - [v66 – Performance bei Rendering, Animation und Speicher](#release-v66)
@@ -71,6 +75,43 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [v3 – Sonnensystem: Kamerasteuerung](#release-v3)
 - [v2 – Sonnensystem](#release-v2)
 - [Hotfix v6.1](#hotfix-v61)
+
+---
+
+<a id="release-v71"></a>
+
+## Release v71 – Zwei-Finger-Umschauen und vertikales AR
+
+**Basis:** v70.0.0. **Ziel:** v71.0.0. **Paket:** vollständiges `Sonnensystem-v71.zip`.
+
+- **Freie Perspektive:** Beim gemeinsamen vertikalen Wischen zweier Finger blickt die Kamera nun in die entgegengesetzte Richtung der Fingerbewegung: unten → oben, oben → unten. Nur diese Touch-Geste wird invertiert; horizontales Wischen, Zoom, Mausblick und ausgewählte Objektansichten bleiben unverändert.
+- **AR:** Die in v70 eingeführte vertikale Invertierung der Sensorrotation entfällt. Der Blick folgt wieder der Gerätebewegung: oben → oben, unten → unten. Hoch- und Querformat, Horizontaldrehung und Kamerafahrten bleiben unterstützt.
+- **Tests und PWA:** Sieben neue Regressionstests in `tests/look-directions-v71.test.mjs`; v70- und v64-Testerwartungen für die nun geänderte Richtung aktualisiert. Projektversion `71.0.0`, App-Version `V71.0`, Cache `sonnensystem-shell-v71`. Katalog und Datenstruktur bleiben unverändert.
+
+---
+
+<a id="release-v70"></a>
+
+## Release v70 – Kamerafahrt und vertikales AR-Umsehen
+
+**Basis:** v69.0.0. **Ziel:** v70.0.0. **Paket:** vollständiges `Sonnensystem-v70.zip`.
+
+- **Kamera zurücksetzen:** Perspektivwechsel Schräg/oben → Topdown → Seitlich und Rückkehr zur Sonnensystemübersicht fliegen über **1.050 ms** weich zur Zielposition. Blickrichtung (auch bei zuvor freiem Umsehen oder geneigtem AR-Sensor), räumliche Kameraposition und Zoom werden interpoliert; der Flug beeinflusst weder die Perspektivenreihenfolge noch die aktuellen Richtungssymbole.
+- **Unterbrechung:** Ein weiterer Perspektivklick startet eine neue Fahrt von der gerade gezeichneten Pose. Panning, Rotation und Zoom brechen den Flug ohne plötzlichen Blicksprung ab. Die Betriebssystemeinstellung „Bewegung reduzieren“ deaktiviert die Kamerafahrt.
+- **AR:** Die **vertikale Sensorblickrichtung** wurde relativ zu v69 invertiert (Hoch- und Querformat). Horizontalrichtung und Sensorberechtigung bleiben unverändert. Während der Kamerafahrt bleiben spätere Sensor-Updates an die aktuelle Gerätehaltung gebunden, ohne die Animation zu überschreiben; AR bleibt nach der Fahrt aktiv und auch ein Abbruch ist möglich.
+- **Technik/Qualität:** Separate Kamera-Flugbahn in `src/renderer/renderer.js` und Interpolation in `src/renderer/camera.js`, kalibrierte vertikale Quaternion-Inversion in `src/renderer/ar-mode.js`, acht neue Regressionstests in `tests/camera-flight-ar-v70.test.mjs`. Versionen und PWA-Cache auf v70 aktualisiert; der Katalog ist unverändert.
+
+---
+
+<a id="release-v69"></a>
+
+## Release v69 – Kamerasymbole zeigen die aktuelle Blickrichtung
+
+**Basis:** v68.0.0. **Ziel:** v69.0.0. **Paket:** vollständiges `Sonnensystem-v69.zip`.
+
+- Der Kamera-Button visualisiert die **momentane Ansicht** und nicht mehr die nächste Aktion: Standardansicht schräg nach unten, Topdown nach unten, Seitenansicht nach links. Nach manueller Bewegung oder bei Rückkehr aus einer isolierten Planetenansicht zeigt die Kamera frontal zum eigenen Standort (freier Blick/Reset).
+- Der Drei-Schritt-Wechsel Schräg/oben → Topdown → Seitlich bleibt bestehen. Die Beschriftung benennt weiterhin die nächste Perspektive; AR-Perspektivwechsel bleiben innerhalb der Szene.
+- Vier SVG-Symbole, Regressionstests und aktualisierte Hilfedokumentation. Versionsangaben auf 69.0.0 und PWA-Shell-Cache auf `sonnensystem-shell-v69` aktualisiert.
 
 ---
 

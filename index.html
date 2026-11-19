@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V68.0" />
+  <meta name="app-version" content="V71.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -81,13 +81,15 @@
           <button class="ar-mode-button" id="ar-mode-btn" type="button" aria-label="AR-Modus: Durch Bewegen des Smartphones umsehen" aria-pressed="false" aria-busy="false" title="AR-Modus" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/><path d="M12 6v2m0 8v2M6 12h2m8 0h2"/><circle cx="12" cy="12" r="3.5"/></svg>
           </button>
-          <button class="icon-button camera-reset-button" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen" data-next-perspective="topdown">
+          <button class="icon-button camera-reset-button" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen" data-current-perspective="oblique" data-next-perspective="topdown">
+            <!-- free/reset: the camera looks straight at the viewer's own position -->
+            <svg class="camera-perspective-icon" data-perspective="free" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="5.1"/><circle cx="12" cy="12" r="1.5"/></svg>
             <!-- oblique: camera lens facing diagonally down to the left -->
-            <svg class="camera-perspective-icon" data-perspective="oblique" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><g transform="rotate(142 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
-            <!-- topdown: camera lens looking down -->
-            <svg class="camera-perspective-icon" data-perspective="topdown" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g transform="rotate(90 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
-            <!-- side: front-on video-camera lens -->
-            <svg class="camera-perspective-icon" data-perspective="side" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="5.1"/><circle cx="12" cy="12" r="1.5"/></svg>
+            <svg class="camera-perspective-icon" data-perspective="oblique" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g transform="rotate(142 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
+            <!-- topdown: camera lens looking straight down -->
+            <svg class="camera-perspective-icon" data-perspective="topdown" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><g transform="rotate(90 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
+            <!-- side: camera lens pointing to the left -->
+            <svg class="camera-perspective-icon" data-perspective="side" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><g transform="rotate(180 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
           </button>
         </div>
         <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: links ziehen oder ein Finger verschiebt, rechts ziehen oder zwei Finger schauen um (ohne Auswahl am festen Kamerastandort), Mausrad und Zwei-Finger-Geste zoomen"></canvas>
