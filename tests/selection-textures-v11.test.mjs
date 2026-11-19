@@ -60,11 +60,11 @@ test('v11: selected Earth label remains visible and anchored while satellites cr
   }
 });
 
-test('v11: labels of nonselected moving satellites keep the v9-v10 motion filter',()=>{
+test('v85: labels of nonselected moving satellites remain visible at speed',()=>{
   const r=labelScene('earth');
   assert.ok(layoutSceneLabels(r,VP,ctx,0).some(x=>x.body.id==='earth'));
   r.positions.set('sat-25544',[-.5,0,0]);
-  assert.ok(!layoutSceneLabels(r,VP,ctx,16).some(x=>x.body.id==='sat-25544'));
+  assert.ok(layoutSceneLabels(r,VP,ctx,16).some(x=>x.body.id==='sat-25544'));
   assert.ok(layoutSceneLabels(r,VP,ctx,16).some(x=>x.body.id==='earth'));
 });
 

@@ -35,8 +35,8 @@ test('v41: Object toggle scales body radii proportionally while orbits stay sche
   const settings={scaleObjects:true,scaleOrbits:false};
   const earth=byId('earth'),jupiter=byId('jupiter'),sun=byId('sun'),moon=byId('moon');
   close(displayBodyRadius(jupiter,settings)/displayBodyRadius(earth,settings),jupiter.radiusKm/earth.radiusKm,'solar physical radius ratios');
-  close(displayBodyRadius(sun,settings),4*renderRadius(sun),'optimized solar sun size');
-  close(displayOrbitRadius(earth,sun,settings),4*orbitalRadius(earth,sun),'expanded schematic solar distance');
+  close(displayBodyRadius(sun,settings),12*renderRadius(sun),'optimized Sun enlarged threefold in v82');
+  close(displayOrbitRadius(earth,sun,settings),29,'optimized Earth orbit with redistributed distances');
   close(displayBodyRadius(moon,settings,earth),moon.radiusKm/earth.radiusKm*1.28,'planet physical moon size');
   close(displayBodyRadius(earth,settings,earth),1.28,'planet central radius');
   close(displayOrbitRadius(moon,earth,settings,earth),planetOrbitRadius(moon,earth),'local orbit unaffected');

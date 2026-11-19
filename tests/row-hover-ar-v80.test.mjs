@@ -16,7 +16,7 @@ test('v80: parent arrow reaches its actual on-screen center, even beyond 300 pix
  const child=coordinates(690,300),center=coordinates(125,300);
  const geometry=rowArrowGeometry(planet,child,center,vp,800,600,80);
  assert.equal(geometry.x,690);assert.equal(geometry.tipX,125);
- assert.equal(geometry.direction,-1);assert.equal(geometry.y,403);
+ assert.equal(geometry.direction,-1);assert.equal(geometry.y,449);
  assert.ok(Math.abs(geometry.tipX-geometry.x)>300);
 });
 
@@ -50,13 +50,13 @@ function element(svg=false){const attributes=new Map(svg?[['hidden','']]:[]);ret
 };}
 
 test('v80: animated arrow reaches the edge and the scanner shows formatted diameter',()=>{
- const ids=['row-inspection','row-inspection-scanner','row-inspection-panel','row-inspection-name',
-  'row-inspection-diameter','row-inspection-scan-tag','row-inspection-gravity','row-inspection-temperature',
-  'row-inspection-id','row-inspection-vector-svg','row-inspection-vector-line',
+ const ids=['row-inspection','row-inspection-scanner','row-inspection-title','row-inspection-metrics','row-inspection-gravity-icon','row-inspection-temperature-icon','row-inspection-name',
+  'row-inspection-scan-tag','row-inspection-gravity','row-inspection-temperature',
+  'row-inspection-vector-svg','row-inspection-vector-line',
   'row-inspection-vector-head','row-inspection-vector-origin','row-inspection-distance',
   'row-inspection-distance-value'];
  const nodes=new Map(ids.map(id=>[id,element(id==='row-inspection-vector-svg')]));
- const renderer={settings:{row:true},cinema:null,byId:new Map([['earth',planet]]),rowHoveredId:'earth',
+ const renderer={settings:{row:true},cinema:null,byId:new Map([['earth',planet],['sun',{id:'sun',radiusKm:696000}]]),rowHoveredId:'earth',
   positions:new Map([['earth',coordinates(550,300)],['sun',coordinates(-500,300)]]),vp,width:800,height:600,
   planetId:null,rowHoverStartedAt:0,rowRenderedRadiusPx:()=>80};
  const previous=globalThis.document;
@@ -67,7 +67,7 @@ test('v80: animated arrow reaches the edge and the scanner shows formatted diame
   assert.equal(nodes.get('row-inspection-vector-svg').hasAttribute('hidden'),false);
   const start=nodes.get('row-inspection-vector-line').getAttribute('d');
   updateRowInspectionHUD(renderer,ROW_INSPECTION_ARROW_MS+1);
-  assert.equal(nodes.get('row-inspection-vector-line').getAttribute('d'),'M550.0 403.0H0.0');
+  assert.equal(nodes.get('row-inspection-vector-line').getAttribute('d'),'M550.0 449.0H0.0');
   assert.notEqual(start,nodes.get('row-inspection-vector-line').getAttribute('d'));
   assert.match(nodes.get('row-inspection-distance-value').textContent,/AE$/);
  }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}

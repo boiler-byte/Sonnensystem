@@ -34,13 +34,13 @@ test('v16: no delayed collision-driven side switching',()=>{
   assert.equal(layout(2600)[0].side,'left');
 });
 
-test('v10: reset and fast-motion filter remain functional with anchors',()=>{
+test('v85: fast movement remains labeled without losing stable anchors or reset behavior',()=>{
   const {renderer,layout}=scene();
   layout(0);
   assert.equal(renderer._labelState.anchors.get('sat-25544').side,'right');
   renderer.positions.set('sat-25544',[.8,0,0]);
-  assert.equal(layout(16).length,0,'fast satellite hidden');
-  assert.equal(renderer._labelState.anchors.get('sat-25544').side,'right','fast movement remembers anchor');
+  assert.equal(layout(16).length,1,'fast satellite remains labeled');
+  assert.equal(renderer._labelState.anchors.get('sat-25544').side,'left','label can switch sides to fit within viewport');
   renderer.planetId='mars';
   assert.equal(layout(32)[0].side,'left','different scene resets placement');
   renderer.settings.labels=false;

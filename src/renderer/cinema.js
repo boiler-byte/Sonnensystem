@@ -66,6 +66,17 @@ export function cinemaPoseAt(track,progress){
 export function cinemaTargetAt(track,progress){return cinemaPoseAt(track,progress).target;}
 export function cinemaObjectAt(track,progress){return cinemaPoseAt(track,progress).objectId;}
 
+/** Scan a stop only once the camera has actually arrived, not during travel or entry. */
+export function cinemaRestingObject(cinema,camera,transition){
+ if(!cinema?.active || !camera || transition || cinema.seeking || cinema.elapsedMs<CINEMA_ENTRY_MS)return null;
+ const pose=cinemaPoseAt(cinema.track,cinema.progress);
+ if(!pose.holding || !pose.objectId)return null;
+ const dist=Math.max(.00001,pose.distance);
+ const positionError=Math.hypot(...pose.target.map((value,i)=>value-(camera.target?.[i]??NaN)));
+ return Number.isFinite(positionError) && positionError/dist<.025 &&
+   Math.abs(camera.dist-dist)/dist<.025 ? pose.objectId : null;
+}
+
 export function cinemaClock(ms){
  const s=Math.max(0,Math.floor((Number(ms)||0)/1000));
  return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;

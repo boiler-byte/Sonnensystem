@@ -30,6 +30,7 @@ export function initControls(){
     if(arMode?.active||arMode?.pending)arMode.stop(); // Sensor look cannot override the movie camera.
     if(renderer.startCinema())notifyToggle(S.settings.rowOrder==='distance'?'Cinema: Kamerafahrt von links nach rechts':'Cinema: Kamerafahrt von klein nach groß');
   });
+  $('cinema-play-pause').addEventListener('click',()=>renderer?.toggleCinemaPause());
   const seek=$('cinema-seek');
   seek.addEventListener('pointerdown',()=>renderer?.setCinemaScrubbing(true));
   seek.addEventListener('input',()=>renderer?.seekCinema(Number(seek.value)/1000));

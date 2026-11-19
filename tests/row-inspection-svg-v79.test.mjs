@@ -16,9 +16,9 @@ function mockElement(svg=false){
 }
 
 const elementIds=[
- 'row-inspection','row-inspection-scanner','row-inspection-panel','row-inspection-name',
- 'row-inspection-diameter','row-inspection-gravity','row-inspection-temperature','row-inspection-scan-tag',
- 'row-inspection-id','row-inspection-vector-svg','row-inspection-vector-line',
+ 'row-inspection','row-inspection-scanner','row-inspection-title','row-inspection-metrics','row-inspection-gravity-icon','row-inspection-temperature-icon','row-inspection-name',
+ 'row-inspection-gravity','row-inspection-temperature','row-inspection-scan-tag',
+ 'row-inspection-vector-svg','row-inspection-vector-line',
  'row-inspection-vector-head','row-inspection-vector-origin','row-inspection-distance',
  'row-inspection-distance-value'
 ];
@@ -28,7 +28,7 @@ function makeEnvironment(){
  const earth={id:'earth',name:'Erde',parentId:'sun',radiusKm:6371,
   meanDistanceToParent:1,meanDistanceUnit:'AU',surfaceGravityMs2:9.80665,temperatureMeanK:287};
  const renderer={
-  settings:{row:true},cinema:null,byId:new Map([['earth',earth]]),rowHoveredId:'earth',
+  settings:{row:true},cinema:null,byId:new Map([['earth',earth],['sun',{id:'sun',radiusKm:696000}]]),rowHoveredId:'earth',
   positions:new Map([['earth',[.4,0,0]],['sun',[0,0,0]]]),
   // Identity matrix keeps both bodies in front of the fake camera at depth 1.
   vp:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),

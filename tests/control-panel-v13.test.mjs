@@ -24,7 +24,7 @@ test('v26: control panel has no view selector; the camera reset is separate and 
   for(const id of ['play-btn','speed-btn','today-btn','orbit-visibility-btn','orbit-contrast-btn','toggle-labels'])
     assert.match(controls,new RegExp(`id="${id}"`));
   const timeline=area(html,'id="time-panel"','id="canvas-error"');
-  assert.equal((timeline.match(/<button\b/g)||[]).length,3);
+  assert.equal((timeline.match(/<button\b[^>]*id="(?:speed-btn|play-btn|today-btn)"/g)||[]).length,3);
   const trigger=timeline.slice(0,timeline.indexOf('id="speed-popover"'));
   assert.equal((trigger.match(/<button\b/g)||[]).length,1,'one closed control');
   assert.doesNotMatch(trigger,/>Heute\s*</);

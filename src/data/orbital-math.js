@@ -8,15 +8,58 @@ import { TAU, RAD, DAY, clamp } from '../renderer/math.js';
 export const SOLAR_UNITS_PER_AU = 3.4;
 export const SOLAR_UNITS_PER_KM = SOLAR_UNITS_PER_AU / AU_KM;
 export const PLANET_RADIUS_UNITS = 1.28;
-// v44: One solar-overview preset for Objekt=An, Bahn=Aus. All solar
-// radii share one physical ratio, calibrated so the Sun is 4x the
-// schematic Sun. Schematic solar orbits expand uniformly by the same factor.
-// The reference radius matches data/catalog/stars.json; unknown radii stay 0.
+
+// The optimized solar overview is intentionally illustrative, not a physical
+// distance/size scale. Keep the previous v44 planet-size calibration (4x the
+// schematic Sun) and enlarge ONLY the Sun to 3x its v81 optimized size.
+// Planet view and Objekt an/Bahn an retain their physical size ratios.
 export const OPTIMIZED_ORBIT_FACTOR = 4;
+export const OPTIMIZED_SUN_MAGNIFICATION = 3;
 export const SOLAR_REFERENCE_RADIUS_KM = 696340;
 export const optimizedSolarMode = settings => settings?.scaleObjects === true && settings?.scaleOrbits !== true;
-export const OPTIMIZED_SUN_RADIUS = OPTIMIZED_ORBIT_FACTOR * renderRadius({id:'sun',type:'star'});
-export const sceneRadius = (aAU) => 3.4 * Math.sqrt(Math.max(0.01,aAU) + 0.22);
+const OPTIMIZED_PLANET_REFERENCE_RADIUS = OPTIMIZED_ORBIT_FACTOR * renderRadius({id:'sun',type:'star'});
+export const OPTIMIZED_SUN_RADIUS = OPTIMIZED_PLANET_REFERENCE_RADIUS * OPTIMIZED_SUN_MAGNIFICATION;
+
+/**
+ * Visual orbit anchors use real semi-major axes (AU) only as ordered keys.
+ * Schematic distances are close to evenly spaced, rather than spreading the
+ * outer planets with a square root. In the optimized overview the enlarged
+ * Sun pushes Mercury through Mars out; distant paths are packed closer than
+ * the old 4x-schematic arrangement. Interpolation also covers minor bodies.
+ * Do not use these illustrative distances for Objekt an/Bahn an.
+ */
+const SOLAR_ORBIT_ANCHORS = [
+  // a [AU], schematic radius, optimized radius
+  [0.387098,  3.00, 19.50], // Mercury
+  [0.723332,  5.25, 25.00], // Venus
+  [1.000000,  7.50, 29.00], // Earth
+  [1.523679,  9.75, 33.00], // Mars
+  [5.204400, 12.00, 41.00], // Jupiter
+  [9.582600, 14.25, 49.00], // Saturn
+  [19.21840, 16.50, 58.00], // Uranus
+  [30.11000, 18.75, 67.00]  // Neptune
+];
+
+function visualSolarOrbitRadius(aAU,column){
+  const raw=Number(aAU);
+  const a=Number.isFinite(raw)?Math.max(0,raw):0;
+  const first=SOLAR_ORBIT_ANCHORS[0];
+  if(a<=first[0]){
+    const base=column===1?1.8:OPTIMIZED_SUN_RADIUS+1.6;
+    return base+(first[column]-base)*a/first[0];
+  }
+  for(let i=1;i<SOLAR_ORBIT_ANCHORS.length;i++){
+    const end=SOLAR_ORBIT_ANCHORS[i],start=SOLAR_ORBIT_ANCHORS[i-1];
+    if(a<=end[0])return start[column]+(end[column]-start[column])*(a-start[0])/(end[0]-start[0]);
+  }
+  // Flatter-than-linear tail beyond Neptune, smooth at the last anchor.
+  const last=SOLAR_ORBIT_ANCHORS.at(-1),previous=SOLAR_ORBIT_ANCHORS.at(-2);
+  const span=last[0]-previous[0];
+  return last[column]+(last[column]-previous[column])*Math.log1p((a-last[0])/span);
+}
+
+export const sceneRadius = aAU => visualSolarOrbitRadius(aAU,1);
+export const optimizedSolarOrbitRadius = aAU => visualSolarOrbitRadius(aAU,2);
 
 /** Schematic by default, radius proportional to catalog radius when enabled. */
 export function displayBodyRadius(body, settings = {}, center = null) {
@@ -24,8 +67,10 @@ export function displayBodyRadius(body, settings = {}, center = null) {
   const radiusKm = Math.max(0, Number(body?.radiusKm) || 0);
   if (center) return radiusKm * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
   if (optimizedSolarMode(settings)) {
-    if (body?.id === 'sun' || body?.type === 'star') return radiusKm ? OPTIMIZED_SUN_RADIUS : 0;
-    return radiusKm * OPTIMIZED_SUN_RADIUS / SOLAR_REFERENCE_RADIUS_KM;
+    // Row/Cinema compare radii in their own layout; keep their v81 proportions.
+    if (body?.id === 'sun' || body?.type === 'star')
+      return radiusKm ? (settings?.row ? OPTIMIZED_PLANET_REFERENCE_RADIUS : OPTIMIZED_SUN_RADIUS) : 0;
+    return radiusKm * OPTIMIZED_PLANET_REFERENCE_RADIUS / SOLAR_REFERENCE_RADIUS_KM;
   }
   return radiusKm * SOLAR_UNITS_PER_KM;
 }
@@ -34,7 +79,10 @@ export function displayBodyRadius(body, settings = {}, center = null) {
 export function displayOrbitRadius(body, parent, settings = {}, center = null) {
   if (!settings?.scaleOrbits) {
     const schematic = center ? planetOrbitRadius(body, center) : orbitalRadius(body, parent);
-    return !center && optimizedSolarMode(settings) ? schematic * OPTIMIZED_ORBIT_FACTOR : schematic;
+    if (!center && optimizedSolarMode(settings)) {
+      return parent?.id==='sun' ? optimizedSolarOrbitRadius(body.a) : schematic * OPTIMIZED_ORBIT_FACTOR;
+    }
+    return schematic;
   }
   const a = Math.max(0, Number(body?.a) || 0);
   if (center) return a * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);

@@ -1,9 +1,15 @@
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v80 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v86 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 
+- [v86 – Smart Labels mit Bahnbewegungsfilter und Vierergrenze](#release-v86)
+- [v85 – Smart Labels ohne Geschwindigkeitsfilter](#release-v85)
+- [v84 – Smart Labels mit Mittelpunkt-Markern](#release-v84)
+- [v83 – Smart Labels ohne Kollisions-Ausblendung](#release-v83)
+- [v82 – Flachere Schemabahnverteilung und größere Sonne](#release-v82)
+- [v81 – Direktes Reihen-HUD und Cinema-Pause](#release-v81)
 - [v80 – Reihenvermessung, Parent-Pfeil und AR-Neuausrichtung](#release-v80)
 - [v79 – Fix: Abstandspfeil in der Reihendarstellung](#release-v79)
 - [v78 – Animierter Reihen-Scanner und Entfernungspfeil](#release-v78)
@@ -85,6 +91,78 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [v3 – Sonnensystem: Kamerasteuerung](#release-v3)
 - [v2 – Sonnensystem](#release-v2)
 - [Hotfix v6.1](#hotfix-v61)
+
+---
+
+<a id="release-v86"></a>
+
+## Release v86 – Smart Labels mit Bahnbewegungsfilter und Vierergrenze
+
+**Basis:** v85.0.0. **Ziel:** v86.0.0. **Paket:** `Sonnensystem-Delta-v86.zip` (nur neue/geänderte Dateien). **Cache:** `sonnensystem-shell-v86`.
+
+- **Orbitale Geschwindigkeit:** Objektpositionen werden relativ zu ihren Elternkörpern und bei unveränderter Kameraprojektion pro realer Sekunde verglichen. Ab **190 px/s** verschwinden unlesbare Labels, unter **135 px/s** kommen sie sofort zurück. Kamerapans/-zooms, Parent-Translation, Reihenanimationen und manuelle große Zeitsprünge blenden sie nicht aus.
+- **Selektierte Objekte:** Auch bei unterdrücktem Labeltext bleiben Mittelpunktmarker kleiner Objekte sowie Selektionspunkt und Ring sichtbar.
+- **Sonnensystemübersicht:** Höchstens **vier größte direkte Begleiter** pro Planet/Zwergplanet erhalten Labels, unabhängig von **„Alle Monde“**. Natürliche Monde und Satelliten konkurrieren nach ihrem `radiusKm`; ein ausgewählter kleinerer Begleiter ersetzt den vierten. Weder die Kugeldarstellung noch die isolierte Planetenszene werden begrenzt.
+- **Unverändert:** Label-Kollisionsfreiheit, manuelle Schalter, Katalogdaten, Texturen, API. Neue Regressionstests `tests/smart-labels-v86.test.mjs`.
+
+<a id="release-v85"></a>
+
+## Release v85 – Smart Labels ohne Geschwindigkeitsfilter
+
+**Basis:** v84.0.0. **Ziel:** v85.0.0. **Paket:** `Sonnensystem-Delta-v85.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v85`.
+
+- Labels werden bei schnellen Kamera- und Objektbewegungen nicht mehr ausgeblendet, auch nicht während Kamerafahrten oder auf Monitoren mit hoher Bildwiederholfrequenz.
+- Schwellwerte, Hysterese, Wartezeit und Bewegungs-Sampling aus `src/renderer/labels.js` entfernt; alle ansonsten anzeigbaren Labels bleiben auf dem Bildschirm.
+- Unverändert: sichtbarer Viewport, Szenen-/Layer-Schalter, Reihen-Hover-HUD, kollisionsfreie Label-Platzierung, Auswahl- und Mittelpunktmarker.
+- Neue Tests `tests/label-speed-v85.test.mjs` und Aktualisierung der betroffenen Legacy-Tests. Keine Katalog-, Textur-, API- oder Orbitdatenänderungen.
+
+<a id="release-v84"></a>
+
+## Release v84 – Smart Labels mit Mittelpunkt-Markern
+
+**Basis:** v83.0.0. **Ziel:** v84.0.0. **Paket:** `Sonnensystem-Delta-v84.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v84`.
+
+- Der frühere Punkt vor jedem Objektlabel entfällt vollständig.
+- Wenn ein gelabeltes Objekt kleiner dargestellt wird als der Label-Marker, erscheint stattdessen ein Punkt **im Zentrum des Objekts**.
+- Der Mittelpunkt-Punkt übernimmt die **Farbe der Objektkategorie**.
+- Für **selektierte Objekte** ist der Mittelpunkt-Punkt **immer sichtbar** und verwendet die Selektionsfarbe.
+- Neuer Regressionstest `tests/label-markers-v84.test.mjs`; Katalog, Texturen, APIs und die kollisionsfreie Sichtbarkeitslogik der Labels bleiben unverändert.
+
+<a id="release-v83"></a>
+
+## Release v83 – Smart Labels ohne Kollisions-Ausblendung
+
+**Basis:** v82.0.0. **Ziel:** v83.0.0. **Paket:** `Sonnensystem-Delta-v83.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v83`.
+
+- Die verbliebene Dichtebegrenzung von zwei Labels pro 160 × 110 Pixel entfällt ersatzlos. Es gibt keine Filter für Text-/Körperüberlappung und keine gekoppelten Raster- oder Dichteprioritätsregeln mehr; alle ansonsten sichtbaren Labels können zugleich gezeichnet werden.
+- Die Priorität beeinflusst ausschließlich die Zeichenreihenfolge (Auswahl zuletzt). Die bestehenden Bildschirmgrenzen, Bewegungsfilter, Szenen-/Layeroptionen und das separate Reihen-HUD bleiben unangetastet.
+- Bestehende Regressionstests für dichte Szenen angepasst und neue v83-Tests für Überlagerungen, Bildschirmbereiche, Vordergrund und unabhängige Sichtbarkeitsregeln ergänzt. Katalog, Texturen, API und Orbitberechnungen unverändert.
+
+---
+
+<a id="release-v82"></a>
+
+## Release v82 – Flachere Schemabahnverteilung und größere Sonne
+
+**Basis:** v81.0.0. **Ziel:** v82.0.0. **Paket:** `Sonnensystem-Delta-v82.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v82`.
+
+- **Objekt aus / Bahn aus:** Statt des Wurzelprofils erhalten Merkur bis Neptun gleichmäßige radiale Bahnlücken (2,25 Szeneneinheiten). Zusätzliche sonnenzentrierte Körper folgen einer stetigen AU-Interpolation; jenseits Neptuns verläuft die Verteilung zunehmend flach.
+- **Objekt an / Bahn aus:** Die Sonne vergrößert sich um Faktor 3 gegenüber dem bisherigen optimierten Sonnenradius (neu 13,56 Einheiten). Die mittleren Planeten-Orbitradii werden zu 19,5 / 25 / 29 / 33 / 41 / 49 / 58 / 67 Einheiten neu angeordnet; die inneren Orbits weichen der Sonne, die äußeren liegen dichter als vorher. Die planetaren Körpergrößen sowie die Größenreihe/Cinema bleiben unverändert. Die optimierte Ansicht ist bewusst nicht physikalisch proportional zwischen Sonnenradius und Planetenradien.
+- **Live-Positionen:** JPL-Sonnenvektoren werden mit demselben Halbachsenmaßstab transformiert wie die gezeichneten Kepler-Orbits. Die Kombination **Bahn an**, lokale Planetenansichten und das Reihen-/Cinema-Verhalten bleiben unverändert.
+- Neue v82-Regressionstests für Gleichverteilung, Überlappungsfreiheit, monotone Interpolation, JPL-Positionen und unberührte Modi. Keine Änderung an Katalog, Quellen, Texturen oder APIs.
+
+---
+
+<a id="release-v81"></a>
+
+## Release v81 – Direktes Reihen-HUD und Cinema-Pause
+
+**Basis:** v80.0.0. **Ziel:** v81.0.0. **Paket:** `Sonnensystem-Delta-v81.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v81`.
+
+- Hover-Vektorabstand unter der vergrößerten Kugel von 23 auf 69 Pixel verdreifacht; direkter Parent-Außenrand statt projiziertem Zentrum, Clipping am Viewport und Schutz gegen rückwärts gerichtete Vektoren.
+- Planetname im cyanfarbenen Scanner-Stil oberhalb, Gravitation/Temperatur mit wiederverwendeten SVG-Objektdetailicons in zwei Spalten darunter; Durchmesser bleibt oben im Messrahmen. Seitliche Hover-Analysekarte entfernt.
+- Cinema-Zeitleiste mit linksseitigem, zugänglichem Play/Pause-Button. Pause wirkt nur auf die Kamerafahrt, Suchen und Scrubbing bleiben funktionsfähig. Scanner-/Größeneffekt bei stabiler Kamerahalteposition, aus während Anfahrt, Bewegung, Scrubbing und Transitionen.
+- Neue v81-Tests sowie Aktualisierung historischer Regressionen, Versionsnummer und PWA-Cache. Keine Änderung an Katalog- oder Texturdaten.
 
 ---
 

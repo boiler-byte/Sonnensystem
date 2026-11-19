@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {layerPreset, STANDARD_LAYERS, layerEnabled} from '../src/data/layers.js';
-import {layoutSceneLabels, LABEL_DENSITY} from '../src/renderer/labels.js';
+import {layoutSceneLabels} from '../src/renderer/labels.js';
 
 const VP=new Float32Array([20,0,0,0, 0,20,0,0, 0,0,1,0, 0,0,0,20]);
 const ctx={font:'',measureText:s=>({width:s.length*7})};
@@ -20,14 +20,14 @@ test('v25: solar Standard excludes moons and artificial satellites',()=>{
   assert.equal(layerEnabled(standard,'asteroid'),false);
 });
 
-test('v16: density cap holds in both views; selection is always visible',()=>{
+// The historic v16 density suite now guards against reintroducing that cap.
+test('v83: no screen cell or overlap limit in either view',()=>{
   for(const planetId of [null,'earth']){
     const scene=makeScene(planetId);
-    let labels=layoutSceneLabels(scene,VP,ctx,0);
-    assert.equal(labels.length,LABEL_DENSITY.maxPerCell+1);
-    assert.equal(labels[0].body.id,'sat-9');
-    // Labels can visibly overlap now, without being suppressed by a collision.
-    assert.deepEqual(labels[1].rect,labels[2].rect);
+    const labels=layoutSceneLabels(scene,VP,ctx,0);
+    assert.equal(labels.length,scene.rendered.length);
+    assert.equal(labels.at(-1).body.id,'sat-9','selected label is painted on top');
+    assert.deepEqual(labels[0].rect,labels[1].rect,'coincident text rectangles stay visible');
     for(const t of [16,32,64,120,200]){
       const newer=layoutSceneLabels(scene,VP,ctx,t);
       assert.deepEqual(newer.map(l=>l.body.id),labels.map(l=>l.body.id));
@@ -36,23 +36,24 @@ test('v16: density cap holds in both views; selection is always visible',()=>{
   }
 });
 
-test('v16: selected label remains visible even when the tile is full',()=>{
+test('v83: switching selection never hides other labels in a crowded area',()=>{
   const scene=makeScene('earth');
   scene.selectedId='offscreen';
   const first=layoutSceneLabels(scene,VP,ctx,0);
-  assert.equal(first.length,2);
+  assert.equal(first.length,10);
   scene.selectedId='sat-9';
   const second=layoutSceneLabels(scene,VP,ctx,250);
-  assert.equal(second.length,3);
-  assert.ok(second.some(x=>x.body.id==='sat-9'));
+  assert.equal(second.length,10);
+  assert.ok(second.at(-1).selected);
+  assert.deepEqual(new Set(first.map(x=>x.body.id)),new Set(second.map(x=>x.body.id)));
 });
 
-test('v16: labels retain a grid tile across small boundary changes',()=>{
+test('v83: no density-tile state remains when an object crosses a grid boundary',()=>{
   const scene=makeScene();
   scene.rendered=[body('sat-1')];scene.positions=new Map([['sat-1',[-.01,0,0]]]);
-  layoutSceneLabels(scene,VP,ctx,0);
-  const cell=scene._labelState.anchors.get('sat-1').cell;
+  assert.equal(layoutSceneLabels(scene,VP,ctx,0).length,1);
+  assert.ok(!('cell' in scene._labelState.anchors.get('sat-1')));
   scene.positions.set('sat-1',[.01,0,0]);
-  layoutSceneLabels(scene,VP,ctx,500);
-  assert.deepEqual(scene._labelState.anchors.get('sat-1').cell,cell);
+  assert.equal(layoutSceneLabels(scene,VP,ctx,500).length,1);
+  assert.ok(!('cell' in scene._labelState.anchors.get('sat-1')));
 });

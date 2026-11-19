@@ -8,7 +8,8 @@ import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 import {AU_KM} from '../src/data/bodies.js';
 import {createViewSettings} from '../src/data/layers.js';
 import {
-  OPTIMIZED_ORBIT_FACTOR, OPTIMIZED_SUN_RADIUS, SOLAR_REFERENCE_RADIUS_KM,
+  OPTIMIZED_ORBIT_FACTOR, OPTIMIZED_SUN_MAGNIFICATION, OPTIMIZED_SUN_RADIUS, SOLAR_REFERENCE_RADIUS_KM,
+  optimizedSolarOrbitRadius,
   optimizedSolarMode, displayBodyRadius, displayOrbitRadius,
   renderRadius, orbitalRadius, planetOrbitRadius, keplerPosition,
   SOLAR_UNITS_PER_AU
@@ -38,32 +39,36 @@ test('v44: optimized mode is exclusively Objekt an and Bahn aus',()=>{
   }
   assert.equal(optimizedSolarMode(createViewSettings('solar')),false,'default remains schematic');
   assert.equal(OPTIMIZED_ORBIT_FACTOR,4);
+  assert.equal(OPTIMIZED_SUN_MAGNIFICATION,3);
 });
 
-test('v44: Sun is exactly 4x schematic; planet radii preserve physical ratios to each other and Sun',()=>{
+test('v82: Sun is 3x its previous optimized size; planets keep their v44 sizes and ratios',()=>{
   const settings={scaleObjects:true,scaleOrbits:false};
   const sun=byId('sun'),earth=byId('earth'),mars=byId('mars'),jupiter=byId('jupiter');
   assert.equal(sun.radiusKm,SOLAR_REFERENCE_RADIUS_KM,'calibration matches Sun catalog');
-  close(OPTIMIZED_SUN_RADIUS,4*renderRadius(sun),'preset Sun radius');
-  close(displayBodyRadius(sun,settings),4*renderRadius(sun),'Sun 4x schematic');
+  close(OPTIMIZED_SUN_RADIUS,12*renderRadius(sun),'preset Sun radius');
+  close(displayBodyRadius(sun,settings),12*renderRadius(sun),'Sun 12x schematic');
   close(displayBodyRadius(jupiter,settings)/displayBodyRadius(earth,settings),jupiter.radiusKm/earth.radiusKm,'Jupiter / Earth');
   close(displayBodyRadius(mars,settings)/displayBodyRadius(earth,settings),mars.radiusKm/earth.radiusKm,'Mars / Earth');
-  close(displayBodyRadius(earth,settings)/displayBodyRadius(sun,settings),earth.radiusKm/sun.radiusKm,'Earth / Sun');
+  close(displayBodyRadius(earth,settings)/displayBodyRadius(sun,settings),earth.radiusKm/sun.radiusKm/3,'Sun-only magnification');
+  close(displayBodyRadius(earth,settings),earth.radiusKm*4*renderRadius(sun)/sun.radiusKm,'Earth retains v81 size');
   close(displayBodyRadius({type:'asteroid',radiusKm:0},settings),0,'unknown radius stays unknown');
   close(displayBodyRadius({id:'sun',type:'star',radiusKm:0},settings),0,'unknown Sun radius stays unknown');
 });
 
-test('v44: schematic solar orbital spacing grows uniformly and preserves ratios',()=>{
+test('v82: heliocentric optimized orbit spacing expands the inner planets and compresses the outer ones',()=>{
   const settings={scaleObjects:true,scaleOrbits:false},schematic={scaleObjects:false,scaleOrbits:false};
   const sun=byId('sun'),earth=byId('earth'),mercury=byId('mercury'),jupiter=byId('jupiter'),moon=byId('moon');
-  for(const [body,parent] of [[mercury,sun],[earth,sun],[jupiter,sun],[moon,earth]]){
-    close(displayOrbitRadius(body,parent,settings),OPTIMIZED_ORBIT_FACTOR*displayOrbitRadius(body,parent,schematic),`${body.id} orbit`);
+  for(const body of [mercury,earth,jupiter]){
+    close(displayOrbitRadius(body,sun,settings),optimizedSolarOrbitRadius(body.a),`${body.id} optimized orbit`);
   }
+  close(displayOrbitRadius(moon,earth,settings),OPTIMIZED_ORBIT_FACTOR*displayOrbitRadius(moon,earth,schematic),'moon offsets unchanged');
   const minSeparation=displayOrbitRadius(mercury,sun,settings)*(1-mercury.e)
     -displayBodyRadius(sun,settings)-displayBodyRadius(mercury,settings);
-  assert.ok(minSeparation>0,`Mercury orbit must not cut through expanded Sun: ${minSeparation}`);
-  close(displayOrbitRadius(jupiter,sun,settings)/displayOrbitRadius(earth,sun,settings),
-        orbitalRadius(jupiter,sun)/orbitalRadius(earth,sun),'schematic orbit ratio retained');
+  assert.ok(minSeparation>1,`Mercury orbit must not cut through expanded Sun: ${minSeparation}`);
+  assert.ok(displayOrbitRadius(mercury,sun,settings)>4*3.4*Math.sqrt(mercury.a+.22),'Mercury pushed outward');
+  const neptune=byId('neptune');
+  assert.ok(displayOrbitRadius(neptune,sun,settings)<4*3.4*Math.sqrt(neptune.a+.22),'Neptune compressed inward');
 });
 
 test('v44: other three modes and isolated planet view remain unchanged',()=>{
@@ -97,7 +102,8 @@ test('v44: displayed orbits and positions agree in optimized mode, including liv
   const optimizedX=renderer.positions.get('earth')[0];
   renderer.settings={scaleObjects:false,scaleOrbits:false};
   renderer.calcPositions(t);
-  close(optimizedX,OPTIMIZED_ORBIT_FACTOR*renderer.positions.get('earth')[0],'JPL override scaled 4x');
+  close(optimizedX,optimizedSolarOrbitRadius(earth.a),'JPL override follows the optimized Kepler orbit');
+  close(renderer.positions.get('earth')[0],orbitalRadius(earth,sun),'schematic JPL override follows the Kepler orbit');
 });
 
 test('v44: overview and reset camera include expanded solar scheme while planet view stays local',()=>{

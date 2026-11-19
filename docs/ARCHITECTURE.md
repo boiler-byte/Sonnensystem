@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v80
+# Architektur – Sonnensystem v86
 
 ## Prinzipien
 
@@ -66,6 +66,38 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 
 Der Related-Bereich steht im DOM zu Beginn des Daten-Tabs vor den Physikkarten. Der Overflow-Button ruft einen Callback aus `src/ui/catalog-controller.js` auf; dadurch ist `object-details.js` nicht vom globalen UI-State oder Sheet-Controller abhängig. Der Callback befüllt `S.search` und das Suchfeld, rendert den parent-sensitiven Katalog und öffnet `mobileSheets.open('catalog')` (am Desktop die gleiche Navigation). Ein Planetenfilter, der sonst null Treffer ergeben würde, wird dafür deaktiviert; bei passenden Treffern bleibt er bestehen.
 
+## Smart Labels mit orbitaler Lesbarkeitsgrenze (v86)
+
+`src/renderer/labels.js` speichert pro Frame die **orbitalen Relativvektoren** von Objekten zu ihren Parents und den Simulationszeitpunkt. Zur Ermittlung der simulierten Bildgeschwindigkeit wird die Relativverschiebung zweier Frames mit **derselben aktuellen Kameramatrix** projiziert; reine Kamerabewegung und die Translation des Parents gehen nicht ein. Ab **190 px/s** wird nur der Labeltext ausgeblendet, unter **135 px/s** wieder eingeblendet (Hysterese ohne Verzögerung). Bei pausierter Uhr, größeren manuellen Zeitsprüngen, Layouttransitionen oder Reihendarstellung wird kein neuer Geschwindigkeitsfilter aktiv. Der Mittelpunktmarker sehr kleiner Körper sowie der Zentrumspunkt und Auswahlring des selektierten Körpers bleiben sichtbar, selbst wenn der Labeltext vorübergehend verborgen ist. Die Messung prüft ausschließlich die simulierte, nicht die physikalische Bahn- oder Radialgeschwindigkeit.
+
+In der Sonnensystemübersicht begrenzt `solarOrbiterLabelIds()` die Labels der **direkten Begleiter pro Planet/Zwergplanet** auf die vier größten nach `radiusKm` (Monde und Satelliten gemeinsam). Der vierte Platz kann an eine kleinere aktive Auswahl gehen. Die Begrenzung gilt unabhängig vom `fourMoons`-Render-Schalter, aber nur für Labels, nicht für sichtbare Körper, Picking oder Orbitstriche; in der isolierten Planetenszene sind alle Labels berechtigt. Die bestehende `solarMoonLabelIds()`-Funktion bleibt für ältere Integrationen erhalten. Textkollisionen/Dichteraster bleiben abgeschaltet.
+
+## Smart Labels ohne Bewegungsfilter (v85, historisch)
+
+`src/renderer/labels.js` filtert Labels **nicht mehr nach der Geschwindigkeit ihrer Bildschirmbewegung**. Der bisherige `LABEL_MOTION`-Schwellwert, die `isTooFast`-Hysterese und Bewegungsbeobachtungen pro Frame entfallen. Jeder ansonsten zulässige Körper wird ohne Verzögerung platziert, auch bei sehr schnellen Kameraschwenks, Zoomfahrten, 240-Hz-Frames und schnellen Objektbewegungen. Stabile Seitenanker (nur abhängig von Viewport-Rändern), die 4-Monde-/Layerfilter, das Reihen-Hover-HUD und der manuelle Beschriftungsschalter bleiben erhalten. Die Mittelpunkt-Marker aus v84 bleiben unverändert. Die Regressionstests `tests/label-speed-v85.test.mjs` und angepasste ältere Smart-Label-Suites prüfen diese Regeln.
+
+## Smart Labels mit Mittelpunkt-Markern (v84)
+
+`src/renderer/labels.js` zeichnet Objektlabels weiterhin ohne Kollisions- oder Dichtefilter. Der frühere führende Label-Punkt wird jedoch nicht mehr am Text gezeichnet. Stattdessen erzeugt die Renderlogik einen **Mittelpunkt-Marker direkt auf dem Objekt**, wenn dessen projizierter Radius kleiner als der Standardmarker ist. Die Markerfarbe stammt aus `CATEGORY_COLORS`; für das selektierte Objekt wird immer die Selektionsfarbe verwendet, unabhängig von der projizierten Objektgröße. Das ausgewählte Objekt behält zusätzlich den größeren Selektionsring.
+
+## Smart Labels ohne Kollisionsfilter (v83)
+
+`src/renderer/labels.js` erzeugt je sichtbar projiziertem, für die Anzeige freigegebenem Körper ein Label – ohne Dichte-Raster, Zahlengrenze pro Bildschirmbereich oder Überlappungstests gegen Texte und Planetenscheiben. Die Zeichenreihenfolge bleibt nach Objektpriorität sortiert, aber **nur für die Überlagerungsreihenfolge**, nicht zur Unterdrückung: ausgewählte Labels werden zuletzt gezeichnet. Der Seitenanker ändert sich weiterhin nur zur Einhaltung der Bildschirmgrenzen; ebenso bleiben Geschwindigkeits-Hysterese, Layer-/Vier-Monde-Schalter, Reihen-Hover-HUD und manueller Beschriftungsschalter bestehen. Weitere Darstellungs- und Kataloglogik wird nicht verändert.
+
+## Zwei Sonnensystem-Abstandskurven (v82)
+
+`src/data/orbital-math.js` berechnet für **Bahn aus** zwei eigenständige, nicht-physikalische heliocentrische Radiusprofile aus den realen großen Bahnhalbachsen als Index: `sceneRadius(a)` für die **schematische** und `optimizedSolarOrbitRadius(a)` für die **optimierte** Ansicht. Beide interpolieren stetig zwischen acht Planeten-Stützstellen und setzen sich jenseits Neptuns mit einer monotonen logarithmischen Kurve fort. Schematisch liegen die acht Bahnen je 2,25 Szeneneinheiten auseinander; optimiert sind die mittleren Radien 19,5/25/29/33/41/49/58/67 Einheiten. Dadurch weichen die inneren Körper der auf 13,56 Einheiten Radius vergrößerten Sonne, während äußere Abstände gegenüber v81 schrumpfen. Die Merkurbahn hat am Perihel mindestens 1,9 Einheiten Abstand von der Sonnenoberfläche.
+
+`OPTIMIZED_SUN_MAGNIFICATION = 3` wirkt nur auf die Sonne in der normalen Sonnenübersicht bei `Objekt an / Bahn aus` (nicht auf das separate Reihen-/Cinema-Layout). Die früheren optimierten Planetengrößen bleiben an `4 × renderRadius(sun)` kalibriert. Die Kombination `Objekt an / Bahn an` bleibt weiterhin physikalisch proportional; auch lokale Planetenbahnen, Mond-/Satellitenabstände und die Reihe behalten ihre bisherige Berechnung. In `src/renderer/scene.js` skalieren optionale JPL-Heliozentrikvektoren über `displayOrbitRadius(body, parent, settings) / (body.a * AU_KM)`, sodass externe Koordinaten und gerenderte Keplerbahnen denselben Halbachsenmaßstab verwenden. Rendering, Bahndateien und Katalogdaten werden nicht geändert; alle neuen Geometriewerte sind Darstellungskonstanten.
+
+## Reiheninspektion und Cinema-Haltephasen (v81)
+
+`rowArrowGeometry()` nutzt den direkten `body.parentId` und projiziert dessen Radius im aktuellen Kameraframe. Der horizontal unter dem Himmelskörper liegende Pfeil hat **69 px Abstand** (statt 23 px) vom vergrößerten Kugelrand und endet auf der zum Kind gerichteten **Parent-Silhouette**, gegebenenfalls am Bildschirmrand; wenn die Silhouette die Pfeilwurzel überdeckt, wird der Vektor ausgeblendet. Der physikalische Abstandswert wird nicht durch den gerenderten Radius verändert. Die 160-px-Hoververgrößerung und der Saturn-Ringmaßstab bleiben erhalten.
+
+Die HUD-Schicht platziert die cyanfarbene Objektüberschrift über dem Scanner, Durchmesser innerhalb des Messrahmens und darunter die beiden ikonbasierten Werte für Gravitation und Mitteltemperatur in zwei Spalten. `src/ui/row-inspection.js` importiert beide SVGs direkt aus `src/ui/physical-stat-icons.js` (keine duplizierten Pfade); die separate Informationskarte wurde entfernt. Der Anzeiger bleibt pointer-transparent; bei Cinema werden die Messwerte oberhalb des unteren Transport-Panels begrenzt.
+
+`cinemaRestingObject()` gibt nur in einer Haltephase nach der Einstiegsfahrt und nach dem Einschwingen der Kameraposition/-distanz eine Objekt-ID zurück, nicht während Flug, Drag-Scrubbing, AR oder Szene-Transition. Diese ID fließt durch `SolarRenderer.advanceRowInspection()` in die bestehende WebGL-Vergrößerung und das HUD; während des Übergangs weicht der Effekt weich zurück. Cinema speichert dafür `paused` unabhängig von der Simulations-Wiedergabe; `toggleCinemaPause()` stoppt ausschließlich die Cinema-Uhr, lässt direkte `seekCinema()`-Eingaben auch bei Pause zu und synchronisiert die ARIA-Play/Pause-Steuerung der Zeitleiste. Bei Resume wird `lastAt` neu gesetzt, damit keine nachgeholte Kamerazeit springt.
+
 ## Reihenmessung und AR-Navigation (v80)
 
 Der Reihen-Scanner nutzt weiterhin CSS-Pixel und die Projektion des aktuellen Frames. `rowArrowGeometry` projiziert das Parent-Zentrum in den Bildschirmraum und beschränkt die X-Spitze nur noch auf `[0, viewportWidth]`: Bei sichtbarem Zentrum trifft der Pfeil dessen X-Position, sonst den jeweiligen Bildschirmrand. Die reine Längenbegrenzung der Vorversion wurde entfernt. Das unter dem Objekt platzierte Distanzlabel enthält nur den Zahlenwert. Die SVG-Scannerfläche nutzt verbreiterte Winkelmarkierungen sowie eine animierte horizontale Breitenmessung mit Pfeilspitzen; der Durchmesser aus `rowInspectionMetrics` wird im Hauptscanner angezeigt. Der restliche Messkarteninhalt bleibt unverändert.
@@ -84,7 +116,7 @@ Nur im stabilen Reihenmodus erkennt `src/renderer/controls.js` ungedrückte Maus
 
 ## Offline-PWA
 
-`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v80`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
+`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v86`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
 
 ## Server und Sicherheit
 

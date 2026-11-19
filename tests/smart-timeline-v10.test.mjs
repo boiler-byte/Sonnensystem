@@ -103,7 +103,7 @@ test('v18: one compact time trigger contains Play, slider, and Heute in its popu
   const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
   const app=await readAppSource();
   const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
-  assert.equal((panel.match(/<button\b/g)||[]).length,3,'one time trigger and two popup actions');
+  assert.equal((panel.match(/<button\b[^>]*id="(?:speed-btn|play-btn|today-btn)"/g)||[]).length,3,'one time trigger and two popup actions');
   const trigger=panel.slice(0,panel.indexOf('id="speed-popover"'));
   assert.equal((trigger.match(/<button\b/g)||[]).length,1,'only dropdown trigger is visible when closed');
   for(const id of ['play-btn','speed-btn','today-btn'])assert.match(panel,new RegExp(`id="${id}"`));

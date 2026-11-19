@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {drawSceneLabels, layoutSceneLabels, LABEL_MOTION} from '../src/renderer/labels.js';
+import {drawSceneLabels, layoutSceneLabels} from '../src/renderer/labels.js';
 
 // Perspective with a constant positive clip depth: world +/-1 maps to the viewport.
 const VP = new Float32Array([
@@ -41,14 +41,17 @@ const overlaps = (a, b) =>
   a.x < b.x + b.w + 5 && a.x + a.w + 5 > b.x &&
   a.y < b.y + b.h + 5 && a.y + a.h + 5 > b.y;
 
-test('v16: dense clusters admit a limited number of labels, selected wins', () => {
+test('v83: dense clusters keep every label in solar and planet views', () => {
   for (const planetId of [null, 'jupiter']) {
     const bodies = Array.from({length: 16}, (_, i) => body(`moon-${i}`, 'moon', 100 + i * 50));
     const {renderer, ctx} = scene(bodies, bodies.map(() => [0, 0, 0]),
       {planetId, selectedId: 'moon-15'});
+    renderer.settings.fourMoons=false; // all moons explicitly enabled, including in the solar overview
     const labels = layoutSceneLabels(renderer, VP, ctx, 0);
-    assert.equal(labels[0].body.id, 'moon-15');
-    assert.equal(labels.length, 3, 'two ordinary labels plus the selected one');
+    assert.equal(labels.length, bodies.length, 'all 16 coincident labels must be retained');
+    assert.deepEqual(new Set(labels.map(l => l.body.id)),new Set(bodies.map(b => b.id)));
+    assert.equal(labels.at(-1).body.id, 'moon-15', 'selected label is drawn last and stays readable');
+    assert.ok(overlaps(labels[0].rect,labels[1].rect), 'text collisions are allowed');
     assert.equal(renderer.rendered.length, 16, 'all bodies still rendered');
   }
 });
@@ -73,24 +76,27 @@ test('v16: a passing disk does not move or suppress a neighboring label', () => 
   assert.equal(later.find(l=>l.body.id==='moon').side,side);
 });
 
-test('v9: movement is measured in real screen pixels per second, with settling hysteresis', () => {
+test('v85: nonselected labels remain visible during rapid camera/body motion and immediately afterward', () => {
   const b = body('fast', 'moon');
   const {renderer, ctx} = scene([b], [[-.5, 0, 0]], {planetId: 'earth', selectedId: 'earth'});
   assert.equal(layoutSceneLabels(renderer, VP, ctx, 0).length, 1);
   renderer.positions.set('fast', [.5, 0, 0]);
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 16).length, 0, 'fast-moving nonselected label disappears');
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 32).length, 0, 'no immediate flicker after stopping');
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 170).length, 1, 'reappears after sufficient rest');
-  assert.ok(LABEL_MOTION.hideAbove > LABEL_MOTION.showBelow, 'proper speed hysteresis');
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 16).length, 1,
+    'rapid movement no longer hides a nonselected label');
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 32).length, 1,
+    'no settling delay before label is visible');
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 170).length, 1);
+  assert.ok(renderer._labelState.observations.has('fast'),
+    'v86 samples orbital displacement without treating camera motion alone as velocity');
 });
 
-test('v9: fast motion is detected on high-refresh screens (4 ms frames)', () => {
+test('v85: 240 Hz frame-to-frame movement does not hide labels', () => {
   const b = body('fast-240hz', 'moon');
   const {renderer, ctx} = scene([b], [[0, 0, 0]], {selectedId: 'earth'});
   assert.equal(layoutSceneLabels(renderer, VP, ctx, 0).length, 1);
   renderer.positions.set('fast-240hz', [.25, 0, 0]);
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 4).length, 0,
-    'movement must not bypass the filter on 240 Hz monitors');
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 4).length, 1,
+    'fast motion stays visible on high-refresh-rate monitors');
 });
 
 test('v9: stopped objects remain labeled even when the simulated date changes', () => {
@@ -102,15 +108,14 @@ test('v9: stopped objects remain labeled even when the simulated date changes', 
     'time alone does not hide an unmoving screen label');
 });
 
-test('v9: planet changes, viewport resize and disabled labels reset motion samples', () => {
+test('v85: scene changes, viewport resize and the manual toggle retain their behavior', () => {
   const b = body('target', 'moon');
   const {renderer, ctx} = scene([b], [[-.5, 0, 0]], {planetId: 'earth', selectedId: 'earth'});
   layoutSceneLabels(renderer, VP, ctx, 0);
   renderer.positions.set('target', [.5, 0, 0]);
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 16).length, 0);
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 16).length, 1);
   renderer.planetId = 'mars';
-  assert.equal(layoutSceneLabels(renderer, VP, ctx, 32).length, 1,
-    'scene change does not interpret a teleported camera as motion');
+  assert.equal(layoutSceneLabels(renderer, VP, ctx, 32).length, 1);
   renderer.width = 700;
   assert.equal(layoutSceneLabels(renderer, VP, ctx, 48).length, 1);
   renderer.settings.labels = false;

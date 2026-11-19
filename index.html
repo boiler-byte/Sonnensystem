@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V80.0" />
+  <meta name="app-version" content="V86.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -113,14 +113,15 @@
             </svg>
             <span id="row-inspection-scan-tag" class="row-inspection-scan-tag" aria-label="Durchmesser"></span>
           </div>
-          <div id="row-inspection-panel" class="row-inspection-panel">
-            <div class="row-inspection-panel-top"><span class="row-inspection-live-dot"></span> OBJEKTANALYSE <span class="row-inspection-panel-bars">▮▯▮▯</span></div>
-            <div id="row-inspection-name" class="row-inspection-name"></div>
-            <div class="row-inspection-object-id">IDENTIFIKATION <span id="row-inspection-id"></span></div>
-            <div class="row-inspection-metrics">
-              <div><span>Ø DURCHMESSER</span><strong id="row-inspection-diameter"></strong></div>
-              <div><span>GRAVITATION</span><strong id="row-inspection-gravity"></strong></div>
-              <div><span>Ø TEMPERATUR</span><strong id="row-inspection-temperature"></strong></div>
+          <div class="row-inspection-title" id="row-inspection-title"><span id="row-inspection-name" class="row-inspection-name"></span></div>
+          <div class="row-inspection-metrics" id="row-inspection-metrics">
+            <div class="row-inspection-metric" aria-label="Gravitation">
+              <span id="row-inspection-gravity-icon" class="row-inspection-metric-icon" aria-hidden="true"></span>
+              <strong id="row-inspection-gravity"></strong>
+            </div>
+            <div class="row-inspection-metric" aria-label="Mittlere Temperatur">
+              <span id="row-inspection-temperature-icon" class="row-inspection-metric-icon" aria-hidden="true"></span>
+              <strong id="row-inspection-temperature"></strong>
             </div>
           </div>
           <div id="row-inspection-distance" class="row-inspection-distance" hidden><strong id="row-inspection-distance-value"></strong></div>
@@ -222,7 +223,13 @@
         </section>
         <div class="cinema-timeline" id="cinema-timeline" aria-label="Cinema-Kamerafahrt" hidden>
           <div class="cinema-timeline-header"><span id="cinema-object">Cinema-Modus</span><output id="cinema-time" for="cinema-seek">00:00 / 00:00</output></div>
-          <input id="cinema-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Cinema-Zeitleiste – Position der Kamerafahrt" aria-valuetext="0 Prozent" />
+          <div class="cinema-timeline-transport">
+            <button class="cinema-play-pause" id="cinema-play-pause" type="button" aria-label="Cinema pausieren" aria-pressed="false" title="Cinema pausieren">
+              <svg class="cinema-pause-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h4v14H7zM14 5h4v14h-4z"/></svg>
+              <svg class="cinema-resume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13L19 12z"/></svg>
+            </button>
+            <input id="cinema-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Cinema-Zeitleiste – Position der Kamerafahrt" aria-valuetext="0 Prozent" />
+          </div>
           <div class="cinema-timeline-ends" aria-hidden="true"><span id="cinema-start-label">Klein</span><span id="cinema-end-label">Groß</span></div>
         </div>
         <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>

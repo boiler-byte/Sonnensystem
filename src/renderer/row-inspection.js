@@ -6,6 +6,8 @@ import { CAMERA_FOV, clamp, projected } from './math.js';
 export const ROW_INSPECTION_DIAMETER_PX = 160;
 export const ROW_INSPECTION_ANIMATION_MS = 260;
 export const ROW_INSPECTION_ARROW_MS = 520;
+// v81: the former 23px clearance between the enlarged sphere and vector is tripled.
+export const ROW_INSPECTION_ARROW_GAP_PX = 23 * 3;
 const HALF_FOV_SCALE = 2 * Math.tan(CAMERA_FOV / 2);
 
 export function rowProjectedBody(body, position, vp, width, height, radiusWorld) {
@@ -65,21 +67,22 @@ export function formatRowParentDistance(body){
   return au<=.2 ? `${km<10?formatDecimal(km,2):formatInt(km)} km` : `${formatDecimal(au,3)} AE`;
 }
 
-/** A parent-facing arrow starts under the hovered body and extends toward its parent. */
-export function rowArrowGeometry(body,position,centerPosition,vp,width,height,sphereRadiusPx) {
-  if(!body?.parentId || !centerPosition || !position)return null;
+/** A parent-facing arrow starts below the sphere and ends at the parent's outer edge. */
+export function rowArrowGeometry(body,position,parentPosition,vp,width,height,sphereRadiusPx,parentRadiusPx=0) {
+  if(!body?.parentId || !parentPosition || !position)return null;
   const screen=rowProjectedBody(body,position,vp,width,height,0);
-  const center=rowProjectedBody(null,centerPosition,vp,width,height,0) || projected(centerPosition,vp,width,height);
-  if(!screen || !center || !Number.isFinite(center.x))return null;
+  const parent=projected(parentPosition,vp,width,height);
+  if(!screen || !parent || !Number.isFinite(parent.x))return null;
   const x=clamp(screen.x,12,width-12);
-  // Keep the arrow horizontal beneath the inspected sphere, but use the real
-  // projected parent X instead of the old 300px cap. Clip an offscreen parent
-  // exactly at the viewport edge, so the arrow visibly points out of frame.
-  const tipX=clamp(center.x,0,width);
-  const distance=tipX-x;
-  if(Math.abs(distance)<1)return null;
-  const direction=Math.sign(distance);
-  const y=clamp(screen.y+Math.max(80,sphereRadiusPx)+23,22,height-33);
+  const direction=Math.sign(parent.x-screen.x);
+  if(!direction)return null;
+  // The near silhouette faces the arrow: the parent's right side when it is
+  // left of the child, and its left side when it is to the right. An entirely
+  // offscreen sphere is clipped at the viewport edge instead of its center.
+  const parentEdge=parent.x-direction*Math.max(0,Number(parentRadiusPx)||0);
+  const tipX=clamp(parentEdge,0,width);
+  if((tipX-x)*direction<=1)return null;
+  const y=clamp(screen.y+Math.max(80,sphereRadiusPx)+ROW_INSPECTION_ARROW_GAP_PX,22,height-33);
   return {x,y,tipX,direction,labelX:clamp(screen.x,72,width-72),labelY:clamp(y+13,20,height-10)};
 }
 

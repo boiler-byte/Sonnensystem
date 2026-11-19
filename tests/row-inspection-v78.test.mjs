@@ -136,9 +136,9 @@ test('v78: row inspector has a pointer-transparent overlay, screen-sized SVG arr
  const [html,css,js,controls,loop,sw]=await Promise.all([
   'index.html','css/styles.css','src/ui/row-inspection.js','src/renderer/controls.js',
   'src/app/animation-loop.js','sw.js'].map(file=>readFile(new URL('../'+file,import.meta.url),'utf8')));
- for(const id of ['row-inspection','row-inspection-scanner','row-inspection-panel',
+ for(const id of ['row-inspection','row-inspection-scanner','row-inspection-title','row-inspection-metrics','row-inspection-gravity-icon','row-inspection-temperature-icon',
   'row-inspection-vector-line','row-inspection-vector-head','row-inspection-distance-value',
-  'row-inspection-diameter','row-inspection-gravity','row-inspection-temperature']){
+  'row-inspection-gravity','row-inspection-temperature']){
   assert.match(html,new RegExp(`id="${id}"`));
  }
  assert.match(css,/\.row-inspection\{[^}]*pointer-events:none/);
@@ -154,8 +154,8 @@ test('v78: row inspector has a pointer-transparent overlay, screen-sized SVG arr
 test('v78: SVG vector grows from hovered body origin and HUD restores on leaving row mode',()=>{
  const r=sampleRenderer();const {b,p}=findVisible(r);
  r.setRowPointer({x:p.x,y:p.y});r.advanceRowInspection(r.vp,100);
- const ids=['row-inspection','row-inspection-scanner','row-inspection-panel','row-inspection-name',
-  'row-inspection-diameter','row-inspection-gravity','row-inspection-temperature','row-inspection-scan-tag','row-inspection-id',
+ const ids=['row-inspection','row-inspection-scanner','row-inspection-title','row-inspection-metrics','row-inspection-gravity-icon','row-inspection-temperature-icon','row-inspection-name',
+  'row-inspection-gravity','row-inspection-temperature','row-inspection-scan-tag',
   'row-inspection-vector-svg','row-inspection-vector-line','row-inspection-vector-head',
   'row-inspection-vector-origin','row-inspection-distance','row-inspection-distance-value'];
  const nodes=new Map(ids.map(id=>[id,{

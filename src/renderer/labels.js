@@ -1,42 +1,88 @@
 import { CAMERA_FOV, TAU, projected } from './math.js';
+import { CATEGORY_COLORS } from '../data/bodies.js';
 import { displayBodyRadius } from '../data/orbital-math.js';
 
-// Motion is measured in CSS pixels per real second, not in simulated days.
-// Hysteresis prevents labels flashing on and off near the threshold.
-export const LABEL_MOTION = Object.freeze({hideAbove: 220, showBelow: 140, settleMs: 140});
-// Retained compatibility values for previous integrations; v16 placements
-// no longer change sides because of collisions.
-export const LABEL_STABILITY = Object.freeze({blockedMs: 650, sideHoldMs: 1300, clearMs: 180, retainMs: 6000});
+// Position anchors are retained to avoid unnecessary side changes. No
+// label-to-label or label-to-body overlap check may hide an object label.
+export const LABEL_STABILITY = Object.freeze({retainMs: 6000});
 const VIEW_MARGIN = {left: 8, right: 8, top: 26, bottom: 24};
-export const LABEL_DENSITY = Object.freeze({cellWidth: 160, cellHeight: 110, maxPerCell: 2, edgeHoldPx: 18});
 const HALF_FOV_TANGENT = 2 * Math.tan(CAMERA_FOV / 2);
+const LABEL_CENTER_MARKER = Object.freeze({defaultRadius: 2.2, selectedRadius: 2.6});
 
-/** The four largest moons of each planet can claim labels in the solar overview.
- * Preserve the selected label by displacing the fourth-largest if necessary.
+// A label becomes difficult to read when the body itself orbits too far per
+// real second in screen space. These thresholds deliberately ignore camera
+// motion, pan/zoom and visual layout transitions.
+export const ORBIT_LABEL_SPEED = Object.freeze({
+  hideAbove: 190, showBelow: 135, maxFrameMs: 250, maxSimDaysPerSecond: 4000
+});
+
+/** Label at most four direct orbiters of each planet (or dwarf) in the solar
+ * overview, regardless of the "Alle Monde" body-visibility setting. Natural
+ * moons and artificial satellites compete by catalog radius, with the selected
+ * orbiter replacing the smallest allowed entry rather than adding a fifth.
  */
-export function solarMoonLabelIds(bodies, selectedId, maximum=4) {
+export function solarOrbiterLabelIds(bodies, selectedId, maximum=4, byId=null) {
   const groups=new Map();
-  for(const body of bodies){
-    if(body.type!=='moon')continue;
-    const key=body.parentId||'_unassigned';
-    if(!groups.has(key))groups.set(key,[]);
-    groups.get(key).push(body);
+  for (const body of bodies) {
+    if (!isPlanetOrbiter(body,byId)) continue;
+    if (!groups.has(body.parentId))groups.set(body.parentId,[]);
+    groups.get(body.parentId).push(body);
   }
   const allowed=new Set();
-  for(const moons of groups.values()){
-    moons.sort((a,b)=>Math.max(0,Number(b.radiusKm)||0)-Math.max(0,Number(a.radiusKm)||0) ||
-      a.id.localeCompare(b.id));
-    const largest=moons.slice(0,maximum);
-    const selected=moons.find(m=>m.id===selectedId);
-    if(selected && !largest.some(m=>m.id===selected.id) && largest.length){
-      largest[largest.length-1]=selected;
-    }
-    for(const moon of largest)allowed.add(moon.id);
+  for (const orbiters of groups.values()) {
+    orbiters.sort((a,b)=>Math.max(0,Number(b.radiusKm)||0)-Math.max(0,Number(a.radiusKm)||0) ||
+      String(a.id).localeCompare(String(b.id)));
+    const biggest=orbiters.slice(0,Math.max(0,maximum));
+    const selected=orbiters.find(b=>b.id===selectedId);
+    if (selected && biggest.length && !biggest.some(b=>b.id===selected.id))
+      biggest[biggest.length-1]=selected;
+    for (const body of biggest) allowed.add(body.id);
   }
   return allowed;
 }
 
-function labelPriority(body, renderer, previouslyVisible) {
+/** Compatibility helper for the original four-largest-natural-moons API. */
+export function solarMoonLabelIds(bodies, selectedId, maximum=4) {
+  return solarOrbiterLabelIds(bodies.filter(b=>b.type==='moon'),selectedId,maximum);
+}
+
+function isPlanetOrbiter(body,byId) {
+  if (!body?.parentId || ['star','planet','probe'].includes(body.type)) return false;
+  const parent=byId?.get(body.parentId);
+  // Embedder/test contexts may not include all parent records. In that case
+  // restrict only known moon/satellite children, never unrelated solar bodies.
+  return parent ? (parent.type==='planet'||parent.type==='dwarf')
+    : (body.type==='moon'||body.type==='satellite');
+}
+
+function orbitalSample(body, position, positions) {
+  if (!body.parentId) return null;
+  const parent=positions.get(body.parentId);
+  if (!parent) return null;
+  return [position[0]-parent[0],position[1]-parent[1],position[2]-parent[2]];
+}
+
+/** Compare two orbit-relative positions using one CURRENT camera matrix.
+ * Reprojecting in the same camera frame removes all camera-only movement;
+ * subtracting the parent's displacement excludes inherited parent orbits.
+ */
+function simulatedOrbitalSpeed(p,position,relative,previous,renderer,vp,w,h,dt,simDelta) {
+  if (!relative || !previous?.relative || !(dt>0 && dt<=ORBIT_LABEL_SPEED.maxFrameMs) ||
+      !(simDelta>0) || simDelta / 86400000 * 1000 / dt > ORBIT_LABEL_SPEED.maxSimDaysPerSecond ||
+      renderer.settings?.row || renderer.transition || renderer.cinema?.active) return 0;
+  const before=[
+    position[0]-(relative[0]-previous.relative[0]),
+    position[1]-(relative[1]-previous.relative[1]),
+    position[2]-(relative[2]-previous.relative[2])
+  ];
+  const prev=projected(before,vp,w,h);
+  if (!prev || !Number.isFinite(prev.x) || !Number.isFinite(prev.y)) return 0;
+  return Math.hypot(p.x-prev.x,p.y-prev.y)*1000/dt;
+}
+
+// Used only for paint order: important names (especially the selected body)
+// are drawn last, over lower-priority labels. It never suppresses labels.
+function labelPriority(body, renderer) {
   if (body.id === renderer.selectedId) return 10000;
   if (renderer.planetId && body.id === renderer.planetId) return 9000;
   const radius = Math.max(0, Number(body.radiusKm) || 0);
@@ -52,7 +98,7 @@ function labelPriority(body, renderer, previouslyVisible) {
     case 'comet': score = 2600; break;
     default: score = 2300;
   }
-  return score + (previouslyVisible ? 120 : 0);
+  return score;
 }
 
 function visibleInsideViewport(rect, w, h) {
@@ -92,20 +138,22 @@ function placements(item, previousSide) {
   return [...new Set(order)].map(side => ({side, rect: positions[side]}));
 }
 
-function isTooFast(previous, p, now, dt) {
-  if (!previous || dt < 1 || dt > 250) return {fast: false, lastFastAt: -Infinity};
-  const speed = Math.hypot(p.x - previous.x, p.y - previous.y) * 1000 / dt;
-  const newlyFast = speed > LABEL_MOTION.hideAbove;
-  const lastFastAt = newlyFast ? now : previous.lastFastAt;
-  const fast = newlyFast || (previous.fast &&
-    (speed >= LABEL_MOTION.showBelow || now - lastFastAt < LABEL_MOTION.settleMs));
-  return {fast, lastFastAt};
+function centerMarkerStyle(body, selected, radius) {
+  const markerRadius = selected ? LABEL_CENTER_MARKER.selectedRadius : LABEL_CENTER_MARKER.defaultRadius;
+  if (!selected && radius >= markerRadius) return null;
+  return {
+    radius: markerRadius,
+    color: selected ? '#e7b979' : (CATEGORY_COLORS[body.type] || body.color || '#c1ccd9')
+  };
 }
 
 /**
- * Calculates a priority-ranked, screen-space density-limited label set.
- * Every rendered body can compete for a label; high-value labels win.
- * Exposed for deterministic layout / motion regression tests.
+ * Places every eligible, visible object label even if its text rectangles
+ * overlap other labels or planet disks. The only automatic filters here are
+ * camera visibility, viewport bounds, explicitly configured layer/UI choices,
+ * the solar four-largest-orbiters rule, and unreadable simulated orbital speed.
+ * Camera-only motion and text/body collisions never suppress labels.
+ * Exposed for deterministic layout and orbital-speed regression tests.
  */
 export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
   if (!renderer.settings?.labels) {
@@ -116,66 +164,62 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
   const rowActive=renderer.settings?.row===true;
   const sceneKey = `${renderer.planetId || 'solar'}:${rowActive?'row':'orbit'}:${w}x${h}`;
   const old = renderer._labelState?.key === sceneKey ? renderer._labelState : null;
-  const dt = old ? now - old.at : NaN;
-  const observations = new Map();
+  const dt=old ? now-old.at : NaN;
+  const simTime=Number(renderer.simTime);
+  const simDelta=old && Number.isFinite(simTime) && Number.isFinite(old.simTime)
+    ? simTime-old.simTime : NaN;
+  const observations=new Map();
   // Unlike `placements`, anchors survive a few frames without a visible label.
   // This prevents a satellite from alternating left/right every orbit frame.
   const anchors = new Map(old?.anchors
     ? [...old.anchors].filter(([, anchor]) => now - anchor.seenAt < LABEL_STABILITY.retainMs)
     : []);
   const projectedBodies = [];
-  // The display switch limits actual moon bodies upstream; when off, do not
-  // retain the old unconditional four-label restriction.
-  const moonLabels = !renderer.planetId && renderer.settings?.fourMoons !== false
-    ? solarMoonLabelIds(renderer.rendered,renderer.settings?.fourMoons===true?null:renderer.selectedId) : null;
+  // The solar label cap remains in force even if "Alle Monde" displays every
+  // sphere. Restrict labels only, never scene objects, orbits or picking.
+  const catalog=renderer.byId ?? new Map(renderer.bodies?.map(b=>[b.id,b]) ||
+    renderer.rendered.map(b=>[b.id,b]));
+  const orbiterLabels=!renderer.planetId
+    ? solarOrbiterLabelIds(renderer.rendered,renderer.selectedId,4,catalog) : null;
 
   for (const body of renderer.rendered) {
     if(rowActive && renderer.rowHoveredId===body.id)continue; // HUD supplies its name and measurements.
-    if (moonLabels && body.type==='moon' && !moonLabels.has(body.id)) continue;
+    if (orbiterLabels && isPlanetOrbiter(body,catalog) && !orbiterLabels.has(body.id))continue;
     const pos = renderer.positions.get(body.id);
     if (!pos) continue;
     const p = projected(pos, vp, w, h);
     if (!p?.visible || !Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
-    const oldSample = old?.observations.get(body.id);
-    const motion = isTooFast(oldSample, p, now, dt);
-    observations.set(body.id, {x: p.x, y: p.y, ...motion});
+    const relative=orbitalSample(body,pos,renderer.positions);
+    const previous=old?.observations?.get(body.id);
+    const orbitalSpeed=simulatedOrbitalSpeed(p,pos,relative,previous,renderer,vp,w,h,dt,simDelta);
+    const wasFast=previous?.fast===true;
+    const fast=orbitalSpeed>=(wasFast?ORBIT_LABEL_SPEED.showBelow:ORBIT_LABEL_SPEED.hideAbove);
+    observations.set(body.id,{relative,fast});
     const bodyRadius = renderer.bodyRadius?.(body) ?? displayBodyRadius(body, renderer.settings, renderer.planetId ? renderer.byId?.get(renderer.planetId) : null);
     // Use the Saturn ring silhouette as the label clearance in row mode.
     const visualRadius=rowActive && body.id==='saturn'
       ? Math.max(bodyRadius,1.20*(renderer.ringScale?.()??0)) : bodyRadius;
     const radius = Math.max(0, visualRadius * h / (HALF_FOV_TANGENT * p.depth));
-    projectedBodies.push({body, projection: p, radius, fast: motion.fast});
+    projectedBodies.push({body, projection: p, radius, fast});
     if (anchors.has(body.id)) anchors.set(body.id, {...anchors.get(body.id), seenAt: now});
   }
 
-  // v16: fixed screen-space density budget, not frame-by-frame text collisions.
-  // Allow a little overlap. Priority and a previously-visible bonus provide
-  // predictable labels even when multiple satellites share the same screen area.
+  // Every eligible body receives a label, regardless of label collisions or
+  // how many objects share a screen area. Draw high-priority labels last.
   projectedBodies.sort((a, b) =>
-    labelPriority(b.body, renderer, old?.placements.has(b.body.id)) -
-    labelPriority(a.body, renderer, old?.placements.has(a.body.id)) ||
+    labelPriority(a.body, renderer) - labelPriority(b.body, renderer) ||
     a.body.id.localeCompare(b.body.id));
 
   const placed = [];
-  const nextPlacements = new Map();
-  const cellCounts = new Map();
+  const fastMarkers=[];
   for (const item of projectedBodies) {
-    const {body, projection: p} = item;
+    const {body} = item;
     const selected = body.id === renderer.selectedId;
-    if (item.fast && !selected) continue;
-    const defaultCol = Math.floor(p.x / LABEL_DENSITY.cellWidth);
-    const defaultRow = Math.floor(p.y / LABEL_DENSITY.cellHeight);
-    const previousCell = anchors.get(body.id)?.cell;
-    // A small margin around the previous tile avoids thrashing at grid edges.
-    const retained = previousCell &&
-      p.x >= previousCell.col * LABEL_DENSITY.cellWidth - LABEL_DENSITY.edgeHoldPx &&
-      p.x < (previousCell.col + 1) * LABEL_DENSITY.cellWidth + LABEL_DENSITY.edgeHoldPx &&
-      p.y >= previousCell.row * LABEL_DENSITY.cellHeight - LABEL_DENSITY.edgeHoldPx &&
-      p.y < (previousCell.row + 1) * LABEL_DENSITY.cellHeight + LABEL_DENSITY.edgeHoldPx;
-    const gridCell = retained ? previousCell : {col:defaultCol, row:defaultRow};
-    const cell = `${gridCell.col}:${gridCell.row}`;
-    // The selected object is never hidden by the density budget.
-    if (!selected && (cellCounts.get(cell) || 0) >= LABEL_DENSITY.maxPerCell) continue;
+    if (item.fast) {
+      // A marker identifies a tiny body independently of its unreadable text.
+      if (centerMarkerStyle(body,selected,item.radius))fastMarkers.push(item);
+      continue;
+    }
 
     const fontSize = selected ? 12 : 11;
     const font = `${selected ? 700 : 600} ${fontSize}px system-ui, sans-serif`;
@@ -185,7 +229,7 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     if (!name) continue;
     item.name = name;
     item.font = font;
-    item.width = Math.ceil(ctx.measureText(name).width) + 17;
+    item.width = Math.ceil(ctx.measureText(name).width) + 4;
     item.height = fontSize + 9;
     item.selected = selected;
 
@@ -208,14 +252,12 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
     if (!chosen) continue;
     anchors.set(body.id, {
       side: chosen.side, changedAt: prior?.side === chosen.side ? prior.changedAt : now,
-      seenAt: now, lastDrawnAt: now, cell: gridCell
+      seenAt: now, lastDrawnAt: now
     });
     placed.push({...item, side: chosen.side, rect: chosen.rect});
-    nextPlacements.set(body.id, chosen.side);
-    if (!selected) cellCounts.set(cell, (cellCounts.get(cell) || 0) + 1);
   }
 
-  renderer._labelState = {key: sceneKey, at: now, observations, placements: nextPlacements, anchors};
+  renderer._labelState = {key: sceneKey, at: now, simTime, observations, anchors, fastMarkers};
   return placed;
 }
 
@@ -228,19 +270,23 @@ export function drawSceneLabels(renderer, vp) {
   for (const item of placed) {
     const {body, selected, projection: p, radius, rect, font, name} = item;
     const cy = rect.y + rect.h / 2;
+    const marker = centerMarkerStyle(body, selected, radius);
     ctx.font = font;
     ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round';
     ctx.lineWidth = 3;
+    if (marker) {
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, marker.radius, 0, TAU);
+      ctx.fillStyle = marker.color;
+      ctx.fill();
+    }
     ctx.globalAlpha = selected ? 1 : .88;
     ctx.strokeStyle = 'rgba(5, 11, 24, .94)';
-    ctx.strokeText(name, rect.x + 13, cy);
+    ctx.strokeText(name, rect.x + 2, cy);
     ctx.fillStyle = selected ? '#f5d5a0' : '#c1ccd9';
-    ctx.fillText(name, rect.x + 13, cy);
-    ctx.beginPath();
-    ctx.arc(rect.x + 5, cy, selected ? 2.4 : 1.7, 0, TAU);
-    ctx.fillStyle = selected ? '#e7b979' : '#93a7bb';
-    ctx.fill();
+    ctx.fillText(name, rect.x + 2, cy);
     if (selected) {
       ctx.beginPath();
       ctx.arc(p.x, p.y, Math.max(12, radius * 1.18), 0, TAU);
@@ -250,4 +296,19 @@ export function drawSceneLabels(renderer, vp) {
     }
     ctx.globalAlpha = 1;
   }
+  // Tiny body markers and the selected center indicator are independent of
+  // whether simulated orbital blur makes their TEXT unreadable.
+  for (const item of renderer._labelState?.fastMarkers || []) {
+    const {body,projection:p,radius}=item;
+    const selected=body.id===renderer.selectedId;
+    const marker=centerMarkerStyle(body,selected,radius);
+    ctx.globalAlpha=1;
+    ctx.beginPath();ctx.arc(p.x,p.y,marker.radius,0,TAU);
+    ctx.fillStyle=marker.color;ctx.fill();
+    if (selected) {
+      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(12,radius*1.18),0,TAU);
+      ctx.strokeStyle='rgba(235,184,118,.40)';ctx.lineWidth=1;ctx.stroke();
+    }
+  }
+  ctx.globalAlpha=1;
 }

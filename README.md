@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v80.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v86.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -22,7 +22,7 @@ npm run check:data    # Nur Katalog und redaktionelle Daten prüfen
 - **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, Nachführung und drei Kameraperspektiven.
 - **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit umgekehrtem vertikalem Zwei-Finger-Umschauen; gleitende Fahrten beim Perspektivwechsel per Kamerataste; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
 - **Darstellung:** getrennte Objektkategorien, Beschriftungen, Beleuchtung, Monde, Umlaufbahnen und Kontrast; unabhängig gespeicherte Ansichtsoptionen.
-- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit Durchmesser, Oberflächengravitation und mittlerer Temperatur sowie einem zum Parent gerichteten Entfernungspfeil (km/AE). Cinema startet in der Größenreihe wie bisher klein-zu-groß; in der Entfernungsreihe läuft es ohne Neuordnung von links nach rechts.
+- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und zeigt die Scannerwirkung an Kamerahaltepunkten. Cinema startet in der Größenreihe wie bisher klein-zu-groß; in der Entfernungsreihe läuft es ohne Neuordnung von links nach rechts.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
 - **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im Daten-Tab verfügbar; unbekannte Werte bleiben offen.
 - **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert; lokale Texturen werden bei Bedarf gecacht. API-Daten sind nicht Bestandteil des Offline-Caches.
@@ -86,6 +86,42 @@ In der Sortierung **Entfernung ↑** werden mittlere Abstände **bis einschließ
 
 Die **Temperaturkachel** im Daten-Tab ist jetzt platzsparend: Der Mittelwert steht links mit halb gefülltem schwarzem Thermometer **ohne helle Icon-Fläche**, aber mit kontrastierender Kontur. Vorhandene Min.- und Max.-Temperaturen stehen **rechts in zwei schmalen Zeilen untereinander** mit kleinem blauem bzw. rotem Thermometer. Fehlende Extremwerte werden nicht als leere Zeilen belegt; ohne Min./Max. bleibt nur der Mittelwert sichtbar. Desktop und Mobile-Sheet verwenden dieselbe Darstellung.
 
+## Delta-Update auf v86
+
+`Sonnensystem-Delta-v86.zip` über eine vollständige **v85.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die PWA online neu laden, damit `sonnensystem-shell-v86` aktiviert wird. Es werden nur geänderte und neue Dateien geliefert.
+
+**Smart Labels v86:** Eine Beschriftung wird ausgeblendet, wenn der Körper wegen der **simulierten Bahnbewegung** schneller als **190 CSS-Pixel/Sekunde** im aktuellen Kamerabild wandert. Unter **135 CSS-Pixel/Sekunde** erscheint das Label wieder (Hysterese gegen Flackern, keine Wartezeit). Dazu wird die Verschiebung relativ zum Parent bei unveränderter Kameraprojektion gemessen: reine Kameraschwenks, Zooms, Layoutübergänge und Zeitsprünge lassen Labels sichtbar. Auch wenn der Text wegen einer schnellen Bahn verschwindet, bleiben Mittelpunktmarker kleiner Objekte sowie Selektionspunkt und Ring sichtbar.
+
+**Sonnensystemübersicht:** Je Planet (auch Zwergplanet) werden höchstens die **vier größten direkt zugehörigen Objekte** beschriftet; Monde und Satelliten zählen gemeinsam nach Katalogradius. Eine ausgewählte kleinere Begleitobjekt-Beschriftung ersetzt gegebenenfalls Rang vier, statt die Grenze zu erhöhen. Diese Begrenzung ist unabhängig von **„Alle Monde“** und ändert nur Labels, nicht Kugeln, Umlaufbahnen oder Klickziele. In der isolierten Planetenansicht gibt es keine Vierergrenze. Keine Textkollisions- oder Raster-Dichtefilter.
+
+## Delta-Update auf v85 (historisch)
+
+`Sonnensystem-Delta-v85.zip` über eine vollständige **v84.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die PWA online neu laden, damit `sonnensystem-shell-v85` aktiviert wird. Es werden nur geänderte und neue Dateien geliefert.
+
+**Smart Labels v85:** Bei **schnellen Kameraschwenks, Zooms und Objektbewegungen** bleiben alle ansonsten darstellbaren Labels durchgehend sichtbar. Die früheren Geschwindigkeits- und Wartezeitregeln entfallen. Ansichtsränder, aktivierte Layer, Beschriftungsschalter und Reihen-Hover-HUD funktionieren weiterhin wie zuvor; Mittelpunkt-Marker und Selektionsfarbe aus v84 bleiben erhalten.
+
+## Frühere Smart-Label-Änderungen (v84/v83)
+
+**Smart Labels v84:** Der führende Punkt vor jedem Objektlabel entfällt. Stattdessen erscheint bei sehr klein gezeichneten, gelabelten Objekten ein Mittelpunkt-Punkt in der **Farbe der Objektkategorie** direkt auf dem Objekt. **Selektierte Objekte** tragen diesen Mittelpunkt-Punkt **immer** in der Selektionsfarbe, auch wenn das Objekt größer dargestellt wird.
+
+**Smart Labels:** Die bisherige Dichtegrenze von zwei nicht ausgewählten Beschriftungen je 160 × 110 CSS-Pixel wurde vollständig entfernt. Alle durch die Kamera sichtbaren und innerhalb des Viewports platzierbaren Objektlabels dürfen nun gleichzeitig erscheinen – auch wenn sich Texte oder Planetenscheiben überlappen. Die Auswahl wird zuletzt gezeichnet und bleibt damit visuell vorn. Die unabhängigen Regeln für die manuell gewählte Beschriftungsoption, aktivierte Objektlayer/„Alle Monde“, die Bildschirmgrenzen und das Reihen-Hover-HUD gelten weiterhin; die Geschwindigkeitsfilterung entfällt in v85.
+
+## Delta-Update auf v82
+
+`Sonnensystem-Delta-v82.zip` über eine vollständige **v81.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die PWA online neu laden, damit `sonnensystem-shell-v82` aktiviert wird. Es werden nur geänderte und neue Dateien geliefert; die Katalog- und Texturdaten bleiben unverändert.
+
+- **Schematisch (Objekt aus, Bahn aus):** Die acht Planetenbahnen liegen in der Sonnensystemübersicht auf nahezu gleichmäßigen Abständen von **2,25 Szeneneinheiten**. Die alte Wurzelkurve mit großen äußeren Lücken wird durch eine stückweise, stetige Verteilung mit flacherem Zuwachs ersetzt. Kleinobjekte werden nach ihrem realen Bahnhalbachsenwert zwischen den Planeten eingeordnet; jenseits Neptuns wächst die Distanz logarithmisch weiter.
+- **Optimiert (Objekt an, Bahn aus):** Die Sonne hat den **dreifachen v81-Optimiert-Radius** (insgesamt zwölfmal den schematischen Sonnenradius). Die inneren Bahnen wandern nach außen, die äußeren werden gegenüber v81 zusammengezogen. Merkurbahn und Sonnenoberfläche bleiben auch am Perihel getrennt. Die übrigen Körper behalten ihre bisherigen Größen; die Reihen-/Cinema-Darstellung behält auch ihre bisherige Sonnenproportion. Diese Variante ist eine **illustrative Darstellung**, nicht physikalisch maßstabsgetreu.
+- **Unverändert:** Bahn an (physikalische Abstandsmaßstäbe), einzelne Planetenansichten, Reihen-/Cinema-Modi. JPL-Koordinaten nutzen dieselbe Halbachsen-Umrechnung wie die gezeichneten Bahnen, damit Live-Positionen nicht versetzt erscheinen.
+
+## Delta-Update auf v81
+
+`Sonnensystem-Delta-v81.zip` über **v80.0.0** im Projektstamm entpacken und bestehende Dateien überschreiben. `npm run check` ausführen und die PWA online neu öffnen, damit der Cache `sonnensystem-shell-v81` aktiv wird. Das Archiv enthält ausschließlich neue und geänderte Dateien, keine Katalog- oder Texturkopien.
+
+- **Reihen-Hover:** Der Abstand zwischen dem gehoverten Objekt und dem horizontalen Distanzpfeil wurde von 23 auf **69 CSS-Pixel** verdreifacht. Der Pfeil endet am dem Kind zugewandten **äußeren Rand des direkten Parent-Körpers**, nicht in dessen Zentrum. Bei Eltern außerhalb des Sichtbereichs wird der Pfeil am sichtbaren Außenrand oder an der Bildschirmkante begrenzt.
+- **Direktes HUD:** Der Objektname steht in der türkisfarbenen Hover-Typografie **über dem Planeten**. Gravitation (G) und mittlere Temperatur (°C) erscheinen **links und rechts darunter**, mit exakt denselben SVGs aus den Objektdetails. Der Durchmesser bleibt im Messrahmen. Die seitliche Objektanalyse-/Hover-Karte entfällt.
+- **Cinema:** Links in der Cinema-Zeitleiste steuert ein eigener Button **Pause/Fortsetzen**. Die Simulation ist davon unabhängig, und manuelles Scrubbing funktioniert auch bei Pause. Während die Kamera nach einer Anfahrt tatsächlich auf einem Objekt ruht, nutzt dieses denselben Scanner-/Vergrößerungseffekt wie ein Reihen-Hover; während der Fahrt bleibt er aus. Der Stop-Button und `Esc` beenden weiterhin Cinema.
+
 ## Delta-Update auf v80
 
 `Sonnensystem-Delta-v80.zip` wird über **v79** installiert. Der Reihen-Scanner zeigt nun statt `SCAN // AKTIV` den formatierten Durchmesser an; verbreiterte Eckmarkierungen und animierte beidseitige Messpfeile kennzeichnen ihn visuell. Das Label „Abstand zum Parent“ entfällt; die Distanzzahl bleibt unter dem Objekt. Der waagerechte Entfernungspfeil erreicht die tatsächliche X-Position des projizierten Parent-Zentrums, wenn sie innerhalb des Viewports liegt, andernfalls den linken bzw. rechten Bildschirmrand (keine 300-px-Begrenzung). Eine Auswahl aus dem Katalog und der Button „Planetenansicht“ übernehmen bei aktivem AR die neue Kameraausrichtung als neutrale Sensorhaltung, ohne die Sensorberechtigung erneut anzufordern. Katalogschema, Datenwerte, Reihe und Cinema bleiben unverändert. PWA-Cache: `sonnensystem-shell-v80`.
@@ -94,13 +130,13 @@ Die **Temperaturkachel** im Daten-Tab ist jetzt platzsparend: Der Mittelwert ste
 
 `Sonnensystem-Delta-v79.zip` ist ein Hotfix für v78 (nur neue oder geänderte Dateien). Der bereits berechnete Entfernungspfeil war unsichtbar, weil beim SVG-Element das HTML-Attribut `hidden` durch Zuweisung an `.hidden` nicht entfernt wurde. Die Anzeige schaltet dieses Attribut jetzt ausdrücklich über `setAttribute`/`removeAttribute` um. Der Pfeil erscheint beim Hover in einer Reihe und wird ausgeblendet, wenn kein gültiger Parent-Abstand vorliegt. Tests decken diese DOM-SVG-Eigenschaft ab. `sonnensystem-shell-v79` aktualisiert den Offline-Cache; Katalog und Cinema bleiben unverändert.
 
-## Delta-Update auf v78
+## Delta-Update auf v78 (historischer Stand)
 
 `Sonnensystem-Delta-v78.zip` enthält ausschließlich neue und geänderte Dateien gegenüber **v77**. Die bestehenden Dateien überschreiben, `npm run check` ausführen und die App online neu laden; der Offline-Cache heißt `sonnensystem-shell-v78`. Katalogwerte und Datenschema bleiben unverändert (`10.1.0` / `1`).
 
 - **Reihen-Hover (Desktop mit Maus/Stift):** Über einem tatsächlich dargestellten Körper blendet die WebGL-Reihe einen animierten, türkisfarbenen Scanner ein. Die sichtbare Kugel wächst bei Bedarf weich auf mindestens **160 CSS-Pixel Durchmesser**, ohne die Reihenpositionen oder Cinema-Stopps zu verändern. Das HUD enthält den **Durchmesser in km**, die **Gravitation in G** und die **mittlere Temperatur in °C**. Fehlende Messwerte werden als `—` gezeigt, nicht ergänzt.
 - **Entfernung zum Parent:** Ein unter dem Objekt beginnender Pfeil verlängert sich Richtung projiziertem Zentralobjekt. Der Wert steht direkt unter dem gehoverten Objekt. Bis einschließlich **0,2 AE** wird **km** gezeigt, darüber **AE**. Für das Zentralobjekt selbst wird kein Parent-Pfeil gezeigt.
-- **Eingaben:** Der Scanner erscheint nicht im normalen Orbitmodus, bei Cinema, während laufender Reihenübergänge, bei AR oder beim Ziehen. Er blockiert weder Mausauswahl noch Kameraeingaben. `prefers-reduced-motion` deaktiviert dekorative HUD-Animationen. Auf Touchgeräten ohne Hover bleibt die Steuerung unverändert.
+- **Eingaben:** Der Scanner erschien in v78 nicht im normalen Orbitmodus, bei Cinema, während laufender Reihenübergänge, bei AR oder beim Ziehen; **seit v81 erscheint er auch bei ruhenden Cinema-Kameras**. Er blockiert weder Mausauswahl noch Kameraeingaben. `prefers-reduced-motion` deaktiviert dekorative HUD-Animationen. Auf Touchgeräten ohne Hover bleibt die Steuerung unverändert.
 
 ## Delta-Update auf v77
 

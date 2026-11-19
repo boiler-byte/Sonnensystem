@@ -5,3 +5,4 @@ node_modules/
 .texture-cache/
 /scrape/
 todos.md
+*.zip

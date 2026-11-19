@@ -102,6 +102,12 @@ export function syncCinemaControl(){
   button.setAttribute('aria-label',active?'Cinema-Kamerafahrt stoppen':'Cinema-Kamerafahrt starten');
   $('view-mode-status').classList.toggle('cinema-available',available);
   $('cinema-timeline').hidden=!active;
+  const playback=$('cinema-play-pause'),paused=active && renderer?.cinema?.paused===true;
+  playback.disabled=!active;
+  playback.classList.toggle('is-paused',paused);
+  playback.setAttribute('aria-pressed',String(paused));
+  playback.setAttribute('aria-label',paused?'Cinema fortsetzen':'Cinema pausieren');
+  playback.title=paused?'Cinema fortsetzen':'Cinema pausieren';
   $('cinema-start-label').textContent=S.settings.rowOrder==='distance'?'Nah':'Klein';
   $('cinema-end-label').textContent=S.settings.rowOrder==='distance'?'Fern':'Groß';
   if(!active)$('cinema-seek').value='0';

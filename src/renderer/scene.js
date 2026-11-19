@@ -40,8 +40,12 @@ export function computePositions(renderer, timeMs) {
     if(ov&&ov.date===date){const length=Math.hypot(...ov.vector)||1;
       const scale=renderer.settings?.scaleOrbits
         ? ((b.type==='moon'||b.type==='satellite'||(b.type==='binary'&&b.parentId!=='sun')) ? SOLAR_UNITS_PER_KM : 3.4/AU_KM)
-        : (b.type==='moon'||(b.type==='binary'&&b.parentId!=='sun') ? orbitalRadius(b,parent)/length : sceneRadius(length/AU_KM)/length)
-          * (optimizedSolarMode(renderer.settings) ? OPTIMIZED_ORBIT_FACTOR : 1);
+        : b.parentId==='sun' && Number(b.a)>0
+          // Use the same semi-major-axis scale as the drawn Kepler orbit.
+          // Otherwise non-linear schematics can put JPL bodies off their paths.
+          ? displayOrbitRadius(b,parent,renderer.settings)/(Number(b.a)*AU_KM)
+          : (b.type==='moon'||(b.type==='binary'&&b.parentId!=='sun') ? orbitalRadius(b,parent)/length : sceneRadius(length/AU_KM)/length)
+            * (optimizedSolarMode(renderer.settings) ? OPTIMIZED_ORBIT_FACTOR : 1);
       // JPL reference ECLIPTIC: x,y are ecliptic plane; z is latitude.
       rel=eclipticVectorToScene(ov.vector,scale);
     }
