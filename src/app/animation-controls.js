@@ -108,6 +108,12 @@ export function syncCinemaControl(){
   playback.setAttribute('aria-pressed',String(paused));
   playback.setAttribute('aria-label',paused?'Cinema fortsetzen':'Cinema pausieren');
   playback.title=paused?'Cinema fortsetzen':'Cinema pausieren';
+  const speed=$('cinema-speed-toggle'),doubleSpeed=active && renderer?.cinema?.speed===2;
+  speed.disabled=!active;
+  speed.classList.toggle('active',doubleSpeed);
+  speed.setAttribute('aria-pressed',String(doubleSpeed));
+  speed.setAttribute('aria-label',doubleSpeed?'Cinema mit normaler Geschwindigkeit abspielen':'Cinema mit doppelter Geschwindigkeit abspielen');
+  speed.title=doubleSpeed?'Cinema 1x':'Cinema 2x';
   $('cinema-start-label').textContent=S.settings.rowOrder==='distance'?'Nah':'Klein';
   $('cinema-end-label').textContent=S.settings.rowOrder==='distance'?'Fern':'Groß';
   if(!active)$('cinema-seek').value='0';

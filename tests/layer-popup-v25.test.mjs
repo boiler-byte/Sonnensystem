@@ -2,7 +2,7 @@ import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
-import {STANDARD_LAYERS, PLANET_STANDARD_LAYERS, LAYER_TYPES, createViewSettings, availableLayerTypes, layerEnabled, layerPreset, updateLayerSelection} from '../src/data/layers.js';
+import {STANDARD_LAYERS, PLANET_STANDARD_LAYERS, LAYER_TYPES, LAYER_FILTER_TYPES, createViewSettings, availableLayerTypes, layerEnabled, layerPreset, updateLayerSelection} from '../src/data/layers.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
 const read=async path=>readProjectSource(path);
@@ -63,10 +63,10 @@ test('v25: initial checkbox state matches solar only; view transition still sync
   const html=await read('index.html'),app=await read('src/app.js');
   const layer=popover(html);
   const found=[...layer.matchAll(/<input type="checkbox" data-layer-type="(\w+)"( checked)?(?: aria-label="[^"]*")?\/>/g)];
-  assert.equal(found.length,LAYER_TYPES.length);
+  assert.equal(found.length,LAYER_FILTER_TYPES.length);
   assert.deepEqual(found.filter(match=>Boolean(match[2])).map(match=>match[1]),['star','planet']);
   assert.match(app,/S\.settings=S\.viewSettings\[view\]/);
-  assert.match(app,/check\.checked=layerEnabled\(selected,type\)/);
+  assert.match(app,/check\.checked=members\.length>0 && members\.every\(member => layerEnabled\(selected,member\)\)/);
   assert.match(app,/preset\.dataset\.layerPreset===selected\.mode/);
   assert.match(app,/changeLayers\(layerPreset\(btn\.dataset\.layerPreset,activeView\(\)\)\)/);
   assert.doesNotMatch(app,/\$\('layer-note'\)/);

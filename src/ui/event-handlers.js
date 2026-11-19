@@ -9,7 +9,7 @@ import {openPlanetScene,selectBody} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
 import {alignHorizons} from '../app/object-catalog.js';
 import {setSpeedPopover} from './popover-controls.js';
-import {detailNavigation,setDetailTab} from './object-details.js';
+import {detailNavigation,setDetailTab,restoreDetailTab} from './object-details.js';
 import {syncSceneMode} from './scene-mode.js';
 import {speedAtStep} from './timeline.js';
 import {notifyToggle} from './status.js';
@@ -31,6 +31,7 @@ export function initControls(){
     if(renderer.startCinema())notifyToggle(S.settings.rowOrder==='distance'?'Cinema: Kamerafahrt von links nach rechts':'Cinema: Kamerafahrt von klein nach groß');
   });
   $('cinema-play-pause').addEventListener('click',()=>renderer?.toggleCinemaPause());
+  $('cinema-speed-toggle').addEventListener('click',()=>renderer?.toggleCinemaSpeed());
   const seek=$('cinema-seek');
   seek.addEventListener('pointerdown',()=>renderer?.setCinemaScrubbing(true));
   seek.addEventListener('input',()=>renderer?.seekCinema(Number(seek.value)/1000));
@@ -69,7 +70,7 @@ export function initControls(){
       setDetailTab(next);$('detail-tab-'+next).focus();
     });
   }
-  setDetailTab('wissen');
+  restoreDetailTab();
   for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
     $(id).addEventListener('click',()=>{
       S.settings[setting]=!S.settings[setting];
@@ -78,7 +79,12 @@ export function initControls(){
     });
   }
   syncOrbitControls();
-  $('toggle-labels').addEventListener('click',()=>{S.settings.labels=!S.settings.labels;syncLabelControl();syncLayers();notifyToggle(`Beschriftung: ${S.settings.labels?'An':'Aus'}`);});
+  $('toggle-labels').addEventListener('click',()=>{
+    // Three levels of detail: names + points -> points only -> off.
+    S.settings.labels=S.settings.labels===true?'points':S.settings.labels==='points'?false:true;
+    syncLabelControl();syncLayers();
+    notifyToggle(`Beschriftung: ${S.settings.labels==='points'?'Planetenpunkt':S.settings.labels?'An':'Aus'}`);
+  });
   syncLabelControl();
   $('toggle-lighting').addEventListener('click',()=>{
     S.settings.lighting=S.settings.lighting==='realistic'?'optimized':'realistic';
@@ -109,19 +115,21 @@ export function initControls(){
     renderer.follow(body.id); // Global An/Aus: follow stays on across selections.
     updateDetail();
   });
+  $('back-to-solar').addEventListener('click',()=>{
+    if(!renderer?.planetId)return;
+    if(renderer.cinema?.active)renderer.stopCinema();
+    renderer.reset();
+    updateMode();
+    if(arMode?.active)arMode.alignToPerspective();
+    mobileSheets?.close();
+  });
   $('reset-camera').addEventListener('click',()=>{
-    if(arMode?.active){
-      // Keep the planet scene and the AR sensor session; only change the view.
-      renderer?.cycleCameraPerspective({keepPlanetScene:true});
-      arMode.alignToPerspective();
-      syncSceneMode(S,renderer,true);updateDetail();mobileSheets?.close();
-      return;
-    }
-    if(renderer?.cinema?.active)renderer.stopCinema(); // Normal reset also ends Cinema.
-    const leavingPlanet=Boolean(renderer?.planetId);
-    renderer?.cycleCameraPerspective();
-    if(leavingPlanet)updateMode(); // Only scene exits require a full view refresh.
-    else syncSceneMode(S,renderer,false); // Do not overwrite row camera angles.
+    if(renderer?.cinema?.active)renderer.stopCinema();
+    // Perspective selection is local to the active scene, including dwarf
+    // systems; returning to the Sun is solely the top-left back action.
+    renderer?.cycleCameraPerspective({keepPlanetScene:true});
+    if(arMode?.active)arMode.alignToPerspective();
+    syncSceneMode(S,renderer,arMode?.active);
     updateDetail();mobileSheets?.close();
   });
   $('planet-view-btn').addEventListener('click',()=>{
@@ -131,7 +139,7 @@ export function initControls(){
     if(!openPlanetScene(center?.id))return;
     S.selected=center.id;
     renderer.setSelected(center.id);
-    setDetailTab('wissen');updateMode();
+    updateMode();
     // Isolating a planet resets the orbit preset; in AR the sensor gaze must
     // adopt that view instead of retaining the previous scene's direction.
     if(arMode?.active)arMode.alignToPerspective();

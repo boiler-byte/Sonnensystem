@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v86.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v95.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -20,11 +20,11 @@ npm run check:data    # Nur Katalog und redaktionelle Daten prüfen
 ## Aktuelle Funktionen
 
 - **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, Nachführung und drei Kameraperspektiven.
-- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit umgekehrtem vertikalem Zwei-Finger-Umschauen; gleitende Fahrten beim Perspektivwechsel per Kamerataste; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
-- **Darstellung:** getrennte Objektkategorien, Beschriftungen, Beleuchtung, Monde, Umlaufbahnen und Kontrast; unabhängig gespeicherte Ansichtsoptionen.
-- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und zeigt die Scannerwirkung an Kamerahaltepunkten. Cinema startet in der Größenreihe wie bisher klein-zu-groß; in der Entfernungsreihe läuft es ohne Neuordnung von links nach rechts.
+- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit umgekehrtem vertikalem Zwei-Finger-Umschauen; gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links zurück; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
+- **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung, Monde, Umlaufbahnen und Kontrast; unabhängig gespeicherte Ansichtsoptionen.
+- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe wie bisher klein-zu-groß; in der Entfernungsreihe läuft es ohne Neuordnung von links nach rechts.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
-- **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im Daten-Tab verfügbar; unbekannte Werte bleiben offen.
+- **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Die zuletzt gewählte Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
 - **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert; lokale Texturen werden bei Bedarf gecacht. API-Daten sind nicht Bestandteil des Offline-Caches.
 
 ## Projektaufbau
@@ -85,6 +85,66 @@ In der Sortierung **Entfernung ↑** werden mittlere Abstände **bis einschließ
 `Sonnensystem-Delta-v76.zip` enthält **nur neue oder geänderte Dateien gegenüber v75**. Es wird über eine bestehende **v75-Installation** gelegt (v71 + Delta v72–v75). Nach dem Überschreiben `npm run check` ausführen und die App online neu laden; der neue Offline-Cache heißt `sonnensystem-shell-v76`. Katalogdaten, Quellen, Messwerte und Schema (`10.1.0` / `1`) bleiben unverändert.
 
 Die **Temperaturkachel** im Daten-Tab ist jetzt platzsparend: Der Mittelwert steht links mit halb gefülltem schwarzem Thermometer **ohne helle Icon-Fläche**, aber mit kontrastierender Kontur. Vorhandene Min.- und Max.-Temperaturen stehen **rechts in zwei schmalen Zeilen untereinander** mit kleinem blauem bzw. rotem Thermometer. Fehlende Extremwerte werden nicht als leere Zeilen belegt; ohne Min./Max. bleibt nur der Mittelwert sichtbar. Desktop und Mobile-Sheet verwenden dieselbe Darstellung.
+
+## Delta-Update auf v95
+
+`Sonnensystem-Delta-v95.zip` über eine vollständige **v94.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit `sonnensystem-shell-v95` aktiviert wird. Das Archiv enthält nur geänderte und neue Dateien.
+
+**Reihen-Hover und Cinema:** Der Radar-Rahmen ist nicht mehr auf **560 CSS-Pixel** begrenzt. Gerade auf großen Bildschirmen wächst er nun mit dem projizierten Planetendurchmesser (inklusive 26 px Messrahmenzugabe), bis tatsächlich der Platz für Objektname, Gravitation, Temperatur oder Abstandspfeil aufgebraucht ist. Nur diese räumlichen Grenzen stoppen das Wachstum; die Planetengröße, Beschriftungen und Pfeilgeometrie bleiben unverändert.
+
+## Delta-Update auf v94
+
+`Sonnensystem-Delta-v94.zip` über eine vollständige **v93.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit `sonnensystem-shell-v94` aktiviert wird. Das Archiv enthält nur geänderte und neue Dateien.
+
+**Reihen-Hover und Cinema:** Der Radar-Messrahmen wächst mit dem dargestellten Körper, bleibt aber bei der größten noch verfügbaren Größe stehen, bevor er den **Objektnamen über dem Rahmen**, die **Gravitations-/Temperaturwerte darunter** oder die **Abstandsangabe mit Pfeil** überdecken würde. Die Messwerte halten auch zur Pfeillinie Abstand. Bei wenig Platz (z. B. in der mobilen Cinema-Ansicht oder an Bildschirmrändern) darf der Rahmen kleiner als 160 px werden; die Kugel-Vergrößerung, Objekt- und Pfeilpositionen bleiben davon unabhängig. Keine Änderung an den wissenschaftlichen Werten.
+
+## Delta-Update auf v93
+
+`Sonnensystem-Delta-v93.zip` über eine vollständige **v92.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit `sonnensystem-shell-v93` aktiviert wird. Das Archiv enthält nur geänderte und neue Dateien.
+
+**Maßstab – Objekt aus / Bahn an:** In der Sonnensystemübersicht hat die Sonne nur noch **ein Drittel ihres bisherigen schematischen Radius** (und damit ein Drittel des Durchmessers). Die Körpergrößen aller anderen Objekte sowie sämtliche Bahnabstände bleiben erhalten. Die übrigen Maßstabskombinationen und die isolierte Planetenansicht sind unverändert.
+
+## Delta-Update auf v92
+
+`Sonnensystem-Delta-v92.zip` über einer vollständigen **v91.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit `sonnensystem-shell-v92` aktiviert wird. Das Archiv enthält nur geänderte und neue Dateien.
+
+**Beschriftung – Planetenpunkt:** Der Punkt erscheint wie im normalen Beschriftungsmodus nur, wenn der projizierte Objektradius kleiner als der Punkt ist (**2,2 CSS-Pixel**) oder das Objekt selektiert wurde. Ein selektierter Körper erhält immer einen **goldfarbenen Mittelpunkt-Punkt** (2,6 px) samt Selektionsring, unabhängig von seiner Größe. Große unselektierte Objekte bleiben ohne zusätzlichen Punkt; Namenslabels sind in diesem Modus weiterhin verborgen. Der Modus **An** sowie Geschwindigkeits-, Layer- und Vierer-Textlabelregeln bleiben unverändert.
+
+## Delta-Update auf v91
+
+`Sonnensystem-Delta-v91.zip` über eine vollständige **v90.0.0-Installation** im Projektstamm entpacken und bestehende Dateien überschreiben. Anschließend `npm run check` ausführen und die Anwendung neu laden, damit der Offline-Cache `sonnensystem-shell-v91` aktiv wird. Das Delta enthält nur geänderte und neue Dateien.
+
+**Reihen-Cinema:** Jeder Körper – Sonne, Planet, Zwergplanet, Mond oder anderes Objekt – erhält bei **1x genau 5 Sekunden Haltezeit**. Reisezeiten bleiben bei 1,3 Sekunden pro Fahrt. Der **2x**-Schalter spielt den Film doppelt schnell (also 2,5 Sekunden pro Stopp) und verändert die Zeitleistenstruktur nicht.
+
+**Objektdetails:** **Daten** ist der Standard ohne gespeicherte Auswahl. Wird **Wissen** oder **Daten** gewählt, bleibt dieser Tab beim Objektwechsel, bei Szenenwechseln und nach einem erneuten App-Start geöffnet. Die Auswahl wird im Browser gespeichert; bei deaktiviertem Speicher funktioniert das Umschalten weiterhin ohne Fehler.
+
+## Delta-Update auf v90
+
+`Sonnensystem-Delta-v90.zip` über eine vollständige **v89.0.0-Installation** im Projektstamm entpacken und bestehende Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit der Offline-Cache `sonnensystem-shell-v90` aktiv wird. Das Delta enthält nur neue und geänderte Dateien.
+
+**Zusammengefasste Kategorie-Filter:** Die sichtbare Checkbox **Asteroiden** steuert jetzt Asteroiden **und Doppelasteroiden** gleichzeitig. **Zwergplaneten** steuert Zwergplaneten **und transneptunische Objekte**. Die Zahl der einzeln bedienbaren Objektfilter sinkt von zehn auf acht. Die **wissenschaftlichen Typen, Katalogdaten, Kategorienfarben und genauen Detailbezeichnungen** bleiben getrennt und unverändert; die Gruppierung betrifft ausschließlich den gemeinsamen An/Aus-Filter. Auch in der Planetenansicht und bei **Alle/Standard** bleibt die Filterfunktion konsistent.
+
+## Delta-Update auf v89
+
+`Sonnensystem-Delta-v89.zip` über eine vollständige **v88.0.0-Installation** im Projektstamm entpacken und bestehende Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit der Offline-Cache `sonnensystem-shell-v89` aktiv wird. Enthalten sind nur geänderte und neue Dateien.
+
+**Mobiler Reihen-Cinema-Modus:** Die Cinema-Zeitleiste sitzt direkt an der **Oberkante des Mobile-Sheets**. Sie folgt dessen tatsächlicher Höhe bei geschlossenem, halb geöffnetem und vollständig geöffnetem Sheet sowie beim Ziehen/Animieren. Die Zeitleiste liegt über den unteren **AR- und Perspektive-Buttons** und überdeckt diese während Cinema; das Mobile-Sheet selbst bleibt im Vordergrund. Am Desktop ist die Position unverändert.
+
+## Delta-Update auf v88
+
+`Sonnensystem-Delta-v88.zip` über eine vollständige **v87.0.0-Installation** im Projektstamm entpacken und bestehende Dateien überschreiben. Danach `npm run check` ausführen und die Anwendung online neu laden, damit der Cache `sonnensystem-shell-v88` aktiv wird. Enthalten sind nur geänderte und neue Dateien.
+
+**Objektdetails:** **Daten** ist beim Start aktiv, **Wissen** bleibt als zweite Registerkarte verfügbar. Für den Desktop-Scrollbereich wird die Breite der Scrollleiste stabil reserviert, wodurch der Inhalt beim Tabwechsel nicht mehr horizontal springt.
+
+**Reihen-Cinema:** Planeten und Zwergplaneten erhalten **3 Sekunden** Haltezeit, Sterne, Monde und andere Körper weiterhin **1,5 Sekunden**. Der neue **2x**-Button direkt rechts neben Play/Pause wechselt die Cinema-Geschwindigkeit zwischen normal und doppelt; er verändert weder die Simulationsgeschwindigkeit noch den Pausezustand.
+
+## Delta-Update auf v87
+
+`Sonnensystem-Delta-v87.zip` über eine vollständige **v86.0.0-Installation** im Projektstamm entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen und die PWA online neu laden, damit `sonnensystem-shell-v87` aktiviert wird. Das Archiv enthält ausschließlich geänderte oder neue Dateien.
+
+**Beschriftungsschalter:** Der Button im Layer-Panel wechselt zyklisch **An → Planetenpunkt → Aus → An**. Im Modus **Planetenpunkt** zeigt das Icon einen zentrierten Punkt; Objektlabel-Texte werden nicht gezeichnet, stattdessen erscheinen an allen sichtbaren Objektzentren Punkte in Kategoriefarben (Selektion in Selektionsfarbe). Die Punkte bleiben auch bei schneller simulierter Bahnbewegung sichtbar; die Viererbeschränkung aus v86 betrifft weiterhin nur Textlabels. In **Aus** sind beide Varianten verborgen. Standard-/Alle-Presets setzen wieder **An**; Sonnensystem- und Planetenansicht behalten getrennte Einstellungen.
+
+**Planetenansicht:** Ein oben links platzierter Button **„Sonnensystem“** mit Zurück-Pfeil beendet die isolierte Ansicht. Der untere Kamera-Button wechselt dort nur noch die Perspektiven, auch ohne AR. Im AR-Modus bleibt die Kalibrierung beim Wechsel bzw. Zurücknavigieren konsistent.
 
 ## Delta-Update auf v86
 

@@ -122,8 +122,8 @@ test('v50: invalid sensor samples do not replace the current alignment reference
 
 test('v50: reset click chooses AR recenter only while AR is active, retaining standard camera resets otherwise',async()=>{
  const app=await readAppSource();
- assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',\(\)=>\{\s*if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?arMode\.alignToPerspective\(\)/);
- assert.match(app,/renderer\?\.cycleCameraPerspective\(\);[\s\S]*?if\(leavingPlanet\)updateMode\(\)/);
+ assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?if\(arMode\?\.active\)arMode\.alignToPerspective\(\)/);
+ assert.match(app,/\$\('back-to-solar'\)\.addEventListener\('click',[\s\S]*?renderer\.reset\(\);[\s\S]*?updateMode\(\)/);
  assert.match(app,/createARMode\(renderer,\$\('ar-mode-btn'\),\{notify:notifyToggle,onStateChange:active=>\{/);
  assert.match(app,/syncSceneMode\(S,renderer,arMode\?\.active\)/);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
@@ -134,14 +134,14 @@ test('v50: reset click chooses AR recenter only while AR is active, retaining st
 test('v50: scene-specific reset label is restored after AR ends in a planet scene',async()=>{
  const x=fixture();x.renderer.planetId='earth';
  x.syncLabel(false);
- assert.equal(x.resetButton.title,'Zurück zum Sonnensystem');
- assert.equal(x.resetAttrs.get('aria-label'),'Zurück zur Sonnensystem-Übersicht');
+ assert.equal(x.resetButton.title,'Nächste Perspektive: Topdown');
+ assert.equal(x.resetAttrs.get('aria-label'),'Nächste Perspektive: Topdown');
  await x.mode.activate();x.sensor({alpha:10,beta:70,gamma:0});
  assert.equal(x.resetButton.title,'AR: Nächste Perspektive: Topdown');
  x.syncLabel(true); // A scene update must not overwrite the AR reset action.
  assert.match(x.resetAttrs.get('aria-label'),/AR: Nächste Perspektive: Topdown/);
  x.mode.stop();
- assert.equal(x.resetButton.title,'Zurück zum Sonnensystem');
- assert.equal(x.resetAttrs.get('aria-label'),'Zurück zur Sonnensystem-Übersicht');
+ assert.equal(x.resetButton.title,'Nächste Perspektive: Topdown');
+ assert.equal(x.resetAttrs.get('aria-label'),'Nächste Perspektive: Topdown');
  x.mode.dispose();
 });

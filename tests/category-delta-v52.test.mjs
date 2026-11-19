@@ -5,7 +5,7 @@ import {readFile} from 'node:fs/promises';
 import {loadCatalog,parseCategory} from '../src/data/catalog.js';
 import {TYPES,CATEGORY_COLORS} from '../src/data/bodies.js';
 import {keplerPosition,renderRadius} from '../src/data/orbital-math.js';
-import {LAYER_TYPES,layerPreset,layerEnabled,availableLayerTypes} from '../src/data/layers.js';
+import {LAYER_TYPES,LAYER_FILTER_TYPES,layerPreset,layerEnabled,availableLayerTypes} from '../src/data/layers.js';
 import {catalogMatches,filteredBodies} from '../src/ui/object-list.js';
 import {solarOrbitBodies} from '../src/renderer/solar-view.js';
 import {orbitAppearance} from '../src/renderer/orbits.js';
@@ -21,16 +21,18 @@ const newGroups={
 const requiredIds=Object.values(newGroups).flatMap(group=>Object.keys(group));
 
 // A new visible category must not affect the solar or isolated-planet presets.
-test('v52: the first Layer-Dropdown category is Sterne, in model and DOM',async()=>{
+test('v90: first Layer-Dropdown category remains Sterne; scientific types stay separate',async()=>{
   const html=await read('index.html');
   const layer=html.split('id="layer-popover"')[1].split('id="time-panel"')[0];
   const entries=[...layer.matchAll(/<label class="layer-option"><input type="checkbox" data-layer-type="([a-z]+)"( checked)?(?: aria-label="[^"]*")?\/><span>([^<]+)<\/span><\/label>/g)];
-  assert.equal(entries.length,LAYER_TYPES.length);
-  assert.deepEqual(entries.map(m=>m[1]),LAYER_TYPES);
+  assert.equal(entries.length,LAYER_FILTER_TYPES.length);
+  assert.deepEqual(entries.map(m=>m[1]),LAYER_FILTER_TYPES);
   assert.equal(entries[0][1],'star');
   assert.equal(entries[0][3],'Sterne');
   assert.deepEqual(entries.filter(m=>m[2]).map(m=>m[1]),['star','planet']);
-  assert.equal(entries.find(m=>m[1]==='tno')[3],'Transnept. Objekte');
+  assert.equal(entries.find(m=>m[1]==='dwarf')[3],'Zwergplaneten');
+  assert.equal(entries.find(m=>m[1]==='asteroid')[3],'Asteroiden');
+  assert.ok(LAYER_TYPES.includes('tno') && LAYER_TYPES.includes('binary'),'scientific types are retained');
   assert.equal((layer.match(/data-layer-type="star"/g)||[]).length,1);
 });
 

@@ -40,7 +40,7 @@ class MockEl {
   hasPointerCapture(){return this.captured;}
   releasePointerCapture(){this.captured=false;}
 }
-const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','catalog','detail','view-mode-status','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn','sidebar','sidebar-content'].map(id=>[id,new MockEl(id)]));
+const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','cinema-timeline','catalog','detail','view-mode-status','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn','sidebar','sidebar-content'].map(id=>[id,new MockEl(id)]));
 nodes['mobile-sheet'].height=760;nodes['sheet-header'].height=45;
 const buttons=Object.fromEntries(['catalog','detail'].map(name=>[name,new MockEl('tab-'+name)]));
 for(const [name,el] of Object.entries(buttons)){el.dataset.sheetPanel=name;}
@@ -80,6 +80,7 @@ assert.equal(nodes['view-mode-status'].parentNode,viewport);
 assert.equal(nodes['reset-camera'].parentNode,viewportActions);
 assert.equal(nodes['mobile-sheet'].dataset.snap,'closed');
 assert.equal(viewportActions.style.values['--sheet-visible'],'45px');
+assert.equal(nodes['cinema-timeline'].style.values['--sheet-visible'],'45px');
 assert.equal(viewportActions.inert,false);
 assert.equal(nodes['sheet-content'].inert,true);
 assert.equal(nodes['catalog'].hidden,false);
@@ -90,6 +91,7 @@ near(controller.focusOffsetFor(canvas),.39);
 assert.equal(nodes['sheet-header'].getAttribute('aria-expanded'),'true');
 assert.equal(nodes['mobile-sheet'].style.values['--sheet-visible'],`${windowMock.innerHeight*.39}px`);
 assert.equal(viewportActions.style.values['--sheet-visible'],`${windowMock.innerHeight*.39}px`);
+assert.equal(nodes['cinema-timeline'].style.values['--sheet-visible'],`${windowMock.innerHeight*.39}px`);
 assert.equal(viewportActions.inert,false);
 assert.equal(nodes['catalog'].hidden,false);
 assert.equal(nodes['detail'].hidden,true);
@@ -97,6 +99,7 @@ assert.equal(buttons.catalog.getAttribute('aria-pressed'),'true');
 controller.expand();
 assert.equal(nodes['mobile-sheet'].dataset.snap,'full','Catalog/detail sheets can still expand fully');
 assert.equal(viewportActions.style.values['--sheet-visible'],`${windowMock.innerHeight}px`);
+assert.equal(nodes['cinema-timeline'].style.values['--sheet-visible'],`${windowMock.innerHeight}px`);
 near(controller.focusOffsetFor(canvas),1);
 assert.equal(viewportActions.inert,true);
 controller.open('detail');
@@ -119,8 +122,11 @@ header.emit('pointermove',{pointerId:7,clientY:750,preventDefault(){}});
 near(controller.focusOffsetFor(canvas),(45+60)/844);
 assert.equal(viewportActions.style.values['--sheet-visible'],nodes['mobile-sheet'].style.values['--sheet-visible']);
 assert.equal(viewportActions._classes.has('sheet-dragging'),true);
+assert.equal(nodes['cinema-timeline'].style.values['--sheet-visible'],nodes['mobile-sheet'].style.values['--sheet-visible']);
+assert.equal(nodes['cinema-timeline']._classes.has('sheet-dragging'),true);
 header.emit('pointerup',{pointerId:7});
 assert.equal(viewportActions._classes.has('sheet-dragging'),false);
+assert.equal(nodes['cinema-timeline']._classes.has('sheet-dragging'),false);
 assert.equal(nodes['mobile-sheet'].dataset.snap,'half','Swipe upward opens half');
 header.emit('pointerdown',{pointerId:8,button:0,clientY:810});
 header.emit('pointermove',{pointerId:8,clientY:880,preventDefault(){}});

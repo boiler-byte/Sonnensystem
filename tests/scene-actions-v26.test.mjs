@@ -47,7 +47,8 @@ test('v27: reset is a single framed zoom-out icon separate from the panel and mo
   assert.doesNotMatch(app,/\$\('help-btn'\)|\$\('mobile-menu'\)|\$\('view-mode-select'\)/);
   assert.match(css,/\.viewport-actions \.camera-reset-button\{[\s\S]*?border-radius:50%/);
   assert.match(css,/\.viewport>\.control-panel\{\s*width:58px!important/);
-  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\)[\s\S]*?arMode\.alignToPerspective\(\)[\s\S]*?renderer\?\.cycleCameraPerspective\(\)/);
+  assert.match(app,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\)[\s\S]*?syncSceneMode/);
+  assert.match(app,/\$\('back-to-solar'\)\.addEventListener\('click',[\s\S]*?renderer\.reset\(\);[\s\S]*?updateMode\(\)/);
 });
 
 test('v26: layer trigger is icon-only and keeps an accessible, state-dependent name',async()=>{
@@ -139,10 +140,13 @@ test('v26: scene accessibility updates the camera action for dwarf planet and so
   globalThis.document={getElementById:get};
   try{
     const state={bodies:INITIAL_BODIES};
-    syncSceneMode(state,{planetId:'pluto'});
+    const camera={camera:{},cameraPresetIndex:0,cameraManuallyMoved:false};
+    syncSceneMode(state,{planetId:'pluto',...camera});
     assert.match(get('view-mode-status').getAttribute('aria-label'),/Zwergplanet Pluto/);
-    assert.equal(get('reset-camera').getAttribute('aria-label'),'Zurück zur Sonnensystem-Übersicht');
-    syncSceneMode(state,{planetId:null});
-    assert.equal(get('reset-camera').getAttribute('aria-label'),'Kamera zurücksetzen');
+    assert.equal(get('back-to-solar').hidden,false);
+    assert.equal(get('reset-camera').getAttribute('aria-label'),'Nächste Perspektive: Topdown');
+    syncSceneMode(state,{planetId:null,...camera});
+    assert.equal(get('back-to-solar').hidden,true);
+    assert.equal(get('reset-camera').getAttribute('aria-label'),'Nächste Perspektive: Topdown');
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });

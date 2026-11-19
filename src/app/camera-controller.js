@@ -1,6 +1,5 @@
 import {S,renderer,mobileSheets,arMode,byId} from './state.js';
 import {layerEnabled,availableLayerTypes,updateLayerSelection} from '../data/layers.js';
-import {setDetailTab} from '../ui/object-details.js';
 import {updateCatalog,updateDetail} from '../ui/catalog-controller.js';
 import {updateMode} from './view-mode.js';
 import {loadAsteroid} from './object-catalog.js';
@@ -29,7 +28,6 @@ export function selectBody(id,focus=false){
     else{renderer.reset();renderer.calcPositions(S.time);}
     updateMode();
   }
-  if(S.selected!==id)setDetailTab('wissen');
   S.selected=id;
   renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe'});
   // Selecting a catalog body moves the camera's orbit target. In AR the gaze
@@ -44,7 +42,6 @@ export function clearSelection(){
   if(renderer?.cinema?.active)renderer.stopCinema();
   if(S.selected===null)return;
   S.selected=null;
-  setDetailTab('wissen');
   renderer?.setSelected(null);
   updateCatalog();updateDetail();
 }

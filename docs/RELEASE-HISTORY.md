@@ -1,9 +1,18 @@
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v86 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v95 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 
+- [v95 – Radar-Rahmen ohne starre 560-px-Grenze](#release-v95)
+- [v94 – Radar-Rahmen wächst nur bis zu den HUD-Informationen](#release-v94)
+- [v93 – Sonne auf ein Drittel bei Objekt aus / Bahn an](#release-v93)
+- [v92 – Punktmodus nur für kleine oder selektierte Objekte](#release-v92)
+- [v91 – Cinema mit 5 Sekunden und gemerkte Detail-Tabs](#release-v91)
+- [v90 – Zusammengefasste Objektkategorie-Filter](#release-v90)
+- [v89 – Mobile Cinema-Zeitleiste direkt am Sheet](#release-v89)
+- [v88 – Daten-Tab als Standard, stabiler Scrollbereich und Cinema-2x](#release-v88)
+- [v87 – Drei Beschriftungsmodi und eigenständige Planetennavigation](#release-v87)
 - [v86 – Smart Labels mit Bahnbewegungsfilter und Vierergrenze](#release-v86)
 - [v85 – Smart Labels ohne Geschwindigkeitsfilter](#release-v85)
 - [v84 – Smart Labels mit Mittelpunkt-Markern](#release-v84)
@@ -93,6 +102,107 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [Hotfix v6.1](#hotfix-v61)
 
 ---
+
+<a id="release-v95"></a>
+
+## Release v95 – Radar-Rahmen ohne starre 560-px-Grenze
+
+**Basis:** v94.0.0. **Ziel:** v95.0.0. **Paket:** `Sonnensystem-Delta-v95.zip`. **Cache:** `sonnensystem-shell-v95`.
+
+- Der alte **560-px-Höchstwert** in der Rahmengrößenberechnung wird entfernt, ebenso die proportionale Obergrenze auf 80 % einer Viewport-Abmessung.
+- Der Rahmen wächst mit dem projizierten Planetendurchmesser und stoppt erst bei den tatsächlichen Abständen zu **Name**, **Gravitation/Temperatur** und **Abstandspfeil**, inklusive Cinema-Leiste.
+- Die gewohnten kleineren Rahmen in engen Ansichten, Kugelgröße, Pfeile, Daten, Animationen und Layoutpositionen bleiben unverändert.
+- Regressionstest `tests/row-scanner-growth-v95.test.mjs` prüft einen großen Hover-Rahmen **über 560 px** und die weiterhin freien Messwerte im Hover- und Cinema-Modus.
+
+<a id="release-v94"></a>
+
+## Release v94 – Radar-Rahmen wächst nur bis zu den HUD-Informationen
+
+**Basis:** v93.0.0. **Ziel:** v94.0.0. **Paket:** `Sonnensystem-Delta-v94.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v94`.
+
+- Im Reihen-Hover und während Cinema-Haltephasen wächst der Scanner proportional zur projizierten Objektgröße, bis er an die Grenzbereiche für **Objektname oberhalb, Gravitation/Temperatur unterhalb und Abstandspfeil** heranreicht.
+- Ab diesem Punkt bleibt die **Rahmengröße** begrenzt, auch wenn der gezeichnete Planet weiter größer wird; die untere Messwertgruppe bleibt zusätzlich außerhalb der Distanzpfeillinie; die 160-px-Mindestgröße des Körpers bleibt bestehen.
+- Im engen Bildschirmbereich darf nur der Scanner kleiner als 160 px werden, damit seine Dekoration nicht über die HUD-Angaben ragt. Der Distanzpfeil, die Messwerte und die Cinema-Steuerung bleiben unverändert.
+- Neue Regressionstests `tests/row-scanner-clearance-v94.test.mjs` decken Grenzwerte, tatsächliche DOM-Positionen, Cinema und das Fehlen eines Parent-Pfeils ab. Katalog, Texturen und APIs sind unverändert.
+
+<a id="release-v93"></a>
+
+## Release v93 – Sonne auf ein Drittel bei Objekt aus / Bahn an
+
+**Basis:** v92.0.0. **Ziel:** v93.0.0. **Paket:** `Sonnensystem-Delta-v93.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v93`.
+
+- In der Sonnensystemübersicht wird der Radius der Sonne bei **Objekt aus / Bahn an** auf ein Drittel ihres bisherigen schematischen Radius reduziert.
+- Die sonstigen Körperradien, Umlaufbahnen und Objektpositionen bleiben unverändert.
+- Die Maßstabskombinationen **Objekt aus / Bahn aus**, **Objekt an / Bahn aus** und **Objekt an / Bahn an** sowie lokale Planetenansichten behalten ihre bisherigen Größen.
+- Neue Regressionstests `tests/scale-v93.test.mjs` prüfen die Größenverhältnisse und den tatsächlichen Rendererpfad; Katalog, Texturen und APIs sind unverändert.
+
+<a id="release-v92"></a>
+
+## Release v92 – Punktmodus nur für kleine oder selektierte Objekte
+
+**Basis:** v91.0.0. **Ziel:** v92.0.0. **Paket:** `Sonnensystem-Delta-v92.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v92`.
+
+- Der reine Modus **Planetenpunkt** verwendet jetzt die gleiche Objektgrößenprüfung wie **Beschriftung an**. Nur Körper mit projiziertem Radius **unter 2,2 CSS-Pixel** bekommen den Kategorienpunkt.
+- Ein selektierter Körper trägt **immer** seinen goldfarbenen Mittelpunkt-Punkt (2,6 px) und Selektionsring, auch wenn der Körper deutlich größer dargestellt wird.
+- Namenslabels im Punktmodus bleiben ausgeblendet. Der Bahngeschwindigkeitsfilter sowie die Viererregel gelten weiterhin nur für Textlabels.
+- Neuer Regressionstest `tests/label-points-v92.test.mjs` und angepasste v87-Prüfungen. Die restliche UI, Katalog, Texturen und externe Dienste bleiben unverändert.
+
+<a id="release-v91"></a>
+
+## Release v91 – Fünf Sekunden Cinema und gespeicherte Detail-Tab-Auswahl
+
+**Basis:** v90.0.0. **Ziel:** v91.0.0. **Paket:** `Sonnensystem-Delta-v91.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v91`.
+
+- Die Cinema-Haltezeit ist für **alle Objekttypen 5000 ms**, unabhängig vom Planetenstatus; die Fahrzeit bleibt 1300 ms. 2x verkürzt die tatsächliche Verweildauer auf 2,5 Sekunden.
+- Der zuletzt gewählte Tab **Daten** oder **Wissen** wird pro Browser im lokalen Speicher hinterlegt und nach einem Neustart wiederhergestellt; ohne gespeicherte Auswahl bleibt **Daten** der Standard.
+- Objektwechsel, Auswahlaufhebung und Öffnen einer Planetenansicht ändern die Tab-Auswahl nicht mehr. Bei blockiertem Speicher bleibt die Tab-Bedienung funktionsfähig.
+- Aktualisierte Cinema-Zeitregressionen und neue `tests/cinema-detail-memory-v91.test.mjs`. Keine Änderungen an den Quelldaten, Texturen oder externen Diensten.
+
+<a id="release-v90"></a>
+
+## Release v90 – Zusammengefasste Objektkategorie-Filter
+
+**Basis:** v89.0.0. **Ziel:** v90.0.0. **Paket:** `Sonnensystem-Delta-v90.zip` (nur geänderte und neue Dateien). **Cache:** `sonnensystem-shell-v90`.
+
+- Die sichtbaren Checkboxen **Asteroiden** und **Doppelasteroiden** sind zu **Asteroiden** zusammengelegt. Ein Schalter aktiviert/deaktiviert beide wissenschaftlichen Typen.
+- **Zwergplaneten** und **transneptunische Objekte** sind im Filter **Zwergplaneten** zusammengefasst. Beide werden gemeinsam geschaltet.
+- Acht bedienbare Filter steuern weiterhin zehn eigenständige wissenschaftliche Objekttypen. Detailansicht, Katalog, Kategoriepunkte, Bahn-/Objektmodell und die Originaldaten behalten ihre bisherigen Typbezeichnungen und Farben.
+- Presets und Planetenansichten berücksichtigen die gekoppelten Filter; Tests decken kombinierte Sichtbarkeit, Attributerhalt, Gruppenverfügbarkeit und frühere Teilzustände ab.
+
+<a id="release-v89"></a>
+
+## Release v89 – Mobile Cinema-Zeitleiste über dem Sheet
+
+**Basis:** v88.0.0. **Ziel:** v89.0.0. **Paket:** `Sonnensystem-Delta-v89.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v89`.
+
+- Auf Mobilgeräten (bis 770 px) schließt die Cinema-Zeitleiste direkt an den oberen Rand des mobilen Sheets an statt einen festen Abstand zum Bildschirmrand zu haben.
+- Sie folgt den Snapstufen (geschlossen/halb/voll) und dem manuellen Verschieben des Sheets ohne Offset oder verzögerte Drag-Bewegung.
+- Die Zeitleiste überdeckt im Cinema-Modus die AR- und Perspektive-Buttons; das Sheet bleibt darüber. Desktop und Cinema-Abspiellogik unverändert.
+- Neue Tests `tests/cinema-mobile-timeline-v89.test.mjs` und zusätzliche Assertions in `tests/pwa-bottom-sheet-v2.test.mjs`.
+
+<a id="release-v88"></a>
+
+## Release v88 – Daten-Tab als Standard und Cinema-2x
+
+**Basis:** v87.0.0. **Ziel:** v88.0.0. **Paket:** `Sonnensystem-Delta-v88.zip` (nur geänderte bzw. neue Dateien). **Cache:** `sonnensystem-shell-v88`.
+
+- Objektdetails beginnen im Tab **Daten**, sowohl visuell als auch über ARIA und Initialisierungslogik. **Wissen** bleibt über die Tabs erreichbar.
+- Im Desktop-Detailbereich bleibt durch `scrollbar-gutter:stable` die Scrollleistenbreite reserviert; damit springt das Layout nicht beim Wechsel zwischen langen und kurzen Tab-Inhalten.
+- Cinema verweilt **3000 ms auf Planeten/Zwergplaneten** und ansonsten **1500 ms** auf einem Körper. Die Fahrten zwischen den Stopps bleiben unverändert.
+- Ein **2x**-Button unmittelbar rechts von Play/Pause wechselt die Geschwindigkeit der Cinema-Kamerafahrt 1x ↔ 2x, ohne die Simulationsuhr oder die Pausensteuerung zu beeinflussen.
+- Neue Tests `tests/detail-cinema-v88.test.mjs` und aktualisierte ältere Cinema-Laufzeiterwartungen. Katalog, Texturen, externe API unverändert.
+
+<a id="release-v87"></a>
+
+## Release v87 – Drei Beschriftungsmodi und Planetennavigation
+
+**Basis:** v86.0.0. **Ziel:** v87.0.0. **Paket:** `Sonnensystem-Delta-v87.zip` (nur neue und geänderte Dateien). **Cache:** `sonnensystem-shell-v87`.
+
+- Der Beschriftungsschalter durchläuft **An → Planetenpunkt → Aus → An**; der neue Modus zeigt einen Mittelpunkt statt des Textlabel-Icons.
+- Im Punktmodus verschwinden sämtliche Objektlabeltexte; alle gerenderten sichtbaren Körper erhalten Kategoriepunkte direkt in ihrer Mitte, selektierte Objekte behalten Punkt und Auswahlring. Die v86-Geschwindigkeits- und Vier-Textlabelgrenze betrifft diesen Modus nicht.
+- Ein neuer, nur in der Planetenansicht sichtbarer Button **„Sonnensystem“** mit Zurück-Pfeil oben links übernimmt den Rückweg in die Übersicht.
+- Der Kamera-Button schaltet ab jetzt auch in der Planetenansicht ausschließlich **Schräg/oben → Topdown → Seitlich** um; AR-Neuausrichtung bleibt erhalten.
+- Neue Regressionstests für SVG/Icon, Zustand, Marker, Ansichtsnavigation und AR. Keine Änderungen am Katalog und an API-/Texturdaten.
 
 <a id="release-v86"></a>
 

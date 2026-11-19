@@ -2,7 +2,7 @@ import {readAppSource,readProjectSource} from './helpers/app-source.mjs';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
-import {layerEnabled, layerPreset, updateLayerSelection, layerSummary, LAYER_TYPES, STANDARD_LAYERS} from '../src/data/layers.js';
+import {layerEnabled, layerPreset, updateLayerSelection, layerSummary, LAYER_TYPES, LAYER_FILTER_TYPES, STANDARD_LAYERS} from '../src/data/layers.js';
 import {catalogMatches, filteredBodies} from '../src/ui/object-list.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
@@ -26,7 +26,7 @@ test('v15: independent category checkboxes support multiselect and collapse back
   const chosen=updateLayerSelection(initial,'asteroid',true);
   assert.equal(chosen.mode,'custom');
   assert.equal(layerSummary(chosen),'3 Layer');
-  assert.deepEqual([...chosen.types],['star','planet','asteroid']);
+  assert.deepEqual([...chosen.types],['star','planet','asteroid','binary']);
   assert.equal(initial.types.size,2,'Original state is immutable');
   const again=updateLayerSelection(chosen,'asteroid',false);
   assert.equal(again.mode,'standard');
@@ -85,7 +85,7 @@ test('v15: new panel has a single accessible dropdown and old catalog chips are 
   assert.doesNotMatch(html,/id="view-mode-select"|for="view-mode-select"/);
   assert.doesNotMatch(html,/class="control-label" for="view-mode-select">Ansicht</);
   assert.equal((html.match(/id="layer-btn"/g)||[]).length,1);
-  assert.equal((html.match(/data-layer-type="/g)||[]).length,LAYER_TYPES.length);
+  assert.equal((html.match(/data-layer-type="/g)||[]).length,LAYER_FILTER_TYPES.length);
   assert.match(html,/data-layer-preset="all"/);
   assert.match(html,/data-layer-preset="standard"/);
   assert.match(html,/aria-controls="layer-popover"/);

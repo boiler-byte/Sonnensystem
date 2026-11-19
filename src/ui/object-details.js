@@ -160,9 +160,20 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   else if(!renderer?.overrides?.has(b.id))$('horizons-note').textContent='NASA/JPL-Position für das gewählte Datum (00:00 UTC) abrufen.';
 }
 
+/** Persist the user's detail-tab preference across objects, scenes and reloads. */
+export const DETAIL_TAB_STORAGE_KEY='sonnensystem-detail-tab';
+
+export function restoreDetailTab(){
+  let saved='daten'; // Fresh installations still open the Data tab by default.
+  try {
+    if(globalThis.localStorage?.getItem(DETAIL_TAB_STORAGE_KEY)==='wissen')saved='wissen';
+  } catch { /* Storage may be unavailable or blocked; keep the default. */ }
+  setDetailTab(saved,{persist:false});
+}
+
 /** Accessible two-tab interface, independent of the selected object. */
-export function setDetailTab(tab) {
-  const current=tab==='daten'?'daten':'wissen';
+export function setDetailTab(tab,{persist=true}={}) {
+  const current=tab==='wissen'?'wissen':'daten';
   for(const name of ['wissen','daten']) {
     const active=name===current;
     const button=$(`detail-tab-${name}`);
@@ -170,5 +181,9 @@ export function setDetailTab(tab) {
     button.setAttribute('aria-selected',String(active));
     button.tabIndex=active?0:-1;
     $(`detail-${name}`).hidden=!active;
+  }
+  if(persist){
+    try { globalThis.localStorage?.setItem(DETAIL_TAB_STORAGE_KEY,current); }
+    catch { /* Tab switching must still work when local storage is blocked. */ }
   }
 }

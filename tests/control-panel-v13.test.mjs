@@ -101,9 +101,11 @@ test('v26: scene mode synchronizes accessible panel and reset controls without a
     const bodies=[{id:'earth',type:'planet',name:'Erde'}], state={bodies};
     syncSceneMode(state,{planetId:'earth'});
     assert.equal(elements.get('view-mode-status').attributes['aria-label'],'Control-Panel · Planet Erde');
-    assert.equal(elements.get('reset-camera').attributes['aria-label'],'Zurück zur Sonnensystem-Übersicht');
+    assert.equal(elements.get('reset-camera').attributes['aria-label'],'Kamera zurücksetzen');
+    assert.equal(elements.get('back-to-solar').hidden,false);
     syncSceneMode(state,{planetId:null});
     assert.equal(elements.get('view-mode-status').attributes['aria-label'],'Control-Panel · Sonnensystem');
+    assert.equal(elements.get('back-to-solar').hidden,true);
     assert.equal(elements.get('reset-camera').attributes['aria-label'],'Kamera zurücksetzen');
     assert.equal(elements.has('view-mode-select'),false);
   }finally{if(before===undefined)delete globalThis.document;else globalThis.document=before;}

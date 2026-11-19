@@ -10,6 +10,29 @@ export const ROW_INSPECTION_ARROW_MS = 520;
 export const ROW_INSPECTION_ARROW_GAP_PX = 23 * 3;
 const HALF_FOV_SCALE = 2 * Math.tan(CAMERA_FOV / 2);
 
+// The title's lower edge is clamped to y=45. Both the title and readings
+// must stay clear of the scanner, including its glow and measurement marks.
+const SCANNER_CLEARANCE_PX = 12;
+const SCANNER_TITLE_MIN_Y = 45;
+
+/** Keep growing the radar with the sphere until its frame reaches the HUD.
+ * The 160px minimum applies only where there is room for it. On a cropped
+ * object or a short Cinema viewport the readings take precedence instead.
+ * The arrow's y is a separate boundary so even the distance rule stays clear.
+ */
+export function rowScannerSize(radiusPx, anchorY, width, height, metricsTopLimit, arrowY=null) {
+  if(!(width>0 && height>0) || !Number.isFinite(anchorY))return 0;
+  // No fixed 560px/viewport-percentage cap: the frame must follow a large
+  // planet until the *actual* nearby title, measurement or arrow space ends.
+  const desired=Math.max(160,Math.max(0,Number(radiusPx)||0)*2+26);
+  const topRoom=Math.max(0,anchorY-SCANNER_TITLE_MIN_Y-SCANNER_CLEARANCE_PX);
+  const lowerLimit=Math.max(72,metricsTopLimit);
+  const metricsRoom=Math.max(0,lowerLimit-anchorY-SCANNER_CLEARANCE_PX);
+  // The distance line starts at arrowY; its text is even farther below.
+  const arrowRoom=Number.isFinite(arrowY)?Math.max(0,arrowY-anchorY-SCANNER_CLEARANCE_PX):Infinity;
+  return Math.min(desired,2*Math.min(topRoom,metricsRoom,arrowRoom));
+}
+
 export function rowProjectedBody(body, position, vp, width, height, radiusWorld) {
   if(!body || !position || !vp || width<=0 || height<=0)return null;
   const screen=projected(position,vp,width,height);

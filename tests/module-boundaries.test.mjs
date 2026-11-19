@@ -66,7 +66,12 @@ test('real ES module UI handlers still change the shared view settings',()=>{
   assert.equal(S.settings.lighting,'realistic');
   assert.equal(node('toggle-lighting').getAttribute('aria-pressed'),'true');
   node('toggle-labels').click();
+  assert.equal(S.settings.labels,'points');
+  assert.equal(node('toggle-labels').getAttribute('data-label-mode'),'points');
+  node('toggle-labels').click();
   assert.equal(S.settings.labels,false);
+  node('toggle-labels').click();
+  assert.equal(S.settings.labels,true);
   node('orbit-visibility-btn').click();
   assert.equal(S.settings.orbits,false);
   node('scale-objects-btn').click();

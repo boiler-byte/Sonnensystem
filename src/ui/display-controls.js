@@ -14,8 +14,13 @@ export function syncOrbitControls(){
 }
 
 export function syncLabelControl(){
-  const enabled=S.settings.labels!==false,button=$('toggle-labels');
-  syncToggleState(button,enabled,`Beschriftung: ${enabled?'An':'Aus'}`);
+  const mode=S.settings.labels==='points'?'points':S.settings.labels===false?'off':'labels';
+  const name={labels:'An',points:'Planetenpunkt',off:'Aus'}[mode];
+  const next={labels:'Planetenpunkt',points:'Aus',off:'An'}[mode];
+  const button=$('toggle-labels');
+  syncToggleState(button,mode!=='off',`Beschriftung: ${name} (nächster Modus: ${next})`);
+  button.setAttribute('data-label-mode',mode);
+  button.setAttribute('aria-label',`Beschriftung: ${name}. Nächster Modus: ${next}`);
 }
 
 export function syncLightingControl(){

@@ -123,15 +123,30 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
     const button=get(id);
     assert.ok(button.handler,`handler for ${id}`);
     assert.equal(button.attrs['aria-pressed'],String(defaultPressed),`${id} default`);
-    button.handler();
-    assert.equal(button.attrs['aria-pressed'],String(!defaultPressed),`${id} after click`);
-    assert.match(notices.at(-1),new RegExp('^'+label+': '),`${id} toast`);
-    assert.match(button.title,/(An|Aus)/,`${id} title`);
-    button.handler();
-    assert.equal(button.attrs['aria-pressed'],String(defaultPressed),`${id} restored`);
+    if(id==='toggle-labels'){
+      button.handler();
+      assert.equal(solar.labels,'points');
+      assert.equal(button.attrs['data-label-mode'],'points');
+      assert.equal(button.attrs['aria-pressed'],'true');
+      assert.match(button.title,/Planetenpunkt/);
+      assert.match(notices.at(-1),/^Beschriftung: Planetenpunkt/);
+      button.handler();
+      assert.equal(solar.labels,false);
+      assert.equal(button.attrs['aria-pressed'],'false');
+      button.handler();
+      assert.equal(solar.labels,true);
+      assert.equal(button.attrs['aria-pressed'],'true');
+    }else{
+      button.handler();
+      assert.equal(button.attrs['aria-pressed'],String(!defaultPressed),`${id} after click`);
+      assert.match(notices.at(-1),new RegExp('^'+label+': '),`${id} toast`);
+      assert.match(button.title,/(An|Aus)/,`${id} title`);
+      button.handler();
+      assert.equal(button.attrs['aria-pressed'],String(defaultPressed),`${id} restored`);
+    }
   }
   assert.equal(get('orbit-colors-btn').handler,null,'colors toggle cannot be clicked');
-  assert.equal(notices.length,10);
+  assert.equal(notices.length,11);
   assert.equal(solar.labels,true);
   assert.equal(solar.lighting,'optimized');
   assert.equal(solar.fourMoons,true);

@@ -65,12 +65,12 @@ test('v69: after free-look or manual motion, reset faces the viewer until clicke
  }finally{ui.restore();}
 });
 
-test('v69: planet overview shows front-facing reset, AR shows actual perspective',()=>{
+test('v87: planet camera keeps its perspective in both ordinary and AR modes',()=>{
  const ui=setup('saturn');
  try{
   ui.sync(false);
-  assert.deepEqual(ui.icon(),['free']);
-  assert.equal(ui.attrs['aria-label'],'Zurück zur Sonnensystem-Übersicht');
+  assert.deepEqual(ui.icon(),['oblique']);
+  assert.equal(ui.attrs['aria-label'],'Nächste Perspektive: Topdown');
   ui.sync(true);
   assert.deepEqual(ui.icon(),['oblique']);
   assert.equal(ui.attrs['aria-label'],'AR: Nächste Perspektive: Topdown');

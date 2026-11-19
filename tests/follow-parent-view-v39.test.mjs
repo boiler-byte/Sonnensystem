@@ -9,7 +9,7 @@ import {SolarRenderer} from '../src/renderer/index.js';
 const byId=id=>INITIAL_BODIES.find(body=>body.id===id);
 const handlerSource=readAppSource().then(app=>{
   const start=app.indexOf("  $('center-object-btn').addEventListener('click',()=>{");
-  const end=app.indexOf("  $('reset-camera').addEventListener('click'",start);
+  const end=app.indexOf("  $('back-to-solar').addEventListener('click'",start);
   assert.ok(start>=0 && end>start,'Follow handler present in app.js');
   return app.slice(start,end);
 });

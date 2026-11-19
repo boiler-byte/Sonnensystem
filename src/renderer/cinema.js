@@ -1,13 +1,16 @@
 /**
  * Camera tour through the visible physical-size row.
- * Each object is held for 1.5 seconds. Travel smoothly to the next object
+ * Every object is held for five seconds at normal playback speed.
+ * Travel smoothly to the next object
  * with a logarithmic zoom matching its real display size.
  * Sampling by elapsed time makes playback and timeline scrubbing consistent.
  */
 import { CAMERA_FOV, clamp, lerp } from './math.js';
 
 export const CINEMA_ENTRY_MS=1100;
-export const CINEMA_HOLD_MS=1500;
+export const CINEMA_HOLD_MS=5000;
+// Retained as an alias for integrations expecting the v88 planet-specific constant.
+export const CINEMA_PLANET_HOLD_MS=CINEMA_HOLD_MS;
 export const CINEMA_TRAVEL_MS=1300;
 export const CINEMA_END_HOLD_MS=200;
 
@@ -16,7 +19,7 @@ export function cinemaEligible(settings){
 }
 
 /** Scale the viewing distance to each object's visible sphere or ring extent. */
-export function cinemaTrack(layout,width,height){
+export function cinemaTrack(layout,width,height,bodyById){
  const ids=layout?.ids??[];
  const aspect=Math.max(1,width)/Math.max(1,height);
  const verticalTan=Math.tan(CAMERA_FOV/2);
@@ -27,8 +30,9 @@ export function cinemaTrack(layout,width,height){
   // Zero or unknown radius must never collapse the near plane.
   const distance=Math.max(.00001,radius*1.53/verticalTan,
     radius*1.43/Math.max(.12,horizontalTan));
+  const holdMs=CINEMA_HOLD_MS;
   const holdStartMs=elapsedMs;
-  const holdEndMs=holdStartMs+CINEMA_HOLD_MS;
+  const holdEndMs=holdStartMs+holdMs;
   const travelEndMs=holdEndMs+(index<ids.length-1?CINEMA_TRAVEL_MS:0);
   elapsedMs=travelEndMs;
   return {id,x:layout.positions.get(id)?.[0]??0,radius,distance,

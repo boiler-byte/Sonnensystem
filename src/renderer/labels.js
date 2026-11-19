@@ -156,7 +156,7 @@ function centerMarkerStyle(body, selected, radius) {
  * Exposed for deterministic layout and orbital-speed regression tests.
  */
 export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
-  if (!renderer.settings?.labels) {
+  if (!renderer.settings?.labels || renderer.settings?.labels==='points') {
     renderer._labelState = null;
     return [];
   }
@@ -261,54 +261,83 @@ export function layoutSceneLabels(renderer, vp, ctx, now = performance.now()) {
   return placed;
 }
 
+function drawCenterMarker(ctx,body,selected,p,radius){
+  const marker=centerMarkerStyle(body,selected,radius);
+  if(!marker)return;
+  ctx.globalAlpha=1;
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,marker.radius,0,TAU);
+  ctx.fillStyle=marker.color;
+  ctx.fill();
+}
+
+function drawSelectionRing(ctx,p,radius){
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,Math.max(12,radius*1.18),0,TAU);
+  ctx.strokeStyle='rgba(235,184,118,.40)';
+  ctx.lineWidth=1;
+  ctx.stroke();
+}
+
+/** The middle toggle state draws dots only for selected bodies and bodies
+ * that project smaller than a dot, using the same size rule as normal labels.
+ * Text, label density and simulated orbital speed do not affect these dots.
+ */
+function drawScenePoints(renderer,vp,ctx){
+  const {width:w,height:h}=renderer;
+  const bodies=[...renderer.rendered].sort((a,b)=>
+    labelPriority(a,renderer)-labelPriority(b,renderer));
+  for(const body of bodies){
+    const pos=renderer.positions.get(body.id);
+    if(!pos)continue;
+    const p=projected(pos,vp,w,h);
+    if(!p?.visible || !Number.isFinite(p.x) || !Number.isFinite(p.y))continue;
+    const selected=body.id===renderer.selectedId;
+    const bodyRadius=renderer.bodyRadius?.(body) ?? displayBodyRadius(body,renderer.settings,
+      renderer.planetId?renderer.byId?.get(renderer.planetId):null);
+    const visualRadius=renderer.settings?.row===true && body.id==='saturn'
+      ? Math.max(bodyRadius,1.20*(renderer.ringScale?.()??0)) : bodyRadius;
+    const radius=Math.max(0,visualRadius*h/(HALF_FOV_TANGENT*p.depth));
+    drawCenterMarker(ctx,body,selected,p,radius);
+    if(selected)drawSelectionRing(ctx,p,radius);
+  }
+}
+
 export function drawSceneLabels(renderer, vp) {
   const ctx = renderer.labels.getContext('2d');
   const {width: w, height: h} = renderer;
   ctx.setTransform(renderer.dpr, 0, 0, renderer.dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
+  if(renderer.settings?.labels==='points'){
+    renderer._labelState=null;
+    drawScenePoints(renderer,vp,ctx);
+    ctx.globalAlpha=1;
+    return;
+  }
   const placed = layoutSceneLabels(renderer, vp, ctx);
   for (const item of placed) {
     const {body, selected, projection: p, radius, rect, font, name} = item;
     const cy = rect.y + rect.h / 2;
-    const marker = centerMarkerStyle(body, selected, radius);
     ctx.font = font;
     ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round';
     ctx.lineWidth = 3;
-    if (marker) {
-      ctx.globalAlpha = 1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, marker.radius, 0, TAU);
-      ctx.fillStyle = marker.color;
-      ctx.fill();
-    }
+    drawCenterMarker(ctx,body,selected,p,radius);
     ctx.globalAlpha = selected ? 1 : .88;
     ctx.strokeStyle = 'rgba(5, 11, 24, .94)';
     ctx.strokeText(name, rect.x + 2, cy);
     ctx.fillStyle = selected ? '#f5d5a0' : '#c1ccd9';
     ctx.fillText(name, rect.x + 2, cy);
-    if (selected) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, Math.max(12, radius * 1.18), 0, TAU);
-      ctx.strokeStyle = 'rgba(235,184,118,.40)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
+    if (selected)drawSelectionRing(ctx,p,radius);
     ctx.globalAlpha = 1;
   }
-  // Tiny body markers and the selected center indicator are independent of
-  // whether simulated orbital blur makes their TEXT unreadable.
+  // Small body markers and the selected center indicator are independent of
+  // whether simulated orbital motion makes their TEXT unreadable.
   for (const item of renderer._labelState?.fastMarkers || []) {
     const {body,projection:p,radius}=item;
     const selected=body.id===renderer.selectedId;
-    const marker=centerMarkerStyle(body,selected,radius);
-    ctx.globalAlpha=1;
-    ctx.beginPath();ctx.arc(p.x,p.y,marker.radius,0,TAU);
-    ctx.fillStyle=marker.color;ctx.fill();
-    if (selected) {
-      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(12,radius*1.18),0,TAU);
-      ctx.strokeStyle='rgba(235,184,118,.40)';ctx.lineWidth=1;ctx.stroke();
-    }
+    drawCenterMarker(ctx,body,selected,p,radius);
+    if(selected)drawSelectionRing(ctx,p,radius);
   }
   ctx.globalAlpha=1;
 }

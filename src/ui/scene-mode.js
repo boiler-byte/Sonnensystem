@@ -4,21 +4,18 @@ const $=id=>document.getElementById(id);
 /** The icon depicts the CURRENT pose; accessible labels describe the NEXT action. */
 export function syncSceneMode(state,renderer,arActive=false){
   const center=renderer?.planetId?state.bodies.find(body=>body.id===renderer.planetId):null;
-  const panel=$('view-mode-status'),button=$('reset-camera');
+  const panel=$('view-mode-status'),button=$('reset-camera'),back=$('back-to-solar');
+  back.hidden=!center;
   panel.classList.toggle('planet-active',Boolean(center));
   panel.setAttribute('aria-label',center
     ? `Control-Panel · ${center.type==='dwarf'?'Zwergplanet':'Planet'} ${center.name}`
     : 'Control-Panel · Sonnensystem');
 
-  // Outside AR the planet view retains its legacy overview action; AR cycles
-  // perspectives in place, including inside a planet view.
-  const overview=Boolean(center&&!arActive);
-  const nextIndex=overview?0:nextCameraPerspectiveIndex(renderer?.cameraPresetIndex,renderer?.cameraManuallyMoved);
+  // This button only cycles perspectives; the separate back button is the
+  // only way to leave an isolated planet scene using the viewport controls.
+  const nextIndex=nextCameraPerspectiveIndex(renderer?.cameraPresetIndex,renderer?.cameraManuallyMoved);
   const next=CAMERA_PERSPECTIVES[nextIndex];
-  // The front-facing camera represents the viewer's free position or the
-  // overview/reset action. Presets show the direction we are ALREADY viewing,
-  // not the perspective that will be chosen by the next click.
-  const current=overview||renderer?.cameraManuallyMoved?'free'
+  const current=renderer?.cameraManuallyMoved?'free'
     :CAMERA_PERSPECTIVES[renderer?.cameraPresetIndex]?.id||'free';
   for(const icon of button.querySelectorAll?.('svg[data-perspective]')||[]){
     // SVGElement.hidden is not reflected as a DOM attribute in every browser.
@@ -28,10 +25,7 @@ export function syncSceneMode(state,renderer,arActive=false){
   }
   button.setAttribute('data-current-perspective',current);
   button.setAttribute('data-next-perspective',next.id);
-  if(overview){
-    button.setAttribute('aria-label','Zurück zur Sonnensystem-Übersicht');
-    button.title='Zurück zum Sonnensystem';
-  }else if(renderer?.camera){
+  if(renderer?.camera){
     const label=`${arActive?'AR: ':''}Nächste Perspektive: ${next.name}`;
     button.setAttribute('aria-label',label);
     button.title=label;

@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v86
+# Architektur – Sonnensystem v95
 
 ## Prinzipien
 
@@ -44,6 +44,28 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 - `cycleCameraPerspective()` steuert eine vom Layoutübergang getrennte 1.050-ms-Kamerafahrt (`cameraFlight`) über Blickrichtung, Position und Distanz. `cameraView()` nutzt in dieser Zeit die interpolierte Pose; währenddessen dürfen Layout-/AR-Updates die Fahrt nicht überschreiben. Ein manueller Eingriff kann sie bildsprungfrei beenden. Bei reduzierter Bewegung wird sie übersprungen.
 - Freies Umschauen per Zwei-Finger-Wischen invertiert nur die vertikale Touch-Mittelpunktsbewegung, bevor sie an `lookAroundFixedEye()` übergeben wird. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
 
+## Cinema-Verweildauer und gemerkter Detail-Tab (v91)
+
+`src/renderer/cinema.js` verwendet für jeden Stopp unabhängig vom Katalogtyp **`CINEMA_HOLD_MS = 5000`**. Die historische Konstante `CINEMA_PLANET_HOLD_MS` bleibt als gleichwertiger Alias für bestehende Integrationen erhalten. Zwischenfahrten dauern unverändert 1300 ms; die separate Cinema-Abspielgeschwindigkeit (1x/2x) verändert nicht die gespeicherte Zeitachse, nur deren reale Abspielgeschwindigkeit. Seek, Pause, Kamera-Halteprüfung und 2x-Toggle bleiben unverändert.
+
+`src/ui/object-details.js` speichert die manuelle Registerkartenauswahl unter `sonnensystem-detail-tab` in `localStorage`. `restoreDetailTab()` liest den gespeicherten Wert beim Start des Control-Panels, ansonsten wird **Daten** geöffnet. Objektwechsel, Auswahlaufhebung und Öffnen einer Planetenansicht ändern den Tab nicht mehr. Zugriffe auf `localStorage` sind fehlertolerant (deaktivierter Speicher/privater Modus). CSS-Scrollleistenplatz und ARIA-/Tastaturzustände bleiben weiterhin synchron.
+
+## Gruppierte Kategorie-Filter (v90)
+
+`src/data/layers.js` trennt die **wissenschaftlichen Objekttypen** (`LAYER_TYPES`, weiterhin zehn) von den acht **bedienbaren Filtern** (`LAYER_FILTER_TYPES`). `LAYER_FILTER_GROUPS` verknüpft `asteroid` mit `binary` sowie `dwarf` mit `tno`. `updateLayerSelection` schaltet alle Gruppenmitglieder atomar (auch bei Aufrufen mit den früheren Untertyp-Schlüsseln); `layerEnabled` prüft weiterhin die ursprünglichen Objekttypen. So bleiben Katalogschema, Renderer-Orbittypen, Farben, Suche und Objektdetails unverändert.
+
+`src/ui/layer-panel.js` zeigt und synchronisiert die acht sichtbaren Checkboxen. Ist nur einer der zwei wissenschaftlichen Typen in einer isolierten Planetenansicht verfügbar, richtet sich die Checkbox nach diesem sichtbaren Typ. Frühere teilweise aktivierte Gruppen werden als gemischter Zustand dargestellt und beim nächsten Klicken vereinheitlicht. Der `layerSummary` zählt bedienbare Filter statt der wissenschaftlichen Untertypen; Presets `Alle` und `Standard` funktionieren weiterhin.
+
+## Mobile Cinema-Zeitleiste am Sheet-Rand (v89)
+
+Im mobilen Breakpoint bis 770 px übernimmt `.viewport>.cinema-timeline` mit `bottom:var(--sheet-visible,45px)` exakt dieselbe sichtbare Sheet-Höhe wie die Kameraaktionen. `src/ui/bottom-sheet.js` aktualisiert `--sheet-visible` im Timeline-Element bei jedem `snapTo()` und während `pointermove`; das CSS animiert `bottom` mit derselben Kurve und Dauer wie `.mobile-sheet`, während `.sheet-dragging` die Übergänge bei direkter Fingerbewegung deaktiviert. Bei `prefers-reduced-motion` bleibt die Bewegung ohne Transition. Die mobile Ebenenreihenfolge ist **Kameraaktionen z36 → Cinema-Zeitleiste z37 → Sheet-Scrim z38 → Mobile-Sheet z40**. Die Zeitleiste verdeckt damit die unten platzierten AR-/Perspektive-Buttons, bleibt aber hinter dem Sheet. Auf Desktop bleiben Position und z12 erhalten.
+
+## Detail-Starttab und Cinema-Tempo (v88)
+
+Der Detailbereich wird in `index.html` zunächst mit **Daten** als sichtbar/aktivem Tab ausgeliefert; `src/ui/event-handlers.js` stellt denselben Zustand bei der Initialisierung wieder her, einschließlich ARIA-Auswahl und Tastatur-Tabindex. `@media(min-width:771px)` aktiviert `scrollbar-gutter:stable` auf `.detail-scroll`, sodass Wissens- und Dateninhalte unabhängig von der vertikalen Scrollbarkeit die gleiche Breite verwenden.
+
+`src/renderer/cinema.js` ermittelt die Haltezeit für jeden Reihenstopp aus der Body-Typen-Zuordnung: **3000 ms** für `planet` / `dwarf`, ansonsten **1500 ms**. Die Reisestrecken bleiben bei 1300 ms. Die Cinema-Uhr `SolarRenderer.advanceCinema()` multipliziert ausschließlich die aktive Wiedergabezeit mit dem separat geschalteten Tempo (1x/2x); Pause, Scrubbing und Simulationsuhr bleiben eigenständig. `toggleCinemaSpeed()` setzt den Frame-Zeitanker neu und synchronisiert den ARIA-Zustand des Transportbuttons direkt rechts neben Play/Pause.
+
 ## Objektphysik und mobiles Sichtfeld (v72)
 
 `src/data/catalog.js` erlaubt optionale physikalische SI-Messwerte und ein optionales `orbit.meanDistance` in der gültigen Orbiteinheit. Es validiert Temperaturintervalle und behält physikalische Quellen getrennt von redaktionellen Artikeln. `src/ui/formatters.js` wandelt Kelvin/Pa für die deutsche Anzeige um; `src/ui/object-details.js` zeigt auch fehlende Daten explizit an. Ohne eigenen mittleren Abstand nimmt der Parser die große Halbachse als gekennzeichneten Modell-Fallback.
@@ -66,6 +88,16 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 
 Der Related-Bereich steht im DOM zu Beginn des Daten-Tabs vor den Physikkarten. Der Overflow-Button ruft einen Callback aus `src/ui/catalog-controller.js` auf; dadurch ist `object-details.js` nicht vom globalen UI-State oder Sheet-Controller abhängig. Der Callback befüllt `S.search` und das Suchfeld, rendert den parent-sensitiven Katalog und öffnet `mobileSheets.open('catalog')` (am Desktop die gleiche Navigation). Ein Planetenfilter, der sonst null Treffer ergeben würde, wird dafür deaktiviert; bei passenden Treffern bleibt er bestehen.
 
+## Mittelpunktmarker im Planetenpunkt-Modus (v92)
+
+`drawScenePoints()` verwendet dieselbe `centerMarkerStyle()`-Größenbedingung wie die normale Beschriftung: Unselektierte Objektzentren werden nur markiert, wenn der auf dem Canvas projizierte Objektradius **kleiner als 2,2 CSS-Pixel** ist. Selektierte Objekte erhalten unabhängig von ihrer projizierten Größe den **2,6-Pixel-Marker** in Selektionsfarbe sowie den bisherigen Auswahlring. Die für Saturn in der Reihenansicht berücksichtigte Ringleinwand wird in beiden Modi gleich einbezogen. Der v87-Sonderweg, mit dem der Punktmodus Marker unabhängig von der Objektgröße erzwang, entfällt. Textlayout, Geschwindigkeitsfilter und die Vierer-Textlabelgrenze werden im reinen Punktmodus weiterhin nicht ausgeführt; `false` blendet wie bisher alle Canvas-Markierungen aus.
+
+## Drei Beschriftungsmodi und separate Planetennavigation (v87)
+
+`S.settings.labels` enthält weiterhin `true` für normale Labels oder `false` für vollständig deaktivierte Beschriftung; der dritte Wert `'points'` bezeichnet den neuen Mittelpunkt-Punkt-Modus. `src/ui/display-controls.js` synchronisiert den dreistufigen Toggle und sein `data-label-mode`; im Layer-Dropdown wechselt das SVG bei `'points'` von Textlabel auf einen einzelnen Punkt. Jede Szene hält diese Einstellung in `viewSettings` unabhängig. Die existierenden Layer-Presets setzen `labels:true` zurück. `src/renderer/labels.js` umgeht in `'points'` den Text-Layoutpfad einschließlich der orbitalen Geschwindigkeitsregel und der Vierer-Textlabelgrenze; in v87 erhielten sämtliche Renderer-Körper unabhängig von ihrer Größe einen Mittelpunkt-Punkt in `CATEGORY_COLORS`. **Seit v92** gilt stattdessen die oben erläuterte Größenschwelle; selektierte Körper erhalten weiterhin Punkt und Ring. Bei `false` wird die Ebene geleert.
+
+`index.html` platziert `#back-to-solar` oben links im Viewport, `syncSceneMode()` blendet ihn nur in isolierten Planeten-/Zwergplanetensystemen ein. `src/ui/event-handlers.js` verwendet `renderer.reset()` mit `updateMode()` ausschließlich für diesen Zurück-Button; der Kamera-Button ruft immer `cycleCameraPerspective({keepPlanetScene:true})` auf, unabhängig vom AR-Status. Bei aktivem AR richtet `alignToPerspective()` den Sensorbezug neu aus. Die Perspective-SVGs und Tooltips zeigen dadurch auch in Planetenansichten die aktuelle Pose bzw. die nächste Perspektive statt einer vermeintlichen Rückkehraktion.
+
 ## Smart Labels mit orbitaler Lesbarkeitsgrenze (v86)
 
 `src/renderer/labels.js` speichert pro Frame die **orbitalen Relativvektoren** von Objekten zu ihren Parents und den Simulationszeitpunkt. Zur Ermittlung der simulierten Bildgeschwindigkeit wird die Relativverschiebung zweier Frames mit **derselben aktuellen Kameramatrix** projiziert; reine Kamerabewegung und die Translation des Parents gehen nicht ein. Ab **190 px/s** wird nur der Labeltext ausgeblendet, unter **135 px/s** wieder eingeblendet (Hysterese ohne Verzögerung). Bei pausierter Uhr, größeren manuellen Zeitsprüngen, Layouttransitionen oder Reihendarstellung wird kein neuer Geschwindigkeitsfilter aktiv. Der Mittelpunktmarker sehr kleiner Körper sowie der Zentrumspunkt und Auswahlring des selektierten Körpers bleiben sichtbar, selbst wenn der Labeltext vorübergehend verborgen ist. Die Messung prüft ausschließlich die simulierte, nicht die physikalische Bahn- oder Radialgeschwindigkeit.
@@ -84,11 +116,23 @@ In der Sonnensystemübersicht begrenzt `solarOrbiterLabelIds()` die Labels der *
 
 `src/renderer/labels.js` erzeugt je sichtbar projiziertem, für die Anzeige freigegebenem Körper ein Label – ohne Dichte-Raster, Zahlengrenze pro Bildschirmbereich oder Überlappungstests gegen Texte und Planetenscheiben. Die Zeichenreihenfolge bleibt nach Objektpriorität sortiert, aber **nur für die Überlagerungsreihenfolge**, nicht zur Unterdrückung: ausgewählte Labels werden zuletzt gezeichnet. Der Seitenanker ändert sich weiterhin nur zur Einhaltung der Bildschirmgrenzen; ebenso bleiben Geschwindigkeits-Hysterese, Layer-/Vier-Monde-Schalter, Reihen-Hover-HUD und manueller Beschriftungsschalter bestehen. Weitere Darstellungs- und Kataloglogik wird nicht verändert.
 
+## Reduzierte Sonne bei Objekt aus / Bahn an (v93)
+
+`displayBodyRadius()` in `src/data/orbital-math.js` liefert in der **Sonnensystemübersicht** bei `scaleObjects === false` und `scaleOrbits === true` für `body.id === 'sun'` exakt `renderRadius(sun) / 3`. Die Reduktion gilt nur für die Sonnenkugel; andere Körper nutzen weiterhin ihre schematischen Radien. Bei `scaleOrbits === false` bleiben die bekannten schematischen und optimierten Größen, bei `scaleObjects === true` die physikalisch proportionale Sonne erhalten. Die lokale Planetenansicht (`center` gesetzt), ihre Objektgrößen sowie sämtliche Orbitpositionen werden nicht verändert. Renderer, Labels und Objektauswahl verwenden die zentrale Radiusfunktion, sodass die neue Größe überall übereinstimmt. `tests/scale-v93.test.mjs` sichert die vier Maßstabskombinationen und die lokale Ansicht ab.
+
 ## Zwei Sonnensystem-Abstandskurven (v82)
 
 `src/data/orbital-math.js` berechnet für **Bahn aus** zwei eigenständige, nicht-physikalische heliocentrische Radiusprofile aus den realen großen Bahnhalbachsen als Index: `sceneRadius(a)` für die **schematische** und `optimizedSolarOrbitRadius(a)` für die **optimierte** Ansicht. Beide interpolieren stetig zwischen acht Planeten-Stützstellen und setzen sich jenseits Neptuns mit einer monotonen logarithmischen Kurve fort. Schematisch liegen die acht Bahnen je 2,25 Szeneneinheiten auseinander; optimiert sind die mittleren Radien 19,5/25/29/33/41/49/58/67 Einheiten. Dadurch weichen die inneren Körper der auf 13,56 Einheiten Radius vergrößerten Sonne, während äußere Abstände gegenüber v81 schrumpfen. Die Merkurbahn hat am Perihel mindestens 1,9 Einheiten Abstand von der Sonnenoberfläche.
 
 `OPTIMIZED_SUN_MAGNIFICATION = 3` wirkt nur auf die Sonne in der normalen Sonnenübersicht bei `Objekt an / Bahn aus` (nicht auf das separate Reihen-/Cinema-Layout). Die früheren optimierten Planetengrößen bleiben an `4 × renderRadius(sun)` kalibriert. Die Kombination `Objekt an / Bahn an` bleibt weiterhin physikalisch proportional; auch lokale Planetenbahnen, Mond-/Satellitenabstände und die Reihe behalten ihre bisherige Berechnung. In `src/renderer/scene.js` skalieren optionale JPL-Heliozentrikvektoren über `displayOrbitRadius(body, parent, settings) / (body.a * AU_KM)`, sodass externe Koordinaten und gerenderte Keplerbahnen denselben Halbachsenmaßstab verwenden. Rendering, Bahndateien und Katalogdaten werden nicht geändert; alle neuen Geometriewerte sind Darstellungskonstanten.
+
+## Radar-Rahmen ohne starre Größenobergrenze (v95)
+
+`rowScannerSize()` entfernt den zuvor verbliebenen Hardcap `560px` sowie die zusätzliche Beschränkung auf 80 % einer Viewport-Abmessung. Die gewünschte Rahmengröße folgt dem tatsächlichen projizierten Kugeldurchmesser (`2 × radiusPx + 26px`, mindestens 160px); begrenzt wird sie ausschließlich durch den Platz zwischen Objektnamen, Gravitation/Temperatur und ggf. dem Parent-Abstandspfeil sowie den für Cinema reservierten unteren Steuerbereich. Damit können große Planeten auf entsprechend großen Viewports Scanner von deutlich mehr als 560px erhalten. Kein Eingriff in WebGL-Kugelgröße oder Pfeilposition. `tests/row-scanner-growth-v95.test.mjs` prüft Größen oberhalb des früheren Caps und weiterhin ausreichenden Abstand zu allen Messwerten.
+
+## Responsiver Radar-Messrahmen der Reiheninspektion (v94)
+
+`rowScannerSize()` in `src/renderer/row-inspection.js` lässt den quadratischen Radar-Rahmen zunächst der projizierten Hover-Kugel folgen (bisherige Grundgröße 160 px und Zielgröße Radius × 2 + 26 px). Sobald die unveränderlichen HUD-Grenzen erreicht sind, begrenzt die Funktion die **Rahmengröße selbst** durch den verfügbaren Raum zwischen dem oben platzierten Objektnamen (minimale Unterkante 45 px), den unten platzierten Gravitations-/Temperaturwerten und der horizontalen Abstandslinie (jeweils 12 px Sicherheitsabstand). Die beiden unteren Messwerte werden zusätzlich vor der Pfeillinie begrenzt (38 px angenommene Zeilenhöhe plus 8 px Abstand), damit sich auch diese Angaben nicht gegenseitig überlagern. Für Cinema ist der reservierte Bereich oberhalb der Zeitleiste maßgeblich. Bei engen Viewports wird die frühere CSS-Mindestgröße von 160 px nicht mehr erzwungen; **nur der Scanner-Rahmen**, nicht die 160-px-Hover-Kugel, kann kleiner werden. Pfeil-Geometrie, Datenwerte, SVGs und das Hover/Cinema-Verhalten bleiben unverändert. `tests/row-scanner-clearance-v94.test.mjs` prüft Wachstum bis zur Obergrenze, gefrorene Rahmengröße, Kanten, Cinema und Abstandspfeil.
 
 ## Reiheninspektion und Cinema-Haltephasen (v81)
 
@@ -116,7 +160,7 @@ Nur im stabilen Reihenmodus erkennt `src/renderer/controls.js` ungedrückte Maus
 
 ## Offline-PWA
 
-`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v86`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
+`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v90`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
 
 ## Server und Sicherheit
 

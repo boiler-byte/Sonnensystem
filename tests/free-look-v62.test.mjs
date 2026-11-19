@@ -114,7 +114,7 @@ test('v62: free-looking also allows upward viewing and panning uses current gaze
  assert.ok(oldAngles.every(Number.isFinite));
 });
 
-test('v62: explicit camera preset discards free-look and the abbreviated TNO label remains',async()=>{
+test('v90: explicit camera preset discards free-look and TNO stays grouped with dwarf filter',async()=>{
  const {r,emit,cleanup}=setup();
  try{
   emit('pointerdown',1,110,120,'mouse',2);emit('pointermove',1,175,145,'mouse',2);
@@ -126,7 +126,7 @@ test('v62: explicit camera preset discards free-look and the abbreviated TNO lab
   approx(r.camera.phi,.16);
  }finally{cleanup();}
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
- assert.match(html,/<input type="checkbox" data-layer-type="tno" aria-label="Transneptunische Objekte"\/><span>Transnept\. Objekte<\/span>/);
+ assert.match(html,/<input type="checkbox" data-layer-type="dwarf" aria-label="Zwergplaneten und transneptunische Objekte"\/><span>Zwergplaneten<\/span>/);
  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
 });
 

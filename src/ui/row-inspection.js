@@ -1,6 +1,6 @@
 /** Pointer-transparent, screen-space scanning HUD over the WebGL row. */
 import { clamp, projected } from '../renderer/math.js';
-import { ROW_INSPECTION_ARROW_MS, rowArrowGeometry, rowInspectionMetrics } from '../renderer/row-inspection.js';
+import { ROW_INSPECTION_ARROW_MS, rowArrowGeometry, rowInspectionMetrics, rowScannerSize } from '../renderer/row-inspection.js';
 import { physicalStatIcon, thermometerIcon } from './physical-stat-icons.js';
 
 const el=id=>document.getElementById(id);
@@ -9,6 +9,8 @@ const scanEase=t=>1-Math.pow(1-clamp(t,0,1),3);
 const radiusOf=(body,renderer,screen)=>renderer.rowRenderedRadiusPx(body,screen);
 const ROW_METRIC_ICONS=[['row-inspection-gravity-icon',physicalStatIcon('gravity')],
   ['row-inspection-temperature-icon',thermometerIcon('mean')]];
+// The readings occupy <=38 CSS px; keep their baseline clear of the arrow.
+const ROW_METRICS_TO_ARROW_PX = 38 + 8;
 
 /** Called once per rendered frame, *after* the camera and body projections update. */
 export function updateRowInspectionHUD(renderer,now=performance.now()) {
@@ -21,24 +23,39 @@ export function updateRowInspectionHUD(renderer,now=performance.now()) {
     host.hidden=true;host.classList.remove('is-visible');host.dataset.bodyId='';return;
   }
   const radiusPx=renderer.rowRenderedRadiusPx(body,screen);
-  const size=clamp(radiusPx*2+26,160,Math.max(310,Math.min(560,Math.max(renderer.width,renderer.height)*.8)));
   // A cropped central star/planet has an offscreen center: inspect its visible arc.
   const anchorX=clamp(screen.x,Math.min(80,renderer.width/2),Math.max(80,renderer.width-80));
   const anchorY=clamp(screen.y,Math.min(80,renderer.height/2),Math.max(80,renderer.height-80));
+  const metrics=rowInspectionMetrics(body);
+  const parent=renderer.byId?.get(body.parentId);
+  const parentPosition=parent && renderer.positions.get(parent.id);
+  const parentScreen=parentPosition&&projected(parentPosition,renderer.vp,renderer.width,renderer.height);
+  const parentRadiusPx=parentScreen?.depth>0 ? renderer.rowRenderedRadiusPx(parent,parentScreen) : 0;
+  const geometry=rowArrowGeometry(body,position,parentPosition,renderer.vp,
+    renderer.width,renderer.height,Math.max(80,radiusPx),parentRadiusPx);
+  const hasDistance=Boolean(geometry && metrics.distance!=='—');
+  // Cinema reserves a larger lower area for its transport controls.
+  const metricsBottomLimit=renderer.cinema?.active
+    ?renderer.height-(renderer.width<=770?270:165):renderer.height-49;
+  // On close flyovers the arrow can reach the lower viewport cap before the
+  // readings do. Keep the two lower HUD areas separate, then cap the radar.
+  const metricsTopLimit=hasDistance
+    ?Math.min(metricsBottomLimit,geometry.y-ROW_METRICS_TO_ARROW_PX)
+    :metricsBottomLimit;
+  const size=rowScannerSize(radiusPx,anchorY,renderer.width,renderer.height,
+    metricsTopLimit,hasDistance?geometry.y:null);
   const scanner=el('row-inspection-scanner');
   scanner.style.left=`${anchorX}px`;scanner.style.top=`${anchorY}px`;
   scanner.style.width=`${size}px`;scanner.style.height=`${size}px`;
+  // Title and readings still follow the sphere; only the radar frame stops
+  // expanding once it would overlap a clamped HUD value.
   const clearance=Math.max(80,radiusPx,size/2-13);
   const title=el('row-inspection-title');
   title.style.left=`${anchorX}px`;
   title.style.top=`${clamp(anchorY-clearance-18,45,renderer.height-70)}px`;
   const metricsHost=el('row-inspection-metrics');
-  // Keep the physical readings above Cinema's bottom transport rather than
-  // letting the higher-z-index timeline conceal them during close flyovers.
-  const metricsBottomLimit=renderer.cinema?.active
-    ?renderer.height-(renderer.width<=770?270:165):renderer.height-49;
   metricsHost.style.left=`${anchorX}px`;
-  metricsHost.style.top=`${clamp(anchorY+clearance+21,72,Math.max(72,metricsBottomLimit))}px`;
+  metricsHost.style.top=`${clamp(anchorY+clearance+21,72,Math.max(72,metricsTopLimit))}px`;
   metricsHost.style.width=`${Math.min(350,Math.max(180,renderer.width-24))}px`;
 
   // Reuse the *exact* SVGs from the physical-detail cards, without duplicating shapes.
@@ -47,7 +64,6 @@ export function updateRowInspectionHUD(renderer,now=performance.now()) {
     if(icon.dataset.ready!=='true'){icon.innerHTML=svg;icon.dataset.ready='true';}
   }
 
-  const metrics=rowInspectionMetrics(body);
   const signature=JSON.stringify(metrics);
   if(host.dataset.bodyId!==body.id || host.dataset.signature!==signature){
     el('row-inspection-name').textContent=metrics.name;
@@ -69,13 +85,7 @@ export function updateRowInspectionHUD(renderer,now=performance.now()) {
   const svg=el('row-inspection-vector-svg'),line=el('row-inspection-vector-line');
   const arrowhead=el('row-inspection-vector-head'),origin=el('row-inspection-vector-origin');
   const distance=el('row-inspection-distance');
-  const parent=renderer.byId?.get(body.parentId);
-  const parentPosition=parent && renderer.positions.get(parent.id);
-  const parentScreen=parentPosition&&projected(parentPosition,renderer.vp,renderer.width,renderer.height);
-  const parentRadiusPx=parentScreen?.depth>0 ? renderer.rowRenderedRadiusPx(parent,parentScreen) : 0;
-  const geometry=rowArrowGeometry(body,position,parentPosition,renderer.vp,
-    renderer.width,renderer.height,Math.max(80,radiusPx),parentRadiusPx);
-  if(!geometry || metrics.distance==='—'){
+  if(!hasDistance){
     // SVGElement.hidden is not HTMLElement.hidden: setting the JS property does
     // not reliably remove an SVG's hidden attribute. CSS would hide it forever.
     svg.setAttribute('hidden','');distance.hidden=true;return;

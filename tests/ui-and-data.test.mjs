@@ -72,7 +72,8 @@ test('App event wiring still exposes planet-view and overview actions',async()=>
   assert.ok(app.includes('openPlanetScene(center?.id)'));
   assert.ok(app.includes("selected?.type==='moon'?byId(selected.parentId):selected"));
   assert.ok(app.includes("$('reset-camera').addEventListener('click'"));
-  assert.ok(app.includes('renderer?.cycleCameraPerspective();')); 
+  assert.ok(app.includes('renderer?.cycleCameraPerspective({keepPlanetScene:true});'));
+  assert.ok(app.includes("$('back-to-solar').addEventListener('click'")); 
   assert.ok(app.includes('initMobileSheets()'));
 });
 

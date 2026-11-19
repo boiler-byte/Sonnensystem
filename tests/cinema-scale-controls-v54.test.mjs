@@ -5,7 +5,7 @@ import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {createViewSettings} from '../src/data/layers.js';
-import {cinemaEligible,cinemaTrack,cinemaPoseAt,CINEMA_HOLD_MS,CINEMA_TRAVEL_MS} from '../src/renderer/cinema.js';
+import {cinemaEligible,cinemaTrack,cinemaPoseAt,CINEMA_HOLD_MS,CINEMA_PLANET_HOLD_MS,CINEMA_TRAVEL_MS} from '../src/renderer/cinema.js';
 import {rowLayout} from '../src/renderer/transitions.js';
 import {SolarRenderer} from '../src/renderer/index.js';
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
@@ -37,12 +37,14 @@ test('v54: Play is available only with Reihe on, Objekt on, Bahn off',()=>{
  }
 });
 
-test('v54: each object gets exactly 1.5 seconds of still framing',()=>{
- const t=cinemaTrack(layout(),1150,700);
+test('v91: every object type has the same five-second Cinema hold',()=>{
+ const t=cinemaTrack(layout(),1150,700,new Map(bodies.map(b=>[b.id,b])));
  assert.equal(t.ids.length,4);
+ assert.equal(CINEMA_HOLD_MS,5000);
+ assert.equal(CINEMA_PLANET_HOLD_MS,CINEMA_HOLD_MS);
  assert.equal(t.durationMs,4*CINEMA_HOLD_MS+3*CINEMA_TRAVEL_MS);
  for(const frame of t.frames){
-  assert.equal(frame.holdEndMs-frame.holdStartMs,1500);
+  assert.equal(frame.holdEndMs-frame.holdStartMs, 5000);
   const start=cinemaPoseAt(t,(frame.holdStartMs+1)/t.durationMs);
   const middle=cinemaPoseAt(t,(frame.holdStartMs+750)/t.durationMs);
   const ending=cinemaPoseAt(t,(frame.holdEndMs-1)/t.durationMs);

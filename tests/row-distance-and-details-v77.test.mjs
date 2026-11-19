@@ -56,7 +56,7 @@ test('v77: invalid and unknown radii do not render or consume Cinema stops',()=>
  assert.equal(r.startCinema(100),true);
  assert.deepEqual(new Set(r.cinema.track.ids),new Set(['sun','earth','mars']));
  assert.equal(r.cinema.track.frames.length,3,'only visible bodies create holds');
- assert.equal(r.cinema.track.durationMs,3*1500+2*1300);
+ assert.equal(r.cinema.track.durationMs,3*5000+2*1300);
  r.stopCinema(200);
 });
 

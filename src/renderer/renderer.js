@@ -223,7 +223,7 @@ export class SolarRenderer {
  /** Notify the UI without using global DOM state inside WebGL. */
  cinemaNotice(active=this.cinema?.active===true){
   const c=this.cinema;
-  this.callbacks?.onCinemaChange?.({active,paused:c?.paused===true,progress:c?.progress??0,
+  this.callbacks?.onCinemaChange?.({active,paused:c?.paused===true,speed:c?.speed??1,progress:c?.progress??0,
     durationMs:c?.track?.durationMs??0,objectId:c?cinemaObjectAt(c.track,c.progress):null});
  }
  /** Save the exact current camera pose, then rearrange the same visible bodies. */
@@ -237,11 +237,11 @@ export class SolarRenderer {
   this.stopFollowing();
   const reorder=this.settings?.rowOrder!=='distance';
   this.beginTransition('cinema',now); // Capture camera and positions, even when no reorder occurs.
-  this.cinema={active:true,reorder,paused:false,progress:0,elapsedMs:0,lastAt:now,
+  this.cinema={active:true,reorder,paused:false,speed:1,progress:0,elapsedMs:0,lastAt:now,
     lastNoticeAt:now,seeking:false,endedMs:0,saved,track:null};
   this._cinemaRestoreFocus=null;
   this.heldArrows?.clear();this.focusedBodyId=null;
-  const track=cinemaTrack(this.rowGeometry(),this.width,this.height);
+  const track=cinemaTrack(this.rowGeometry(),this.width,this.height,this.byId);
   this.cinema.track=track;
   this.setCameraAngles(0,1.48);
   const firstPose=cinemaPoseAt(track,0);
@@ -295,6 +295,15 @@ export class SolarRenderer {
   this.cinemaNotice(true);
   return c.paused;
  }
+ /** Toggle between normal and double-speed Cinema playback (simulation time unaffected). */
+ toggleCinemaSpeed(now=performance.now()){
+  const c=this.cinema;
+  if(!c?.active)return false;
+  c.speed=c.speed===2?1:2;
+  c.lastAt=now; // prevent an extra clock jump on the button frame
+  this.cinemaNotice(true);
+  return c.speed;
+ }
  advanceCinema(now=performance.now()){
   const c=this.cinema;
   if(!c?.active)return;
@@ -302,12 +311,13 @@ export class SolarRenderer {
   // Avoid jumping a large portion of the movie after background tab suspension.
   const delta=clamp(now-c.lastAt,0,120);c.lastAt=now;
   if(!c.seeking && !c.paused){
-   c.elapsedMs=Math.min(CINEMA_ENTRY_MS+c.track.durationMs,c.elapsedMs+delta);
+   const playbackDelta=delta*(c.speed===2?2:1);
+   c.elapsedMs=Math.min(CINEMA_ENTRY_MS+c.track.durationMs,c.elapsedMs+playbackDelta);
    c.progress=clamp((c.elapsedMs-CINEMA_ENTRY_MS)/c.track.durationMs,0,1);
    const pose=cinemaPoseAt(c.track,c.progress);
    this.camera.desiredTarget=pose.target;
    this.camera.desiredDist=pose.distance;
-   if(c.progress>=1)c.endedMs+=delta;
+   if(c.progress>=1)c.endedMs+=playbackDelta;
    if(c.endedMs>=CINEMA_END_HOLD_MS){this.stopCinema(now);return;}
   }
   if(now-c.lastNoticeAt>=90){c.lastNoticeAt=now;this.cinemaNotice(true);}

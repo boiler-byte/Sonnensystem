@@ -1,5 +1,13 @@
 /** Layer presets and scene-specific availability; no DOM or renderer dependencies. */
+// Scientific object types remain distinct. Only the *filter interface* groups
+// overlapping categories; a body keeps its original type, details and color.
 export const LAYER_TYPES = Object.freeze(['star','planet','moon','dwarf','tno','asteroid','binary','satellite','comet','probe']);
+export const LAYER_FILTER_TYPES = Object.freeze(LAYER_TYPES.filter(type => type !== 'tno' && type !== 'binary'));
+export const LAYER_FILTER_GROUPS = Object.freeze({
+  dwarf: Object.freeze(['dwarf','tno']),
+  asteroid: Object.freeze(['asteroid','binary'])
+});
+export const layerFilterMembers = type => LAYER_FILTER_GROUPS[type] || [type];
 // The solar overview starts with only Sun and planets. Planet view has
 // its own default mask for the central planet, natural moons and satellites.
 export const STANDARD_LAYERS = Object.freeze(['star','planet']);
@@ -88,8 +96,13 @@ export function ensureAvailableSelection(selection, available, view = 'solar') {
 export function updateLayerSelection(previous, type, checked, view = 'solar', available = LAYER_TYPES) {
   if (!LAYER_TYPES.includes(type)) return previous;
   const chosen = new Set(previous?.types || LAYER_TYPES);
-  if (checked) chosen.add(type);
-  else chosen.delete(type);
+  // Also handle calls using the old, now hidden member ids. They operate
+  // on the same complete filter group rather than producing split states.
+  const filter = type === 'tno' ? 'dwarf' : type === 'binary' ? 'asteroid' : type;
+  for (const member of layerFilterMembers(filter)) {
+    if (checked) chosen.add(member);
+    else chosen.delete(member);
+  }
   // Keep at least one category visible in this scene, even if a hidden
   // category (e.g. satellites at Jupiter) stays enabled for other planets.
   if (!chosen.size || !available.some(category => chosen.has(category))) return previous;
@@ -102,5 +115,8 @@ export function updateLayerSelection(previous, type, checked, view = 'solar', av
 export function layerSummary(selection) {
   if (!selection || selection.mode === 'all') return 'Alle';
   if (selection.mode === 'standard') return 'Standard';
-  return `${selection.types.size} Layer`;
+  // Report the number of checkboxes, not the number of scientific type ids.
+  const types = new Set(selection.types || []);
+  const count = LAYER_FILTER_TYPES.filter(filter => layerFilterMembers(filter).some(type => types.has(type))).length;
+  return `${count} Layer`;
 }

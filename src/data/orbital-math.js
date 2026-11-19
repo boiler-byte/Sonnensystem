@@ -63,7 +63,12 @@ export const optimizedSolarOrbitRadius = aAU => visualSolarOrbitRadius(aAU,2);
 
 /** Schematic by default, radius proportional to catalog radius when enabled. */
 export function displayBodyRadius(body, settings = {}, center = null) {
-  if (!settings?.scaleObjects) return center ? planetBodyRadius(body) : renderRadius(body);
+  if (!settings?.scaleObjects) {
+    // Solar overview only: for Objekt aus / Bahn an, shrink the Sun to one
+    // third of its schematic radius without changing any planetary bodies.
+    if (!center && settings?.scaleOrbits === true && body?.id === 'sun') return renderRadius(body) / 3;
+    return center ? planetBodyRadius(body) : renderRadius(body);
+  }
   const radiusKm = Math.max(0, Number(body?.radiusKm) || 0);
   if (center) return radiusKm * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
   if (optimizedSolarMode(settings)) {

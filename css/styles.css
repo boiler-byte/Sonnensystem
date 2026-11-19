@@ -1,8 +1,4 @@
-/* Sonnensystem: aktuelle Styles, ohne historische Overrides.
-* Reihenfolge der Regeln und Media Queries bewusst beibehalten: mobile
- * Sheets, AR/Cinema, Zustandsklassen und Popovers benoetigen die Kaskade.
- * Veraltete Selektoren, ungenutzte Variablen und vollstaendig ueberschriebene
- * Deklarationen wurden entfernt. */
+/* Stylesheet: mobile Sheets, AR/Cinema und Popovers brauchen diese Kaskadenfolge. */
 
 /* Basislayout, Katalog und Buehne */
 :root{--bg:#070b14;--line:#1b293a;--muted:#77869a;--text:#e8edf3;--accent:#d6ab76;--font:Inter,"Segoe UI",Roboto,Arial,sans-serif}
@@ -318,6 +314,7 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 .detail-tab-panel .detail-sources{position:static;display:block;flex:none;margin-top:23px;padding:17px 0 5px;border-top:1px solid #29394c;background:none}
 .detail-tab-panel .detail-sources .source-head{margin-bottom:12px}
 .detail-scroll{overscroll-behavior:contain}
+@media(min-width:771px){.detail-scroll{scrollbar-gutter:stable}}
 @media(max-width:1030px) and (min-width:771px){
   .detail{top:292px;bottom:13px}
   .viewport>.control-panel{right:13px;top:12px;width:min(318px,calc(100% - 26px))}
@@ -613,9 +610,16 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 .cinema-play-pause svg{width:17px;height:17px;fill:currentColor;stroke:none;pointer-events:none}
 .cinema-play-pause .cinema-resume-icon,.cinema-play-pause.is-paused .cinema-pause-icon{display:none}
 .cinema-play-pause.is-paused .cinema-resume-icon{display:block}
+.cinema-speed-button{font:750 12px var(--font)}
+.cinema-speed-button.active{background:#334431;border-color:#bedba3;color:#f2ffde}
 .cinema-timeline-ends{font-size:10px;color:#9bacc2;margin-top:3px;letter-spacing:.2px}
 @media(max-width:770px){
-  .viewport>.cinema-timeline{left:12px;right:12px;bottom:calc(131px + env(safe-area-inset-bottom));padding:9px 12px 10px}
+  /* Mobile Cinema covers the camera buttons directly above the sheet. */
+  .viewport>.cinema-timeline{left:12px;right:12px;bottom:var(--sheet-visible,45px);z-index:37;padding:9px 12px 10px;transition:bottom .28s cubic-bezier(.22,.82,.24,1)}
+  .viewport>.cinema-timeline.sheet-dragging{transition:none}
+}
+@media(max-width:770px) and (prefers-reduced-motion:reduce){
+  .viewport>.cinema-timeline{transition:none}
 }
 @media(prefers-reduced-motion:reduce){
   .viewport>.cinema-timeline{backdrop-filter:none}
@@ -659,7 +663,7 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
   .viewport-actions{left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right))}
 }
 
-/* v72: new astronomical measurement labels stay legible in the narrow data panel. */
+/* v72: responsive data cards. */
 .stats-grid .stat>.stat-label{overflow-wrap:anywhere;letter-spacing:.55px;line-height:1.3}
 .orbit-facts a{color:#d4b58f;text-decoration:underline;text-underline-offset:2px}
 .orbit-facts a:hover{color:#f5d5aa}
@@ -700,7 +704,7 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 .row-inspection-vector-line{fill:none;stroke:#72e6da;stroke-width:1.3;stroke-dasharray:8 4;opacity:.95}
 .row-inspection-vector-head{fill:none;stroke:#b1fff2;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .row-inspection-vector-origin{fill:#aafff2;stroke:#0c2932;stroke-width:1}
-.row-inspection-scanner{position:absolute;transform:translate(-50%,-50%) scale(.83);opacity:0;transition:transform .26s cubic-bezier(.2,.9,.2,1),opacity .20s ease;aspect-ratio:1;min-width:160px;min-height:160px;border-radius:50%;box-shadow:0 0 36px #51e4d612,inset 0 0 28px #51e4d50c}
+.row-inspection-scanner{position:absolute;transform:translate(-50%,-50%) scale(.83);opacity:0;transition:transform .26s cubic-bezier(.2,.9,.2,1),opacity .20s ease;aspect-ratio:1;min-width:0;min-height:0;border-radius:50%;box-shadow:0 0 36px #51e4d612,inset 0 0 28px #51e4d50c}
 .row-inspection.is-visible .row-inspection-scanner{transform:translate(-50%,-50%) scale(1);opacity:1}
 .row-inspection-scanner>svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 3px #64eddf88)}
 .row-inspection-ring{fill:none;stroke:#7beee2b8;stroke-width:.7;stroke-dasharray:38 14 2 14 22 17}
@@ -727,3 +731,16 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 @keyframes row-inspection-measure{from{opacity:0;stroke-dasharray:220;stroke-dashoffset:220}to{opacity:.95;stroke-dasharray:220;stroke-dashoffset:0}}
 @media (max-width:650px){.row-inspection-name{font-size:14px;letter-spacing:.04em}.row-inspection-metrics{column-gap:6px}.row-inspection-metric{gap:4px;padding:5px 3px}.row-inspection-metric strong{font-size:10px}.row-inspection-scan-tag{font-size:9px}}
 @media (prefers-reduced-motion:reduce){.row-inspection *, .row-inspection *::before,.row-inspection *::after{animation:none!important;transition:none!important}.row-inspection-scanner{transform:translate(-50%,-50%) scale(1);opacity:1}.row-inspection-title{opacity:1;transform:translate(-50%,-100%)}.row-inspection-metrics{opacity:1;transform:translateX(-50%)}.row-inspection-distance{opacity:1}}
+
+/* v87: the planet scene has a dedicated, always accessible return action. */
+.planet-back-button{position:absolute;z-index:8;top:24px;left:max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:7px;min-height:36px;padding:7px 12px 7px 9px;border:1px solid #526881;border-radius:8px;background:#132238ed;color:#e5edf7;font:600 11px system-ui,sans-serif;letter-spacing:.2px;cursor:pointer;box-shadow:0 6px 22px #0009;backdrop-filter:blur(10px)}
+.planet-back-button[hidden]{display:none!important}
+.planet-back-button:hover{border-color:#d7b37c;background:#25394f;color:#fff}
+.planet-back-button:focus-visible{outline:2px solid #dfb77d;outline-offset:3px}
+.planet-back-button svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:770px){.planet-back-button{top:16px;left:max(11px,env(safe-area-inset-left));min-height:34px;padding:6px 10px 6px 7px}}
+/* Labels -> centered dots -> off: one icon is visible in each state. */
+#toggle-labels .tab-label-point-icon{display:none}
+#toggle-labels[data-label-mode="points"] .tab-label-icon{display:none}
+#toggle-labels[data-label-mode="points"] .tab-label-point-icon{display:block}
+#toggle-labels .tab-label-point-icon circle{fill:currentColor;stroke:none}

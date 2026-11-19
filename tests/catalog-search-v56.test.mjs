@@ -165,10 +165,11 @@ test('v56: multi-term, aliases, parents and planet isolation still work',()=>{
   assert.ok(view('Saturn').some(x=>x.id==='skoll'));
 });
 
-test('v56: layer checkbox and offline cache include new data and category',async()=>{
+test('v90: grouped asteroid checkbox and offline cache retain binary catalog category',async()=>{
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
-  assert.match(html,/data-layer-type="binary"[^>]*><span>Doppelasteroiden<\/span>/);
+  assert.match(html,/data-layer-type="asteroid" aria-label="Asteroiden und Doppelasteroiden"\/><span>Asteroiden<\/span>/);
+  assert.doesNotMatch(html,/data-layer-type="binary"/);
   assert.match(sw,/manifest\.categories,\.\.\.manifest\.editorial/);
   for(const category of ['binary-asteroids-v56','moons-additions-v56','satellites-additions-v56'])
     assert.ok(manifest.categories.some(item=>item.path.includes(category)),category);

@@ -115,7 +115,7 @@ test('v58: AR sensor rotation alone never interrupts the perspective cycle',asyn
  s.mode.dispose();
 });
 
-test('v58: AR cycles within a planet scene; outside AR overview action still exits',()=>{
+test('v87: camera cycles within a planet scene with and without AR; reset explicitly exits',()=>{
  const r=makeRenderer('saturn'),ui=iconFixture(r);
  r.callbacks.onCameraChange=()=>ui.sync(true);
  ui.sync(true);
@@ -127,9 +127,12 @@ test('v58: AR cycles within a planet scene; outside AR overview action still exi
  assert.equal(r.cameraPresetIndex,1);
  assert.deepEqual(ui.visible(),['topdown']);
  ui.sync(false);
- assert.equal(ui.button.title,'Zurück zum Sonnensystem');
- assert.deepEqual(ui.visible(),['free']);
- r.cycleCameraPerspective();
+ assert.equal(ui.button.title,'Nächste Perspektive: Seitlich');
+ assert.deepEqual(ui.visible(),['topdown']);
+ r.cycleCameraPerspective({keepPlanetScene:true});
+ assert.equal(r.planetId,'saturn');
+ assert.deepEqual(ui.visible(),['side']);
+ r.reset();
  assert.equal(r.planetId,null);
 });
 
@@ -148,8 +151,8 @@ test('v58: manually moving or zooming an AR camera returns next action to obliqu
 
 test('v58: AR switch uses the existing sensor session rather than requesting new permission',async()=>{
  const app=await readAppSource();
- assert.match(app,/if\(arMode\?\.active\)\{[\s\S]*?cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?arMode\.alignToPerspective\(\);/);
+ assert.match(app,/cycleCameraPerspective\(\{keepPlanetScene:true\}\);[\s\S]*?if\(arMode\?\.active\)arMode\.alignToPerspective\(\);/);
  assert.doesNotMatch(app,/if\(arMode\?\.active\)\{\s*arMode\.recenter\(\)/);
  assert.match(app,/onCameraChange:\(\)=>syncSceneMode\(S,renderer,arMode\?\.active\)/);
- assert.match(app,/if\(leavingPlanet\)updateMode\(\)/);
+ assert.match(app,/\$\('back-to-solar'\)\.addEventListener\('click',[\s\S]*?renderer\.reset\(\);[\s\S]*?updateMode\(\)/);
 });

@@ -109,8 +109,8 @@ test('v23: application binds the scene-specific settings to render, catalog and 
   assert.match(app,/S\.settings=S\.viewSettings\[view\]/);
   assert.match(app,/S\.settings\.layers=ensureAvailableSelection\(/);
   assert.match(app,/const available=new Set\(availableLayerTypes\(S\.bodies,view,renderer\?\.planetId\)\)/);
-  assert.match(app,/check\.parentElement\.hidden=!available\.has\(type\)/);
-  assert.match(app,/check\.disabled=!available\.has\(type\)/);
+  assert.match(app,/check\.parentElement\.hidden=!members\.length/);
+  assert.match(app,/check\.disabled=!members\.length/);
   assert.match(app,/S\.settings\.layers=next/);
   assert.match(app,/renderer\.draw\(S\.time,S\.selected,S\.settings\)/);
   assert.match(app,/syncLayers\(\);syncOrbitControls\(\);syncLabelControl\(\);syncScaleControls\(\);syncRowControl\(\)/);

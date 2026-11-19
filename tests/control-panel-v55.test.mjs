@@ -39,7 +39,8 @@ test('v55: five appearance switches are grouped above the categories within Laye
    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="(true|false)"`));
  }
  assert.match(layer,/data-layer-type="star" checked/);
- assert.match(layer,/data-layer-type="tno"/);
+ assert.match(layer,/data-layer-type="dwarf" aria-label="Zwergplaneten und transneptunische Objekte"/);
+ assert.doesNotMatch(layer,/data-layer-type="tno"/);
 });
 
 test('v55: the moon and orbit toggles preserve their previous semantics and SVGs',async()=>{

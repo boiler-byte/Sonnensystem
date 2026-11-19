@@ -5,7 +5,7 @@ import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {
-  LAYER_TYPES,DISPLAY_SETTING_KEYS,createViewSettings,displayMatchesPreset,displayPreset,
+  LAYER_TYPES,LAYER_FILTER_TYPES,layerFilterMembers,DISPLAY_SETTING_KEYS,createViewSettings,displayMatchesPreset,displayPreset,
   layerPreset,layerEnabled,layerSummary,availableLayerTypes
 } from '../src/data/layers.js';
 import {CATEGORY_COLORS} from '../src/data/bodies.js';
@@ -32,13 +32,13 @@ function mockLayerEnvironment(app){
   const controls=new Map();
   const $=id=>{if(!controls.has(id))controls.set(id,element());return controls.get(id);};
   const presets=['all','standard'].map(mode=>element({dataset:{layerPreset:mode}}));
-  const categories=LAYER_TYPES.map(type=>element({dataset:{layerType:type},parentElement:element()}));
+  const categories=LAYER_FILTER_TYPES.map(type=>element({dataset:{layerType:type},parentElement:element()}));
   const renderer={planetId:null,camera:{desiredTarget:[0,0,0],desiredDist:20},_labelState:{},
     cinema:null,calcCount:0,calcPositions(){this.calcCount++;},rowFrame(){return {target:[6,0,0]};},rowDistance(){return 55;}};
   let details=0;
   const document={querySelectorAll(selector){return selector==='[data-layer-preset]'?presets:selector==='[data-layer-type]'?categories:[];}};
   const ctx=vm.createContext({syncToggleState,S,$,document,renderer,activeView:()=>renderer.planetId?'planet':'solar',CATEGORY_COLORS,
-    availableLayerTypes,layerSummary,layerEnabled,layerPreset,displayPreset,displayMatchesPreset,
+    availableLayerTypes,layerFilterMembers,LAYER_FILTER_TYPES,layerSummary,layerEnabled,layerPreset,displayPreset,displayMatchesPreset,
     updateDetail:()=>{details++;}});
   vm.runInContext([
     segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){'),

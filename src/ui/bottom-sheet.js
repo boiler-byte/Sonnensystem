@@ -11,6 +11,7 @@ export function initMobileSheets() {
   const sheet = $('mobile-sheet'), header = $('sheet-header'), content = $('sheet-content');
   const scrim = $('mobile-sheet-scrim');
   const cameraActions = $('reset-camera').parentElement;
+  const cinemaTimeline = $('cinema-timeline');
   const panels = {catalog:$('catalog'),detail:$('detail')};
   const desktopTabs=[...$('sidebar').querySelectorAll('[data-sidebar-panel]')];
   const mobileTabs=[...sheet.querySelectorAll('[data-sheet-panel]')];
@@ -62,6 +63,8 @@ export function initMobileSheets() {
     // The camera control is on the viewport, not inside the sheet: mirror its
     // measured height so the button clears the sheet in closed/half positions.
     cameraActions.style.setProperty('--sheet-visible',height);
+    // Cinema sits flush against the same animated sheet edge as the camera controls.
+    cinemaTimeline?.style.setProperty('--sheet-visible',height);
   }
   function snapTo(next,{fromHistory=false}={}){
     if(!fromHistory&&next!==snap){
@@ -181,6 +184,7 @@ export function initMobileSheets() {
       header.setPointerCapture(e.pointerId);
       sheet.classList.add('dragging');
       cameraActions.classList.add('sheet-dragging');
+      cinemaTimeline?.classList.add('sheet-dragging');
     }
     if(!isDragging)return;
     e.preventDefault();
@@ -194,6 +198,7 @@ export function initMobileSheets() {
     drag=null;isDragging=false;
     sheet.classList.remove('dragging');
     cameraActions.classList.remove('sheet-dragging');
+    cinemaTimeline?.classList.remove('sheet-dragging');
     if(!moved)return;
     const order=['closed','half','full'];
     let choice=prior;
@@ -210,7 +215,8 @@ export function initMobileSheets() {
   header.addEventListener('pointercancel',e=>{
     if(!drag||e.pointerId!==drag.id)return;
     drag=null;isDragging=false;sheet.classList.remove('dragging');
-    cameraActions.classList.remove('sheet-dragging');snapTo(snap);
+    cameraActions.classList.remove('sheet-dragging');
+    cinemaTimeline?.classList.remove('sheet-dragging');snapTo(snap);
   });
   window.addEventListener('popstate',event=>{
     const onSheetEntry=isSheetEntry(event.state);
