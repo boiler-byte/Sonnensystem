@@ -11,7 +11,7 @@ const part = (text,start,end) => {
 };
 
 const PRIMARY=['scale-objects-btn','scale-orbits-btn','orbit-row-btn'];
-const EXTRA=['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn'];
+const EXTRA=['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons'];
 
 test('v55: all three scale modes are direct top-level buttons in the right order',async()=>{
   const html=await read('index.html'),control=part(html,'id="view-mode-status"','id="layer-picker-wrap"');
@@ -27,7 +27,7 @@ test('v55: all three scale modes are direct top-level buttons in the right order
   assert.doesNotMatch(html,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"/);
 });
 
-test('v55: five appearance switches are grouped above the categories within Layer',async()=>{
+test('v96: four appearance switches are grouped above the categories within Layer',async()=>{
  const html=await read('index.html');
  const layer=part(html,'id="layer-popover"','id="time-panel"');
  assert.ok(layer.indexOf('class="layer-presets"')<layer.indexOf('class="layer-display-controls"'));
@@ -46,12 +46,12 @@ test('v55: five appearance switches are grouped above the categories within Laye
 test('v55: the moon and orbit toggles preserve their previous semantics and SVGs',async()=>{
  const [html,app]=await Promise.all([read('index.html'),read('src/app.js')]);
  const layer=part(html,'id="layer-popover"','id="time-panel"');
- const moon=part(layer,'id="toggle-four-moons"','id="orbit-visibility-btn"');
+ const moon=part(layer,'id="toggle-four-moons"','class="layer-options"');
  assert.equal((moon.match(/<circle /g)||[]).length,9);
  assert.match(moon,/aria-pressed="false"/);
  assert.match(moon,/maximal vier Monde je Planet/);
  assert.match(app,/const showAll=S\.settings\.fourMoons===false/);
- assert.match(app,/for\(const \[id,setting\] of \[\['orbit-visibility-btn','orbits'\],\['orbit-contrast-btn','orbitContrast'\]\]\)/);
+ assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
  assert.match(app,/S\.settings\.lighting=S\.settings\.lighting==='realistic'\?'optimized':'realistic'/);
 });
 
@@ -65,13 +65,13 @@ test('v55: the removed scale popup has no script event or dangling references',a
  assert.match(app,/if\(!\$\('layer-popover'\)\.hidden\)/);
 });
 
-test('v57: small viewports wrap the toolbar and the Layer switches form three plus two rows',async()=>{
+test('v96: small viewports wrap the toolbar and the Layer switches form two paired rows',async()=>{
  const css=await read('css/styles.css');
  const v55=css;
  assert.match(v55,/flex-wrap:wrap/);
  assert.match(v55,/max-width:calc\(100% - var\(--control-right-inset\) - 8px\)!important/);
- assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
- assert.ok(v55.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
+ assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.doesNotMatch(v55,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
  assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{[\s\S]*?top:calc\(100% \+ 7px\)/);
  assert.match(v55,/@media\(max-width:770px\)/);
 });

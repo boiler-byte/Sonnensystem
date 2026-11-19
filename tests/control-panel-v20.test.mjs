@@ -30,11 +30,11 @@ test('v55: orbit contrast defaults off and orbit visibility on in Layer controls
   const html=await read('index.html'),app=await read('src/app.js'),layerModel=await read('src/data/layers.js');
   const layer=between(html,'id="layer-popover"','id="time-panel"');
   assert.match(layerModel,/orbits:true, orbitContrast:false, labels:true/);
-  assert.match(layer,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
-  assert.match(layer,/class="contrast-icon"/);
+  assert.doesNotMatch(layer,/id="orbit-contrast-btn"/);
+  assert.match(layer,/class="orbit-contrast-icon"/);
   assert.match(layer,/id="orbit-visibility-btn"[^>]*aria-pressed="true"/);
   assert.ok(layer.indexOf('id="orbit-visibility-btn"')<layer.indexOf('class="layer-options"'));
-  assert.match(app,/S\.settings\[setting\]=!S\.settings\[setting\];\s*syncOrbitControls\(\)/);
+  assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
 });
 
 test('v43: labels synchronize titles, active styling and aria-pressed after toggling',async()=>{

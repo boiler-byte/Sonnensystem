@@ -16,15 +16,16 @@ test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',
   const layer=within(html,'id="layer-popover"','id="time-panel"');
   assert.match(layer,/class="layer-display-toggles"/);
   assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn']){
+  for(const id of ['orbit-visibility-btn']){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
-    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
+    assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${'true'}"`));
   }
   assert.doesNotMatch(html,/id="toggle-orbits"|id="orbit-popover"|id="orbit-picker-wrap"|id="orbit-colors-btn"/);
   assert.doesNotMatch(app,/setOrbitPopover|orbit-popover|toggle-orbits/);
   assert.match(layerModel,/orbitContrast:false,\s*labels:true/);
   assert.match(app,/\$\('layer-btn'\)\.addEventListener\('click'/);
-  assert.match(app,/\[\['orbit-visibility-btn','orbits'\],\['orbit-contrast-btn','orbitContrast'\]\]/);
+  assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
+  assert.doesNotMatch(layer,/id="orbit-contrast-btn"/);
 });
 
 test('v21: time menu header has only speed, and a stacked slider precedes two action buttons and date/time',async()=>{

@@ -51,7 +51,7 @@ test('v55: Layer preset precedes appearance settings and object categories',asyn
   assert.match(layer,/data-layer-preset="standard" aria-pressed="true">Standard/);
   assert.ok(layer.indexOf('layer-presets')<layer.indexOf('layer-display-controls'));
   assert.ok(layer.indexOf('layer-display-controls')<layer.indexOf('class="layer-options"'));
-  for(const id of ['orbit-visibility-btn','orbit-contrast-btn','toggle-labels','toggle-lighting','toggle-four-moons']){
+  for(const id of ['orbit-visibility-btn','toggle-labels','toggle-lighting','toggle-four-moons']){
     assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);
     assert.match(layer,new RegExp(`id="${id}"`));
   }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V95.0" />
+  <meta name="app-version" content="V96.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -163,21 +163,19 @@
               <div class="layer-display-controls" role="group" aria-label="Darstellungseinstellungen">
                 <div class="layer-display-toggles">
                   <button class="scale-tool-toggle active" id="toggle-labels" type="button" title="Beschriftung: An" aria-label="Beschriftung: An. Nächster Modus: Planetenpunkt" aria-pressed="true" data-label-mode="labels">
-                      <svg class="tab-label-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.5h11l5 5v8H4zM15 5.5v5h5M7 13h10M7 16h7"/></svg>
-                      <svg class="tab-label-point-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.8"/></svg>
-                    </button>
+                    <svg class="tab-label-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.5h11l5 5v8H4zM15 5.5v5h5M7 13h10M7 16h7"/></svg>
+                    <svg class="tab-label-point-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.8"/></svg>
+                  </button>
+                  <button class="scale-tool-toggle active" id="orbit-visibility-btn" type="button" title="Umlaufbahn: An (nächster Modus: Umlaufbahn + Bahnkontrast)" aria-label="Umlaufbahn: An. Nächster Modus: Umlaufbahn + Bahnkontrast" aria-pressed="true" data-orbit-mode="normal">
+                    <svg class="orbit-visibility-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/></svg>
+                    <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" stroke-width="3"/><circle cx="12" cy="12" r="4.6" stroke-width="2.6"/></svg>
+                  </button>
                   <button class="scale-tool-toggle" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert)" aria-label="Beleuchtung" aria-pressed="false">
-                      <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>
-                    </button>
+                    <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>
+                  </button>
                   <button class="scale-tool-toggle" id="toggle-four-moons" type="button" title="Alle Monde: Aus (maximal vier Monde je Planet)" aria-label="Alle Monde anzeigen" aria-pressed="false">
-                      <svg class="nine-moons-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12.00" cy="4.50" r="1.65"/><circle cx="16.82" cy="6.25" r="1.65"/><circle cx="19.39" cy="10.70" r="1.65"/><circle cx="18.50" cy="15.75" r="1.65"/><circle cx="14.57" cy="19.05" r="1.65"/><circle cx="9.43" cy="19.05" r="1.65"/><circle cx="5.50" cy="15.75" r="1.65"/><circle cx="4.61" cy="10.70" r="1.65"/><circle cx="7.18" cy="6.25" r="1.65"/></svg>
-                    </button>
-                  <button class="scale-tool-toggle active" id="orbit-visibility-btn" type="button" title="Umlaufbahn: An" aria-label="Umlaufbahn" aria-pressed="true">
-                      <svg class="orbit-visibility-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/></svg>
-                    </button>
-                  <button class="scale-tool-toggle" id="orbit-contrast-btn" type="button" title="Kontrast: Aus" aria-label="Kontrast" aria-pressed="false">
-                      <svg class="contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="#f5f7fc" stroke="#dce3ed"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="#0a1424" stroke="none"/></svg>
-                    </button>
+                    <svg class="nine-moons-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12.00" cy="4.50" r="1.65"/><circle cx="16.82" cy="6.25" r="1.65"/><circle cx="19.39" cy="10.70" r="1.65"/><circle cx="18.50" cy="15.75" r="1.65"/><circle cx="14.57" cy="19.05" r="1.65"/><circle cx="9.43" cy="19.05" r="1.65"/><circle cx="5.50" cy="15.75" r="1.65"/><circle cx="4.61" cy="10.70" r="1.65"/><circle cx="7.18" cy="6.25" r="1.65"/></svg>
+                  </button>
                 </div>
               </div>
               <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">

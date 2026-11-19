@@ -1,6 +1,6 @@
 {
   "name": "sonnensystem",
-  "version": "95.0.0",
+  "version": "96.0.0",
   "private": true,
   "type": "module",
   "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und serverseitigen API-Proxies",

@@ -108,10 +108,10 @@ test('v55: orbit switches are in Layer appearance controls without a separate me
  const html=await read('index.html'),app=await read('src/app.js'),mobile=await read('src/ui/bottom-sheet.js');
  const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="time-panel"'));
  assert.match(layer,/class="layer-display-toggles"/);
- for(const id of ['orbit-visibility-btn','orbit-contrast-btn']){
+ for(const id of ['orbit-visibility-btn']){
    assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);
-   assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${id==='orbit-contrast-btn'?'false':'true'}"`));
-   assert.match(app,/\$\(id\)\.addEventListener\('click'/);
+   assert.match(layer,new RegExp(`id="${id}"[^>]*aria-pressed="${'true'}"`));
+   assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
  }
  assert.doesNotMatch(html,/id="orbit-popover"|id="toggle-orbits"|id="orbit-picker-wrap"/);
  assert.doesNotMatch(app,/setOrbitPopover|toggle-orbits|orbit-popover/);

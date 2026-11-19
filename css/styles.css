@@ -640,11 +640,12 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 .viewport>.control-panel .layer-popover, .viewport>.control-panel .time-panel .speed-popover{position:absolute;top:calc(100% + 7px);right:0;left:auto;bottom:auto;max-height:min(75dvh,calc(100dvh - 140px));overflow-y:auto;overscroll-behavior:contain}
 .viewport>.control-panel .layer-popover{width:155px;max-width:calc(100vw - 20px)}
 .viewport>.control-panel .layer-display-controls{margin:0 0 9px;padding:0 0 10px;border-bottom:1px solid #34485d}
-.viewport>.control-panel .layer-display-toggles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
-.viewport>.control-panel .layer-display-toggles .scale-tool-toggle{width:100%;min-width:0;min-height:40px;padding:5px 0;grid-column:span 2}
-.viewport>.control-panel .layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}
-.viewport>.control-panel .layer-display-toggles .scale-tool-toggle:nth-child(5){grid-column:4 / span 2}
+.viewport>.control-panel .layer-display-toggles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.viewport>.control-panel .layer-display-toggles .scale-tool-toggle{width:100%;min-width:0;min-height:40px;padding:5px 0}
 .viewport>.control-panel .layer-display-toggles .scale-tool-toggle svg{width:21px;height:21px}
+#orbit-visibility-btn .orbit-contrast-icon{display:none}
+#orbit-visibility-btn[data-orbit-mode="contrast"] .orbit-visibility-icon{display:none}
+#orbit-visibility-btn[data-orbit-mode="contrast"] .orbit-contrast-icon{display:block}
 @media(max-width:770px){
   .viewport>.control-panel, .viewport>.control-panel.ar-available, .viewport>.control-panel.cinema-available, .viewport>.control-panel.cinema-available.ar-available{--control-trigger-gap:4px;--control-main-scale-width:43px;--control-main-scale-gap:3px;--control-icon-width:41px;--control-trigger-width:53px}
   .viewport>.control-panel .layer-popover, .viewport>.control-panel .time-panel .speed-popover{max-height:min(75dvh,calc(100dvh - 230px))}

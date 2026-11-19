@@ -26,7 +26,7 @@ export function createViewSettings(view = 'solar') {
   };
 }
 
-/** The five Layer presentation controls are separate from Objekt/Bahn/Reihe. */
+/** Four Layer presentation buttons manage five settings; Objekt/Bahn/Reihe are separate. */
 export const DISPLAY_SETTING_KEYS = Object.freeze(['labels','lighting','fourMoons','orbits','orbitContrast']);
 
 /** ON means realistic lighting, unrestricted moons and visible high-contrast orbits. */

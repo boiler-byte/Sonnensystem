@@ -16,7 +16,7 @@ const segment=(source,start,end)=>{
   return source.slice(a,b);
 };
 
-test('v55: three always-visible scale toggles; five compact icon-only Layer tools',async()=>{
+test('v96: three always-visible scale toggles; four paired icon-only Layer tools',async()=>{
  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
  assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
  const main=segment(html,'class="scale-main-controls"','id="layer-picker-wrap"');
@@ -24,13 +24,13 @@ test('v55: three always-visible scale toggles; five compact icon-only Layer tool
  const mainIds=[...main.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
  assert.deepEqual(mainIds,['scale-objects-btn','scale-orbits-btn','orbit-row-btn']);
  const appearanceIds=[...layer.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
- assert.deepEqual(appearanceIds,['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn']);
+ assert.deepEqual(appearanceIds,['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons']);
  for(const id of [...mainIds,...appearanceIds]){
    const button=html.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
    assert.match(button,/aria-pressed="(true|false)"/);assert.match(button,/<svg /);assert.match(button,/title="[^"]+"/);
  }
- assert.match(css,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
- assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
+ assert.match(css,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
 });
 
 test('v43: no colors toggle or orbitColors preference remains; palette always applies',async()=>{
@@ -93,10 +93,10 @@ test('v43: repeated snackbar updates replace prior message and reset dismissal t
   }
 });
 
-test('v43: all five icon toggles update state, aria-pressed and status snackbar',async()=>{
+test('v96: four icon toggles update state, aria-pressed and status snackbar',async()=>{
   const app=await read('src/app.js');
-  const controlsSource=segment(app,'function syncOrbitControls(){','function changeLayers(next){');
-  const handlerStart=app.indexOf("  for(const [id,setting] of [['orbit-visibility-btn'",app.indexOf('function initControls(){'));
+  const controlsSource=segment(app,'const ORBIT_DISPLAY_MODES =','function changeLayers(next){');
+  const handlerStart=app.indexOf("  $('orbit-visibility-btn').addEventListener('click'",app.indexOf('function initControls(){'));
   const handlerEnd=app.indexOf("  $('center-object-btn').addEventListener('click'",handlerStart);
   assert.ok(handlerStart>0&&handlerEnd>handlerStart);
   const handlers=app.slice(handlerStart,handlerEnd);
@@ -116,9 +116,8 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
   const rowCameraSource=segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){');
   vm.runInContext(rowCameraSource+controlsSource+handlers,ctx);
   for(const [id,label,defaultPressed] of [
-    ['toggle-labels','Beschriftung',true],['toggle-lighting','Beleuchtung',false],
-    ['toggle-four-moons','Alle Monde',false],['orbit-visibility-btn','Umlaufbahn',true],
-    ['orbit-contrast-btn','Kontrast',false]
+    ['toggle-labels','Beschriftung',true],['orbit-visibility-btn','Umlaufbahn',true],
+    ['toggle-lighting','Beleuchtung',false],['toggle-four-moons','Alle Monde',false]
   ]){
     const button=get(id);
     assert.ok(button.handler,`handler for ${id}`);
@@ -136,6 +135,21 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
       button.handler();
       assert.equal(solar.labels,true);
       assert.equal(button.attrs['aria-pressed'],'true');
+    }else if(id==='orbit-visibility-btn'){
+      button.handler();
+      assert.equal(button.attrs['data-orbit-mode'],'contrast');
+      assert.equal(button.attrs['aria-pressed'],'true');
+      assert.equal(solar.orbitContrast,true);
+      assert.match(notices.at(-1),/Umlaufbahn \+ Bahnkontrast: An/);
+      button.handler();
+      assert.equal(button.attrs['data-orbit-mode'],'off');
+      assert.equal(button.attrs['aria-pressed'],'false');
+      assert.equal(solar.orbits,false);
+      assert.equal(solar.orbitContrast,false);
+      button.handler();
+      assert.equal(button.attrs['data-orbit-mode'],'normal');
+      assert.equal(button.attrs['aria-pressed'],'true');
+      assert.equal(solar.orbits,true);
     }else{
       button.handler();
       assert.equal(button.attrs['aria-pressed'],String(!defaultPressed),`${id} after click`);
@@ -146,7 +160,7 @@ test('v43: all five icon toggles update state, aria-pressed and status snackbar'
     }
   }
   assert.equal(get('orbit-colors-btn').handler,null,'colors toggle cannot be clicked');
-  assert.equal(notices.length,11);
+  assert.equal(notices.length,10);
   assert.equal(solar.labels,true);
   assert.equal(solar.lighting,'optimized');
   assert.equal(solar.fourMoons,true);

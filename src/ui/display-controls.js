@@ -5,12 +5,27 @@ import {syncLayers} from './layer-panel.js';
 import {syncToggleState} from './control-state.js';
 import {refreshRowCameraFrame} from '../app/animation-controls.js';
 
+// Three distinct UI modes share the existing orbit and contrast renderer flags.
+export const ORBIT_DISPLAY_MODES = Object.freeze(['normal','contrast','off']);
+export function orbitDisplayMode(settings){
+  if(settings?.orbits===false)return 'off';
+  return settings?.orbitContrast===true?'contrast':'normal';
+}
+export function advanceOrbitDisplayMode(settings){
+  const current=orbitDisplayMode(settings);
+  const next=ORBIT_DISPLAY_MODES[(ORBIT_DISPLAY_MODES.indexOf(current)+1)%ORBIT_DISPLAY_MODES.length];
+  settings.orbits=next!=='off';
+  settings.orbitContrast=next==='contrast';
+  return next;
+}
 export function syncOrbitControls(){
-  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
-    const enabled=S.settings[setting]!==false,button=$(id);
-    const label={orbits:'Umlaufbahn',orbitContrast:'Kontrast'}[setting];
-    syncToggleState(button,enabled,`${label}: ${enabled?'An':'Aus'}`);
-  }
+  const mode=orbitDisplayMode(S.settings),button=$('orbit-visibility-btn');
+  const names={normal:'Umlaufbahn',contrast:'Umlaufbahn + Bahnkontrast',off:'Beides aus'};
+  const next=ORBIT_DISPLAY_MODES[(ORBIT_DISPLAY_MODES.indexOf(mode)+1)%ORBIT_DISPLAY_MODES.length];
+  const status=mode==='off'?'Umlaufbahn und Bahnkontrast: Aus':`${names[mode]}: An`;
+  syncToggleState(button,mode!=='off',`${status} (Nächster Modus: ${names[next]})`);
+  button.setAttribute('data-orbit-mode',mode);
+  button.setAttribute('aria-label',`${status}. Nächster Modus: ${names[next]}`);
 }
 
 export function syncLabelControl(){

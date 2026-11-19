@@ -29,14 +29,14 @@ test('v55: three scale toggles precede Layer and Time, without scale dropdown',a
   assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);
 });
 
-test('v55: two toolbar scale toggles plus Reihe; all five icons above Layer categories',async()=>{
+test('v96: two toolbar scale toggles plus Reihe; four paired icons above Layer categories',async()=>{
   const html=await read('index.html');
   const scale=between(html,'class="scale-main-controls"','id="layer-picker-wrap"');
   const layer=between(html,'id="layer-popover"','id="time-panel"');
   const ids=['scale-objects-btn','scale-orbits-btn','orbit-row-btn'];
   assert.deepEqual([...scale.matchAll(/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn)"/g)].map(m=>m[1]),ids);
   assert.match(scale,/id="orbit-row-btn"[\s\S]*?scale-option-label">Reihe<\/span>/);
-  const appearance=['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn'];
+  const appearance=['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons'];
   const tools=between(layer,'class="layer-display-controls"','class="layer-options"');
   assert.deepEqual([...tools.matchAll(/id="(toggle-labels|toggle-lighting|toggle-four-moons|orbit-visibility-btn|orbit-contrast-btn)"/g)].map(m=>m[1]),appearance);
   assert.ok(layer.indexOf('layer-display-controls')<layer.indexOf('layer-options'));
@@ -74,7 +74,7 @@ test('v55: appearance toggles retain aria-pressed states, titles and keyboard fo
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
   const layer=between(html,'id="layer-popover"','id="time-panel"');
   const defaults={'toggle-labels':true,'toggle-lighting':false,'toggle-four-moons':false,
-                  'orbit-visibility-btn':true,'orbit-contrast-btn':false};
+                  'orbit-visibility-btn':true};
   for(const [id,enabled] of Object.entries(defaults)){
     const button=layer.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
     assert.ok(button,id);

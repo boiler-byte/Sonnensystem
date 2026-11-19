@@ -43,12 +43,12 @@ function mockLayerEnvironment(app){
   vm.runInContext([
     segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){'),
     segment(app,'function syncLayers(){','function setLayerPopover(open){'),
-    segment(app,'function syncOrbitControls(){','function mergeBodies(list){')
+    segment(app,'const ORBIT_DISPLAY_MODES =','function mergeBodies(list){')
   ].join('\n'),ctx);
   return {ctx,S,renderer,controls,presets,categories,get:$,get details(){return details;}};
 }
 
-test('v57: both removed Layer captions are absent and controls form 3+2 ordered rows',async()=>{
+test('v96: both removed Layer captions are absent and controls form paired rows',async()=>{
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
   const layer=segment(html,'id="layer-popover"','id="time-panel"');
   assert.doesNotMatch(layer,/class="layer-display-heading"|id="layer-note"|class="layer-note"/);
@@ -56,11 +56,11 @@ test('v57: both removed Layer captions are absent and controls form 3+2 ordered 
   assert.match(layer,/role="group" aria-label="Darstellungseinstellungen"/,'accessible description remains');
   const tools=segment(layer,'class="layer-display-toggles"','class="layer-options"');
   assert.deepEqual([...tools.matchAll(/id="(toggle-labels|toggle-lighting|toggle-four-moons|orbit-visibility-btn|orbit-contrast-btn)"/g)]
-    .map(m=>m[1]),['toggle-labels','toggle-lighting','toggle-four-moons','orbit-visibility-btn','orbit-contrast-btn']);
-  assert.match(css,/\.layer-display-toggles\{\s*display:grid;grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
-  assert.match(css,/\.layer-display-toggles \.scale-tool-toggle\{[^}]*grid-column:span 2/);
-  assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(4){grid-column:2 / span 2}'));
-  assert.ok(css.includes('.layer-display-toggles .scale-tool-toggle:nth-child(5){grid-column:4 / span 2}'));
+    .map(m=>m[1]),['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons']);
+  assert.match(css,/\.layer-display-toggles\{\s*display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle\{[^}]*grid-column/);
+  assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
+  assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(5\)\{grid-column/);
 });
 
 test('v57: Alle activates all five appearances; Standard restores view-specific defaults',()=>{
@@ -99,7 +99,7 @@ test('v57: combined presets update only the active scene and preserve Object, Ba
   for(const input of env.categories)assert.equal(input.checked,true);
   assert.equal(get('toggle-four-moons').attrs['aria-pressed'],'true','all moons uses inverted internal cap');
   assert.equal(get('toggle-lighting').attrs['aria-pressed'],'true');
-  assert.equal(get('orbit-contrast-btn').attrs['aria-pressed'],'true');
+  assert.equal(get('orbit-visibility-btn').attrs['data-orbit-mode'],'contrast');
 
   S.settings.labels=false;vm.runInContext('syncLayers()',ctx);
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['false','false'],

@@ -2,7 +2,7 @@ import {$,S,renderer,mobileSheets,arMode,byId} from '../app/state.js';
 import {availableLayerTypes,layerPreset,updateLayerSelection} from '../data/layers.js';
 import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
 import {syncLayers,setLayerPopover} from './layer-panel.js';
-import {syncOrbitControls,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
+import {syncOrbitControls,advanceOrbitDisplayMode,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody} from '../app/camera-controller.js';
@@ -71,13 +71,11 @@ export function initControls(){
     });
   }
   restoreDetailTab();
-  for(const [id,setting] of [['orbit-visibility-btn','orbits'],['orbit-contrast-btn','orbitContrast']]){
-    $(id).addEventListener('click',()=>{
-      S.settings[setting]=!S.settings[setting];
-      syncOrbitControls();syncLayers();
-      notifyToggle(`${setting==='orbits'?'Umlaufbahn':'Kontrast'}: ${S.settings[setting]?'An':'Aus'}`);
-    });
-  }
+  $('orbit-visibility-btn').addEventListener('click',()=>{
+    const mode=advanceOrbitDisplayMode(S.settings);
+    syncOrbitControls();syncLayers();
+    notifyToggle({normal:'Umlaufbahn: An',contrast:'Umlaufbahn + Bahnkontrast: An',off:'Umlaufbahn und Bahnkontrast: Aus'}[mode]);
+  });
   syncOrbitControls();
   $('toggle-labels').addEventListener('click',()=>{
     // Three levels of detail: names + points -> points only -> off.

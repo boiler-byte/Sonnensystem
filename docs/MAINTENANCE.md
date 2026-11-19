@@ -6,6 +6,10 @@
 
 Vor Auslieferung zusätzlich prüfen: ES-Module auflösbar, Offline-Shell vollständig, lokale Daten und Quellen validiert, keine toten relativen Dokumentationslinks und Delta-Paket auf Basis des **veröffentlichten** vorherigen Releases reproduzierbar. Ein automatisierter Test ersetzt keine visuelle Prüfung der tatsächlichen Oberfläche.
 
+## Änderung in v96
+
+**Delta v95 → v96:** Der separate Button `orbit-contrast-btn` entfällt. Der weiterhin sichtbare `orbit-visibility-btn` nutzt über `advanceOrbitDisplayMode()` einen **Drei-Stufen-Zyklus** (`orbits:true/contrast:false` → `true/true` → `false/false`). `syncOrbitControls()` setzt den aktiven Modus, ARIA, Titel und SVG-Zustand; `src/ui/event-handlers.js` meldet jede Stufe. Das Raster der Darstellungsschalter wurde auf vier Buttons in zwei Spalten umgestellt (**Beschriftung/Umlaufbahn**, **Beleuchtung/Monde**). „Standard“ startet mit Umlaufbahn ohne Kontrast, „Alle“ mit Kontrast. Szenen behalten getrennte Einstellungen; Renderer-/Katalogdaten bleiben unverändert. Alte Tests mit zwei getrennten Buttons und 3+2-Raster wurden auf v96 aktualisiert; `tests/orbit-toggle-v96.test.mjs` prüft Zustandszyklus, Standard/Alle, Screenreadertexte, Ansichtsisolation und Anordnung. Version `96.0.0`, Offline-Cache `sonnensystem-shell-v96`, **Basis v95.0.0**.
+
 ## Änderung in v95
 
 **Delta v94 → v95:** Der mathematisch verbliebene Maximalwert von **560px** (`Math.min(560, ...)` plus Viewport-Prozentlimit) in `rowScannerSize()` verhinderte trotz des v94-Fix tatsächlich große HUD-Radare. Die Zielgröße ist nun ausschließlich `max(160, 2 × projizierter Radius + 26)`; erst die bereits in v94 eingeführten tatsächlich verfügbaren oberen/unteren Abstände zu Objektname, Gravitation/Temperatur, Distanzpfeil und Cinema-Leiste begrenzen die Fläche. Für große Desktop-Viewports ist der Rahmen dadurch deutlich größer als 560px. `tests/row-scanner-growth-v95.test.mjs` testet das Durchwachsen der alten Obergrenze, die dynamische Endgröße und die Platzierung in Hover/Cinema. Unverändert: WebGL-Kugelradius, Messwerte, Pfeilgeometrie und CSS. Version `95.0.0`, Cache `sonnensystem-shell-v95`, **Basis v94.0.0**.

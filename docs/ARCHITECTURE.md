@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v95
+# Architektur – Sonnensystem v96
 
 ## Prinzipien
 
@@ -49,6 +49,10 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 `src/renderer/cinema.js` verwendet für jeden Stopp unabhängig vom Katalogtyp **`CINEMA_HOLD_MS = 5000`**. Die historische Konstante `CINEMA_PLANET_HOLD_MS` bleibt als gleichwertiger Alias für bestehende Integrationen erhalten. Zwischenfahrten dauern unverändert 1300 ms; die separate Cinema-Abspielgeschwindigkeit (1x/2x) verändert nicht die gespeicherte Zeitachse, nur deren reale Abspielgeschwindigkeit. Seek, Pause, Kamera-Halteprüfung und 2x-Toggle bleiben unverändert.
 
 `src/ui/object-details.js` speichert die manuelle Registerkartenauswahl unter `sonnensystem-detail-tab` in `localStorage`. `restoreDetailTab()` liest den gespeicherten Wert beim Start des Control-Panels, ansonsten wird **Daten** geöffnet. Objektwechsel, Auswahlaufhebung und Öffnen einer Planetenansicht ändern den Tab nicht mehr. Zugriffe auf `localStorage` sind fehlertolerant (deaktivierter Speicher/privater Modus). CSS-Scrollleistenplatz und ARIA-/Tastaturzustände bleiben weiterhin synchron.
+
+## Gemeinsamer Bahn-/Kontrast-Toggle (v96)
+
+Im Layer-Panel stehen vier Buttons in einem **2×2-Raster**: oben Beschriftung/Umlaufbahn, darunter Beleuchtung/Monde. Der separate Kontrast-Button entfällt. `src/ui/display-controls.js` übersetzt die drei zugänglichen Umlaufbahn-Modi in die **bestehenden** Rendererflags `orbits` und `orbitContrast`: **normal** (`true/false`) → **contrast** (`true/true`) → **off** (`false/false`) → normal. `data-orbit-mode` steuert das passende SVG und Titel/ARIA nennen den aktuellen und den nächsten Modus. `src/ui/event-handlers.js` verändert die beiden Flags gemeinsam; ein widersprüchlicher alter Zustand (`orbits:false`, `orbitContrast:true`) wird als „aus“ behandelt und beim nächsten Klick normalisiert. `displayPreset('standard')` setzt normal, `displayPreset('all')` kontrastreich. Beide Ansichten behalten ihre getrennten Einstellungen. Renderer und Orbit-Geometrie bleiben unverändert. Regressionen: `tests/orbit-toggle-v96.test.mjs` und angepasste UI-Tests.
 
 ## Gruppierte Kategorie-Filter (v90)
 

@@ -11,5 +11,5 @@ test('v59: all layer-popover widths agree on 155px and keep viewport limits',asy
   assert.ok(widths.every(w=>w===155),`conflicting widths: ${widths.join(', ')}`);
   const final=css;
   assert.match(final,/\.viewport>\.control-panel \.layer-popover\{\s*width:155px;max-width:calc\(100vw - 20px\)/);
-  assert.match(final,/\.viewport>\.control-panel \.layer-display-toggles\{\s*display:grid;grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+  assert.match(final,/\.viewport>\.control-panel \.layer-display-toggles\{\s*display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
 });

@@ -1,9 +1,10 @@
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v95 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v96 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 
+- [v96 – Gemeinsamer Umlaufbahn-/Kontrast-Button und 2×2-Layout](#release-v96)
 - [v95 – Radar-Rahmen ohne starre 560-px-Grenze](#release-v95)
 - [v94 – Radar-Rahmen wächst nur bis zu den HUD-Informationen](#release-v94)
 - [v93 – Sonne auf ein Drittel bei Objekt aus / Bahn an](#release-v93)
@@ -102,6 +103,17 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [Hotfix v6.1](#hotfix-v61)
 
 ---
+
+<a id="release-v96"></a>
+
+## Release v96 – Umlaufbahn mit drei Stufen, Darstellungsraster 2×2
+
+**Basis:** v95.0.0. **Ziel:** v96.0.0. **Paket:** `Sonnensystem-Delta-v96.zip`. **Cache:** `sonnensystem-shell-v96`.
+
+- **Umlaufbahn** ist jetzt ein Dreifach-Toggle: **An (Standard)** → **An + Bahnkontrast** → **beides Aus** → An. Die Datenflags `orbits` und `orbitContrast` bleiben für Darstellung und Presets getrennt.
+- Der eigenständige Kontrast-Button wird entfernt. Das Orbit-Icon zeigt im Kontrast-Modus kräftigere Kreise; Titel und ARIA nennen aktuellen und nächsten Zustand.
+- Die Darstellungsoptionen liegen in zwei Reihen: **Beschriftung | Umlaufbahn** und **Beleuchtung | Monde** (auch auf Mobilgeräten).
+- Presets, Objektfilter, unabhängige Sonnensystem-/Planetenansicht-Einstellungen und WebGL-Orbits bleiben erhalten. Aktualisierte Regressionstests plus `tests/orbit-toggle-v96.test.mjs`.
 
 <a id="release-v95"></a>
 
