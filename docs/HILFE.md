@@ -59,3 +59,9 @@ Nach dem ersten erfolgreichen Online-Laden kann die PWA ohne Netzwerk mit lokale
 Bei Störungen nach einem Update die App vollständig neu öffnen, damit der neue Service Worker und die App-Shell übernommen werden.
 
 Weitere Informationen: [Datenarchitektur](DATA-ARCHITECTURE.md) und [Versionshistorie](RELEASE-HISTORY.md).
+
+## AR-Bewegungsnavigation (v106)
+
+Wenn AR aktiv ist, wird **direkt rechts neben dem AR-Button** unten links ein zweiter Button mit vier Richtungspfeilen eingeblendet. Dieser ist zunächst **aus**. Tippe ihn an, um Bewegungen des Smartphones nach **vorne, hinten, links und rechts** als Kameraverschiebungen zu verwenden. Der Blick lässt sich weiterhin durch Drehen/Neigen steuern. Ein weiteres Tippen beendet die Bewegungsnavigation; AR selbst bleibt dabei aktiv. Das Ausschalten von AR, das Schließen oder der Hintergrundwechsel der App deaktiviert beide Sensorfunktionen.
+
+Der Browser kann für den Beschleunigungssensor eine zusätzliche Freigabe verlangen. Ohne nutzbare Bewegungsdaten wird die Funktion nicht aktiviert. Sie basiert auf gedämpften Beschleunigungsimpulsen, nicht auf einer präzisen Erfassung der zurückgelegten Wegstrecke; bei ruhigem Gerät entsteht keine geplante Bewegung. Gestenbedienung und Simulationszeit bleiben erhalten.

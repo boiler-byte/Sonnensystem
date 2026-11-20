@@ -1,3 +1,10 @@
+## v106 – AR-Bewegungsnavigation
+
+- Zusätzlicher Toggle unmittelbar neben dem AR-Button; sichtbar nur bei aktivem AR.
+- Optionales Verschieben der Ansicht durch Bewegungssensor-Impulse vor/zurück/links/rechts, analog zur Ein-Finger-Geste. Orientierungsgeste und Zeitsteuerung bleiben unverändert.
+- Eigene Sensorfreigabe, Zustandsanzeige, Entprellung, Dämpfung, Sicherheitsgrenzen und Bereinigung bei Deaktivierung/Hintergrundwechsel. Kein absolutes AR-Positionstracking.
+- Paketversion 106.0.0, HTML V106.0 und PWA-Cache `sonnensystem-shell-v106`.
+
 ## v105 – Objektgeschwindigkeitsbegrenzung im Rendering
 
 - Die sichtbare Umlaufbewegung und Eigendrehung von Objekten ist auf maximal **5 Umdrehungen je realer Sekunde** begrenzt (auch rückwärts).
@@ -6,7 +13,7 @@
 
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v104 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v106 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 

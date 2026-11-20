@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v105.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v106.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -308,3 +308,11 @@ Körperpositionen und Bahnen dienen der anschaulichen Darstellung. Historische, 
 ## Delta-Update auf v105 – Begrenzung visueller Umdrehungen
 
 `Sonnensystem-Delta-v105.zip` wird über die vollständige v104 installiert. Nur gerenderte Umlauf- und Eigendrehungen werden auf maximal fünf Umdrehungen pro realer Sekunde begrenzt. Die Zeitsteuerung ist unverändert.
+
+## Delta v106 – AR-Bewegungsnavigation
+
+Bei aktivem AR-Modus erscheint links unten **direkt neben dem AR-Schalter** ein zweiter, zunächst deaktivierter Bewegungs-Button (Vier-Richtungs-Symbol). Nach Antippen fordert der Browser bei Bedarf Zugriff auf den Bewegungssensor an. Erkennt er gültige Bewegungsdaten, kann das Smartphone durch physische Bewegungen vor/zurück/links/rechts den Kamerastandort wie beim Ein-Finger-Verschieben verändern. Der bestehende AR-Sensorblick bleibt aktiv. Erneutes Antippen schaltet die Bewegung aus. Beim Abschalten des AR-Modus oder beim Verlassen der Seite wird sie automatisch deaktiviert.
+
+Diese Steuerung verwendet **Beschleunigungsdaten**, nicht eine räumliche Positionserfassung: kurze Bewegungsimpulse bewirken eine gedämpfte Kameraverschiebung. Es gibt kein präzises 6-DoF-Tracking, und Empfindlichkeit/Verfügbarkeit sind geräteabhängig. Funktioniert nur auf unterstützten Mobilgeräten in einem sicheren Browserkontext (HTTPS oder localhost). Simulation und Zeitsteuerung werden nicht geändert.
+
+**Installation:** `Sonnensystem-Delta-v106-AR-Bewegung.zip` über eine vollständige v105-Installation entpacken und überschreiben. Danach die PWA neu laden.

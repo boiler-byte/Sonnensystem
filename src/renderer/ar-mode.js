@@ -66,6 +66,32 @@ function smoothLook(old,next){
  return {forward,up};
 }
 
+/** Map acceleration from the handset into the current AR camera's scene. */
+export function deviceMotionInScene(reference,current,basis,acceleration){
+ if(!reference||!current||!basis||!acceleration?.every(Number.isFinite))return null;
+ const relative=normalize(mul(conjugate(reference),current));
+ const local=rotateVector(relative,acceleration);
+ return [0,1,2].map(i=>basis.right[i]*local[0]+basis.up[i]*local[1]+basis.back[i]*local[2]);
+}
+
+/** Acceleration-based movement is a damped gesture, NOT absolute 6DOF tracking. */
+export function motionPanStep(velocity,acceleration,theta,dt){
+ if(!acceleration?.every(Number.isFinite)||!Number.isFinite(theta)||!Number.isFinite(dt)||dt<=0)
+  return {velocity:[0,0],dx:0,dy:0};
+ const seconds=clamp(dt,.008,.05);
+ const right=[Math.cos(theta),0,-Math.sin(theta)];
+ const forward=[-Math.sin(theta),0,-Math.cos(theta)];
+ const deadzone=value=>Math.sign(value)*Math.max(0,Math.abs(value)-.3);
+ const accelR=deadzone(clamp(dot(acceleration,right),-8,8));
+ const accelF=deadzone(clamp(dot(acceleration,forward),-8,8));
+ const friction=Math.exp(-4*seconds);
+ const vR=clamp((velocity?.[0]||0)*friction+accelR*650*seconds,-450,450);
+ const vF=clamp((velocity?.[1]||0)*friction+accelF*650*seconds,-450,450);
+ const next=[Math.abs(vR)<.5?0:vR,Math.abs(vF)<.5?0:vF];
+ // panByPixels() moves the viewpoint opposite the dragged screen image.
+ return {velocity:next,dx:next[0]?-next[0]*seconds:0,dy:next[1]?next[1]*seconds:0};
+}
+
 /** Render device-look as an ordinary orbit camera again without a view jump. */
 export function restoreOrbitFromDeviceLook(camera){
  restoreOrbitFromLook(camera,'arView');
@@ -82,9 +108,24 @@ export function supportsARLook(win=globalThis.window,nav=globalThis.navigator){
  * Permission request is made synchronously from the AR click, before any await.
  * A valid first sensor event is required before the button becomes active.
  */
-export function createARMode(renderer,button,{win=globalThis.window,nav=globalThis.navigator,doc=globalThis.document,notify=()=>{},onStateChange=()=>{},schedule=setTimeout,cancel=clearTimeout}={}){
+export function createARMode(renderer,button,{win=globalThis.window,nav=globalThis.navigator,doc=globalThis.document,motionButton=null,notify=()=>{},onStateChange=()=>{},schedule=setTimeout,cancel=clearTimeout}={}){
  let active=false,pending=false,disposed=false,reference=null,latestOrientation=null,basis=null,timeout=null,session=0;
+ let motionActive=false,motionPending=false,motionTimeout=null,motionSession=0;
+ let motionVelocity=[0,0],gravity=null;
  const available=supportsARLook(win,nav);
+ const syncMotion=()=>{
+  if(!motionButton)return;
+  motionButton.hidden=!active;
+  motionButton.classList.toggle('active',motionActive);
+  motionButton.classList.toggle('pending',motionPending);
+  motionButton.setAttribute('aria-pressed',String(motionActive));
+  motionButton.setAttribute('aria-busy',String(motionPending));
+  const label=motionActive?'AR-Bewegungsnavigation ausschalten'
+   :motionPending?'AR-Bewegungsnavigation wird aktiviert'
+   :'AR-Bewegungsnavigation einschalten: Smartphone vor, zurück, links oder rechts bewegen';
+  motionButton.setAttribute('aria-label',label);
+  motionButton.title=label;
+ };
  const sync=()=>{
   button.hidden=!available;
   button.classList.toggle('active',active);
@@ -93,10 +134,25 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   button.setAttribute('aria-busy',String(pending));
   button.title=active?'AR-Modus: An – zum Ausschalten tippen':pending?'AR-Modus: wartet auf Bewegungsdaten':'AR-Modus: Umsehen durch Bewegung des Smartphones';
   button.parentElement?.classList.toggle('ar-available',available);
+  syncMotion();
   onStateChange(active);
+ };
+ const stopMotion=(message,silent=false)=>{
+  ++motionSession;
+  if(motionTimeout!==null){cancel(motionTimeout);motionTimeout=null;}
+  win?.removeEventListener?.('devicemotion',onMotion);
+  const wasActive=motionActive;
+  motionActive=false;motionPending=false;motionVelocity=[0,0];gravity=null;
+  if(!disposed)syncMotion();
+  if(!silent){
+   if(message)notify(message);
+   else if(wasActive&&active)notify('AR-Bewegung: Aus');
+  }
  };
  const stop=(message)=>{
   session++;
+  // The second toggle must never keep listening after AR ends.
+  stopMotion(undefined,true);
   if(timeout!==null){cancel(timeout);timeout=null;}
   win?.removeEventListener?.('deviceorientation',onOrientation);
   const wasOn=active;
@@ -148,10 +204,71 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
   const next=relativeDeviceLook(reference,current,basis);
   renderer.camera.arView=smoothLook(renderer.camera.arView,next);
  };
+ const onMotion=event=>{
+  if(!active||(!motionActive&&!motionPending)||disposed)return;
+  let acceleration=null;
+  const linear=event.acceleration;
+  if([linear?.x,linear?.y,linear?.z].every(Number.isFinite)){
+   acceleration=[linear.x,linear.y,linear.z];
+   gravity=null;
+  }else{
+   // Some browsers expose gravity-inclusive values only. Remove the resting
+   // baseline with a high-pass filter to prevent perpetual camera drift.
+   const sample=event.accelerationIncludingGravity;
+   if(![sample?.x,sample?.y,sample?.z].every(Number.isFinite))return;
+   const raw=[sample.x,sample.y,sample.z];
+   if(!gravity)gravity=raw.slice();
+   acceleration=raw.map((v,i)=>v-gravity[i]);
+   gravity=raw.map((v,i)=>gravity[i]*.96+v*.04);
+  }
+  if(!reference||!basis)return;
+  if(!motionActive){
+   motionPending=false;motionActive=true;
+   if(motionTimeout!==null){cancel(motionTimeout);motionTimeout=null;}
+   syncMotion();
+   notify('AR-Bewegung: An – Smartphone vor, zurück oder seitlich bewegen');
+   return; // First sample anchors the movement; never cause an initial jump.
+  }
+  if(renderer.cameraFlight)return;
+  const sceneAcceleration=deviceMotionInScene(reference,latestOrientation||reference,basis,acceleration);
+  if(!sceneAcceleration)return;
+  const dt=Number.isFinite(event.interval)?event.interval/1000:.016;
+  const step=motionPanStep(motionVelocity,sceneAcceleration,renderer.camera.theta,dt);
+  motionVelocity=step.velocity;
+  if(step.dx||step.dy)renderer.panByPixels?.(step.dx,step.dy);
+ };
+ const activateMotion=async()=>{
+  if(!active||motionActive||motionPending||disposed||!motionButton)return false;
+  if(typeof win?.DeviceMotionEvent!=='function'){
+   notify('AR-Bewegung: Bewegungssensor nicht verfügbar');return false;
+  }
+  motionPending=true;const id=++motionSession;syncMotion();
+  try{
+   // On iOS this permission call must happen inside the button's click task.
+   const permission=win.DeviceMotionEvent.requestPermission;
+   if(typeof permission==='function'){
+    const result=await permission.call(win.DeviceMotionEvent);
+    if(id!==motionSession||disposed||!active)return false;
+    if(result!=='granted'){stopMotion('AR-Bewegung: Sensorzugriff abgelehnt');return false;}
+   }
+   if(id!==motionSession||disposed||!active)return false;
+   win.addEventListener('devicemotion',onMotion);
+   motionTimeout=schedule(()=>{
+    if(id===motionSession&&!motionActive)stopMotion('AR-Bewegung: Keine Bewegungsdaten verfügbar');
+   },2800);
+   motionTimeout?.unref?.();
+   return true;
+  }catch{
+   if(id===motionSession&&!disposed)stopMotion('AR-Bewegung: Sensorzugriff nicht verfügbar');
+   return false;
+  }
+ };
+ const toggleMotion=()=>motionActive||motionPending?stopMotion():activateMotion();
  /** Align the current sensor attitude to the selected camera preset. */
  const alignToPerspective=()=>{
   if(!active||disposed||!latestOrientation||!renderer?.camera)return false;
   reference=latestOrientation;
+  motionVelocity=[0,0];gravity=null;
   const destination=renderer.cameraFlight?.restoreAR?renderer.cameraFlight.to:renderer.camera;
   basis=cameraLookBasis(destination);
   // The active flight already animates the gaze: only re-anchor the sensor.
@@ -193,17 +310,19 @@ export function createARMode(renderer,button,{win=globalThis.window,nav=globalTh
  const onPageHide=()=>{if(active||pending)stop();};
  if(available){
   button.addEventListener('click',toggle);
+  motionButton?.addEventListener('click',toggleMotion);
   doc?.addEventListener?.('visibilitychange',onVisibility);
   win?.addEventListener?.('pagehide',onPageHide);
  }
  sync();
  return {
   get available(){return available;},get active(){return active;},get pending(){return pending;},
-  activate,stop,toggle,recenter,alignToPerspective,
+  get motionActive(){return motionActive;},get motionPending(){return motionPending;},
+  activate,stop,toggle,activateMotion,toggleMotion,stopMotion,recenter,alignToPerspective,
   dispose(){
    if(disposed)return;
    stop();disposed=true;
-   if(available){button.removeEventListener?.('click',toggle);doc?.removeEventListener?.('visibilitychange',onVisibility);win?.removeEventListener?.('pagehide',onPageHide);}
+   if(available){button.removeEventListener?.('click',toggle);motionButton?.removeEventListener?.('click',toggleMotion);doc?.removeEventListener?.('visibilitychange',onVisibility);win?.removeEventListener?.('pagehide',onPageHide);}
   }
  };
 }

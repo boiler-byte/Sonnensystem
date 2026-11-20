@@ -9,5 +9,5 @@ export function connectARMode(renderer) {
   return createARMode(renderer,$('ar-mode-btn'),{notify:notifyToggle,onStateChange:active=>{
     if(active && renderer?.cinema?.active)renderer.stopCinema();
     syncSceneMode(S,renderer,active);syncCinemaControl();
-  }});
+  },motionButton:$('ar-motion-btn')});
 }

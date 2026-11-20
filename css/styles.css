@@ -638,6 +638,7 @@ button:focus-visible, input:focus-visible{outline:2px solid var(--accent);outlin
 }
 .viewport-actions{left:max(15px,env(safe-area-inset-left));right:max(15px,env(safe-area-inset-right));justify-content:space-between}
 .viewport-actions .camera-reset-button{margin-left:auto}
+.viewport-actions .ar-motion-button{margin-right:auto}
 .viewport-actions .ar-mode-button[hidden]{display:none!important}
 .viewport-actions .ar-mode-button{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;padding:6px;border:1px solid #71859c;border-radius:50%;background:#132238ed;color:#e5edf7;cursor:pointer;box-shadow:0 5px 20px #0009;backdrop-filter:blur(12px)}
 .viewport-actions .ar-mode-button svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
