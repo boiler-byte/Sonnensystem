@@ -87,10 +87,10 @@ export function attachCameraControls(renderer) {
         }
         if(renderer.gestureLookActive){
           const last=renderer.gestureLookCenter||renderer.gestureOrigin||prev;
-          // In free look, a two-finger downward swipe tilts the gaze up.
-          // Keep mouse look and selected-object orbit gestures unchanged.
+          // In free look, both fingers down now tilt the gaze down, just
+          // as in selected-object mode. Mouse look and pinch are unchanged.
           const swipeY=next.y-last.y;
-          lookByPixels(renderer,next.x-last.x,renderer.selectedId===null?-swipeY:swipeY);
+          lookByPixels(renderer,next.x-last.x,swipeY);
           renderer.gestureLookCenter=next;
         }else if(renderer.gestureLookCenter && next.distance!==prev.distance){
           // Maintain the baseline during pinch-only gestures, avoiding a jump

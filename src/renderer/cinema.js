@@ -1,8 +1,8 @@
 /**
  * Camera tour through the visible physical-size row.
  * Every object is held for five seconds at normal playback speed.
- * Travel smoothly to the next object
- * with a logarithmic zoom matching its real display size.
+ * The opening reorder (largest to smallest) is concealed by a fade. Subsequent
+ * objects are reached by continuous camera travel, as in v98.
  * Sampling by elapsed time makes playback and timeline scrubbing consistent.
  */
 import { CAMERA_FOV, clamp, lerp } from './math.js';
@@ -13,6 +13,7 @@ export const CINEMA_HOLD_MS=5000;
 export const CINEMA_PLANET_HOLD_MS=CINEMA_HOLD_MS;
 export const CINEMA_TRAVEL_MS=1300;
 export const CINEMA_END_HOLD_MS=200;
+
 
 export function cinemaEligible(settings){
  return settings?.row===true && settings.scaleObjects===true && settings.scaleOrbits===false;
@@ -44,7 +45,7 @@ export function cinemaTrack(layout,width,height,bodyById){
 
 const smooth=t=>{const k=clamp(t,0,1);return k*k*(3-2*k);};
 
-/** Exact target and zoom for any timeline progress, independently of frame rate. */
+/** Continuous camera travel between the individual five-second holds. */
 export function cinemaPoseAt(track,progress){
  const frames=track?.frames??[];
  if(!frames.length)return {target:[0,0,0],distance:1,objectId:null,holding:false};
@@ -67,13 +68,29 @@ export function cinemaPoseAt(track,progress){
  return {target:[last.x,0,0],distance:last.distance,objectId:last.id,holding:true};
 }
 
+/** There is no blackout between objects; only the opening reorder uses one. */
+export function cinemaSceneAt(track,progress){
+ return {...cinemaPoseAt(track,progress),opacity:0};
+}
+
+// Compatibility for integrations using the v99 helper name.
+export const cinemaFadeSceneAt=cinemaSceneAt;
+
+/** Fade the initial size-row reorder (largest -> smallest) around a hidden cut. */
+export function cinemaEntryOpacity(elapsedMs,durationMs=CINEMA_ENTRY_MS){
+ const t=clamp((Number(elapsedMs)||0)/durationMs,0,1);
+ if(t<.27)return smooth(t/.27);
+ if(t<=.73)return 1;
+ return smooth((1-t)/.27);
+}
+
 export function cinemaTargetAt(track,progress){return cinemaPoseAt(track,progress).target;}
 export function cinemaObjectAt(track,progress){return cinemaPoseAt(track,progress).objectId;}
 
 /** Scan a stop only once the camera has actually arrived, not during travel or entry. */
 export function cinemaRestingObject(cinema,camera,transition){
  if(!cinema?.active || !camera || transition || cinema.seeking || cinema.elapsedMs<CINEMA_ENTRY_MS)return null;
- const pose=cinemaPoseAt(cinema.track,cinema.progress);
+ const pose=cinemaSceneAt(cinema.track,cinema.progress);
  if(!pose.holding || !pose.objectId)return null;
  const dist=Math.max(.00001,pose.distance);
  const positionError=Math.hypot(...pose.target.map((value,i)=>value-(camera.target?.[i]??NaN)));

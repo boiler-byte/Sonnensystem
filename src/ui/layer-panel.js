@@ -8,6 +8,10 @@ export function syncLayers(){
   const view=activeView(), selected=S.settings.layers;
   const available=new Set(availableLayerTypes(S.bodies,view,renderer?.planetId));
   const summary=layerSummary(selected);
+  const row= S.settings.row === true;
+  for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])
+    $(id).hidden=row;
+  $('layer-popover').classList.toggle('row-layer-options',row);
   $('layer-btn').setAttribute('aria-label',`Objektlayer auswählen (${summary})`);
   $('layer-btn').title=selected.mode==='custom'
     ? 'Aktive Objektlayer: '+LAYER_FILTER_TYPES.filter(filter => layerFilterMembers(filter).some(type => layerEnabled(selected,type))).join(', ')
@@ -16,7 +20,7 @@ export function syncLayers(){
   for(const check of document.querySelectorAll('[data-layer-type]')){
     const type=check.dataset.layerType;
     const members=layerFilterMembers(type).filter(member => available.has(member));
-    check.parentElement.hidden=!members.length;
+    check.parentElement.hidden=!members.length || (row && (type==='moon' || type==='satellite'));
     check.disabled=!members.length;
     check.checked=members.length>0 && members.every(member => layerEnabled(selected,member));
     // Legacy split selections can still be represented without losing data.

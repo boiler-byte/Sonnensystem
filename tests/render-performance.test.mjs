@@ -169,6 +169,8 @@ test('in-flight texture uploads are released if the manager is disposed',async()
 test('a canceled image download cannot upload a GPU texture',async()=>{
  const gl={MAX_TEXTURE_SIZE:1,getParameter:()=>2048,deleteTexture(){}};
  const manager=new TextureManager(gl,{mobile:true});let finish,uploads=0;
+ manager.manifest=new Map([['/textures/mobile/earth.webp','a'.repeat(64)]]);
+ manager.nextManifestCheck=Infinity;
  manager.loadImage=()=>new Promise(resolve=>{finish=resolve;});
  manager.upload=()=>{uploads++;return {handle:{},width:32,height:32,mipmaps:false};};
  manager.get({id:'earth'},null,'earth');manager.dispose();

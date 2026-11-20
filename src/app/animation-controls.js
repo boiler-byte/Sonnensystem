@@ -2,6 +2,8 @@ import {$,S,renderer,byId} from './state.js';
 import {cinemaClock} from '../renderer/cinema.js';
 import {notifyToggle} from '../ui/status.js';
 import {syncToggleState} from '../ui/control-state.js';
+import {setSpeedPopover} from '../ui/popover-controls.js';
+import {syncLayers} from '../ui/layer-panel.js';
 
 export function syncScaleControls(){
   for(const [id,key,label] of [['scale-objects-btn','scaleObjects','Objektgrößen'],['scale-orbits-btn','scaleOrbits','Bahnabstände']]){
@@ -47,6 +49,10 @@ export function syncRowControl(){
     :order==='distance'?'Reihe: Nach Entfernung (nah nach fern)'
     :'Reihe: Nach Größe (groß nach klein)';
   syncToggleState(button,enabled,title);
+  // The row runs at a fixed 30 simulated minutes per second; its usual
+  // speed/date dropdown is not interactive here. Leave saved speeds intact.
+  $('time-panel').hidden=enabled;
+  if(enabled)setSpeedPopover(false);
   button.setAttribute('data-row-mode',order);
   button.setAttribute('aria-label',`${title}. Nächster Modus: ${order==='off'?'Größe':order==='size'?'Entfernung':'Aus'}`);
 }
@@ -66,7 +72,7 @@ export function updateRow(){
   }
   S.settings.row=enabled;
   S.settings.rowOrder=order;
-  syncRowControl();syncCinemaControl();
+  syncRowControl();syncCinemaControl();syncLayers();
   notifyToggle(`Reihe: ${!enabled?'Aus (Umlaufbahnen)':order==='distance'?'Nach Entfernung (nah nach fern)':'Nach Größe (groß nach klein)'}`);
   if(!renderer)return;
   renderer._labelState=null;

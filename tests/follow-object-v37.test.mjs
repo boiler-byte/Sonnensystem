@@ -34,7 +34,7 @@ test('v37: center control is adjacent to planet view, accessible and toggleable'
   const html=await read('index.html'),app=await read('src/app.js'),css=await read('css/styles.css');
   const action=html.split('id="detail-scene-actions"')[1].split('<div class="detail-description"')[0];
   assert.match(action,/id="planet-view-btn"[\s\S]*?id="center-object-btn"/);
-  assert.match(action,/aria-pressed="false"/);
+  assert.match(action,/aria-pressed="true"/);
   assert.match(action,/>Folgen<\/span>/);
   assert.match(css,/\.object-center-btn\.active\{/);
   assert.match(app,/\$\('center-object-btn'\)\.addEventListener\('click'/);

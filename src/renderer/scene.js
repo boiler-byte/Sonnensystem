@@ -10,6 +10,13 @@ export function eclipticVectorToScene(vector, scale) {
 
 export function computePositions(renderer, timeMs) {
   renderer.positions.clear();
+  if(renderer.settings?.row && renderer.cinema?.active){
+    // The Cinema lineup replaces the orbital positions of its visible bodies
+    // in calcPositions(). Computing thousands of Kepler orbits in every movie
+    // frame adds no visual information and causes avoidable frame stalls.
+    renderer.positions.set(renderer.planetId||'sun',[0,0,0]);
+    return;
+  }
   const date=new Date(timeMs).toISOString().slice(0,10);
   if(renderer.planetId){
    const planet=renderer.byId.get(renderer.planetId);
@@ -17,7 +24,7 @@ export function computePositions(renderer, timeMs) {
     renderer.positions.set(planet.id,[0,0,0]);
     for(const child of renderer.planetChildren()){
      const r=displayOrbitRadius(child,planet,renderer.settings,planet),ov=renderer.overrides.get(child.id);
-     let pos=keplerPosition(child,planet,timeMs,null,r);
+     let pos=keplerPosition(child,planet,(renderer.renderOrbitTime?.(child,timeMs)??timeMs),null,r);
      if(ov?.date===date){
       const length=Math.hypot(...ov.vector)||1;
       const factor=renderer.settings?.scaleOrbits ? (1.28/Math.max(1,Number(planet.radiusKm)||0)) : r/length;
@@ -35,7 +42,7 @@ export function computePositions(renderer, timeMs) {
     if(inProgress.has(id))return[0,0,0];inProgress.add(id);
     if(!b.parentId){renderer.positions.set(id,[0,0,0]);inProgress.delete(id);return[0,0,0];}
     const parent=renderer.byId.get(b.parentId);const center=calc(b.parentId);
-    let rel=keplerPosition(b,parent,timeMs,null,displayOrbitRadius(b,parent,renderer.settings));
+    let rel=keplerPosition(b,parent,(renderer.renderOrbitTime?.(b,timeMs)??timeMs),null,displayOrbitRadius(b,parent,renderer.settings));
     const ov=renderer.overrides.get(id);
     if(ov&&ov.date===date){const length=Math.hypot(...ov.vector)||1;
       const scale=renderer.settings?.scaleOrbits

@@ -17,7 +17,9 @@
         "temperatureK": 5772,
         "temperatureMeanK": 5772,
         "surfaceGravityMs2": 274,
-        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html"
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+        "rotationPeriodHours": 609.12,
+        "axialTiltDeg": 7.25
       },
       "orbit": {
         "semiMajorAxis": 0,

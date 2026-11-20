@@ -41,7 +41,10 @@ function mockControl(view='solar'){
   };
   const S={viewSettings,settings,time};
   const notices=[];
-  const context=vm.createContext({syncToggleState,$,S,renderer,notifyToggle:notice=>notices.push(notice)});
+  // The isolated old-module source now has visibility side effects for row-only
+  // speed and layer controls, both backed by independent UI modules.
+  const context=vm.createContext({syncToggleState,$,S,renderer,notifyToggle:notice=>notices.push(notice),
+    setSpeedPopover:()=>{},syncLayers:()=>{}});
   return {context,viewSettings,settings,elements,renderer,snapshots,notices,$};
 }
 

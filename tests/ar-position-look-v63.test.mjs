@@ -92,13 +92,13 @@ test('v64: right mouse drag applies inverted vertical free look only if unselect
  }
 });
 
-test('v71: a two-finger downward swipe looks upward at a fixed eye',()=>{
+test('v104: a two-finger downward swipe looks downward at a fixed eye',()=>{
  const {r,emit,cleanup}=setup();
  try{
   const eye=cameraView(r.camera,1100,720).eye;
   emit('pointerdown',1,100,100,'touch');emit('pointerdown',2,220,100,'touch');
   emit('pointermove',1,100,150,'touch');emit('pointermove',2,220,150,'touch');
-  assert.ok(r.camera.freeLook?.phi>.99);
+  assert.ok(r.camera.freeLook?.phi<.99);
   approx(r.camera.dist,47);
   cameraView(r.camera,1100,720).eye.forEach((v,i)=>approx(v,eye[i]));
   emit('pointerup',1,100,150,'touch');emit('pointerup',2,220,150,'touch');

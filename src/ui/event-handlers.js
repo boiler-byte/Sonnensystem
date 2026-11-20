@@ -2,7 +2,7 @@ import {$,S,renderer,mobileSheets,arMode,byId} from '../app/state.js';
 import {availableLayerTypes,layerPreset,updateLayerSelection} from '../data/layers.js';
 import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
 import {syncLayers,setLayerPopover} from './layer-panel.js';
-import {syncOrbitControls,advanceOrbitDisplayMode,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
+import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody} from '../app/camera-controller.js';
@@ -72,9 +72,14 @@ export function initControls(){
   }
   restoreDetailTab();
   $('orbit-visibility-btn').addEventListener('click',()=>{
+    const view=activeView();
+    const current=orbitDisplayMode(S.settings,view);
+    const next=nextOrbitDisplayMode(S.settings,view);
+    // A new session records only positions reached after this click.
+    if(renderer && current!=='galactic' && next==='galactic')renderer.resetGalacticTrails();
     const mode=advanceOrbitDisplayMode(S.settings);
     syncOrbitControls();syncLayers();
-    notifyToggle({normal:'Umlaufbahn: An',contrast:'Umlaufbahn + Bahnkontrast: An',off:'Umlaufbahn und Bahnkontrast: Aus'}[mode]);
+    notifyToggle({normal:'Umlaufbahn: An',contrast:'Umlaufbahn + Bahnkontrast: An',galactic:'Galaktische Bewegung: An',off:'Umlaufbahn und Bahnkontrast: Aus'}[mode]);
   });
   syncOrbitControls();
   $('toggle-labels').addEventListener('click',()=>{
@@ -154,7 +159,7 @@ export function initControls(){
     S.modeSpeeds[S.timelineMode]=S.speed;
     updateTime(); // Changing the speed never unpauses the simulation.
   });
-  $('today-btn').addEventListener('click',()=>{S.time=Date.now();updateTime();updateDetail();});
+  $('today-btn').addEventListener('click',()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();});
   document.addEventListener('pointerdown',e=>{
     if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
     if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);

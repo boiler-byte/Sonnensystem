@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v96.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v105.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -15,17 +15,19 @@ Anschließend `http://localhost:4173` öffnen. Optional kann `PORT` in `.env` ko
 ```sh
 npm run check         # Katalogvalidierung und komplette Regressionstests
 npm run check:data    # Nur Katalog und redaktionelle Daten prüfen
+npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 ```
 
 ## Aktuelle Funktionen
 
-- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, Nachführung und drei Kameraperspektiven.
-- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit umgekehrtem vertikalem Zwei-Finger-Umschauen; gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links zurück; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
-- **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung und Monde sowie ein gemeinsamer Umlaufbahn-Button mit drei Stufen (Umlaufbahn → Umlaufbahn + Bahnkontrast → Aus); getrennte Ansichts-Einstellungen.
-- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe wie bisher klein-zu-groß; in der Entfernungsreihe läuft es ohne Neuordnung von links nach rechts.
+- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, standardmäßig aktiviertes **Folgen** des ausgewählten Körpers und drei Kameraperspektiven. Die Nachführung lässt sich in den Objektdetails ausschalten.
+- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit Zwei-Finger-Umschauen (unten = Blick nach unten, oben = Blick nach oben); gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links zurück; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
+- **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung und Monde sowie ein Umlaufbahn-Button mit vier Stufen im Sonnensystem (Umlaufbahn → Umlaufbahn + Bahnkontrast → Galaktische Bewegung → Aus) und drei Stufen in Planetenansichten; getrennte Ansichts-Einstellungen.
+- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe mit einer Überblendung vom größten zum kleinsten Körper und fährt danach kontinuierlich von klein nach groß. In der Entfernungsreihe bleibt die Anordnung unverändert; bereits der Einstieg erfolgt per Kamerafahrt. Auch das Beenden führt die Kamera weich zurück.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
 - **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Die zuletzt gewählte Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
-- **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert; lokale Texturen werden bei Bedarf gecacht. API-Daten sind nicht Bestandteil des Offline-Caches.
+- **Texturen:** Drei getrennte Verzeichnisse `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px). WebP wird gegenüber JPG bevorzugt, fehlende Stufen werden aus vorhandenen Nachbarstufen geladen und GPU-seitig verkleinert.
+- **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert. Texturen nutzen einen separaten, netzwerkpriorisierten Cache; bei geänderten Dateien werden SHA-256-Versionen automatisch erkannt. Bereits geladene Bilder bleiben offline verfügbar. Andere API-Daten sind nicht Bestandteil des Offline-Caches.
 
 ## Projektaufbau
 
@@ -39,7 +41,8 @@ npm run check:data    # Nur Katalog und redaktionelle Daten prüfen
 | `data/catalog/`, `data/editorial/` | Astronomische und redaktionelle JSON-Datensätze |
 | `server/`, `src/services/` | Lokaler Server und optionale externe API-Aufrufe |
 | `scripts/`, `tests/` | Katalogprüfung, Wartungswerkzeuge und Regressionstests |
-| `sw.js` | Offline-Cache mit manifestgesteuerten Katalogdaten |
+| `sw.js` | Offline-Cache mit manifestgesteuerten Katalogdaten und aktualisierbaren Texturen |
+| `textures/mobile/`, `textures/standard/`, `textures/high/` | Lokale Bilddateien, pro Stufe 512 / 2048 / 4096 px |
 
 ## Dokumentation
 
@@ -85,6 +88,76 @@ In der Sortierung **Entfernung ↑** werden mittlere Abstände **bis einschließ
 `Sonnensystem-Delta-v76.zip` enthält **nur neue oder geänderte Dateien gegenüber v75**. Es wird über eine bestehende **v75-Installation** gelegt (v71 + Delta v72–v75). Nach dem Überschreiben `npm run check` ausführen und die App online neu laden; der neue Offline-Cache heißt `sonnensystem-shell-v76`. Katalogdaten, Quellen, Messwerte und Schema (`10.1.0` / `1`) bleiben unverändert.
 
 Die **Temperaturkachel** im Daten-Tab ist jetzt platzsparend: Der Mittelwert steht links mit halb gefülltem schwarzem Thermometer **ohne helle Icon-Fläche**, aber mit kontrastierender Kontur. Vorhandene Min.- und Max.-Temperaturen stehen **rechts in zwei schmalen Zeilen untereinander** mit kleinem blauem bzw. rotem Thermometer. Fehlende Extremwerte werden nicht als leere Zeilen belegt; ohne Min./Max. bleibt nur der Mittelwert sichtbar. Desktop und Mobile-Sheet verwenden dieselbe Darstellung.
+
+## Delta-Update auf v104 – Cinema-Kamerafahrten, Touch-Richtung und Folgen
+
+`Sonnensystem-Delta-v104.zip` enthält **nur neue oder geänderte Dateien gegenüber v103.0.0**. Über eine vollständig installierte v103-Version im Projektstamm entpacken und gleichnamige Dateien überschreiben. Danach `npm run check` ausführen, Server neu starten und die PWA einmal online neu laden, damit `sonnensystem-shell-v104` aktiv wird.
+
+- **Cinema in der Größenreihe:** Beim Start wird die Neuordnung und der Kamerasprung vom größten zum kleinsten Objekt mit dem bisherigen Fade verdeckt. Danach erfolgen **alle Objektwechsel als kontinuierliche Kamerafahrten mit weichem Zoom** wie in v98; Haltezeiten, Scanner und Scrubbing bleiben erhalten. Beim Stop/Ende führt die Kamera ebenfalls animiert zur vorherigen Ansicht zurück.
+- **Cinema in der Entfernungsreihe:** Keine Neuordnung und kein Fade beim Einstieg; die Kamera fährt direkt zum ersten Objekt, danach wie üblich von links nach rechts.
+- **Mobile freie Sicht:** Zwei-Finger-Wischen nach unten richtet den Blick nach unten, nach oben richtet ihn nach oben, sofern kein Objekt ausgewählt ist. Die horizontale Richtung, Pinch-Zoom, Maus und die ausgewählte Objektsteuerung bleiben unverändert.
+- **Objektdetails:** **Folgen** ist beim ersten Laden aktiviert und verfolgt das anfänglich gewählte Objekt. Ein manueller Klick kann Folgen jederzeit ausschalten; die bisherigen Abbruchregeln bleiben bestehen. Datenkatalog, Schema und Texturen wurden nicht verändert.
+
+## Delta-Update auf v103 – Galaktische Schweife nur ab dem Einschaltzeitpunkt
+
+`Sonnensystem-Delta-v103.zip` auf eine **vollständige v102.0.0-Installation** entpacken und gleichnamige Dateien überschreiben. Danach `npm run check` ausführen, den Server neu starten und die PWA einmal online neu laden, damit `sonnensystem-shell-v103` geladen wird.
+
+- **Keine rückwirkend berechnete Spur:** Im Modus **Galaktische Bewegung** startet die Sonne ebenso wie jedes Objekt mit einer **Linienlänge von 0**. Die App speichert ausschließlich tatsächlich erreichte Positionen ab dem Aktivieren; v102s 2,4-Sekunden-Reveal der alten Bahn entfällt vollständig.
+- **Zeitgesteuertes Wachstum:** Die Linien verlängern sich durch die simulierte Zeit, nicht durch Realzeit. **Pause hält die Spur an**, höhere Geschwindigkeit lässt sie schneller wachsen; bei langsamer Zeit vergeht mehr Realzeit bis zur erkennbaren Länge.
+- **Jeder Neueinstieg setzt zurück:** Verlassen und erneutes Aktivieren von Galaktische Bewegung setzt alle Spuren zurück, ebenso ein Rücksprung im Simulationsdatum, ein Zeitsprung zu Heute oder eine erneute Horizons-Ausrichtung. Alte Daten werden nicht wieder eingeblendet. Die Speicherung bleibt je Objekt begrenzt.
+- **Unverändert:** 3D-Abwärtsrichtung aus v101, Ansicht und Kameraführung, Planetendynamik, Objektfilter, Katalog und Schemakompatibilität.
+
+## Delta-Update auf v102 – Spuren wachsen ab Länge 0
+
+`Sonnensystem-Delta-v102.zip` über die **vollständige v101.0.0-Installation** im Projektstamm entpacken und Dateien ersetzen. `npm run check` ausführen, den Server neu starten und die PWA einmal online neu laden, damit `sonnensystem-shell-v102` aktiv wird.
+
+- **Start bei Länge 0:** Beim Umschalten von **Umlaufbahn + Bahnkontrast** zu **Galaktische Bewegung** verschwinden die geschlossenen Ellipsen unmittelbar. Die Sonne und alle weiteren Objekte mit angezeigter Bahn beginnen mit **keiner sichtbaren Spur** unmittelbar an ihrer aktuellen Position.
+- **Wachstum:** Jede Linie wächst während einer etwa **2,4 Sekunden** langen, sanft beschleunigten und abbremsenden Animation vom jeweiligen Körper in die **historische** 3D-Flugbahn hinein (rückwärts durch die Zeit). Es gibt keinen geometrischen Morph zwischen Ellipse und Schweif mehr. Bei deaktivierten Animationen steht sofort die vollständige Spur.
+- **Unverändert:** Der gemeinsame 3D-Abwärtsdrift von Sonne und Planeten aus v101, der Kamerastandpunkt, Navigation, reguläre Umlaufbahnen und die drei Umlaufbahn-Modi in isolierten Planetenansichten bleiben bestehen. Der Wechsel zu „Aus“ entfernt die Linien unmittelbar.
+
+## Delta-Update auf v101 – Galaktischer Schweif nach unten im 3D-Raum
+
+`Sonnensystem-Delta-v101.zip` über die **vollständige v100.0.0-Installation** im Projektstamm entpacken und Dateien ersetzen. Anschließend `npm run check` ausführen, den Server neu starten und die Anwendung/PWA **einmal online neu laden**, damit `sonnensystem-shell-v101` aktiv wird. Das Paket enthält ausschließlich geänderte oder neue Dateien.
+
+- **Sonnenbewegung:** Die historische Sonnen-Spur läuft nicht mehr überwiegend nach links (negative X-Achse), sondern überwiegend **nach unten entlang der negativen Y-Achse der 3D-Szene**, mit kleiner Rückwärtskomponente auf der Z-Achse und leichtem räumlichem Schwung. Die aktuelle Sonne bleibt am Ursprung des mitbewegten Kamerabezugssystems.
+- **Historische Planetenspuren:** Sie verwenden exakt dieselbe geänderte räumliche Sonnenbewegung. Die offenen Bahnen, der Morph zwischen Orbit und Spur sowie alle Kamera- und Steuerungsfunktionen bleiben erhalten. Die Ausrichtung ist im Raum fest und **nicht bildschirmfixiert**; aus anderen Perspektiven erscheint der Schweif entsprechend anders.
+- **Einordnung:** Richtung und Geschwindigkeit der gezeigten galaktischen Spur sind ein **illustratives Modell** und keine astronomisch vermessene Bahn der Sonne um das Milchstraßenzentrum.
+
+## Delta-Update auf v100 – Galaktische Ansicht und offene 3D-Spuren
+
+`Sonnensystem-Delta-v100.zip` über die **vollständige v99.0.0-Installation** im Projektstamm entpacken und Dateien ersetzen. Anschließend `npm run check` ausführen, den Server neu starten und die Anwendung/PWA **einmal online neu laden**, damit der Service Worker `sonnensystem-shell-v100` übernimmt. Das Paket enthält nur die neuen und geänderten Dateien.
+
+- **Neuer Orbit-Modus:** Der Umlaufbahn-Button besitzt in der Sonnensystemansicht jetzt einen zusätzlichen Modus **Galaktische Bewegung**. Die Reihenfolge lautet: `Umlaufbahn` → `Umlaufbahn + Bahnkontrast` → `Galaktische Bewegung` → `Aus`. In der Planetenansicht bleibt die bisherige Dreierfolge erhalten.
+- **Bezugssystemwechsel statt anderer Linienart:** Im galaktischen Modus werden die klassischen Kepler-Ellipsen nicht nur umgefärbt, sondern in historische offene 3D-Spuren überführt. Die aktuelle Objektlage bleibt unverändert; die Kamera und die Interaktion folgen weiterhin der aktuellen Sonnenposition.
+- **Sonnenspur:** Die Sonne erhält eine lange, leicht leuchtende Spur durch den Raum.
+- **Planetenspuren:** Planeten und weitere heliocentrische Kleinkörper zeigen ihre historischen Flugbahnen im gewählten galaktischen Bezugssystem.
+- **Fließender Wechsel:** Beim Umschalten in oder aus dem Galaktik-Modus werden die Bahnen animiert zwischen geschlossener Umlaufbahn und offener 3D-Spur morpht.
+
+## Delta-Update auf v99 – feste Reihenzeit und Cinema-Fade
+
+`Sonnensystem-Delta-v99.zip` über die **vollständige v98.0.0-Installation** im Projektstamm entpacken und Dateien ersetzen. Anschließend `npm run check` ausführen, den Server neu starten und die Anwendung/PWA **einmal online neu laden**, damit der Service Worker `sonnensystem-shell-v99` übernimmt. Das Paket enthält nur die neuen und geänderten Dateien.
+
+- **Reihen-Darstellung:** Die Simulation läuft ausschließlich während der Reihenansicht mit **30 simulierten Minuten pro Echtzeitsekunde** (Pause bleibt möglich). Die individuell gespeicherten Simulationsgeschwindigkeiten der normalen Sonnen- und Planetenansichten bleiben erhalten und werden nach dem Verlassen der Reihenansicht wieder verwendet. Der Geschwindigkeits-/Zeit-Dropdown-Button ist in der Reihe ausgeblendet.
+- **Layer-Dropdown:** Während der Reihe sind die Buttons **Beschriftung**, **Umlaufbahn**, **Alle Monde** sowie die Kategorien **Monde** und **Satelliten** verborgen. Die zugrundeliegenden Einstellungen und Objektfilter bleiben unverändert; beim Verlassen sind alle Controls wieder verfügbar.
+- **Cinema:** Der Wechsel zwischen den Körpern wird jetzt als **Fade-out → direkter Kamerawechsel bei verdeckter Szene → Fade-in** gezeigt, statt mit schnellen Zoom-/Pan-Bewegungen. Auch der Eintritt in die Tour wird überblendet. Die 5-Sekunden-Haltezeiten, 1,3-Sekunden-Übergänge, Zeitleiste, Scrubbing und Cinema-2x bleiben erhalten. Die Oberfläche läuft währenddessen mit der Reihenzeit weiter.
+
+## Delta-Update auf v98 – Eigenrotation und Texturausrichtung
+
+`Sonnensystem-Delta-v98.zip` im **Projektstamm einer vollständigen v97.0.0-Installation** entpacken und vorhandene Dateien überschreiben. Danach `npm run check` ausführen, den Node-Server neu starten und die PWA einmal **online neu laden**, sodass `sonnensystem-shell-v98` aktiv wird. Das Delta liefert nur geänderte oder neue Dateien; die lokalen Bildtexturen unter `textures/` bleiben unberührt.
+
+**Objektrotation:** Sonnensystem- und isolierte Planetenansicht nutzen eine gemeinsame 3D-Ausrichtung. Die Oberfläche rotiert mit der siderischen Rotationsperiode relativ zur **simulierten Zeit** (Wiedergabe, Pause, Geschwindigkeit und Zeitsprung). Der lokale Katalog wurde um Werte für Sonne, acht Planeten, Pluto und Ceres ergänzt. Bei großen gebundenen Monden richtet sich die Textur anhand der modellierten Kepler-Position zum Elternkörper aus. Die Datenfelder `physical.rotationPeriodHours` (Stunden, negativ bei rückläufiger Rotation), `physical.axialTiltDeg` (0–180°, Grad) und `physical.synchronousRotation` (bool) sind optional: Ohne belegte Werte wird keine willkürliche Eigendrehung angenommen. Der optionale Solar-OpenData-Abgleich übernimmt `sideralRotation` und `axialTilt`, falls gültig.
+
+**Texturausrichtung:** Equirektanguläre Karten werden mit **Nord oben**, **0°-Meridian in der Kartenmitte** (`u=0,5`), **Ost nach rechts** abgebildet. WebGL lädt die Bildzeilen weiterhin mit aktiviertem vertikalen Flip; die UV-Abbildung erzeugt dadurch keine gespiegelten oder kopfstehenden Oberflächen. Die Kugel und Saturns Ringe benutzen dieselbe Achsneigung (26,7° für Saturn), während die Ringe nicht mit der Oberflächenrotation mitdrehen. Die Beleuchtungsrichtung wird in den lokalen Objektraum umgerechnet; der Tag-Nacht-Übergang rotiert daher nicht mit einer festen Texturstelle. Pro Objekt sind `appearance.texturePhaseDeg` (Nullmeridian-Verschiebung) und `appearance.axisHeadingDeg` (Ausrichtung der Neigung im Szenenraum) optional.
+
+**Genauigkeitsgrenzen:** Die planetaren Rotationsperioden und Neigungen sind gerundete Referenzwerte, **keine vollständigen IAU-Pol-/Prime-Meridian-Ephemeriden**. Die Anfangsausrichtung von Bildmerkmalen hängt vom gelieferten Texture-Atlas ab und kann über `texturePhaseDeg` angepasst werden. Die Mond-Achsneigung wird vereinfacht abgebildet; physikalische Libration, differentielle Sonnenrotation und unabhängige Ringtexturen sind nicht modelliert. Die ursprüngliche v97-Texturordner- und Cache-Logik bleibt unverändert. Einzelheiten: [Datenarchitektur](docs/DATA-ARCHITECTURE.md) und [Texturquellen](docs/TEXTURE-SOURCES.md).
+
+## Delta-Update auf v97 – Texturen und Cache
+
+`Sonnensystem-Delta-v97.zip` über eine bestehende **v96.0.0-Installation** im Projektstamm entpacken und gleichnamige Dateien überschreiben. Danach `npm run check` ausführen, den Node-Server neu starten und die PWA **online neu laden**, damit `sonnensystem-shell-v97` aktiv wird. Das Paket enthält nur neue oder geänderte Dateien gegenüber dem beigefügten v96-Quellarchiv. **Die Texturbilder selbst sind nicht enthalten**, da sie nicht im Ausgangsarchiv liegen. Bestehende Bilder in `textures/standard/` nicht löschen.
+
+Empfohlene Dateinamen (alle Stufen): `earth.webp`, `mars.webp`, `moon.webp`, `titan.webp`. Die Ordner `mobile/` (512 px), `standard/` (2048 px) und `high/` (4096 px) sind voneinander getrennt. Die Dateisuche bevorzugt WebP vor JPG/JPEG/PNG und fällt bei fehlenden Mobilbildern zuerst auf `standard/` zurück. Bereits vorhandene historische 2K-Namen wie `2k_earth_daymap.jpg` bleiben im `standard/`-Ordner lesbar. Die angegebenen Pixelgrößen sind **Maximalbreiten für den GPU-Upload**; v97 erzeugt keine neuen Bilddateien und skaliert vorhandene Bilder nur im Browser herunter.
+
+Der lokale Node-Server stellt `/api/textures/manifest` bereit. Dessen SHA-256-Prüfsummen werden beim Rendern spätestens alle 30 Sekunden (und nach einem erneuten Öffnen der Seite) geprüft. Geänderte oder neu hinzugefügte Bilder erhalten eine andere URL-Version und ersetzen ihre bisherigen GPU-Texturen. Der Service Worker holt Texturen **zuerst vom Netzwerk** und hält die letzte erfolgreiche Version pro Dateipfad für Offline-Nutzung vor. Für rein statisches Hosting ohne diesen Endpunkt funktioniert der Dateifallback weiterhin; dort werden Änderungen mit einem Online-Neuladen der Anwendung zuverlässig übernommen, nicht fortlaufend während einer offenen Sitzung. Details: [Texturquellen](docs/TEXTURE-SOURCES.md).
 
 ## Delta-Update auf v96
 
@@ -231,3 +304,7 @@ Die damalige v68-Migration führte auf `68.0.0` mit dem Cache `sonnensystem-shel
 ## Wissenschaftliche Grenzen
 
 Körperpositionen und Bahnen dienen der anschaulichen Darstellung. Historische, mittlere und vereinfachte Orbitparameter liefern **keine** hochgenauen Echtzeit-Ephemeriden. Fehlende Größen werden nicht erfunden. Weitere Hinweise stehen in der Datenarchitektur und den jeweiligen Objektdetails.
+
+## Delta-Update auf v105 – Begrenzung visueller Umdrehungen
+
+`Sonnensystem-Delta-v105.zip` wird über die vollständige v104 installiert. Nur gerenderte Umlauf- und Eigendrehungen werden auf maximal fünf Umdrehungen pro realer Sekunde begrenzt. Die Zeitsteuerung ist unverändert.

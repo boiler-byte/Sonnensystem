@@ -1,9 +1,23 @@
+## v105 – Objektgeschwindigkeitsbegrenzung im Rendering
+
+- Die sichtbare Umlaufbewegung und Eigendrehung von Objekten ist auf maximal **5 Umdrehungen je realer Sekunde** begrenzt (auch rückwärts).
+- Die Begrenzung arbeitet mit unabhängigen visuellen Zeitständen pro Objekt und Rotationstyp; synchron rotierende Monde orientieren sich anhand ihrer begrenzten Umlaufphase.
+- Die Simulationszeit, Wiedergabegeschwindigkeit, Zeitregler und Kalenderwerte bleiben unverändert.
+
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v96 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v104 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 
+- [v104 – Cinema-Kamerafahrten, Zwei-Finger-Richtung und Folgen](#release-v104)
+- [v103 – Galaktische Spuren nur aus neuer Bewegung](#release-v103)
+- [v102 – Galaktische Linien starten bei Länge 0](#release-v102)
+- [v101 – Galaktische Spur mit 3D-Abwärtsrichtung](#release-v101)
+- [v100 – Galaktische Ansicht und Bezugssystemwechsel](#release-v100)
+- [v99 – Reihenzeit und Cinema-Fade](#release-v99)
+- [v98 – Eigenrotation, Achsneigung und Texturausrichtung](#release-v98)
+- [v97 – Drei lokale Texturstufen und automatische Cache-Aktualisierung](#release-v97)
 - [v96 – Gemeinsamer Umlaufbahn-/Kontrast-Button und 2×2-Layout](#release-v96)
 - [v95 – Radar-Rahmen ohne starre 560-px-Grenze](#release-v95)
 - [v94 – Radar-Rahmen wächst nur bis zu den HUD-Informationen](#release-v94)
@@ -101,6 +115,56 @@ Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für
 - [v3 – Sonnensystem: Kamerasteuerung](#release-v3)
 - [v2 – Sonnensystem](#release-v2)
 - [Hotfix v6.1](#hotfix-v61)
+
+---
+
+<a id="release-v104"></a>
+
+## Release v104 – Cinema-Kamerafahrten, freie Touch-Richtung, Folgen ab Start
+
+**Delta v103 → v104:** Nur die Neuordnung der **Größenreihe** vom größten zum kleinsten Objekt beim Filmstart bleibt eine Überblendung mit vollständig dunklem Kameraschnitt. Im laufenden Cinema erhalten **sämtliche Objektwechsel** wieder die stetigen Kamerafahrten und logarithmisch interpolierten Zooms der v98. Die Entfernungsreihe behält ihre Reihenfolge und fährt ohne Einstiegsausblendung zum ersten Körper. Auch beim Beenden und nach dem letzten Stopp erfolgt die Rückkehr zur gespeicherten Ausgangsansicht als Kamerafahrt statt per Fade. Die mobile Zwei-Finger-Blicksteuerung ohne Auswahl wird vertikal vertauscht: unten = unten, oben = oben; ausgewählte Objekte, horizontale Bewegung, Maus und AR bleiben unverändert. **Folgen** ist beim initialen Katalogladen aktiv, richtet sich auf das selektierte Objekt und bleibt per Schalter abschaltbar. App `104.0.0`, PWA-Shell `sonnensystem-shell-v104`, unveränderte Datensätze/Texturen und Schemastruktur. Neue und aktualisierte Regressionstests prüfen Einstieg, Objektfahrten, Rückkehr, Gesten und Folge-Zustand.
+
+<a id="release-v103"></a>
+
+## Release v103 – Galaktische Schweife wachsen nur durch Simulationsbewegung
+
+**Delta v102 → v103:** Die alte Zeitlupenanimation zum Aufdecken vorausberechneter Bahnen entfällt. Beim Einstieg in **Galaktische Bewegung** beginnen Sonne und Objekte ohne sichtbare Linie. Ab diesem Moment werden nur real durchlaufene Simulationspositionen gespeichert und als Schweif mit 3D-Abwärtsdrift dargestellt; Pause lässt die Linie stehen und ein Wiedereinstieg löscht alle vorherigen Aufzeichnungen. Keine alten Ephemeriden werden beim Wechsel rückwärts gesampelt. Rückwärts laufende Zeit und die Heute-/Horizons-Sprünge löschen die laufende Aufzeichnung. Pro Körper ist die Spur zeitlich und durch eine Stichprobenobergrenze begrenzt. Kamera und Bewegungsrechnung bleiben unbeeinflusst. Version `103.0.0`, Offline-Shell `sonnensystem-shell-v103`, kein Daten- oder Schemawechsel.
+
+<a id="release-v102"></a>
+
+## Release v102 – Galaktische Linien starten bei Länge 0
+
+**Delta v101 → v102:** Beim Umschalten auf **Galaktische Bewegung** werden die geschlossenen Umlaufbahnen nicht mehr in die historischen Flugbahnen gemorpht. Stattdessen beginnt jeder sichtbare 3D-Schweif **an der aktuellen Position des zugehörigen Körpers ohne sichtbare Länge**, einschließlich der Sonne. Während einer monotonen, 2,4 Sekunden langen Animation wächst die Linie rückwärts entlang der historischen Bewegung. Simulation und Kamerasteuerung bleiben davon unabhängig; bei `prefers-reduced-motion` erscheinen die fertigen Linien ohne Animation. Die 3D-Abwärtsrichtung aus v101 bleibt unverändert. Version `102.0.0`, Offline-Shell `sonnensystem-shell-v102`, Datenkatalog und Texturen unverändert.
+
+<a id="release-v101"></a>
+
+## Release v101 – Galaktische Spur mit 3D-Abwärtsrichtung
+
+**Delta v100 → v101:** Die historische Sonnenbewegung führt nun überwiegend in **negative Y-Richtung im Szenenraum**, mit geringer Tiefenkomponente (Z) und schwacher Seitenabweichung (X). Das ersetzt die seitlich nach links laufende Hauptbewegung der v100. Die historischen Spuren der Planeten benutzen dieselbe Funktion, sodass Sonne und Planeten konsistent im selben illustrativen galaktischen Bezugssystem bleiben. Kamera und Kamerasteuerung, Objektpositionen, Cinema und Orbit-Morph bleiben unverändert. Die Ausrichtung hängt von der Kameraperspektive ab und ist **nicht bildschirmfest**. Keine astronomisch exakte Rekonstruktion der Sonnenbahn. App `101.0.0`, PWA-Shell `sonnensystem-shell-v101`, Katalog und Texturmanifest unverändert.
+
+<a id="release-v100"></a>
+
+## Release v100 – Galaktische Ansicht und Bezugssystemwechsel
+
+**Delta v99 → v100:** Der Umlaufbahn-Schalter der Sonnensystemansicht besitzt nun zusätzlich den Modus **Galaktische Bewegung**. Statt bloßer Linienvariation wechselt dabei das dargestellte Bezugssystem für die Bahngeometrie: Die Sonne erhält eine leicht leuchtende Spur, heliocentrische Objekte zeigen historische offene 3D-Flugbahnen, und die Kamera bleibt auf die aktuelle Sonnenposition bezogen. Beim Umschalten werden klassische Ellipsen und galaktische Spuren weich ineinander überführt. In der Planetenansicht bleibt die bisherige Dreifach-Umschaltung erhalten. PWA-Shell `sonnensystem-shell-v100`, App `100.0.0`, Datenkatalog und Texturmanifest unverändert.
+
+<a id="release-v99"></a>
+
+## Release v99 – Reihenansicht und Cinema-Fade
+
+**Delta v98 → v99:** In der Reihen-Darstellung gilt fest **30 Minuten Simulationszeit je Echtzeitsekunde**. Die gespeicherten Geschwindigkeiten für Sonnensystem- und Planetenansicht bleiben unverändert; das Zeit-/Geschwindigkeitsmenü wird nur in der Reihe versteckt. Der Layer-Dialog verbirgt in dieser Ansicht Beschriftung, Umlaufbahn, Alle-Monde-Steuerung und die Kategorien Monde und Satelliten, ohne die gespeicherten Filter zu verändern. Der Cinema-Wechsel erfolgt mit zeitgesteuerter Überblendung und diskretem Kameraschnitt am dunkelsten Punkt anstelle einer panoramierenden/zoomenden Transitfahrt. Der Eintritt wird ebenfalls überblendet, um den Übergang vom vorherigen Reihen-Kamerastandpunkt abzufangen. Cinema-Timeline und Playback bleiben unverändert. PWA-Shell `sonnensystem-shell-v99`, App `99.0.0`, Datenkatalog und Texturmanifest unverändert.
+
+<a id="release-v98"></a>
+
+## Release v98 – Siderische Eigenrotation und Equirektangular-Ausrichtung
+
+**Delta v97 → v98:** `src/renderer/object-orientation.js` berechnet eine zeitabhängige, deterministische Oberfläche aus Rotationsperiode (Stunden), Obliquität, optionaler Kartenphase und synchroner Mondbindung. Die Standarddaten enthalten Referenzrotationen für Sonne, Planeten, Ceres und Pluto sowie gebundene Bewegung großer Monde. `SolarRenderer.drawSphere()` übergibt eine rotierte Modelmatrix und die entsprechend transformierte Sonnenlichtrichtung an WebGL. Saturns Ringe benutzen die gleiche körpergebundene Neigung wie die Kugel und bleiben von deren Eigenrotation unabhängig. Das Kugelmesh verwendet nicht gespiegelte Equirektangular-UVs (Nord oben, Ost rechts, Mitte +Z); fehlende Rotationsdaten bedeuten einen ruhenden Körper. NASA/NSSDCA-Faktenblatt: https://nssdc.gsfc.nasa.gov/planetary/factsheet/ . Neue Regressionen: `tests/object-rotation-v98.test.mjs`. Schema und Textur-Cache bleiben abwärtskompatibel (`1`, Texturcache `sonnensystem-textures-v1`). Version und Offline-Shell: `98.0.0` / `sonnensystem-shell-v98`.
+
+<a id="release-v97"></a>
+
+## Release v97 – Drei Texturverzeichnisse, WebP und Cache-Refresh
+
+**Delta v96 → v97:** Die lokalen Texturen werden getrennt nach `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px) geladen. Innerhalb einer Stufe hat WebP Vorrang vor JPG/JPEG/PNG; die alte Alias-Namensgebung funktioniert in `standard/` weiterhin. Fehlende mobile Texturen werden aus `standard/` nachgeladen und zur GPU-Aufbereitung auf höchstens 512 px reduziert. Die neue lokale Manifest-API liefert SHA-256-Hashes der vorhandenen Bilder. Der Renderer erkennt Veränderungen oder neue Dateien bei fortlaufender Darstellung maximal 30 Sekunden später und ersetzt die GPU-Ressourcen mit versionsabhängigen URLs. Der PWA-Service-Worker lädt Bilddateien netzwerkpriorisiert und hält pro Bildpfad eine Fallback-Kopie im separaten Offline-Cache. Sicherheits- und Regressionstests wurden ergänzt. Neue Release-Version `97.0.0`, PWA-Cache `sonnensystem-shell-v97`. Das Delta enthält keine Bilddateien, da das Quellpaket keine enthält.
 
 ---
 

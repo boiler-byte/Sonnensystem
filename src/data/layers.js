@@ -19,7 +19,7 @@ const defaultTypes = view => view === 'planet' ? PLANET_STANDARD_LAYERS : STANDA
 /** Independent filter and display settings for each scene. */
 export function createViewSettings(view = 'solar') {
   return {
-    orbits:true, orbitContrast:false, labels:true,
+    orbits:true, orbitContrast:false, galacticMotion:false, labels:true,
     lighting:view === 'planet' ? 'realistic' : 'optimized', fourMoons:view !== 'planet',
     scaleObjects:false, scaleOrbits:false, row:false, rowOrder:'size',
     layers:layerPreset('standard',view)
@@ -27,11 +27,11 @@ export function createViewSettings(view = 'solar') {
 }
 
 /** Four Layer presentation buttons manage five settings; Objekt/Bahn/Reihe are separate. */
-export const DISPLAY_SETTING_KEYS = Object.freeze(['labels','lighting','fourMoons','orbits','orbitContrast']);
+export const DISPLAY_SETTING_KEYS = Object.freeze(['labels','lighting','fourMoons','orbits','orbitContrast','galacticMotion']);
 
 /** ON means realistic lighting, unrestricted moons and visible high-contrast orbits. */
 export function displayPreset(name = 'standard', view = 'solar') {
-  if(name === 'all')return {labels:true,lighting:'realistic',fourMoons:false,orbits:true,orbitContrast:true};
+  if(name === 'all')return {labels:true,lighting:'realistic',fourMoons:false,orbits:true,orbitContrast:true,galacticMotion:false};
   const defaults=createViewSettings(view);
   return Object.fromEntries(DISPLAY_SETTING_KEYS.map(key=>[key,defaults[key]]));
 }

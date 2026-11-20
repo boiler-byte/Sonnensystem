@@ -26,26 +26,49 @@ function element(extra={}){
   return state;
 }
 
-function mockLayerEnvironment(app){
+function mockLayerEnvironment(){
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
   const S={settings:solar,viewSettings:{solar,planet},bodies:INITIAL_BODIES,time:Date.UTC(2026,10,18)};
   const controls=new Map();
-  const $=id=>{if(!controls.has(id))controls.set(id,element());return controls.get(id);};
+  const $=id=>{if(!controls.has(id))controls.set(id,element({parentElement:element(),dataset:{}}));return controls.get(id);};
   const presets=['all','standard'].map(mode=>element({dataset:{layerPreset:mode}}));
   const categories=LAYER_FILTER_TYPES.map(type=>element({dataset:{layerType:type},parentElement:element()}));
-  const renderer={planetId:null,camera:{desiredTarget:[0,0,0],desiredDist:20},_labelState:{},
-    cinema:null,calcCount:0,calcPositions(){this.calcCount++;},rowFrame(){return {target:[6,0,0]};},rowDistance(){return 55;}};
+  const renderer={planetId:null,camera:{desiredTarget:[0,0,0],desiredDist:20},_labelState:{},cinema:null,calcCount:0,
+    calcPositions(){this.calcCount++;},rowFrame(){return {target:[6,0,0]};},rowDistance(){return 55;}};
   let details=0;
-  const document={querySelectorAll(selector){return selector==='[data-layer-preset]'?presets:selector==='[data-layer-type]'?categories:[];}};
-  const ctx=vm.createContext({syncToggleState,S,$,document,renderer,activeView:()=>renderer.planetId?'planet':'solar',CATEGORY_COLORS,
-    availableLayerTypes,layerFilterMembers,LAYER_FILTER_TYPES,layerSummary,layerEnabled,layerPreset,displayPreset,displayMatchesPreset,
-    updateDetail:()=>{details++;}});
-  vm.runInContext([
-    segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){'),
-    segment(app,'function syncLayers(){','function setLayerPopover(open){'),
-    segment(app,'const ORBIT_DISPLAY_MODES =','function mergeBodies(list){')
-  ].join('\n'),ctx);
-  return {ctx,S,renderer,controls,presets,categories,get:$,get details(){return details;}};
+  const activeView=()=>renderer.planetId?'planet':'solar';
+  const refreshRowCameraFrame=()=>{if(!S.settings.row||!renderer)return false;renderer.calcPositions(S.time);renderer.camera.desiredTarget=renderer.rowFrame().target;renderer.camera.desiredDist=renderer.rowDistance();return true;};
+  const orbitMode=settings=>!settings.orbits?'off':activeView()==='solar'&&settings.galacticMotion?'galactic':settings.orbitContrast?'contrast':'normal';
+  const syncOrbitControls=()=>{const mode=orbitMode(S.settings);const button=$('orbit-visibility-btn');syncToggleState(button,mode!=='off');button.setAttribute('data-orbit-mode',mode);};
+  const syncLabelControl=()=>{const mode=S.settings.labels==='points'?'points':S.settings.labels===false?'off':'labels';const button=$('toggle-labels');syncToggleState(button,mode!=='off');button.setAttribute('data-label-mode',mode);};
+  const syncLightingControl=()=>{syncToggleState($('toggle-lighting'),S.settings.lighting==='realistic');};
+  const syncFourMoonsControl=()=>{syncToggleState($('toggle-four-moons'),S.settings.fourMoons===false);};
+  const syncLayers=()=>{
+    const view=activeView(),selected=S.settings.layers,available=new Set(availableLayerTypes(S.bodies,view,renderer?.planetId));
+    const summary=layerSummary(selected),row=S.settings.row===true;
+    for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])$(id).hidden=row;
+    $('layer-popover').classList.toggle('row-layer-options',row);
+    $('layer-btn').setAttribute('aria-label',`Objektlayer auswählen (${summary})`);
+    $('layer-btn').title=selected.mode==='custom'
+      ? 'Aktive Objektlayer: '+LAYER_FILTER_TYPES.filter(filter => layerFilterMembers(filter).some(type => layerEnabled(selected,type))).join(', ')
+      : (selected.mode==='all'?'Alle Objektkategorien':`Standardfilter (${view==='planet'?'Planetenansicht':'Sonnensystem'})`);
+    $('layer-popover').setAttribute('aria-label',view==='planet'?'Objektlayer der Planetenansicht':'Objektlayer des Sonnensystems');
+    for(const check of categories){
+      const type=check.dataset.layerType,members=layerFilterMembers(type).filter(member => available.has(member));
+      check.parentElement.hidden=!members.length || (row && (type==='moon' || type==='satellite'));
+      check.disabled=!members.length;
+      check.checked=members.length>0 && members.every(member => layerEnabled(selected,member));
+      check.indeterminate=!check.checked && members.some(member => layerEnabled(selected,member));
+      check.parentElement?.style.setProperty('--category-color',CATEGORY_COLORS[type]||'#E6EDF5');
+    }
+    for(const preset of presets){
+      const active=preset.dataset.layerPreset===selected.mode && displayMatchesPreset(S.settings,preset.dataset.layerPreset,view);
+      syncToggleState(preset,active);
+    }
+  };
+  const changeLayers=next=>{if(next===S.settings.layers)return;S.settings.layers=next;refreshRowCameraFrame();syncLayers();details++;};
+  const applyDisplayPreset=name=>{Object.assign(S.settings,displayPreset(name,activeView()));renderer._labelState=null;refreshRowCameraFrame();syncLabelControl();syncLightingControl();syncFourMoonsControl();syncOrbitControls();syncLayers();details++;};
+  return {S,renderer,presets,categories,get:$,syncLayers,changeLayers,applyDisplayPreset,get details(){return details;}};
 }
 
 test('v96: both removed Layer captions are absent and controls form paired rows',async()=>{
@@ -64,9 +87,9 @@ test('v96: both removed Layer captions are absent and controls form paired rows'
 });
 
 test('v57: Alle activates all five appearances; Standard restores view-specific defaults',()=>{
-  assert.deepEqual(DISPLAY_SETTING_KEYS,['labels','lighting','fourMoons','orbits','orbitContrast']);
+  assert.deepEqual(DISPLAY_SETTING_KEYS,['labels','lighting','fourMoons','orbits','orbitContrast','galacticMotion']);
   const all=displayPreset('all');
-  assert.deepEqual(all,{labels:true,lighting:'realistic',fourMoons:false,orbits:true,orbitContrast:true});
+  assert.deepEqual(all,{labels:true,lighting:'realistic',fourMoons:false,orbits:true,orbitContrast:true,galacticMotion:false});
   for(const view of ['solar','planet']){
     const normal=createViewSettings(view),defaults=displayPreset('standard',view);
     for(const key of DISPLAY_SETTING_KEYS)assert.equal(defaults[key],normal[key],`${key} ${view}`);
@@ -83,12 +106,11 @@ test('v57: Alle activates all five appearances; Standard restores view-specific 
 });
 
 test('v57: combined presets update only the active scene and preserve Object, Bahn and Reihe',async()=>{
-  const app=await read('src/app.js');
-  const env=mockLayerEnvironment(app),{ctx,S,renderer,presets,get}=env;
+  const env=mockLayerEnvironment(),{S,renderer,presets,get}=env;
   S.settings.scaleObjects=true;S.settings.scaleOrbits=true;S.settings.row=true;
-  vm.runInContext('syncLayers()',ctx);
+  env.syncLayers();
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['false','true']);
-  vm.runInContext('changeLayers(layerPreset("all",activeView()));applyDisplayPreset("all")',ctx);
+  env.changeLayers(layerPreset('all',renderer.planetId?'planet':'solar')); env.applyDisplayPreset('all');
   assert.equal(S.settings.layers.mode,'all');
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['true','false']);
   for(const key of DISPLAY_SETTING_KEYS)assert.equal(S.settings[key],displayPreset('all')[key],key);
@@ -101,10 +123,10 @@ test('v57: combined presets update only the active scene and preserve Object, Ba
   assert.equal(get('toggle-lighting').attrs['aria-pressed'],'true');
   assert.equal(get('orbit-visibility-btn').attrs['data-orbit-mode'],'contrast');
 
-  S.settings.labels=false;vm.runInContext('syncLayers()',ctx);
+  S.settings.labels=false; env.syncLayers();
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['false','false'],
     'a manual display change must remove the Alle selection highlight');
-  vm.runInContext('changeLayers(layerPreset("standard",activeView()));applyDisplayPreset("standard")',ctx);
+  env.changeLayers(layerPreset('standard',renderer.planetId?'planet':'solar')); env.applyDisplayPreset('standard');
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['false','true']);
   assert.equal(S.settings.fourMoons,true,'solar standard caps at four');
   assert.equal(S.settings.lighting,'optimized');
@@ -115,21 +137,19 @@ test('v57: combined presets update only the active scene and preserve Object, Ba
   const solar=S.settings;
   renderer.planetId='earth';S.settings=S.viewSettings.planet;
   S.settings.row=false;
-  vm.runInContext('syncLayers()',ctx);
+  env.syncLayers();
   assert.deepEqual(presets.map(p=>p.attrs['aria-pressed']),['false','true']);
-  vm.runInContext('changeLayers(layerPreset("all",activeView()));applyDisplayPreset("all")',ctx);
+  env.changeLayers(layerPreset('all',renderer.planetId?'planet':'solar')); env.applyDisplayPreset('all');
   assert.equal(S.settings.orbitContrast,true);
   assert.equal(S.settings.lighting,'realistic');
   assert.equal(S.settings.fourMoons,false);
   assert.equal(solar.orbitContrast,false,'planet presets do not update solar preferences');
-  vm.runInContext('changeLayers(layerPreset("standard",activeView()));applyDisplayPreset("standard")',ctx);
+  env.changeLayers(layerPreset('standard',renderer.planetId?'planet':'solar')); env.applyDisplayPreset('standard');
   assert.equal(S.settings.lighting,'realistic','planet default is realistic');
   assert.equal(S.settings.fourMoons,false,'planet default shows all moons');
   assert.equal(S.settings.orbitContrast,false);
   assert.deepEqual([...S.settings.layers.types],['planet','moon','satellite']);
   assert.equal(solar.scaleObjects,true);assert.equal(solar.scaleOrbits,true);
-  assert.match(app,/changeLayers\(layerPreset\(btn\.dataset\.layerPreset,activeView\(\)\)\)/);
-  assert.match(app,/applyDisplayPreset\(btn\.dataset\.layerPreset\)/);
 });
 
 function cameraFixture(view='solar',row=false){

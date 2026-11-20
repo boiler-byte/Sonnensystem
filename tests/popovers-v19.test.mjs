@@ -12,7 +12,7 @@ const within=(text,start,end)=>{
 };
 
 test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',async()=>{
-  const html=await read('index.html'),app=await read('src/app.js'),layerModel=await read('src/data/layers.js');
+  const html=await read('index.html'),app=await read('src/ui/event-handlers.js'),layerModel=await read('src/data/layers.js');
   const layer=within(html,'id="layer-popover"','id="time-panel"');
   assert.match(layer,/class="layer-display-toggles"/);
   assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
@@ -22,7 +22,7 @@ test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',
   }
   assert.doesNotMatch(html,/id="toggle-orbits"|id="orbit-popover"|id="orbit-picker-wrap"|id="orbit-colors-btn"/);
   assert.doesNotMatch(app,/setOrbitPopover|orbit-popover|toggle-orbits/);
-  assert.match(layerModel,/orbitContrast:false,\s*labels:true/);
+  assert.match(layerModel,/orbitContrast:false,\s*galacticMotion:false,\s*labels:true/);
   assert.match(app,/\$\('layer-btn'\)\.addEventListener\('click'/);
   assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
   assert.doesNotMatch(layer,/id="orbit-contrast-btn"/);

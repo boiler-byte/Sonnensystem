@@ -1,6 +1,6 @@
 {
   "name": "sonnensystem",
-  "version": "96.0.0",
+  "version": "105.0.0",
   "private": true,
   "type": "module",
   "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und serverseitigen API-Proxies",
@@ -8,7 +8,8 @@
     "start": "node server/server.mjs",
     "dev": "node --watch server/server.mjs",
     "check": "node scripts/validate-catalog.mjs && node --test tests/*.test.mjs",
-    "check:data": "node scripts/validate-catalog.mjs"
+    "check:data": "node scripts/validate-catalog.mjs",
+    "textures:list": "node scripts/cache-textures.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -6,6 +6,13 @@ const YEAR = 365.25;
 // Speeds are stored as simulated days per real second. Each view has its own
 // logarithmic range; the exact default is an integer slider step.
 export const SPEED_STEPS = 240;
+export const ROW_SIMULATION_SPEED = 30 / 1440; // 30 simulated minutes per real second.
+
+/** Row-only speed override; the saved speed for each scene is never changed. */
+export function effectiveSimulationSpeed(state) {
+  return state?.settings?.row === true ? ROW_SIMULATION_SPEED : state.speed;
+}
+
 export const SPEED_MODES = Object.freeze({
   solar: Object.freeze({min: HOUR, defaultSpeed: 5, max: 10 * YEAR, pivot: 101}),
   planet: Object.freeze({min: MINUTE, defaultSpeed: HOUR, max: YEAR, pivot: 75})

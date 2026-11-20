@@ -3,7 +3,10 @@ import { TAU } from './math.js';
 export function sphereGeometry(lat=30,lon=42) {
  const vertices=[],inds=[];
  for(let a=0;a<=lat;a++) {let theta=a*Math.PI/lat;
-  for(let b=0;b<=lon;b++){const p=b*TAU/lon,x=Math.sin(theta)*Math.cos(p),y=Math.cos(theta),z=Math.sin(theta)*Math.sin(p);vertices.push(x,y,z,x,y,z,b/lon,1-a/lat);}}
+  for(let b=0;b<=lon;b++){
+  // Longitude increases to the right in the map and on the visible front.
+  // The atlas centre (u=.5, 0-degree meridian) faces +Z, with the seam at -Z.
+  const p=TAU*(.75-b/lon),x=Math.sin(theta)*Math.cos(p),y=Math.cos(theta),z=Math.sin(theta)*Math.sin(p);vertices.push(x,y,z,x,y,z,b/lon,1-a/lat);}}
  for(let a=0;a<lat;a++)for(let b=0;b<lon;b++){const p=a*(lon+1)+b,q=p+lon+1;inds.push(p,q,p+1,q,q+1,p+1);}
  return {vertices:new Float32Array(vertices),indices:new Uint16Array(inds)};
 }

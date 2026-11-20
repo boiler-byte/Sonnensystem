@@ -76,8 +76,12 @@ test('real ES module UI handlers still change the shared view settings',()=>{
   assert.equal(S.settings.orbits,true);
   assert.equal(S.settings.orbitContrast,true);
   node('orbit-visibility-btn').click();
+  assert.equal(S.settings.galacticMotion,true);
+  assert.equal(S.settings.orbitContrast,false);
+  node('orbit-visibility-btn').click();
   assert.equal(S.settings.orbits,false);
   assert.equal(S.settings.orbitContrast,false);
+  assert.equal(S.settings.galacticMotion,false);
   node('scale-objects-btn').click();
   assert.equal(S.settings.scaleObjects,true);
   assert.equal(S.viewSettings.planet.scaleObjects,true,'scale setting shared by both scenes');

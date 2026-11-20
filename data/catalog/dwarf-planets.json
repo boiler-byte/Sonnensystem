@@ -13,7 +13,9 @@
       "name": "Ceres",
       "parentId": "sun",
       "physical": {
-        "radiusKm": 473
+        "radiusKm": 473,
+        "rotationPeriodHours": 9.074,
+        "axialTiltDeg": 4
       },
       "orbit": {
         "semiMajorAxis": 2.768,
@@ -40,7 +42,9 @@
         "temperatureMeanK": 48.15,
         "atmosphericPressurePa": 1,
         "surfaceGravityMs2": 0.6,
-        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/"
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+        "rotationPeriodHours": -153.3,
+        "axialTiltDeg": 119.5
       },
       "orbit": {
         "semiMajorAxis": 39.482,

@@ -117,7 +117,7 @@ test('v18: one compact time trigger contains Play, slider, and Heute in its popu
   assert.match(css,/writing-mode:vertical-lr;direction:rtl/);
   assert.match(app,/if\(syncSpeedMode\(S,view\)\)/);
   assert.match(app,/\$\('speed-btn'\)\.addEventListener\('click'/);
-  assert.match(app,/\$\('today-btn'\)\.addEventListener\('click',\(\)=>\{S\.time=Date\.now\(\);updateTime\(\);updateDetail\(\);\}\)/);
+  assert.match(app,/\$\('today-btn'\)\.addEventListener\('click',\(\)=>\{S\.time=Date\.now\(\);renderer\?\.resetGalacticTrails\?\.\(\);updateTime\(\);updateDetail\(\);\}\)/);
   assert.match(app,/if\(e\.key==='Escape'\)\{/);
   assert.match(app,/!\$\('speed-picker-wrap'\)\.contains\(e\.target\)/);
 });

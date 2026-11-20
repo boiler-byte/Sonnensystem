@@ -85,7 +85,7 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   $('detail-description').textContent=b.description||'Astronomischer Himmelskörper.';
   const credit=$('texture-credit');
   credit.hidden=b.type==='probe';
-  credit.textContent=b.type==='probe'?'':'TEXTUR · Lokal: textures/standard (falls vorhanden)';
+  credit.textContent=b.type==='probe'?'':'TEXTUR · Lokal: textures/mobile · textures/standard · textures/high (falls vorhanden)';
   // Structured editorial articles are independent of the astronomical data feed.
   const article=b.editorial;
   const extra=$('editorial-content');

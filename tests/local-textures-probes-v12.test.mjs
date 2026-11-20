@@ -11,13 +11,13 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const read=async file=>readFile(join(root,file),'utf8');
 
 test('v12: only safe same-origin local texture paths, with 2K filename aliases',()=>{
-  assert.deepEqual(texturePaths('earth').slice(0,4),[
-    '/textures/standard/earth.jpg','/textures/standard/earth.jpeg',
-    '/textures/standard/earth.png','/textures/standard/earth.webp']);
+  const earthPaths=texturePaths('earth');
+  assert.equal(earthPaths[0],'/textures/standard/earth.webp');
+  assert.ok(earthPaths.indexOf('/textures/standard/2k_earth_daymap.webp')<earthPaths.indexOf('/textures/standard/earth.jpg'));
   assert.ok(texturePaths('earth').includes('/textures/standard/2k_earth_daymap.jpg'));
   assert.equal(textureSource('../../secret'),null);
   assert.equal(textureSource('earth').url,undefined);
-  assert.equal(textureTier({planetId:'earth'},'earth'),'detail');
+  assert.equal(textureTier({planetId:'earth'},'earth'),'high');
   assert.equal(textureTier({isMobile:true,planetId:'earth'},'earth'),'mobile');
 });
 

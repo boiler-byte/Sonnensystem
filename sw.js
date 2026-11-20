@@ -1,6 +1,7 @@
 /* Application shell + manifest-driven offline data set. */
-const CACHE_NAME='sonnensystem-shell-v96';
-const SHELL=["./","./index.html","./css/styles.css","./favicon.svg","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-180.png","./src/app.js","./src/data/bodies.js","./src/data/layers.js","./src/data/catalog.js","./src/data/normalization.js","./src/data/orbital-math.js","./data/catalog/probes.json","./src/renderer/ar-mode.js","./src/renderer/camera.js","./src/renderer/cinema.js","./src/renderer/controls.js","./src/renderer/geometry.js","./src/renderer/index.js","./src/renderer/labels.js","./src/renderer/math.js","./src/renderer/orbits.js","./src/renderer/orbit-cache.js","./src/renderer/planet-view.js","./src/renderer/renderer.js","./src/renderer/row-inspection.js","./src/renderer/transitions.js","./src/renderer/scene.js","./src/renderer/shaders.js","./src/renderer/solar-view.js","./src/renderer/texture-sources.js","./src/renderer/textures.js","./src/services/api.js","./src/services/celestrak-api.js","./src/services/nasa-api.js","./src/services/solar-api.js","./src/ui/bottom-sheet.js","./src/ui/formatters.js","./src/ui/object-details.js","./src/ui/row-inspection.js","./src/ui/physical-stat-icons.js","./src/ui/object-list.js","./src/ui/scene-mode.js","./src/ui/status.js","./src/ui/timeline.js","./src/app/animation-controls.js","./src/app/animation-loop.js","./src/app/ar-controller.js","./src/app/camera-controller.js","./src/app/object-catalog.js","./src/app/runtime.js","./src/app/service-worker-registration.js","./src/app/state.js","./src/app/view-mode.js","./src/ui/catalog-controller.js","./src/ui/display-controls.js","./src/ui/event-handlers.js","./src/ui/layer-panel.js","./src/ui/popover-controls.js","./src/ui/control-state.js","./src/renderer/scene-objects.js"];
+const CACHE_NAME='sonnensystem-shell-v105';
+const TEXTURE_CACHE='sonnensystem-textures-v1';
+const SHELL=["./","./index.html","./css/styles.css","./favicon.svg","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-180.png","./src/app.js","./src/data/bodies.js","./src/data/layers.js","./src/data/catalog.js","./src/data/normalization.js","./src/data/orbital-math.js","./data/catalog/probes.json","./src/renderer/ar-mode.js","./src/renderer/camera.js","./src/renderer/cinema.js","./src/renderer/controls.js","./src/renderer/geometry.js","./src/renderer/index.js","./src/renderer/labels.js","./src/renderer/math.js","./src/renderer/galactic-motion.js","./src/renderer/galactic-trails.js","./src/renderer/orbits.js","./src/renderer/orbit-cache.js","./src/renderer/object-orientation.js","./src/renderer/planet-view.js","./src/renderer/renderer.js","./src/renderer/visual-angular-limit.js","./src/renderer/row-inspection.js","./src/renderer/transitions.js","./src/renderer/scene.js","./src/renderer/shaders.js","./src/renderer/solar-view.js","./src/renderer/texture-sources.js","./src/renderer/textures.js","./src/services/api.js","./src/services/celestrak-api.js","./src/services/nasa-api.js","./src/services/solar-api.js","./src/ui/bottom-sheet.js","./src/ui/formatters.js","./src/ui/object-details.js","./src/ui/row-inspection.js","./src/ui/physical-stat-icons.js","./src/ui/object-list.js","./src/ui/scene-mode.js","./src/ui/status.js","./src/ui/timeline.js","./src/app/animation-controls.js","./src/app/animation-loop.js","./src/app/ar-controller.js","./src/app/camera-controller.js","./src/app/object-catalog.js","./src/app/runtime.js","./src/app/service-worker-registration.js","./src/app/state.js","./src/app/view-mode.js","./src/ui/catalog-controller.js","./src/ui/display-controls.js","./src/ui/event-handlers.js","./src/ui/layer-panel.js","./src/ui/popover-controls.js","./src/ui/control-state.js","./src/renderer/scene-objects.js"];
 const DATA_MANIFEST='./data/catalog/manifest.json';
 const dataPath=/^\.\/data\/(catalog|editorial)\/[a-z0-9-]+\.json$/;
 
@@ -33,13 +34,24 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==self.location.origin || url.pathname.includes('/api/'))return;
   // Cache maps lazily rather than on install (4K sources are too large for a
   // mandatory offline precache). Maps already viewed can be used offline.
-  if(/\/textures\/standard\/[a-zA-Z0-9_-]+\.(?:jpg|jpeg|png|webp)$/.test(url.pathname)){
-    event.respondWith(caches.open(CACHE_NAME).then(async cache=>{
-      const old=await cache.match(request);
-      if(old)return old;
-      const response=await fetch(request);
-      if(response.ok)event.waitUntil(cache.put(request,response.clone()).catch(()=>{}));
-      return response;
+  if(/\/textures\/(?:mobile|standard|high)\/[a-zA-Z0-9][a-zA-Z0-9_-]*\.(?:webp|jpg|jpeg|png)$/.test(url.pathname)){
+    event.respondWith(caches.open(TEXTURE_CACHE).then(async cache=>{
+      // Cache by canonical pathname, not by the version query: one offline
+      // copy per image and no accumulation of superseded revisions.
+      const key=new Request(url.origin+url.pathname);
+      try{
+        const response=await fetch(request,{cache:'no-store'});
+        if(response.ok){
+          event.waitUntil(cache.put(key,response.clone()).catch(()=>{}));
+          return response;
+        }
+        // 404 is not a usable image and must not replace the last good map.
+        return (await cache.match(key))||response;
+      }catch(error){
+        const saved=await cache.match(key);
+        if(saved)return saved;
+        throw error;
+      }
     }));
     return;
   }

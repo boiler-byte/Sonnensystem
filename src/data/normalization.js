@@ -20,6 +20,10 @@ export function normalizeSolar(body,existing=null){
   if(id==='sun')parentId=null;
   const aKm=num(body.semimajorAxis),radius=num(body.meanRadius)||num(body.equaRadius)||old?.radiusKm||5;
   const orbitDays=num(body.sideralOrbit),ecc=num(body.eccentricity),incl=num(body.inclination);
+  // Solar System OpenData exposes sidereal rotation in hours. Keep curated
+  // catalog values when the API does not supply a finite, nonzero value.
+  const liveRotation=body.sideralRotation==null?null:num(body.sideralRotation);
+  const liveTilt=body.axialTilt==null?null:num(body.axialTilt);
   const displayName=old?.name||body.englishName||body.name||body.id;
   const idHash=id.split('').reduce((s,c)=>s+c.charCodeAt(0),0);
   return {
@@ -27,7 +31,12 @@ export function normalizeSolar(body,existing=null){
     periodDays:orbitDays&&orbitDays!==0?Math.abs(orbitDays):(old?.periodDays||28),radiusKm:radius,
     e:ecc??old?.e??0, i:incl??old?.i??0,node:num(body.longAscNode)??old?.node??0,
     peri:num(body.argPeriapsis)??old?.peri??0,M:num(body.mainAnomaly)??old?.M??idHash%360,
-    epoch:old?.epoch||J2000,color:old?.color||(type==='moon'?'#c0b8a8':type==='dwarf'?'#bbb7bb':'#ad9786'),
+    epoch:old?.epoch||J2000,
+    ...((liveRotation!==null && liveRotation!==0) ? {rotationPeriodHours:liveRotation}
+      : old?.rotationPeriodHours!==undefined ? {rotationPeriodHours:old.rotationPeriodHours} : {}),
+    ...((liveTilt!==null && liveTilt>=0 && liveTilt<=180) ? {axialTiltDeg:liveTilt}
+      : old?.axialTiltDeg!==undefined ? {axialTiltDeg:old.axialTiltDeg} : {}),
+    color:old?.color||(type==='moon'?'#c0b8a8':type==='dwarf'?'#bbb7bb':'#ad9786'),
     style:old?.style||(type==='moon'?'moon':type==='dwarf'?'ice':'rock'),
     description:old?.description||`${TYPES[type]?.label||'Himmelskörper'} im Sonnensystem. Bahn- und Körperdaten aus Solar System OpenData.`,
     temperatureK:num(body.avgTemp)??old?.temperatureK??null,

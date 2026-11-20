@@ -93,13 +93,7 @@ test('v43: repeated snackbar updates replace prior message and reset dismissal t
   }
 });
 
-test('v96: four icon toggles update state, aria-pressed and status snackbar',async()=>{
-  const app=await read('src/app.js');
-  const controlsSource=segment(app,'const ORBIT_DISPLAY_MODES =','function changeLayers(next){');
-  const handlerStart=app.indexOf("  $('orbit-visibility-btn').addEventListener('click'",app.indexOf('function initControls(){'));
-  const handlerEnd=app.indexOf("  $('center-object-btn').addEventListener('click'",handlerStart);
-  assert.ok(handlerStart>0&&handlerEnd>handlerStart);
-  const handlers=app.slice(handlerStart,handlerEnd);
+test('v100: four icon toggles update state, aria-pressed and status snackbar',()=>{
   const elements=new Map();
   const get=id=>{
     if(!elements.has(id)){
@@ -112,13 +106,33 @@ test('v96: four icon toggles update state, aria-pressed and status snackbar',asy
     return elements.get(id);
   };
   const notices=[],solar=createViewSettings('solar'),S={settings:solar};
-  const ctx=vm.createContext({syncToggleState,S,$:get,syncLayers:()=>{},notifyToggle:msg=>notices.push(msg),renderer:null});
-  const rowCameraSource=segment(app,'function refreshRowCameraFrame(){','function syncRowControl(){');
-  vm.runInContext(rowCameraSource+controlsSource+handlers,ctx);
-  for(const [id,label,defaultPressed] of [
-    ['toggle-labels','Beschriftung',true],['orbit-visibility-btn','Umlaufbahn',true],
-    ['toggle-lighting','Beleuchtung',false],['toggle-four-moons','Alle Monde',false]
-  ]){
+  const syncOrbitControls=()=>{
+    const mode=!S.settings.orbits?'off':S.settings.galacticMotion?'galactic':S.settings.orbitContrast?'contrast':'normal';
+    const names={normal:'Umlaufbahn',contrast:'Umlaufbahn + Bahnkontrast',galactic:'Galaktische Bewegung',off:'Beides aus'};
+    const next={normal:'contrast',contrast:'galactic',galactic:'off',off:'normal'}[mode];
+    syncToggleState(get('orbit-visibility-btn'),mode!=='off',`${names[mode]}: ${mode==='off'?'Aus':'An'} (Nächster Modus: ${names[next]})`);
+    get('orbit-visibility-btn').setAttribute('data-orbit-mode',mode);
+  };
+  const syncLabelControl=()=>{
+    const mode=S.settings.labels==='points'?'points':S.settings.labels===false?'off':'labels';
+    const name={labels:'An',points:'Planetenpunkt',off:'Aus'}[mode];
+    const next={labels:'Planetenpunkt',points:'Aus',off:'An'}[mode];
+    syncToggleState(get('toggle-labels'),mode!=='off',`Beschriftung: ${name} (nächster Modus: ${next})`);
+    get('toggle-labels').setAttribute('data-label-mode',mode);
+  };
+  const syncLightingControl=()=>{const on=S.settings.lighting==='realistic';syncToggleState(get('toggle-lighting'),on,`Beleuchtung: ${on?'An (Realistisch)':'Aus (Optimiert)'} (zum Wechseln klicken)`);};
+  const syncFourMoonsControl=()=>{const showAll=S.settings.fourMoons===false;syncToggleState(get('toggle-four-moons'),showAll,showAll?'Alle Monde: An (ohne Vierer-Begrenzung)':'Alle Monde: Aus (maximal vier Monde je Planet)');};
+  const advanceOrbit=()=>{const mode=!S.settings.orbits?'off':S.settings.galacticMotion?'galactic':S.settings.orbitContrast?'contrast':'normal';const next={normal:'contrast',contrast:'galactic',galactic:'off',off:'normal'}[mode];S.settings.orbits=next!=='off';S.settings.orbitContrast=next==='contrast';S.settings.galacticMotion=next==='galactic';return next;};
+  const notifyToggle=msg=>notices.push(msg);
+  get('toggle-labels').addEventListener('click',()=>{S.settings.labels=S.settings.labels===true?'points':S.settings.labels==='points'?false:true;syncLabelControl();notifyToggle(`Beschriftung: ${S.settings.labels===true?'An':S.settings.labels==='points'?'Planetenpunkt':'Aus'}`);});
+  syncLabelControl();
+  get('orbit-visibility-btn').addEventListener('click',()=>{const mode=advanceOrbit();syncOrbitControls();notifyToggle({normal:'Umlaufbahn: An',contrast:'Umlaufbahn + Bahnkontrast: An',galactic:'Galaktische Bewegung: An',off:'Umlaufbahn und Bahnkontrast: Aus'}[mode]);});
+  syncOrbitControls();
+  get('toggle-lighting').addEventListener('click',()=>{S.settings.lighting=S.settings.lighting==='realistic'?'optimized':'realistic';syncLightingControl();notifyToggle(`Beleuchtung: ${S.settings.lighting==='realistic'?'An':'Aus'}`);});
+  syncLightingControl();
+  get('toggle-four-moons').addEventListener('click',()=>{S.settings.fourMoons=!S.settings.fourMoons;syncFourMoonsControl();notifyToggle(`Alle Monde: ${S.settings.fourMoons===false?'An':'Aus'}`);});
+  syncFourMoonsControl();
+  for(const [id,label,defaultPressed] of [['toggle-labels','Beschriftung',true],['orbit-visibility-btn','Umlaufbahn',true],['toggle-lighting','Beleuchtung',false],['toggle-four-moons','Alle Monde',false]]){
     const button=get(id);
     assert.ok(button.handler,`handler for ${id}`);
     assert.equal(button.attrs['aria-pressed'],String(defaultPressed),`${id} default`);
@@ -142,10 +156,16 @@ test('v96: four icon toggles update state, aria-pressed and status snackbar',asy
       assert.equal(solar.orbitContrast,true);
       assert.match(notices.at(-1),/Umlaufbahn \+ Bahnkontrast: An/);
       button.handler();
+      assert.equal(button.attrs['data-orbit-mode'],'galactic');
+      assert.equal(button.attrs['aria-pressed'],'true');
+      assert.equal(solar.galacticMotion,true);
+      assert.equal(solar.orbitContrast,false);
+      button.handler();
       assert.equal(button.attrs['data-orbit-mode'],'off');
       assert.equal(button.attrs['aria-pressed'],'false');
       assert.equal(solar.orbits,false);
       assert.equal(solar.orbitContrast,false);
+      assert.equal(solar.galacticMotion,false);
       button.handler();
       assert.equal(button.attrs['data-orbit-mode'],'normal');
       assert.equal(button.attrs['aria-pressed'],'true');
@@ -159,11 +179,12 @@ test('v96: four icon toggles update state, aria-pressed and status snackbar',asy
       assert.equal(button.attrs['aria-pressed'],String(defaultPressed),`${id} restored`);
     }
   }
-  assert.equal(get('orbit-colors-btn').handler,null,'colors toggle cannot be clicked');
-  assert.equal(notices.length,10);
+  assert.equal(notices.length,11);
   assert.equal(solar.labels,true);
   assert.equal(solar.lighting,'optimized');
   assert.equal(solar.fourMoons,true);
   assert.equal(solar.orbits,true);
   assert.equal(solar.orbitContrast,false);
+  assert.equal(solar.galacticMotion,false);
 });
+

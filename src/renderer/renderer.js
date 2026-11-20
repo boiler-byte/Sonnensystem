@@ -1,4 +1,4 @@
-import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, model, hex, projected } from './math.js';
+import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, hex, projected } from './math.js';
 import { displayBodyRadius, displayOrbitRadius, optimizedSolarMode, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
@@ -7,14 +7,17 @@ import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
 import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex, CAMERA_FLIGHT_MS, cameraFlightPose, cameraFlightLook, orbitCameraLook } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
 import { drawOrbitLine } from './orbits.js';
+
 import { drawSceneLabels } from './labels.js';
 import { computePositions } from './scene.js';
 import { drawPlanetSystemScene, planetChildrenFor, planetFrameDistance } from './planet-view.js';
 import { drawSolarSystemScene, solarOrbitBodies } from './solar-view.js';
 import {planetOrbitIds} from './scene-objects.js';
+import {bodyModel,ringModel,localLightDirection} from './object-orientation.js';
+import {VisualAngularClocks,DAY_MS} from './visual-angular-limit.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
 import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
-import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
+import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaSceneAt, cinemaEntryOpacity, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
 import { rowHoveredBody, rowInspectionRadius, ROW_INSPECTION_ANIMATION_MS } from './row-inspection.js';
 
 export class SolarRenderer {
@@ -33,7 +36,8 @@ export class SolarRenderer {
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.focusedBodyId=null;this.focusOffsetY=0;
-  this.followEnabled=false;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
+  this.followEnabled=true;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
+  this.visualAngularClocks=new VisualAngularClocks();
   this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false,rowOrder:'size'};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.transitionsEnabled=true;this.transition=null;this.cameraFlight=null;this._rowPreviousAngles=null;
   this.cinema=null;this._cinemaRestoreFocus=null;
@@ -238,7 +242,7 @@ export class SolarRenderer {
   const reorder=this.settings?.rowOrder!=='distance';
   this.beginTransition('cinema',now); // Capture camera and positions, even when no reorder occurs.
   this.cinema={active:true,reorder,paused:false,speed:1,progress:0,elapsedMs:0,lastAt:now,
-    lastNoticeAt:now,seeking:false,endedMs:0,saved,track:null};
+    lastNoticeAt:now,seeking:false,endedMs:0,saved,track:null,entrySnapped:false,fadeOpacity:0};
   this._cinemaRestoreFocus=null;
   this.heldArrows?.clear();this.focusedBodyId=null;
   const track=cinemaTrack(this.rowGeometry(),this.width,this.height,this.byId);
@@ -252,11 +256,13 @@ export class SolarRenderer {
   this.cinemaNotice(true);
   return true;
  }
- /** Revert order and animate back to the exact pre-Cinema camera pose. */
+ /** Revert the order and fly back to the exact pre-Cinema camera pose. */
  stopCinema(now=performance.now()){
   const c=this.cinema;
   if(!c?.active)return false;
-  this.beginTransition('cinema',now); // Smoothly restore the saved camera; distance row remains in place.
+  // v98-style camera flight on exit; only the initial large-to-small
+  // reorder is hidden by a fade.
+  this.beginTransition('cinema',now);
   this.cinema=null;
   this._cinemaRestoreFocus=c.saved.focusedBodyId;
   this.setCameraAngles(c.saved.theta,c.saved.phi);
@@ -274,9 +280,10 @@ export class SolarRenderer {
   c.progress=clamp(Number(progress)||0,0,1);
   c.elapsedMs=CINEMA_ENTRY_MS+c.progress*c.track.durationMs;
   c.endedMs=0;c.lastAt=now;
-  const pose=cinemaPoseAt(c.track,c.progress);
-  this.camera.target=pose.target.slice();this.camera.desiredTarget=pose.target;
-  this.camera.dist=pose.distance;this.camera.desiredDist=pose.distance;
+  // Scrubbing previews the exact continuous timeline pose, even mid-flight.
+  this.finishCinemaEntry();
+  const pose=cinemaSceneAt(c.track,c.progress);
+  this.snapCinemaPose(pose);c.fadeOpacity=pose.opacity;
   this.cinemaNotice(true);
   return true;
  }
@@ -304,6 +311,20 @@ export class SolarRenderer {
   this.cinemaNotice(true);
   return c.speed;
  }
+ /** Set instantaneous and requested camera pose to the same timeline sample. */
+ snapCinemaPose(pose){
+  this.camera.target=pose.target.slice();this.camera.desiredTarget=pose.target.slice();
+  this.camera.dist=pose.distance;this.camera.desiredDist=pose.distance;
+ }
+ /** Finish the entry once the reorder is dark or the distance-row flight ends. */
+ finishCinemaEntry(){
+  const c=this.cinema;
+  if(!c?.active || c.entrySnapped)return;
+  c.entrySnapped=true;
+  this.transition=null;
+  this.camera.theta=0;this.camera.phi=1.48;
+  if(this.positions && this.bodies && this.byId)this.calcPositions(this.simTime);
+ }
  advanceCinema(now=performance.now()){
   const c=this.cinema;
   if(!c?.active)return;
@@ -314,11 +335,35 @@ export class SolarRenderer {
    const playbackDelta=delta*(c.speed===2?2:1);
    c.elapsedMs=Math.min(CINEMA_ENTRY_MS+c.track.durationMs,c.elapsedMs+playbackDelta);
    c.progress=clamp((c.elapsedMs-CINEMA_ENTRY_MS)/c.track.durationMs,0,1);
-   const pose=cinemaPoseAt(c.track,c.progress);
-   this.camera.desiredTarget=pose.target;
-   this.camera.desiredDist=pose.distance;
    if(c.progress>=1)c.endedMs+=playbackDelta;
    if(c.endedMs>=CINEMA_END_HOLD_MS){this.stopCinema(now);return;}
+  }
+  if(c.elapsedMs<CINEMA_ENTRY_MS){
+   if(c.reorder){
+    c.fadeOpacity=cinemaEntryOpacity(c.elapsedMs);
+    if(c.elapsedMs<CINEMA_ENTRY_MS*.5 && !c.entrySnapped){
+     // Keep the largest-first layout/camera stationary until blackout.
+     this.camera.theta=c.saved.theta;this.camera.phi=c.saved.phi;
+     this.snapCinemaPose({target:c.saved.target,distance:c.saved.dist});
+    }else{
+     this.finishCinemaEntry();
+     this.snapCinemaPose(cinemaSceneAt(c.track,0));
+    }
+   }else{
+    // Distance order does not rearrange objects; its entry is a camera ride.
+    const t=gentleEase(c.elapsedMs/CINEMA_ENTRY_MS);
+    const first=cinemaSceneAt(c.track,0);
+    this.camera.theta=lerp(c.saved.theta,0,t);
+    this.camera.phi=lerp(c.saved.phi,1.48,t);
+    this.snapCinemaPose({target:blendPosition(c.saved.target,first.target,t),
+      distance:Math.exp(lerp(Math.log(Math.max(.00001,c.saved.dist)),Math.log(first.distance),t))});
+    c.fadeOpacity=0;
+   }
+  }else{
+   this.finishCinemaEntry();
+   const pose=cinemaSceneAt(c.track,c.progress);
+   c.fadeOpacity=pose.opacity;
+   this.snapCinemaPose(pose);
   }
   if(now-c.lastNoticeAt>=90){c.lastNoticeAt=now;this.cinemaNotice(true);}
  }
@@ -436,7 +481,7 @@ export class SolarRenderer {
     const selected=body.id===this.selectedId;
     fromVisualOrbits.set(body.id,{body,center:center.slice(),radius:fromOrbits.get(body.id),
       opacity:this.sceneOrbitOpacity(body),selected,alpha:selected ? .70 : (this.planetId ? .22 : body.type==='planet' ? .20 : .16),
-      settings:{orbitContrast:this.settings?.orbitContrast}});
+      settings:{orbitContrast:this.settings?.orbitContrast,galacticMotion:this.settings?.galacticMotion===true}});
    }
    if(prior?.kind==='view'){
     for(const source of prior.fromVisualBodies.values())if(!fromVisualBodies.has(source.body.id)){
@@ -466,9 +511,15 @@ export class SolarRenderer {
  advanceTransition(now=performance.now()){
   const transition=this.transition;
   if(!transition)return;
+  if(transition.kind==='cinema' && this.cinema?.active && this.cinema.reorder && !this.cinema.entrySnapped){
+   // Do not morph the largest-first row while fading out. Even if playback
+   // is paused for a long time, the reorder must happen only at blackout.
+   transition.progress=0;transition.amount=0;
+   return;
+  }
   const progress=Math.max(0,Math.min(1,(now-transition.at)/transition.duration));
   transition.progress=progress;
-  transition.amount=transition.kind==='planet-orbits-off'||transition.kind==='cinema'
+  transition.amount=['planet-orbits-off','cinema'].includes(transition.kind)
     ? gentleEase(progress):rubberEase(progress);
   if(transition.cameraTo){
     this.camera.theta=transition.cameraFrom[0]+(transition.cameraTo[0]-transition.cameraFrom[0])*Math.min(1,transition.amount);
@@ -491,6 +542,8 @@ export class SolarRenderer {
   const target=this.settings?.row ? 0 : 1;
   return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
  }
+ /** A new galactic session starts without history, regardless of playback speed. */
+ resetGalacticTrails(){this._galacticTrails?.clear();}
  /** Identical wave timing for an orbit stroke and its moving moon/satellite. */
  orbitTransitionAmount(body){
   const t=this.transition;
@@ -557,9 +610,8 @@ export class SolarRenderer {
   this.canvas.style.width=w+'px';this.canvas.style.height=h+'px';this.labels.style.width=w+'px';this.labels.style.height=h+'px';
   if(this.cinema?.active){
    this.cinema.track=cinemaTrack(this.rowGeometry(),this.width,this.height);
-   const pose=cinemaPoseAt(this.cinema.track,this.cinema.progress);
-   this.camera.desiredTarget=pose.target;
-   this.camera.desiredDist=pose.distance;
+   const pose=cinemaSceneAt(this.cinema.track,this.cinema.progress);
+   if(this.cinema.entrySnapped)this.snapCinemaPose(pose);
   }
   const mobile=preferredMobileQuality();
   if(this.textures && this.textures.mobile!==mobile)this.textures.setMobile(mobile);
@@ -576,6 +628,9 @@ export class SolarRenderer {
   }
   this.fourMoonIds=largestMoonIds(list);
   if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
+  // The global "Folgen" toggle starts on; acquire the position as soon as
+  // catalog entries are available and refresh it after future catalog loads.
+  if(this.followEnabled)this.followSelectedBody();
  }
  /** The planet and its direct natural/artificial orbiters form an isolated scene. */
  planetChildren(id=this.planetId){
@@ -642,6 +697,16 @@ export class SolarRenderer {
   }
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});this._sceneRevision=(this._sceneRevision||0)+1;}
+ renderOrbitTime(body,timeMs){
+  const clocks=this.visualAngularClocks;
+  return clocks?.frameAt!=null?clocks.sample(body.id,'orbit',timeMs,Number(body.periodDays)*DAY_MS):timeMs;
+ }
+ renderSpinTime(body,timeMs){
+  // Tidal locking follows the same bounded orbital phase as its parent-facing direction.
+  if(body.synchronousRotation===true && Number(body.periodDays)>0)return this.renderOrbitTime(body,timeMs);
+  const clocks=this.visualAngularClocks;
+  return clocks?.frameAt!=null?clocks.sample(body.id,'spin',timeMs,Math.abs(Number(body.rotationPeriodHours))*3600000):timeMs;
+ }
  calcPositions(timeMs){
   computePositions(this,timeMs);
   if(this.settings?.row){
@@ -680,15 +745,24 @@ export class SolarRenderer {
  }
  start(time,selected,settings){
   this.simTime=time;this.selectedId=selected;this.settings=settings;
+  // Re-entering galactic mode (including through presets or scene changes)
+  // always starts a new, empty recording instead of restoring old history.
+  const recording=Boolean(settings?.galacticMotion && settings?.orbits && !settings?.row && !this.planetId);
+  if(recording!==this._galacticTrailModeActive){
+    this.resetGalacticTrails();
+    this._galacticTrailModeActive=recording;
+  }
   const layers=settings?.layers;
   const rowLayers=settings?.row ? (layers?.mode==='all' ? 'all' : [...(layers?.types||[])].sort().join(',')) : '';
   const frameKey=[time,this.planetId||'solar',!!settings?.scaleOrbits,!!settings?.scaleObjects,
     !!settings?.row,settings?.row?!!settings?.fourMoons:'',rowLayers,this._sceneRevision||0].join('|');
   // The camera and GPU still render each frame. Only Kepler world positions are
   // reused when simulated time and scene geometry did not change.
-  if(!this.transition && !this.cinema?.active && this.positions?.size && this._lastPositionFrameKey===frameKey)return;
+  // The recording never changes the body's live Kepler position.
+  const positionsUnchanged=!this.transition;
+  if(positionsUnchanged && !this.cinema?.active && this.positions?.size && this._lastPositionFrameKey===frameKey)return;
   this.calcPositions(time);
-  this._lastPositionFrameKey=(!this.transition && !this.cinema?.active)?frameKey:null;
+  this._lastPositionFrameKey=positionsUnchanged && !this.cinema?.active ? frameKey : null;
  }
   minCameraDistance(){return this.settings?.scaleObjects || this.settings?.row ? 0.000005 : 2.2;}
   maxCameraDistance(){
@@ -750,9 +824,11 @@ export class SolarRenderer {
   if(opacity<=.001)return;
   gl.uniform1f(this.uniform(program,'uOpacity'),opacity);
   if(opacity<.999)gl.depthMask(false);
-  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,model(p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1))));
+  const modelMatrix=bodyModel(body,p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1),(this.renderSpinTime?.(body,this.simTime)??this.simTime));
+  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,modelMatrix));
   const color=hex(body.color);gl.uniform3f(this.uniform(program,'uBase'),...color);
-  const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));gl.uniform3f(this.uniform(program,'uLight'),...light);
+  const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));
+  gl.uniform3f(this.uniform(program,'uLight'),...localLightDirection(light,modelMatrix));
   gl.uniform1f(this.uniform(program,'uStyle'),STYLES[body.style]??1);
   gl.uniform1f(this.uniform(program,'uOptimizedLighting'),this.settings?.lighting==='realistic'?0:1);
   let seed=0;for(let i=0;i<body.id.length;i++)seed+=body.id.charCodeAt(i)*.11;
@@ -782,11 +858,12 @@ export class SolarRenderer {
   const ringScale=options.scale===undefined && ordinarySphere>0
     ?ordinaryRingScale*this.rowInspectedRadius(saturn,ordinarySphere)/ordinarySphere:ordinaryRingScale;
   gl.uniform1f(this.uniform(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
-  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,model(p,ringScale,.41)));
+  gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,ringModel(saturn,p,ringScale)));
   gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,200*6);gl.depthMask(true);
  }
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
+  (this.visualAngularClocks??=new VisualAngularClocks()).beginFrame(typeof performance!=='undefined'?performance.now():Date.now());
   this.advanceTransition();
   this.advanceCameraFlight();
   this.advanceCinema();

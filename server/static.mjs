@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ROOT } from './config.mjs';
+import {TEXTURE_FILE_PATH} from '../src/renderer/texture-sources.js';
 
 const WEB_ROOT=ROOT;
 const SRC=join(ROOT,'src');
@@ -26,11 +27,11 @@ export async function staticAsset(pathname){
     filename=join(SRC,pathname.slice('/src/'.length));ext='.js';
   }else if(/^\/data\/(?:catalog|editorial)\/[a-z0-9-]+\.json$/.test(pathname)){
     filename=join(WEB_ROOT,pathname.slice(1));ext='.json';
-  }else if(/^\/textures\/standard\/[a-zA-Z0-9][a-zA-Z0-9_-]*\.(?:jpg|jpeg|png|webp)$/.test(pathname)){
+  }else if(TEXTURE_FILE_PATH.test(pathname)){
     filename=join(WEB_ROOT,pathname.slice(1));ext=pathname.slice(pathname.lastIndexOf('.'));
   }else return null;
   try{
     const bytes=await readFile(filename);
-    return {bytes,type:mime[ext]||'application/octet-stream',cacheControl:pathname==='/sw.js'?'no-store':'no-cache'};
+    return {bytes,type:mime[ext]||'application/octet-stream',cacheControl:pathname==='/sw.js'||TEXTURE_FILE_PATH.test(pathname)?'no-store':'no-cache'};
   }catch(error){if(error.code==='ENOENT')return null;throw error;}
 }

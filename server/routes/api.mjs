@@ -1,4 +1,5 @@
 import { KEY,NASA_CONTACT_OK } from '../config.mjs';
+import {textureManifest} from '../texture-manifest.mjs';
 import { solarBodies } from '../providers/solar.mjs';
 import { stationSatellites } from '../providers/celestrak.mjs';
 import { asteroid,horizons,validAsteroid,validHorizonsDate,ALLOWED_HORIZONS_TARGETS } from '../providers/nasa.mjs';
@@ -8,6 +9,7 @@ const error=(status,message)=>({status,body:{status,error:message}});
 export async function apiRoute(url){
   const p=url.pathname;
   if(!p.startsWith('/api/'))return null;
+  if(p==='/api/textures/manifest')return {status:200,body:await textureManifest()};
   if(p==='/api/status')return {status:200,body:{online:true,solarKeyConfigured:Boolean(KEY),nasaContactConfigured:NASA_CONTACT_OK,
     providers:['Solar System OpenData','NASA/JPL SBDB','NASA/JPL Horizons','CelesTrak'],date:new Date().toISOString()}};
   if(p==='/api/bodies'){

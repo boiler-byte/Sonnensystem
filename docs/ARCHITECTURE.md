@@ -1,4 +1,4 @@
-# Architektur – Sonnensystem v96
+# Architektur – Sonnensystem v98
 
 ## Prinzipien
 
@@ -17,6 +17,7 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 | `src/ui/*.js` | Katalogsuche, Details, Layer, Popovers, Buttons, Mobile-Sheet und Status |
 | `src/data/*.js` | Katalogvalidierung, Normalisierung, Typen und Bahnberechnung |
 | `src/renderer/renderer.js` | Szenenkoordination und WebGL-Lebenszyklus |
+| `src/renderer/object-orientation.js` | Deterministische Eigenrotation, Achsneigung, gebundene Monde, Saturnringachse, Beleuchtung im lokalen Objektraum |
 | `src/renderer/solar-view.js`, `planet-view.js`, `scene.js` | Sonnen- und Planetenansichten |
 | `src/renderer/orbits.js`, `orbit-cache.js`, `scene-objects.js` | Orbit-Geometrie, begrenzter Cache, gemeinsame Zeichenpfade |
 | `src/renderer/controls.js`, `camera.js`, `ar-mode.js`, `cinema.js` | Kamera- und Eingabemodelle, Sensor-AR, Cinema |
@@ -38,17 +39,37 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 
 - Sonnen- und Planetenansicht verwenden gemeinsame Zeichenwege für sichtbare Körper, Bahnfilter und Status.
 - Die Orbitalgeometrie liegt in einem begrenzten Cache; Zeichenpuffer werden wiederverwendet. Ungenutzte Positionen werden in stabilen Frames nicht wiederholt berechnet.
-- Texturen kommen aus erlaubten lokalen Pfaden unter `textures/standard/`; fehlen diese Dateien, verbleiben schematische Materialien. Ladevorgänge und GPU-Ressourcen werden aufgeräumt.
+- Texturen kommen aus den strikt freigegebenen Ordnern `textures/mobile/`, `textures/standard/` und `textures/high/`. Der Renderer bevorzugt WebP und weicht bei fehlenden Dateien auf andere Qualitätsstufen aus. Wenn kein Bild vorhanden ist, verbleiben schematische Materialien. Ladevorgänge und GPU-Ressourcen werden aufgeräumt.
 - Die 2D-Label-Ebene priorisiert Auswahl und begrenzt gleichzeitige Beschriftungen.
 - Im Hintergrundtab pausiert die Animation, ohne Simulationszeit nachzuholen.
 - `cycleCameraPerspective()` steuert eine vom Layoutübergang getrennte 1.050-ms-Kamerafahrt (`cameraFlight`) über Blickrichtung, Position und Distanz. `cameraView()` nutzt in dieser Zeit die interpolierte Pose; währenddessen dürfen Layout-/AR-Updates die Fahrt nicht überschreiben. Ein manueller Eingriff kann sie bildsprungfrei beenden. Bei reduzierter Bewegung wird sie übersprungen.
-- Freies Umschauen per Zwei-Finger-Wischen invertiert nur die vertikale Touch-Mittelpunktsbewegung, bevor sie an `lookAroundFixedEye()` übergeben wird. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
+- Freies Umschauen per Zwei-Finger-Wischen verwendet die unveränderte vertikale Touch-Mittelpunktsbewegung für `lookAroundFixedEye()` (Finger nach unten = Blick nach unten), auch ohne Auswahl. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
+
+## Cinema-Übergänge und Folgen-Initialisierung (v104)
+
+Der Cinema-Track nutzt während der Haltephasen und zwischen den Objekten die **gleiche** interpolierte Pose aus `cinemaPoseAt()`: geometrisch geglättete Zieldistanz und kontinuierliche Verschiebung des Kameraziels. `cinemaSceneAt()` ergänzt `opacity:0`; der alte `cinemaFadeSceneAt()`-Export verweist aus Kompatibilitätsgründen darauf. Nur die Startneuordnung der **Größenreihe** wird über `cinemaEntryOpacity()` bei vollständiger Dunkelheit geschnitten. Die **Entfernungsreihe** benötigt keine Umordnung und fliegt beim Einstieg kontinuierlich zum ersten Körper. `stopCinema()` verwendet wieder den normalen `cinema`-Layout-/Kameraübergang statt eines schwarzen Endschnitts. Die Scanneraktivierung prüft nach wie vor stabile Haltepositionen; Scrubbing zeigt exakt die interpolierte Timelinepose.
+
+`SolarRenderer` startet mit global aktiviertem `followEnabled`. `setBodies()` erfasst nach dem initialen Katalogladen die echte Position des ausgewählten, darstellbaren Körpers via `followSelectedBody()`. Spätere Katalogupdates aktualisieren nur eine **weiterhin** aktive Nachführung; eine manuell ausgeschaltete Nachführung wird nicht ungefragt wieder aktiviert.
+
+## Objektdrehung und Texturausrichtung (v98)
+
+`src/renderer/object-orientation.js` berechnet `rotationPhase(body, simTime)` ausschließlich aus den Objektparametern und der Simulationszeit in Millisekunden. `bodyModel()` baut eine lokale Rotation mit `T * Ry(axisHeading) * Rx(axialTilt) * Ry(spin) * S` auf; die Rücktransformation `localLightDirection()` hält den Beleuchtungsterminator in Weltkoordinaten. Die WebGL-Schleife nutzt dieses Modell sowohl beim normalen Zeichnen als auch bei ausblendenden Übergangsobjekten. `ringModel()` teilt den Saturn-Achsenwinkel, enthält aber **keine** Eigendrehung, damit die Ringebene nicht von der Kugel abweicht.
+
+Die Equirektangular-UVs in `src/renderer/geometry.js` haben `u=.5` auf der vorderen +Z-Halbkugel, steigende Meridiane von dort nach rechts (+X), und `v=1` am Nordpol. Der unveränderte `UNPACK_FLIP_Y_WEBGL=true`-Upload sorgt dafür, dass die nördliche Bildhälfte tatsächlich auf der nördlichen Kugelhälfte liegt. Mit `appearance.texturePhaseDeg` lässt sich die Phase individueller Bilder anpassen; ein vollständiges astronomisches Längensystem / genaue IAU-Polrichtung werden nicht behauptet.
+
+Optional unterstützte Rohdaten: `physical.rotationPeriodHours` (von null verschiedene Stunden, negative Periode für retrograde Körper), `physical.axialTiltDeg` (0–180°), `physical.synchronousRotation` (für gebundene Monde) sowie `appearance.texturePhaseDeg` / `appearance.axisHeadingDeg` (Grad). Falls die Achse bereits über 90° geneigt ist, wird die negative Periodenrichtung nicht ein zweites Mal angewendet. Gebundene Monde beziehen die Richtung zum Parent aus ihrer **Kepler-Position**, nicht aus den für Reihe/Cinema veränderten Bildschirmkoordinaten. Unbekannte Werte ergeben keine erfundene Eigendrehung. Die Schlüssel sind im Katalogschema 1 vollständig optional.
 
 ## Cinema-Verweildauer und gemerkter Detail-Tab (v91)
 
 `src/renderer/cinema.js` verwendet für jeden Stopp unabhängig vom Katalogtyp **`CINEMA_HOLD_MS = 5000`**. Die historische Konstante `CINEMA_PLANET_HOLD_MS` bleibt als gleichwertiger Alias für bestehende Integrationen erhalten. Zwischenfahrten dauern unverändert 1300 ms; die separate Cinema-Abspielgeschwindigkeit (1x/2x) verändert nicht die gespeicherte Zeitachse, nur deren reale Abspielgeschwindigkeit. Seek, Pause, Kamera-Halteprüfung und 2x-Toggle bleiben unverändert.
 
 `src/ui/object-details.js` speichert die manuelle Registerkartenauswahl unter `sonnensystem-detail-tab` in `localStorage`. `restoreDetailTab()` liest den gespeicherten Wert beim Start des Control-Panels, ansonsten wird **Daten** geöffnet. Objektwechsel, Auswahlaufhebung und Öffnen einer Planetenansicht ändern den Tab nicht mehr. Zugriffe auf `localStorage` sind fehlertolerant (deaktivierter Speicher/privater Modus). CSS-Scrollleistenplatz und ARIA-/Tastaturzustände bleiben weiterhin synchron.
+
+## Texturverzeichnisse und Änderungsdetektion (v97)
+
+`src/renderer/texture-sources.js` definiert die zulässigen Stufen `mobile:512`, `standard:2048`, `high:4096` und baut ausschließlich lokale, validierte Bildpfade. Dateipriorität: gewählte Stufe, `.webp` vor `.jpg`/`.jpeg`/`.png`, dann alternative Stufen; nur `standard/` akzeptiert die alten 2K-Dateinamen. `server/static.mjs` bedient dieselben allowlist-konformen Pfade mit `Cache-Control: no-store`.
+
+`server/texture-manifest.mjs` liest den vorhandenen Dateibestand, berechnet SHA-256 und verwendet Dateigröße, Inode, `mtimeNs` und `ctimeNs` zum kostengünstigen Wiederverwenden unveränderter Hashes. `GET /api/textures/manifest` antwortet mit `Cache-Control: no-store`; dessen Hash-Versionen stehen an Bildrequests unter `?v=...`. `TextureManager.refreshManifest()` vergleicht spätestens alle 30 Sekunden bei aktivem Rendering die Signaturen pro Objekt/Qualität. Bei geänderten oder neu verfügbaren Ressourcen entfernt der Renderer die alten GPU-Handles, auch nach früheren Fehlversuchen. Ein laufender Download wird vor der Übernahme gegen die jeweils aktuelle Signatur geprüft; veraltete Ergebnisse werden entsorgt. Ohne Node-Manifest kann die App auf statischem Hosting Bilder weiterhin über bekannte Dateinamen und einen zeitbasierten Query laden; Änderungen werden dort bei Online-Neuladung wirksam.
 
 ## Gemeinsamer Bahn-/Kontrast-Toggle (v96)
 
@@ -164,7 +185,7 @@ Nur im stabilen Reihenmodus erkennt `src/renderer/controls.js` ungedrückte Maus
 
 ## Offline-PWA
 
-`sw.js` liegt im Projektstamm und verwendet `sonnensystem-shell-v90`. Bei Installation werden die App-Shell und alle im Katalog-Manifest referenzierten JSON-Dateien gecacht; große Bildtexturen werden nur beim Abruf abgelegt. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Da alte Servicer-Worker-Installationen noch frühere Assets enthalten können, nach Updates neu laden.
+`sw.js` verwendet `sonnensystem-shell-v97` für App-Shell und manifestbasierte Katalogdaten sowie den separaten `sonnensystem-textures-v1` für Texturen. Bildrequests laufen netzwerkpriorisiert und verwenden für den Offline-Fallback eine einzige Cache-Kopie je kanonischem Texturpfad ohne Hash-Query. Der API-Endpunkt `/api/textures/manifest` wird nicht vom Service Worker zwischengespeichert. Beim Aktivieren werden ältere `sonnensystem-shell-*`-Caches entfernt. Nach Updates online neu laden.
 
 ## Server und Sicherheit
 

@@ -145,3 +145,19 @@ Die Punkte `…` sind nur Kürzungen in diesem Doku-Beispiel. Der tatsächlich a
 Noch kein CMS, automatisierter Import oder wissenschaftlich genauer Ephemeridenrechner. Der Browser lädt alle JSON-Dokumente und hält sie im Speicher. Für mehrere Tausend Körper empfehlen sich zunächst gefilterte/lazy geladene Kategorien, Suchindizes, visuelle Ausdünnung und Renderer-Level-of-Detail. Änderungen des Schemavertrags erfordern eine neue `schemaVersion` und Migration.
 
 **Fehlerbehebung:** `sw.js` befindet sich zwingend im Root unter `/sw.js`, `data/catalog/manifest.json` unter `/data/catalog/manifest.json`. Im lokalen Node-Server sind nur öffentlich benötigte JSON-Dateien, Browsermodule und Root-Webdateien auslieferbar.
+
+## Rotation und Ausrichtung (v98)
+
+Alle Angaben sind optional und erhalten die bestehende Katalog-Schemaversion `1`:
+
+| Pfad | Typ / Einheit | Bedeutung |
+|---|---|---|
+| `physical.rotationPeriodHours` | endliche Zahl ungleich 0; Stunden | Siderische Rotationsperiode relativ zu Fixsternen, bei retrograder Rotation negativ |
+| `physical.axialTiltDeg` | Zahl von 0 bis 180; Grad | Neigung der Eigenachse relativ zur (angenäherten) Bahnebene; Werte über 90° kennzeichnen eine invertierte Achse |
+| `physical.synchronousRotation` | boolean | Modellierte synchrone Rotation; die Oberfläche zeigt annähernd zum Parent, berechnet aus den Kepler-Elementen |
+| `appearance.texturePhaseDeg` | endliche Zahl; Grad | Optionaler Korrekturwinkel der Karte um die Eigenachse relativ zur Modellphase (J2000/Objektepoche) |
+| `appearance.axisHeadingDeg` | endliche Zahl; Grad | Optionale Azimut-Ausrichtung der Achsneigung im XZ-Szenenraum |
+
+Ohne `rotationPeriodHours` und ohne explizite Synchronbindung wird eine Textur nicht künstlich gedreht. Ohne `axialTiltDeg` gilt eine modellierte Neigung von 0°. Von Solar System OpenData werden gültige Felder `sideralRotation` und `axialTilt` übernommen und andernfalls lokale Werte beibehalten.
+
+**Datenherkunft und Grenzen:** Für Planeten, Erdmond und Pluto wurden NASA/NSSDCA-Mittelwerte verwendet (https://nssdc.gsfc.nasa.gov/planetary/factsheet/). Die Quelle beschreibt mittlere, nicht absolut-phasenrichtige Rotationen; Sonne (25,38 Tage / 7,25°) und Ceres (9,074 Stunden / ca. 4°) nutzen vereinfachte Rotationswerte. Die Synchronbindung ausgewählter Monde approximiert die Sichtseite zum Elternkörper, ohne physikalische Librationen/Polpräzession. Die Ausrichtung von 0° relativ zum Himmelskoordinatensystem kann nicht ohne texturspezifische Herkunft und vollständige IAU-Pol-/Meridianparameter zugesichert werden. Ältere JSON-Dateien ohne diese Felder bleiben gültig.

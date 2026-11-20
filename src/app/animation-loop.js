@@ -1,5 +1,6 @@
 import {$,S,renderer,mobileSheets} from './state.js';
 import {updateTime} from './view-mode.js';
+import {effectiveSimulationSpeed} from '../ui/timeline.js';
 import {updateRowInspectionHUD} from '../ui/row-inspection.js';
 
 let lastTimeReadoutAt=0;
@@ -11,10 +12,17 @@ export function loop(now){
     requestAnimationFrame(loop);
     return;
   }
-  if(S.playing&&S.speed>0)S.time+=d*S.speed*86400000;
+  const simulationSpeed=effectiveSimulationSpeed(S);
+  if(S.playing&&simulationSpeed>0)S.time+=d*simulationSpeed*86400000;
   try{
     renderer.visibleFocusOffset=mobileSheets?.focusOffsetFor(renderer.canvas)??0;
     renderer.draw(S.time,S.selected,S.settings);
+    const fade=$('cinema-scene-fade');
+    if(fade){
+      const visible=renderer.cinema?.active===true;
+      fade.hidden=!visible;
+      fade.style.opacity=String(renderer.cinema?.fadeOpacity ?? 0);
+    }
     updateRowInspectionHUD(renderer,now);
   }
   catch(e){console.error('Renderfehler:',e);$('canvas-error').hidden=false;return;}

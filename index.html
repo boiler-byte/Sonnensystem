@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V96.0" />
+  <meta name="app-version" content="V105.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -52,7 +52,7 @@
           </div>
           <div class="detail-scene-actions" id="detail-scene-actions">
             <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Planetenansicht</strong></span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
-            <button id="center-object-btn" class="object-center-btn" type="button" aria-label="Ausgewähltem Objekt folgen" title="Ausgewähltem Objekt dauerhaft folgen" aria-pressed="false">
+            <button id="center-object-btn" class="object-center-btn active" type="button" aria-label="Folgen ausschalten" title="Folgen ausschalten (für alle Objekte)" aria-pressed="true">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>
               <span>Folgen</span>
             </button>
@@ -130,6 +130,7 @@
           </div>
           <div id="row-inspection-distance" class="row-inspection-distance" hidden><strong id="row-inspection-distance-value"></strong></div>
         </div>
+        <div class="cinema-scene-fade" id="cinema-scene-fade" aria-hidden="true" hidden></div>
         <h1 class="sr-only">Sonnensystem</h1>
         <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
           <button class="cinema-button" id="cinema-btn" type="button" aria-label="Cinema-Kamerafahrt starten" aria-pressed="false" title="Cinema-Modus starten" hidden>
@@ -169,6 +170,7 @@
                   <button class="scale-tool-toggle active" id="orbit-visibility-btn" type="button" title="Umlaufbahn: An (nächster Modus: Umlaufbahn + Bahnkontrast)" aria-label="Umlaufbahn: An. Nächster Modus: Umlaufbahn + Bahnkontrast" aria-pressed="true" data-orbit-mode="normal">
                     <svg class="orbit-visibility-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/></svg>
                     <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" stroke-width="3"/><circle cx="12" cy="12" r="4.6" stroke-width="2.6"/></svg>
+                    <svg class="orbit-galactic-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 14.5c3.2-5.3 8.2-8 16.8-9"/><path d="M4 17.8c3.8-2.2 7.6-2.8 12.4-2.3 1.6.17 2.9.48 4.1.9"/><circle cx="18.9" cy="5.6" r="1.75"/><circle cx="10.1" cy="15.1" r="1.25"/></svg>
                   </button>
                   <button class="scale-tool-toggle" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert)" aria-label="Beleuchtung" aria-pressed="false">
                     <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>

@@ -1,11 +1,12 @@
-import {textureSource,texturePaths,textureTier} from './texture-sources.js';
+import {textureSource,texturePaths,textureTier,TEXTURE_FILE_PATH} from './texture-sources.js';
 
 /**
  * Lazy WebGL texture uploader. Images arrive asynchronously from the allowlisted
- * local /textures/standard files only; no network access to third-party sites.
+ * local /textures/{mobile,standard,high} files; no third-party image requests.
  * Only a small bounded set of maps is kept on the GPU at one time.
  */
 const isPowerOfTwo=n=>n>0&&(n&(n-1))===0;
+const MANIFEST_REFRESH_MS=30_000;
 export function preferredMobileQuality(env=globalThis) {
   const win=env.window||env;
   const nav=env.navigator||{};
@@ -26,6 +27,49 @@ export class TextureManager {
     this.maxActive=3;
     this.bytes=0;
     this.disposed=false;
+    this.manifest=null; // null means the optional local manifest API is unavailable.
+    this.manifestRequest=null;
+    this.nextManifestCheck=0;
+  }
+  signature(id,tier,files=this.manifest){
+    if(!files)return null;
+    return texturePaths(id,tier).filter(path=>files.has(path))
+      .map(path=>`${path}@${files.get(path)}`).join('|')||'missing';
+  }
+  remove(key,record){
+    if(record.status==='ready'){
+      this.gl.deleteTexture(record.texture);
+      this.bytes-=record.bytes;
+    }
+    this.entries.delete(key);
+  }
+  /** Check for new, changed and removed files, including while the app remains open. */
+  refreshManifest(force=false){
+    if(this.disposed)return Promise.resolve();
+    if(this.manifestRequest)return this.manifestRequest;
+    if(!force && Date.now()<this.nextManifestCheck)return Promise.resolve();
+    this.nextManifestCheck=Date.now()+MANIFEST_REFRESH_MS;
+    if(typeof fetch!=='function')return Promise.resolve();
+    this.manifestRequest=(async()=>{
+      const response=await fetch('/api/textures/manifest',{cache:'no-store'});
+      if(!response.ok)throw Error('Local texture manifest unavailable');
+      const payload=await response.json();
+      if(!payload || !payload.files || typeof payload.files!=='object' || Array.isArray(payload.files))
+        throw Error('Invalid local texture manifest');
+      const next=new Map();
+      for(const [path,hash] of Object.entries(payload.files)){
+        if(TEXTURE_FILE_PATH.test(path)&&typeof hash==='string'&&/^[0-9a-f]{64}$/.test(hash))next.set(path,hash);
+      }
+      if(this.disposed)return;
+      this.manifest=next;
+      for(const [key,record] of this.entries){
+        // In-flight downloads are checked again before GPU adoption.
+        if(record.status==='loading'||record.status==='queued')continue;
+        if(record.signature!==this.signature(record.id,record.tier,next))this.remove(key,record);
+      }
+    })().catch(()=>{/* Static hosting/offline: use the local URL fallback. */})
+      .finally(()=>{this.manifestRequest=null;});
+    return this.manifestRequest;
   }
   setMobile(isMobile){
     if(this.disposed || this.mobile===Boolean(isMobile))return;
@@ -33,18 +77,25 @@ export class TextureManager {
   }
   get(body,planetId,selectedId){
     if(this.disposed)return null;
+    // Check while rendering instead of keeping a background timer alive.
+    if(Date.now()>=this.nextManifestCheck)void this.refreshManifest();
     const tier=textureTier({isMobile:this.mobile,planetId,selectedId},body.id);
-    const source=textureSource(body.id,tier);
-    if(!source)return null; // Procedural fallback for unphotographed objects.
-    const effective=tier;
-    const key=`${body.id}:${effective}`;
-    const cached=this.entries.get(key);
+    if(!textureSource(body.id,tier))return null;
+    const key=`${body.id}:${tier}`;
+    let cached=this.entries.get(key);
+    if(cached?.status==='failed' && !this.manifest && Date.now()>=(cached.retryAfter||0)){
+      this.entries.delete(key);cached=null;
+    }
     if(cached?.status==='ready'){cached.lastUsed=Date.now();return cached.texture;}
-    if(!cached){this.entries.set(key,{status:'queued',lastUsed:Date.now()});this.queue.push({id:body.id,tier:effective,key});this.pump();}
-    // Keep the already loaded 2K texture visible while 4K is loading.
-    if(effective==='detail'){
-      const regular=this.entries.get(`${body.id}:standard`);
-      if(regular?.status==='ready'){regular.lastUsed=Date.now();return regular.texture;}
+    if(!cached){
+      this.entries.set(key,{id:body.id,tier,status:'queued',signature:null,lastUsed:Date.now()});
+      this.queue.push({id:body.id,tier,key});this.pump();
+    }
+    // Keep an existing map on screen while switching to the requested quality.
+    for(const other of ['standard','mobile','high']){
+      if(other===tier)continue;
+      const ready=this.entries.get(`${body.id}:${other}`);
+      if(ready?.status==='ready'){ready.lastUsed=Date.now();return ready.texture;}
     }
     return null;
   }
@@ -56,26 +107,41 @@ export class TextureManager {
       if(!record||record.status!=='queued')continue;
       record.status='loading';this.active++;
       this.load(job).then(texture=>{
-        if(this.disposed || this.entries.get(job.key)!==record){
-          this.gl.deleteTexture(texture.handle);return;
+        if(this.disposed || this.entries.get(job.key)!==record ||
+          (texture.signature!==undefined && texture.signature!==this.signature(job.id,job.tier))){
+          this.gl.deleteTexture(texture.handle);
+          if(!this.disposed && this.entries.get(job.key)===record)this.entries.delete(job.key);
+          return;
         }
         const bytes=texture.width*texture.height*4*(texture.mipmaps?4/3:1);
-        Object.assign(record,{status:'ready',texture:texture.handle,bytes,lastUsed:Date.now()});
+        Object.assign(record,{status:'ready',texture:texture.handle,bytes,
+          signature:texture.signature??this.signature(job.id,job.tier),lastUsed:Date.now()});
         this.bytes+=bytes;this.evict(job.key);
       }).catch(()=>{
-        if(!this.disposed && this.entries.get(job.key)===record)record.status='failed';
+        if(!this.disposed && this.entries.get(job.key)===record){
+          record.status='failed';record.signature=this.signature(job.id,job.tier);
+          record.retryAfter=Date.now()+MANIFEST_REFRESH_MS;
+        }
       }).finally(()=>{this.active--;this.pump();});
     }
   }
   async load({id,tier}){
     const source=textureSource(id,tier);
     if(!source)throw Error('Unknown texture source');
+    if(this.manifestRequest)await this.manifestRequest;
+    else if(this.manifest===null)await this.refreshManifest();
+    if(this.disposed)throw Error('Texture manager disposed');
+    const files=this.manifest;
+    const signature=this.signature(id,tier,files);
+    const paths=texturePaths(id,tier).filter(path=>!files||files.has(path));
     let lastError;
-    for(const local of texturePaths(id,tier)){
+    for(const local of paths){
       try{
-        const image=await this.loadImage(local);
+        // The URL version bypasses stale browser/PWA HTTP caches on replacement.
+        const version=files?files.get(local):String(Date.now());
+        const image=await this.loadImage(`${local}?v=${version}`);
         if(this.disposed)throw Error('Texture manager disposed');
-        return this.upload(image,source.width);
+        return {...this.upload(image,source.width),signature};
       }catch(error){lastError=error;if(this.disposed)break;}
     }
     throw lastError||Error('Keine lokale Textur');

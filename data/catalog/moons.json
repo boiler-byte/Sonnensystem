@@ -19,7 +19,9 @@
         "temperatureMeanK": 253.15,
         "surfaceGravityMs2": 1.6,
         "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
-        "temperatureRangeSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+        "temperatureRangeSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+        "synchronousRotation": true,
+        "axialTiltDeg": 6.7
       },
       "orbit": {
         "semiMajorAxis": 384400,
@@ -43,7 +45,8 @@
       "name": "Phobos",
       "parentId": "mars",
       "physical": {
-        "radiusKm": 11.3
+        "radiusKm": 11.3,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 9376,
@@ -66,7 +69,8 @@
       "name": "Deimos",
       "parentId": "mars",
       "physical": {
-        "radiusKm": 6.2
+        "radiusKm": 6.2,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 23463,
@@ -89,7 +93,8 @@
       "name": "Io",
       "parentId": "jupiter",
       "physical": {
-        "radiusKm": 1821.6
+        "radiusKm": 1821.6,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 421700,
@@ -112,7 +117,8 @@
       "name": "Europa",
       "parentId": "jupiter",
       "physical": {
-        "radiusKm": 1560.8
+        "radiusKm": 1560.8,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 671100,
@@ -135,7 +141,8 @@
       "name": "Ganymed",
       "parentId": "jupiter",
       "physical": {
-        "radiusKm": 2634.1
+        "radiusKm": 2634.1,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 1070400,
@@ -158,7 +165,8 @@
       "name": "Kallisto",
       "parentId": "jupiter",
       "physical": {
-        "radiusKm": 2410.3
+        "radiusKm": 2410.3,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 1882700,
@@ -181,7 +189,8 @@
       "name": "Mimas",
       "parentId": "saturn",
       "physical": {
-        "radiusKm": 198.2
+        "radiusKm": 198.2,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 185540,
@@ -204,7 +213,8 @@
       "name": "Enceladus",
       "parentId": "saturn",
       "physical": {
-        "radiusKm": 252.1
+        "radiusKm": 252.1,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 237950,
@@ -227,7 +237,8 @@
       "name": "Rhea",
       "parentId": "saturn",
       "physical": {
-        "radiusKm": 763.8
+        "radiusKm": 763.8,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 527040,
@@ -250,7 +261,8 @@
       "name": "Titan",
       "parentId": "saturn",
       "physical": {
-        "radiusKm": 2574.7
+        "radiusKm": 2574.7,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 1221870,
@@ -273,7 +285,8 @@
       "name": "Iapetus",
       "parentId": "saturn",
       "physical": {
-        "radiusKm": 734.5
+        "radiusKm": 734.5,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 3561300,
@@ -296,7 +309,8 @@
       "name": "Titania",
       "parentId": "uranus",
       "physical": {
-        "radiusKm": 788.9
+        "radiusKm": 788.9,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 436300,
@@ -319,7 +333,8 @@
       "name": "Oberon",
       "parentId": "uranus",
       "physical": {
-        "radiusKm": 761.4
+        "radiusKm": 761.4,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 583500,
@@ -342,7 +357,8 @@
       "name": "Triton",
       "parentId": "neptune",
       "physical": {
-        "radiusKm": 1353.4
+        "radiusKm": 1353.4,
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 354760,
@@ -367,7 +383,8 @@
       "physical": {
         "radiusKm": 606,
         "surfaceGravityMs2": 0.29,
-        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html"
+        "dataSourceUrl": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html",
+        "synchronousRotation": true
       },
       "orbit": {
         "semiMajorAxis": 19596,

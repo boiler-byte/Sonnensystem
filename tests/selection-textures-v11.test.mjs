@@ -72,14 +72,14 @@ test('v12: texture sources are local and reject unsafe object IDs',()=>{
   for(const id of ['sun','earth','moon','titan','bennu']){
     const s=textureSource(id);
     assert.ok(s);
-    assert.equal(texturePath(id),`/textures/standard/${id}.jpg`);
+    assert.equal(texturePath(id),`/textures/standard/${id}.webp`);
     assert.equal(s.url,undefined);
   }
   assert.equal(textureSource('../earth'),null);
   assert.equal(textureSource('__proto__'),null);
   assert.equal(textureSource('earth','invalid'),null);
   assert.equal(textureTier({},'earth'),'standard');
-  assert.equal(textureTier({planetId:'earth'},'moon'),'detail');
+  assert.equal(textureTier({planetId:'earth'},'moon'),'high');
   assert.equal(textureTier({isMobile:true,planetId:'earth'},'earth'),'mobile');
   assert.equal(preferredMobileQuality({window:{innerWidth:900,matchMedia:()=>({matches:true})},navigator:{}}),true);
 });

@@ -59,7 +59,7 @@ export async function alignHorizons(){
   try{
     const data=await fetchHorizons(target,date);
     renderer.setOverride(body.id,date,[data.xKm,data.yKm,data.zKm]);
-    S.playing=false;S.time=Date.parse(date+'T00:00:00Z');updateTime();
+    S.playing=false;S.time=Date.parse(date+'T00:00:00Z');renderer.resetGalacticTrails();updateTime();
     renderer.calcPositions(S.time);renderer.focus(body.id);
     updateStatus('horizons','ok',`${date} · UTC`);
     $('horizons-note').textContent=`JPL-Vektor für ${date}, 00:00 UTC geladen. Position ist auf die schematische Szenenskala übertragen.`;

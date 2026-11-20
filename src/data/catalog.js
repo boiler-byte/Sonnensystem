@@ -47,6 +47,14 @@ export function parseCategory(doc, expectedType, path='') {
     if(item.aliases!==undefined)ensure(Array.isArray(item.aliases) && item.aliases.every(validString),`${where}: aliases müssen eine Liste von Namen sein`);
     ensure(isObj(item.physical) && okNumber(item.physical.radiusKm) && item.physical.radiusKm>=0,`${where}: radiusKm ungültig`);
     if (item.physical.temperatureK !== undefined) ensure(okNumber(item.physical.temperatureK) && item.physical.temperatureK>0,`${where}: temperatureK ungültig`);
+    if(item.physical.rotationPeriodHours !== undefined)
+      ensure(okNumber(item.physical.rotationPeriodHours) && item.physical.rotationPeriodHours!==0,
+        `${where}: rotationPeriodHours muss eine vorzeichenbehaftete, von null verschiedene Stundenanzahl sein`);
+    if(item.physical.axialTiltDeg !== undefined)
+      ensure(okNumber(item.physical.axialTiltDeg) && item.physical.axialTiltDeg>=0 && item.physical.axialTiltDeg<=180,
+        `${where}: axialTiltDeg muss zwischen 0 und 180 liegen`);
+    if(item.physical.synchronousRotation !== undefined)
+      ensure(typeof item.physical.synchronousRotation==='boolean',`${where}: synchronousRotation muss Boolean sein`);
     // Physical properties are optional: never replace an unknown value with zero.
     // Kelvin and Pa are used in the catalog, independent of the UI's display units.
     for(const key of ['temperatureMinK','temperatureMaxK','temperatureMeanK','atmosphericPressurePa','surfaceGravityMs2']){
@@ -75,6 +83,8 @@ export function parseCategory(doc, expectedType, path='') {
     ensure(o.eccentricity>=0 && o.eccentricity<1,`${where}: nur gebundene elliptische Bahnen (0 ≤ e < 1) unterstützt`);
     ensure(typeof o.epoch==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(o.epoch) && Number.isFinite(Date.parse(o.epoch)),`${where}: epoch muss ein ISO-UTC-Zeitpunkt sein`);
     ensure(isObj(item.appearance) && /^#[\da-fA-F]{6}$/.test(item.appearance.color||'') && validString(item.appearance.style),`${where}: appearance ungültig`);
+    for(const key of ['texturePhaseDeg','axisHeadingDeg'])
+      if(item.appearance[key] !== undefined)ensure(okNumber(item.appearance[key]),`${where}: ${key} muss eine endliche Gradzahl sein`);
     if(item.externalIds?.norad!==undefined)ensure(Number.isInteger(item.externalIds.norad) && item.externalIds.norad>0,`${where}: NORAD-ID ungültig`);
     return {
       id:item.id,name:item.name,type:expectedType,parentId:item.parentId,
@@ -85,6 +95,10 @@ export function parseCategory(doc, expectedType, path='') {
       meanDistanceToParent:item.parentId===null?null:(o.meanDistance??o.semiMajorAxis),
       meanDistanceUnit:o.unit,meanDistanceEstimated:o.meanDistance==null,
       color:item.appearance.color,style:item.appearance.style,
+      ...Object.fromEntries(['rotationPeriodHours','axialTiltDeg','synchronousRotation']
+        .filter(key=>item.physical[key]!==undefined).map(key=>[key,item.physical[key]])),
+      ...Object.fromEntries(['texturePhaseDeg','axisHeadingDeg']
+        .filter(key=>item.appearance[key]!==undefined).map(key=>[key,item.appearance[key]])),
       e:o.eccentricity,i:o.inclinationDeg,node:o.ascendingNodeDeg,peri:o.periapsisDeg,
       M:o.meanAnomalyDeg,epoch:Date.parse(o.epoch),source:doc.provenance.source,
       ...(o.referenceFrame===undefined?{}:{orbitFrame:o.referenceFrame}),

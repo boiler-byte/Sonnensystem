@@ -8,30 +8,33 @@ import {orbitAppearance} from '../src/renderer/orbits.js';
 
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 
-test('v96: orbit toggle cycles normal → contrast → off → normal without inconsistent flags',()=>{
+test('v100: orbit toggle cycles normal → contrast → galactic → off → normal without inconsistent flags',()=>{
   for(const view of ['solar','planet']){
     const settings=createViewSettings(view);
     assert.equal(orbitDisplayMode(settings),'normal');
     const transitions=[
-      {mode:'contrast',orbits:true,orbitContrast:true},
-      {mode:'off',orbits:false,orbitContrast:false},
-      {mode:'normal',orbits:true,orbitContrast:false}
+      {mode:'contrast',orbits:true,orbitContrast:true,galacticMotion:false},
+      {mode:'galactic',orbits:true,orbitContrast:false,galacticMotion:true},
+      {mode:'off',orbits:false,orbitContrast:false,galacticMotion:false},
+      {mode:'normal',orbits:true,orbitContrast:false,galacticMotion:false}
     ];
     for(const want of transitions){
       assert.equal(advanceOrbitDisplayMode(settings),want.mode);
       assert.equal(orbitDisplayMode(settings),want.mode);
       assert.equal(settings.orbits,want.orbits);
       assert.equal(settings.orbitContrast,want.orbitContrast);
+      assert.equal(settings.galacticMotion,want.galacticMotion);
     }
   }
   const old={orbits:false,orbitContrast:true};
   assert.equal(orbitDisplayMode(old),'off','a legacy contradictory state is considered off');
   assert.equal(advanceOrbitDisplayMode(old),'normal');
-  assert.deepEqual(old,{orbits:true,orbitContrast:false});
+  assert.deepEqual(old,{orbits:true,orbitContrast:false,galacticMotion:false});
 });
 
 test('v96: presets and view preferences preserve the combined modes',()=>{
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
+  advanceOrbitDisplayMode(solar);
   advanceOrbitDisplayMode(solar);
   advanceOrbitDisplayMode(solar);
   assert.equal(orbitDisplayMode(solar),'off');
@@ -47,7 +50,7 @@ test('v96: presets and view preferences preserve the combined modes',()=>{
   assert.ok(orbitAppearance({id:'earth',type:'planet'},planet).widthPx>orbitAppearance({id:'earth',type:'planet'},solar).widthPx);
 });
 
-test('v96: orbit button reports all three accessible states and the correct next mode',()=>{
+test('v100: orbit button reports all accessible states including galactic mode',()=>{
   const previousDocument=globalThis.document;
   const previousSettings=S.settings;
   const attrs={};const classes=new Set();const button={title:'',
@@ -59,7 +62,8 @@ test('v96: orbit button reports all three accessible states and the correct next
   try{
     const states=[
       ['normal','true',/Nächster Modus: Umlaufbahn \+ Bahnkontrast/],
-      ['contrast','true',/Nächster Modus: Beides aus/],
+      ['contrast','true',/Nächster Modus: Galaktische Bewegung/],
+      ['galactic','true',/Nächster Modus: Beides aus/],
       ['off','false',/Nächster Modus: Umlaufbahn/]
     ];
     for(const [mode,pressed,title] of states){
@@ -80,7 +84,7 @@ test('v96: orbit button reports all three accessible states and the correct next
   }
 });
 
-test('v96: Layer UI has two paired rows and no standalone contrast control',async()=>{
+test('v100: Layer UI has galactic orbit icon and no standalone contrast control',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css');
   const area=html.slice(html.indexOf('class="layer-display-toggles"'),html.indexOf('class="layer-options"'));
   const ids=[...area.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(match=>match[1]);
@@ -88,7 +92,9 @@ test('v96: Layer UI has two paired rows and no standalone contrast control',asyn
   assert.equal((area.match(/<button /g)||[]).length,4);
   assert.doesNotMatch(html,/id="orbit-contrast-btn"/);
   assert.match(area,/data-orbit-mode="normal"/);
-  assert.match(area,/class="orbit-contrast-icon"/);
+  assert.match(area,/class=\"orbit-contrast-icon\"/);
+  assert.match(area,/class=\"orbit-galactic-icon\"/);
   assert.match(css,/\.viewport>\.control-panel \.layer-display-toggles\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css,/#orbit-visibility-btn\[data-orbit-mode="contrast"\] \.orbit-contrast-icon\{display:block\}/);
+  assert.match(css,/#orbit-visibility-btn\[data-orbit-mode="galactic"\] \.orbit-galactic-icon\{display:block\}/);
 });

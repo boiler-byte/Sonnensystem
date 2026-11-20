@@ -1,6 +1,7 @@
 import { layerEnabled } from '../data/layers.js';
 import { projected, clamp } from './math.js';
 import {drawSceneBodies} from './scene-objects.js';
+import {drawSunTrail} from './orbits.js';
 
 /** Real Sun-centered Kepler paths; moons and satellites remain planet-centered. */
 const SOLAR_ORBIT_TYPES=new Set(['planet','dwarf','tno','asteroid','binary','comet']);
@@ -16,15 +17,13 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
   const selected=renderer.byId.get(selectedId);
   if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
-    // Show every available heliocentric orbit for enabled layers, not just a
-    // selection/subset. Planet-centered trajectories belong in planet view.
     const animatedCenter=renderer.positions.get('sun')||[0,0,0];
+    drawSunTrail(renderer,vp,.92,settings);
     for(const body of solarOrbitBodies(renderer.bodies,settings.layers)){
       const selectedOrbit=body.id===selectedId;
       const opacity=selectedOrbit?.70:body.type==='planet'?.20:.16;
       renderer.orbitLine(body,animatedCenter,vp,opacity,selectedOrbit);
     }
-    // Binary minor-planet companions have their own parent-centered km orbits.
     for (const body of renderer.bodies) {
       const parent=renderer.byId.get(body.parentId);
       if (body.type!=='binary' || parent?.type!=='binary' || !visible(body) || !renderer.shouldDraw(body)) continue;

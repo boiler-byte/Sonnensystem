@@ -2,14 +2,15 @@ import { CATEGORY_COLORS, EARTH_ORBIT_COLOR } from '../data/bodies.js';
 import { hex } from './math.js';
 import { displayOrbitRadius } from '../data/orbital-math.js';
 import {OrbitGeometryCache} from './orbit-cache.js';
+import {recordedGalacticTrail} from './galactic-trails.js';
 
 const CLIP_IDENTITY = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 const NEUTRAL_ORBIT = '#8394A8';
+const SUN_TRAIL_GLOW = '#F2BE58';
+const SUN_TRAIL_CORE = '#FFE7A8';
 
-/** True by default for integrations that still pass only {orbits, labels}. */
 export function orbitAppearance(body, settings = {}, alpha = .2, selected = false) {
   const contrast = settings.orbitContrast !== false;
-  // Orbit category colors are permanent; contrast changes only stroke and opacity.
   const color = body.type === 'planet' && body.id === 'earth'
     ? EARTH_ORBIT_COLOR : CATEGORY_COLORS[body.type] || NEUTRAL_ORBIT;
   return {
@@ -33,16 +34,11 @@ function clipPoint(points, i, vp, target) {
   return true;
 }
 
-/** Extrude each projected orbit segment into two triangles in clip space.
- * gl.lineWidth() is limited to 1px on many WebGL implementations; triangles
- * make the "Kontrast" switch visibly thicker on those devices as well.
- */
 export function orbitRibbonVertices(points, vp, viewportWidth, viewportHeight, widthPx, output=null) {
   const capacity=Math.max(0,(points.length/3-1)*18);
   const vertices=output?.length>=capacity ? output : new Float32Array(capacity);
   let count=0;
   const width=Math.max(1,viewportWidth),height=Math.max(1,viewportHeight);
-  // Two reusable clip points avoid allocating one object per orbit sample.
   let previous=[0,0,0],next=[0,0,0],previousValid=false;
   for(let i=0;i<points.length;i+=3) {
     const nextValid=clipPoint(points,i,vp,next);
@@ -66,23 +62,14 @@ export function orbitRibbonVertices(points, vp, viewportWidth, viewportHeight, w
   return count===vertices.length ? vertices : vertices.subarray(0,count);
 }
 
-export function drawOrbitLine(renderer, body, center, vp, alpha, selected, options = {}) {
-  if(!body.periodDays||!body.a) return;
-  const gl=renderer.gl,n=renderer.planetId?100:180;
-  const visibility=options.opacity ?? renderer.sceneOrbitOpacity?.(body) ?? renderer.orbitOpacity?.() ?? 1;
-  if(visibility<=.001)return; // Invisible orbits require neither sampling nor GPU uploads.
-  const parent=renderer.byId.get(body.parentId);
-  const centralBody=renderer.planetId?renderer.byId.get(renderer.planetId):null;
-  const displayRadius=options.radius ?? renderer.orbitRadius?.(body,parent) ?? displayOrbitRadius(body,parent,renderer.settings,centralBody);
-  const cache=renderer._orbitGeometryCache ??= new OrbitGeometryCache();
-  const entry=cache.get(body,parent,displayRadius,n,center);
-  const appearance=orbitAppearance(body,options.settings ?? renderer.settings,alpha,selected);
-  if(appearance.contrast && !entry.ribbon){
-    entry.ribbon=new Float32Array((entry.world.length/3-1)*18);
-  }
+function drawPath(renderer, points, appearance, vp, visibility=1) {
+  const gl=renderer.gl;
+  if(!points?.length || visibility<=.001)return;
+  if(appearance.contrast && !appearance.ribbon)
+    appearance.ribbon=new Float32Array((points.length/3-1)*18);
   const vertices=appearance.contrast
-    ? orbitRibbonVertices(entry.world,vp,renderer.width,renderer.height,appearance.widthPx,entry.ribbon)
-    : entry.world;
+    ? orbitRibbonVertices(points,vp,renderer.width,renderer.height,appearance.widthPx,appearance.ribbon)
+    : points;
   if(!vertices.length)return;
   const program=renderer.useLineProgram(appearance.contrast?CLIP_IDENTITY:vp);
   gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.DYNAMIC_DRAW);
@@ -90,4 +77,39 @@ export function drawOrbitLine(renderer, body, center, vp, alpha, selected, optio
     ? renderer.uniform(program,'uColor') : gl.getUniformLocation(program,'uColor');
   gl.uniform4f(colorLocation,...appearance.rgb,appearance.alpha*visibility);
   gl.drawArrays(appearance.contrast?gl.TRIANGLES:gl.LINE_STRIP,0,vertices.length/3);
+}
+
+/** A Sun trail is only composed of positions observed after mode entry. */
+export function drawSunTrail(renderer, vp, opacity=1, settings=renderer.settings) {
+  if(!settings?.galacticMotion || renderer.planetId)return;
+  const sun=renderer.byId.get('sun')||{id:'sun',type:'star'};
+  const points=recordedGalacticTrail(renderer,sun);
+  if(points.length<6)return;
+  const ribbonSize=(points.length/3-1)*18;
+  const buffers=renderer._sunTrailRibbons ??= {glow:null,core:null};
+  if(!buffers.glow || buffers.glow.length<ribbonSize)buffers.glow=new Float32Array(ribbonSize);
+  if(!buffers.core || buffers.core.length<ribbonSize)buffers.core=new Float32Array(ribbonSize);
+  drawPath(renderer,points,{rgb:hex(SUN_TRAIL_GLOW),widthPx:6.2,alpha:.12,contrast:true,ribbon:buffers.glow},vp,opacity);
+  drawPath(renderer,points,{rgb:hex(SUN_TRAIL_CORE),widthPx:2.4,alpha:.45,contrast:true,ribbon:buffers.core},vp,opacity);
+}
+
+export function drawOrbitLine(renderer, body, center, vp, alpha, selected, options = {}) {
+  if(!body.periodDays||!body.a) return;
+  const n=renderer.planetId?100:180;
+  const visibility=options.opacity ?? renderer.sceneOrbitOpacity?.(body) ?? renderer.orbitOpacity?.() ?? 1;
+  if(visibility<=.001)return;
+  const parent=renderer.byId.get(body.parentId);
+  const centralBody=renderer.planetId?renderer.byId.get(renderer.planetId):null;
+  const displayRadius=options.radius ?? renderer.orbitRadius?.(body,parent) ?? displayOrbitRadius(body,parent,renderer.settings,centralBody);
+  const cache=renderer._orbitGeometryCache ??= new OrbitGeometryCache();
+  const settings=options.settings ?? renderer.settings;
+  const appearance=orbitAppearance(body,settings,alpha,selected);
+  if(settings?.galacticMotion && !renderer.planetId){
+    const points=recordedGalacticTrail(renderer,body);
+    if(points.length>=6)drawPath(renderer,points,appearance,vp,visibility);
+    return;
+  }
+  // Outside the galactic mode these are ordinary closed Kepler ellipses.
+  const entry=cache.get(body,parent,displayRadius,n,center);
+  drawPath(renderer,entry.world,appearance,vp,visibility);
 }

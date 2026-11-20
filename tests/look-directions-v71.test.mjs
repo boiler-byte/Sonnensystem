@@ -38,15 +38,15 @@ function makeGesture(selectedId=null){
  return {renderer,emit,swipe,cleanup};
 }
 
-test('v71: downward and upward two-finger swipes invert only free-look pitch at a stationary eye',()=>{
+test('v104: free-look two-finger vertical swipes use down = down and up = up at a stationary eye',()=>{
  for(const dy of [50,-50]){
   const {renderer,swipe,cleanup}=makeGesture();
   try{
    const initial=cameraView(renderer.camera,1100,720);
    swipe(dy);
    assert.ok(renderer.camera.freeLook,'free look is active');
-   near(renderer.camera.freeLook.phi,.99+dy*.005/2); // only the last midpoint delta (dy/2) is applied
-   assert.equal(Math.sign(renderer.camera.freeLook.phi-.99),Math.sign(dy));
+   near(renderer.camera.freeLook.phi,.99-dy*.005/2); // only the last midpoint delta (dy/2) is applied
+   assert.equal(Math.sign(renderer.camera.freeLook.phi-.99),-Math.sign(dy));
    assert.equal(renderer.camera.phi,.99);
    nearVector(cameraView(renderer.camera,1100,720).eye,initial.eye);
   }finally{cleanup();}
