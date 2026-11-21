@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v106.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v109.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -26,7 +26,7 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 - **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe mit einer Überblendung vom größten zum kleinsten Körper und fährt danach kontinuierlich von klein nach groß. In der Entfernungsreihe bleibt die Anordnung unverändert; bereits der Einstieg erfolgt per Kamerafahrt. Auch das Beenden führt die Kamera weich zurück.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
 - **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Die zuletzt gewählte Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
-- **Texturen:** Drei getrennte Verzeichnisse `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px). WebP wird gegenüber JPG bevorzugt, fehlende Stufen werden aus vorhandenen Nachbarstufen geladen und GPU-seitig verkleinert.
+- **Texturen:** Drei getrennte Verzeichnisse `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px). **Nur `.webp` wird als Objekttextur gesucht**; fehlende Stufen werden aus vorhandenen Nachbarstufen geladen und GPU-seitig verkleinert.
 - **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert. Texturen nutzen einen separaten, netzwerkpriorisierten Cache; bei geänderten Dateien werden SHA-256-Versionen automatisch erkannt. Bereits geladene Bilder bleiben offline verfügbar. Andere API-Daten sind nicht Bestandteil des Offline-Caches.
 
 ## Projektaufbau
@@ -52,6 +52,31 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 - [Texturquellen](docs/TEXTURE-SOURCES.md) – Bild- und Quellenangaben.
 - [Versionshistorie](docs/RELEASE-HISTORY.md) – ältere Delta-Dokumente v2–v67 und Hotfix v6.1 in einem Archiv.
 - [Projektpflege](docs/MAINTENANCE.md) – Releases, Prüfungen und aktuelle Änderungen.
+
+## Delta v109 – Texturabrufe auf GitHub Pages ohne Zeitstempel und automatische Wiederholungen
+
+**Basis:** v108. `Sonnensystem-Delta-v109-Texturen.zip` direkt über den App-Ordner von v108 entpacken und vorhandene Dateien überschreiben. Danach die PWA online neu laden, damit `sonnensystem-shell-v109` übernommen wird.
+
+- Ohne Node-Texturmanifest (insbesondere **GitHub Pages**) werden Objekttexturen direkt als relative `.webp`-URL ohne `?v=`-Zeitstempel angefragt, z. B. `.../Sonnensystem/textures/standard/earth.webp`.
+- Fehlt eine Bilddatei oder schlägt ihr Laden fehl, bleibt dieser Fehler bis zum nächsten **Neustart der App oder manuellen Neuladen** gespeichert. Es gibt keine automatischen Bild-Wiederholungen nach 30 Sekunden – auch nicht durch den Wechsel der Texturqualität.
+- Ein nicht vorhandener `/api/textures/manifest`-Endpunkt wird bei statischem Hosting nur einmal pro App-Sitzung geprüft. Mit Node-Manifest bleiben SHA-256-Versionen und die regelmäßige Aktualisierung bereits erfolgreich geladener Texturen erhalten. Auch dort werden **fehlgeschlagene** Texturen erst nach einem Neustart/Neuladen erneut gesucht.
+- Die `.webp`-Dateien selbst sind nicht im ZIP enthalten; das bisherige Qualitäts-Fallback und der Offline-Cache bleiben erhalten.
+
+## Delta v108 – nur WebP-Objekttexturen (historisch)
+
+**Basis:** vollständige v107-Installation; `Sonnensystem-Delta-v108-WebP.zip` direkt über den App-Ordner entpacken und Dateien überschreiben. Anschließend die PWA einmal online neu laden, damit `sonnensystem-shell-v108` verwendet wird.
+
+Für alle Texturstufen (`mobile`, `standard`, `high`) werden **nur noch `.webp`-Dateien** gesucht. Der Fallback zwischen den Stufen und die 2K-Dateinamens-Aliase unter `standard/` funktionieren weiterhin, allerdings nur mit `.webp`. Andere Bildformate müssen vor dem Hochladen separat in WebP konvertiert werden. Die Pfadauflösung für GitHub Pages unter `/Sonnensystem/` bleibt erhalten. Im Delta sind keine Texturbilder enthalten.
+
+## Delta v107 – GitHub Pages: Texturpfade unterhalb des App-Verzeichnisses
+
+**Basis:** vollständige v106-Installation; `Sonnensystem-Delta-v107-GitHub-Pages-Texturen.zip` über das Projekt legen und Dateien überschreiben. Die PWA anschließend einmal online neu laden, damit `sonnensystem-shell-v107` installiert wird.
+
+Lokale Objekttexturen verwenden weiterhin die bekannten internen Manifest-Schlüssel (`/textures/standard/earth.webp` etc.), aber der Browser fordert Bilder **relativ zum Installationsverzeichnis der App** an. Beispiel: Bei `https://user.github.io/Sonnensystem/` wird `https://user.github.io/Sonnensystem/textures/standard/earth.webp` geladen (nicht `https://user.github.io/textures/...`). Die Auflösung orientiert sich an der Position des JavaScript-Moduls und funktioniert auch bei einer weiteren übergeordneten Verzeichnisebene oder bei Hosting direkt unter `/`.
+
+**Wichtig für GitHub Pages:** Ab v108 werden Objekttexturen ausschließlich als `.webp` geladen (auch 2K-Aliasnamen); `.jpg`, `.jpeg` und `.png` müssen zu WebP konvertiert werden. Die Bilddateien liegen **nicht im ZIP-Paket** und müssen separat im veröffentlichten Verzeichnis vorhanden sein, etwa `Sonnensystem/textures/standard/earth.webp` (wenn `Sonnensystem/` das App-Verzeichnis der Pages-Website ist). Die Verzeichnisse heißen `mobile`, `standard`, `high`; Dateinamen sind kleingeschrieben wie `earth.webp` oder die unterstützten historischen Aliase. Die Ordner müssen im veröffentlichten Branch/Build enthalten sein. GitHub Pages bietet keine Node-API `/api/textures/manifest`; die App verwendet dort weiterhin den vorhandenen Dateifallback. Ein Fehlen des Manifests ist **kein Fehler der Texturen**. Optionaler Live-Datenabruf per Node-Proxy ist bei rein statischem Hosting nicht verfügbar.
+
+Prüfen: Im Browser `https://user.github.io/Sonnensystem/textures/standard/earth.webp` direkt öffnen (Platzhalter `user` ersetzen). Ist die Antwort 404, wurde die Datei nicht an dieser Stelle veröffentlicht. Nach dem Hochladen Browser/PWA online neu laden und gegebenenfalls die installierte App schließen/neu öffnen.
 
 ## Delta-Update v72 auf v71
 
@@ -155,9 +180,9 @@ Die **Temperaturkachel** im Daten-Tab ist jetzt platzsparend: Der Mittelwert ste
 
 `Sonnensystem-Delta-v97.zip` über eine bestehende **v96.0.0-Installation** im Projektstamm entpacken und gleichnamige Dateien überschreiben. Danach `npm run check` ausführen, den Node-Server neu starten und die PWA **online neu laden**, damit `sonnensystem-shell-v97` aktiv wird. Das Paket enthält nur neue oder geänderte Dateien gegenüber dem beigefügten v96-Quellarchiv. **Die Texturbilder selbst sind nicht enthalten**, da sie nicht im Ausgangsarchiv liegen. Bestehende Bilder in `textures/standard/` nicht löschen.
 
-Empfohlene Dateinamen (alle Stufen): `earth.webp`, `mars.webp`, `moon.webp`, `titan.webp`. Die Ordner `mobile/` (512 px), `standard/` (2048 px) und `high/` (4096 px) sind voneinander getrennt. Die Dateisuche bevorzugt WebP vor JPG/JPEG/PNG und fällt bei fehlenden Mobilbildern zuerst auf `standard/` zurück. Bereits vorhandene historische 2K-Namen wie `2k_earth_daymap.jpg` bleiben im `standard/`-Ordner lesbar. Die angegebenen Pixelgrößen sind **Maximalbreiten für den GPU-Upload**; v97 erzeugt keine neuen Bilddateien und skaliert vorhandene Bilder nur im Browser herunter.
+Empfohlene Dateinamen (alle Stufen): `earth.webp`, `mars.webp`, `moon.webp`, `titan.webp`. Die Ordner `mobile/` (512 px), `standard/` (2048 px) und `high/` (4096 px) sind voneinander getrennt. Die Dateisuche fiel in v97 bei fehlenden Mobilbildern zuerst auf `standard/` zurück; damals wurden noch JPG/JPEG/PNG als Alternativen akzeptiert. **Seit v108 werden ausschließlich WebP-Dateien gesucht**. Historische 2K-Basisnamen wie `2k_earth_daymap` bleiben nur mit der Endung `.webp` im `standard/`-Ordner lesbar. Die angegebenen Pixelgrößen sind **Maximalbreiten für den GPU-Upload**; v97 erzeugt keine neuen Bilddateien und skaliert vorhandene Bilder nur im Browser herunter.
 
-Der lokale Node-Server stellt `/api/textures/manifest` bereit. Dessen SHA-256-Prüfsummen werden beim Rendern spätestens alle 30 Sekunden (und nach einem erneuten Öffnen der Seite) geprüft. Geänderte oder neu hinzugefügte Bilder erhalten eine andere URL-Version und ersetzen ihre bisherigen GPU-Texturen. Der Service Worker holt Texturen **zuerst vom Netzwerk** und hält die letzte erfolgreiche Version pro Dateipfad für Offline-Nutzung vor. Für rein statisches Hosting ohne diesen Endpunkt funktioniert der Dateifallback weiterhin; dort werden Änderungen mit einem Online-Neuladen der Anwendung zuverlässig übernommen, nicht fortlaufend während einer offenen Sitzung. Details: [Texturquellen](docs/TEXTURE-SOURCES.md).
+Der lokale Node-Server stellt `/api/textures/manifest` bereit. Dessen SHA-256-Prüfsummen werden beim Rendern spätestens alle 30 Sekunden (und nach einem erneuten Öffnen der Seite) geprüft. **Erfolgreich geladene** und danach geänderte Bilder erhalten eine andere URL-Version und ersetzen ihre bisherigen GPU-Texturen; fehlgeschlagene Anfragen werden seit v109 erst nach einem Neustart/Neuladen erneut versucht. Der Service Worker holt Texturen **zuerst vom Netzwerk** und hält die letzte erfolgreiche Version pro Dateipfad für Offline-Nutzung vor. Für rein statisches Hosting ohne diesen Endpunkt funktioniert der Dateifallback ohne Zeitstempel und ohne automatische Wiederholungsversuche; dort werden Änderungen mit einem Online-Neuladen der Anwendung übernommen. Details: [Texturquellen](docs/TEXTURE-SOURCES.md).
 
 ## Delta-Update auf v96
 

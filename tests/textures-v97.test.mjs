@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createServer} from 'node:http';
 import {runInNewContext} from 'node:vm';
-import {textureSource,texturePaths,textureTier,TEXTURE_TIERS} from '../src/renderer/texture-sources.js';
+import {textureSource,texturePaths,textureTier,TEXTURE_TIERS,textureRequestUrl} from '../src/renderer/texture-sources.js';
 import {TextureManager} from '../src/renderer/textures.js';
 import {staticAsset} from '../server/static.mjs';
 import {textureManifest} from '../server/texture-manifest.mjs';
@@ -23,7 +23,7 @@ const wait=async predicate=>{
 };
 const gl=()=>({MAX_TEXTURE_SIZE:1,getParameter:()=>8192,deleteTexture(){}});
 
-test('v97: three exact folders, WebP first, high/standard/mobile fallback and safe IDs',()=>{
+test('v97/v108: three folders, WebP-only candidates, tier fallback and safe IDs',()=>{
   assert.deepEqual(TEXTURE_TIERS,{mobile:512,standard:2048,high:4096});
   assert.equal(textureTier({planetId:'earth'}),'high');
   assert.equal(textureTier({isMobile:true,planetId:'earth'}),'mobile');
@@ -31,10 +31,11 @@ test('v97: three exact folders, WebP first, high/standard/mobile fallback and sa
   assert.equal(textureSource('../private'),null);
   const mobile=texturePaths('earth','mobile');
   assert.equal(mobile[0],'/textures/mobile/earth.webp');
-  assert.ok(mobile.indexOf('/textures/mobile/earth.jpg')<mobile.indexOf('/textures/standard/earth.webp'));
+  assert.ok(mobile.indexOf('/textures/mobile/earth.webp')<mobile.indexOf('/textures/standard/earth.webp'));
   assert.ok(mobile.indexOf('/textures/standard/earth.webp')<mobile.indexOf('/textures/high/earth.webp'));
   const standard=texturePaths('earth','standard');
-  assert.ok(standard.indexOf('/textures/standard/2k_earth_daymap.webp')<standard.indexOf('/textures/standard/earth.jpg'));
+  assert.ok(standard.indexOf('/textures/standard/earth.webp')<standard.indexOf('/textures/standard/2k_earth_daymap.webp'));
+  assert.ok(standard.indexOf('/textures/standard/2k_earth_daymap.webp')<standard.indexOf('/textures/high/earth.webp'));
   const high=texturePaths('earth','high');
   assert.equal(high[0],'/textures/high/earth.webp');
   assert.ok(high.includes('/textures/standard/earth.webp'));
@@ -98,27 +99,27 @@ test('v97: mobile uses standard WebP when mobile is absent, then adopts new mobi
   try{
     manager.get({id:'earth'},null,'earth');
     await wait(()=>manager.entries.get('earth:mobile')?.status==='ready');
-    assert.equal(seen[0],`${standard}?v=${H('a')}`);
+    assert.equal(seen[0],`${textureRequestUrl(standard)}?v=${H('a')}`);
     assert.equal(manager.entries.get('earth:mobile').texture.url,seen[0]);
     files={[standard]:H('a'),[mobile]:H('b')};
     await manager.refreshManifest(true);
     assert.ok(deleted.includes(seen[0]),'GPU fallback is invalidated when a better-quality tier appears');
     manager.get({id:'earth'},null,'earth');
     await wait(()=>manager.entries.get('earth:mobile')?.status==='ready');
-    assert.equal(seen.at(-1),`${mobile}?v=${H('b')}`);
+    assert.equal(seen.at(-1),`${textureRequestUrl(mobile)}?v=${H('b')}`);
     assert.equal(manager.entries.get('earth:mobile').bytes,512*256*4);
     files={[standard]:H('a'),[mobile]:H('c')};
     await manager.refreshManifest(true);
     manager.get({id:'earth'},null,'earth');
     await wait(()=>manager.entries.get('earth:mobile')?.status==='ready');
-    assert.equal(seen.at(-1),`${mobile}?v=${H('c')}`,'updated filename uses a new content token');
-    assert.ok(deleted.includes(`${mobile}?v=${H('b')}`),'old GPU texture is removed');
+    assert.equal(seen.at(-1),`${textureRequestUrl(mobile)}?v=${H('c')}`,'updated filename uses a new content token');
+    assert.ok(deleted.includes(`${textureRequestUrl(mobile)}?v=${H('b')}`),'old GPU texture is removed');
   }finally{
     manager.dispose();globalThis.fetch=originalFetch;
   }
 });
 
-test('v97: an added texture recovers from a previously failed lookup',async()=>{
+test('v109: a failed lookup stays failed after manifest changes until an app reload',async()=>{
   const saved=globalThis.fetch;
   let files={};
   globalThis.fetch=async()=>({ok:true,json:async()=>({files})});
@@ -132,10 +133,17 @@ test('v97: an added texture recovers from a previously failed lookup',async()=>{
     assert.deepEqual(urls,[],'manifest avoids trial requests to absent files');
     files={'/textures/mobile/mars.webp':H('1')};
     await manager.refreshManifest(true);
-    assert.equal(manager.entries.has('mars:mobile'),false);
+    assert.equal(manager.entries.get('mars:mobile').status,'failed');
     manager.get({id:'mars'},null,'mars');
-    await wait(()=>manager.entries.get('mars:mobile')?.status==='ready');
-    assert.equal(urls[0],`/textures/mobile/mars.webp?v=${H('1')}`);
+    assert.deepEqual(urls,[],'manifest changes do not retry a failed lookup');
+    const restarted=new TextureManager(gl(),{mobile:true});
+    restarted.loadImage=manager.loadImage;
+    restarted.upload=manager.upload;
+    try{
+      restarted.get({id:'mars'},null,'mars');
+      await wait(()=>restarted.entries.get('mars:mobile')?.status==='ready');
+      assert.equal(urls[0],`${textureRequestUrl('/textures/mobile/mars.webp')}?v=${H('1')}`);
+    }finally{restarted.dispose();}
   }finally{manager.dispose();globalThis.fetch=saved;}
 });
 
@@ -162,11 +170,11 @@ test('v97: a texture changed mid-download does not overwrite the latest GPU revi
     await manager.refreshManifest(true);
     finish();
     await wait(()=>manager.active===0);
-    assert.deepEqual(removed,[`${url}?v=${H('1')}`]);
+    assert.deepEqual(removed,[`${textureRequestUrl(url)}?v=${H('1')}`]);
     assert.equal(manager.entries.has('mars:standard'),false);
     manager.get({id:'mars'},null,null);
     await wait(()=>manager.entries.get('mars:standard')?.status==='ready');
-    assert.equal(urls.at(-1),`${url}?v=${H('2')}`);
+    assert.equal(urls.at(-1),`${textureRequestUrl(url)}?v=${H('2')}`);
   }finally{manager.dispose();globalThis.fetch=saved;}
 });
 

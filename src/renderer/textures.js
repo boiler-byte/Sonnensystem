@@ -1,12 +1,13 @@
-import {textureSource,texturePaths,textureTier,TEXTURE_FILE_PATH} from './texture-sources.js';
+import {textureSource,texturePaths,textureTier,TEXTURE_FILE_PATH,textureRequestUrl} from './texture-sources.js';
 
 /**
  * Lazy WebGL texture uploader. Images arrive asynchronously from the allowlisted
- * local /textures/{mobile,standard,high} files; no third-party image requests.
+ * local textures/{mobile,standard,high} files relative to the app base; no third-party requests.
  * Only a small bounded set of maps is kept on the GPU at one time.
  */
 const isPowerOfTwo=n=>n>0&&(n&(n-1))===0;
 const MANIFEST_REFRESH_MS=30_000;
+const MANIFEST_URL=new URL('../../api/textures/manifest',import.meta.url).href;
 export function preferredMobileQuality(env=globalThis) {
   const win=env.window||env;
   const nav=env.navigator||{};
@@ -29,7 +30,9 @@ export class TextureManager {
     this.disposed=false;
     this.manifest=null; // null means the optional local manifest API is unavailable.
     this.manifestRequest=null;
+    this.manifestUnavailable=false; // Missing GitHub Pages API: no more probes this session.
     this.nextManifestCheck=0;
+    this.failedPaths=new Set(); // Per-file failures are remembered until page reload.
   }
   signature(id,tier,files=this.manifest){
     if(!files)return null;
@@ -43,15 +46,15 @@ export class TextureManager {
     }
     this.entries.delete(key);
   }
-  /** Check for new, changed and removed files, including while the app remains open. */
+  /** Update successful textures; failed lookups stay failed until page reload. */
   refreshManifest(force=false){
     if(this.disposed)return Promise.resolve();
     if(this.manifestRequest)return this.manifestRequest;
-    if(!force && Date.now()<this.nextManifestCheck)return Promise.resolve();
+    if(!force && (this.manifestUnavailable || Date.now()<this.nextManifestCheck))return Promise.resolve();
     this.nextManifestCheck=Date.now()+MANIFEST_REFRESH_MS;
     if(typeof fetch!=='function')return Promise.resolve();
     this.manifestRequest=(async()=>{
-      const response=await fetch('/api/textures/manifest',{cache:'no-store'});
+      const response=await fetch(MANIFEST_URL,{cache:'no-store'});
       if(!response.ok)throw Error('Local texture manifest unavailable');
       const payload=await response.json();
       if(!payload || !payload.files || typeof payload.files!=='object' || Array.isArray(payload.files))
@@ -62,12 +65,17 @@ export class TextureManager {
       }
       if(this.disposed)return;
       this.manifest=next;
+      this.manifestUnavailable=false;
       for(const [key,record] of this.entries){
         // In-flight downloads are checked again before GPU adoption.
-        if(record.status==='loading'||record.status==='queued')continue;
+        // Failed textures are never invalidated by a new manifest mid-session.
+        if(record.status!=='ready')continue;
         if(record.signature!==this.signature(record.id,record.tier,next))this.remove(key,record);
       }
-    })().catch(()=>{/* Static hosting/offline: use the local URL fallback. */})
+    })().catch(()=>{
+      // Static GitHub Pages hosting has no Node manifest API.
+      if(!this.disposed && this.manifest===null)this.manifestUnavailable=true;
+    })
       .finally(()=>{this.manifestRequest=null;});
     return this.manifestRequest;
   }
@@ -82,10 +90,8 @@ export class TextureManager {
     const tier=textureTier({isMobile:this.mobile,planetId,selectedId},body.id);
     if(!textureSource(body.id,tier))return null;
     const key=`${body.id}:${tier}`;
-    let cached=this.entries.get(key);
-    if(cached?.status==='failed' && !this.manifest && Date.now()>=(cached.retryAfter||0)){
-      this.entries.delete(key);cached=null;
-    }
+    const cached=this.entries.get(key);
+    // The same missing tier is only sought again on a fresh page load.
     if(cached?.status==='ready'){cached.lastUsed=Date.now();return cached.texture;}
     if(!cached){
       this.entries.set(key,{id:body.id,tier,status:'queued',signature:null,lastUsed:Date.now()});
@@ -120,7 +126,6 @@ export class TextureManager {
       }).catch(()=>{
         if(!this.disposed && this.entries.get(job.key)===record){
           record.status='failed';record.signature=this.signature(job.id,job.tier);
-          record.retryAfter=Date.now()+MANIFEST_REFRESH_MS;
         }
       }).finally(()=>{this.active--;this.pump();});
     }
@@ -136,13 +141,20 @@ export class TextureManager {
     const paths=texturePaths(id,tier).filter(path=>!files||files.has(path));
     let lastError;
     for(const local of paths){
+      // Do not try a failed URL again when switching between texture qualities.
+      if(this.failedPaths.has(local))continue;
       try{
-        // The URL version bypasses stale browser/PWA HTTP caches on replacement.
-        const version=files?files.get(local):String(Date.now());
-        const image=await this.loadImage(`${local}?v=${version}`);
+        // Hash only when served by the Node manifest; static Pages URLs stay clean.
+        const version=files?.get(local);
+        const url=textureRequestUrl(local);
+        const image=await this.loadImage(version?`${url}?v=${version}`:url);
         if(this.disposed)throw Error('Texture manager disposed');
         return {...this.upload(image,source.width),signature};
-      }catch(error){lastError=error;if(this.disposed)break;}
+      }catch(error){
+        lastError=error;
+        if(this.disposed)break;
+        this.failedPaths.add(local);
+      }
     }
     throw lastError||Error('Keine lokale Textur');
   }
@@ -203,7 +215,7 @@ export class TextureManager {
     if(this.disposed)return;
     this.disposed=true;
     for(const entry of this.entries.values())if(entry.status==='ready')this.gl.deleteTexture(entry.texture);
-    this.entries.clear();this.queue.length=0;this.bytes=0;
+    this.entries.clear();this.queue.length=0;this.bytes=0;this.failedPaths.clear();
     // In-flight jobs check disposed before uploading and on completion.
   }
 }

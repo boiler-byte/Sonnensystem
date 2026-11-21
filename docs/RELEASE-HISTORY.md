@@ -1,3 +1,24 @@
+## v109 – Texturabrufe ohne Zeitstempel auf GitHub Pages; fehlende Dateien nur beim Neustart erneut suchen
+
+- Auf statischen GitHub Pages verwendet der Renderer für WebP-Texturen saubere relative URLs ohne zeitbasierte `?v=`-Parameter.
+- Fehlgeschlagene Bilddateien werden nach allen vorgesehenen Qualitäts-/Namensalternativen für die gesamte Sitzung vorgemerkt, statt sie alle 30 Sekunden erneut zu laden. Auch Qualitätswechsel und spätere Node-Manifeständerungen erzwingen keinen erneuten Versuch; der nächste reguläre Versuch folgt erst mit App-Neustart oder manuellem Neuladen.
+- Fehlt das optionale Node-Texturmanifest, wird es nur einmal pro Sitzung geprüft. Mit verfügbarem Node-Manifest bleiben SHA-256-Parameter und automatische Aktualisierung bereits erfolgreicher Texturen erhalten.
+- Paketversion `109.0.0`, HTML `V109.0`, PWA-Shell `sonnensystem-shell-v109`, Delta-Basis v108.
+
+## v108 – Texturdateisuche nur als WebP
+
+- Die Kandidatenliste für alle drei Texturstufen (`mobile`, `standard`, `high`) verwendet nur noch `.webp`, einschließlich der historischen 2K-Aliasnamen im Ordner `standard`.
+- `.jpg`, `.jpeg` und `.png` werden nicht mehr als Objekttexturen angefragt, im optionalen Node-Texturmanifest gelistet oder durch die Texturroute des Service Workers verarbeitet. PWA-Icons bleiben PNG-Dateien.
+- Die Qualitäts-Fallbacks, relative GitHub-Pages-Verzeichnisse, Cache-Strategie und prozedurale Oberfläche bei fehlenden Bildern bleiben erhalten. Bilder sind nicht Bestandteil des Delta-Pakets; ggf. vorhandene JPG/PNG-Bilder separat zu WebP konvertieren.
+- Paketversion `108.0.0`, HTML `V108.0`, PWA-Cache `sonnensystem-shell-v108`, Delta-Basis v107.
+
+## v107 – GitHub Pages: relative Objekttextur-URLs
+
+- Texturdateien werden aus der Lage der installierten App (ES-Modul-URL) angefordert; GitHub Pages-Projektseiten unter `/Sonnensystem/` und tiefer verschachtelte Pfade funktionieren ohne festen Repositorynamen. Interne `/textures/...`-Manifest-Schlüssel, Dateinamens-Aliase, Qualitäts-Fallback und Offline-Cache bleiben erhalten.
+- Optionaler Endpunkt `api/textures/manifest` wird ebenfalls relativ zum Installationsverzeichnis abgefragt. Bei rein statischem Hosting ohne Node-Server bleibt der Direktabruf der Bilddateien aktiv.
+- Keine Bildtexturen im Delta enthalten; die Dateien müssen im veröffentlichten `textures/`-Verzeichnis bereitgestellt werden.
+- Paketversion `107.0.0`, HTML `V107.0`, PWA-Cache `sonnensystem-shell-v107`, Basis v106.
+
 ## v106 – AR-Bewegungsnavigation
 
 - Zusätzlicher Toggle unmittelbar neben dem AR-Button; sichtbar nur bei aktivem AR.
@@ -13,7 +34,7 @@
 
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v106 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v108 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 

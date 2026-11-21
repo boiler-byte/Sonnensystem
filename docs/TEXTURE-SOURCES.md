@@ -1,4 +1,4 @@
-# Lokale Texturen und Cache (v97)
+# Lokale Texturen und Cache (Stand v109)
 
 Die Anwendung verwendet ausschließlich selbst bereitgestellte, gleichursprüngliche Bilddateien. Es gibt weder automatische Downloads noch externe Texturdienste. Im gelieferten Quellarchiv waren **keine Bilddateien enthalten**. Die neuen Ordner sind vorbereitet, bleiben aber bis zum Hinzufügen eigener Bilder leer.
 
@@ -17,7 +17,7 @@ textures/
 └── high/         # maximal 4096 px breit
 ```
 
-Benennen Sie ein Objekt in jeder Stufe identisch, z. B. `earth.webp`, `mars.webp`, `moon.webp`. Unterstützt werden `.webp` (bevorzugt), `.jpg`, `.jpeg` und `.png`. Browserseitig wird zuerst die gewählte Stufe und darin WebP vor JPG/JPEG/PNG geprüft. In `standard/` werden weiterhin bekannte historische Quelldateinamen wie `2k_earth_daymap.jpg` und `2k_earth_daymap.webp` unterstützt. Bilder unter `textures/detail/` werden **nicht** erkannt; die 4096-px-Stufe heißt `high/`.
+Benennen Sie ein Objekt in jeder Stufe identisch, z. B. `earth.webp`, `mars.webp`, `moon.webp`. Ab v108 wird **ausschließlich `.webp`** gesucht. `.jpg`, `.jpeg` und `.png` werden nicht mehr als Objekttexturen abgefragt; vorhandene Dateien dieser Formate müssen vorher in WebP konvertiert werden. In `standard/` werden bekannte historische Basisnamen weiterhin akzeptiert, z. B. `2k_earth_daymap.webp`. Bilder unter `textures/detail/` werden **nicht** erkannt; die 4096-px-Stufe heißt `high/`.
 
 Die gewünschte Qualitätsstufe wird so ermittelt:
 
@@ -29,20 +29,26 @@ Die gewünschte Qualitätsstufe wird so ermittelt:
 
 Die genannten Pixelzahlen begrenzen die vom WebGL-Renderer hochgeladene **Bildbreite**. Ein größeres Ersatzbild wird beim Laden verkleinert, niemals automatisch hochskaliert. Damit sind die derzeit ausschließlich unter `standard/` abgelegten Texturen auch auf Mobilgeräten sichtbar. Für geringeren mobilen Datentransfer empfiehlt sich, echte 512-px-WebP-Dateien in `mobile/` bereitzustellen.
 
-## Automatische Cache-Aktualisierung
+## Cache-Aktualisierung und fehlgeschlagene Texturen (v109)
 
-Bei Verwendung des mitgelieferten Node-Servers (`npm start`) liest `/api/textures/manifest` alle erlaubten Bilddateien aus den drei Ordnern und liefert pro Bild einen SHA-256-Hash. Beim Ersetzen, Ändern, Hinzufügen oder Entfernen einer Datei ändert sich die Version bzw. Verfügbarkeit. Der Renderer prüft dieses Manifest beim ersten Texturladen und bei aktivem Rendering spätestens alle 30 Sekunden; er verwirft veraltete GPU-Texturen und lädt die geänderten Dateien mit `?v=<SHA-256>` neu. Die Prüfsummen werden serverseitig auf Basis von Dateistatistiken wiederverwendet, bis sich die Datei ändert. Änderungen mit gleicher Dateigröße und gleichem Dateinamen werden erkannt.
+Bei Verwendung des mitgelieferten Node-Servers (`npm start`) liest `/api/textures/manifest` alle erlaubten Bilddateien aus den drei Ordnern und liefert pro Bild einen SHA-256-Hash. Beim Ersetzen, Ändern, Hinzufügen oder Entfernen einer Datei ändert sich die Version bzw. Verfügbarkeit. Der Renderer prüft dieses Manifest beim ersten Texturladen und bei aktivem Rendering spätestens alle 30 Sekunden; **erfolgreich geladene** veraltete GPU-Texturen werden verworfen und geänderte Dateien mit `?v=<SHA-256>` erneut geladen. Die Prüfsummen werden serverseitig auf Basis von Dateistatistiken wiederverwendet, bis sich die Datei ändert. Änderungen mit gleicher Dateigröße und gleichem Dateinamen werden erkannt. **Fehlgeschlagene Texturladevorgänge bleiben dagegen während der gesamten App-Sitzung gesperrt**, auch wenn sich das Manifest zwischenzeitlich ändert.
 
-Der PWA-Service-Worker verwendet `sonnensystem-shell-v97` für Anwendung/Katalog und `sonnensystem-textures-v1` für Bilddateien. **Netzwerk zuerst**: Online wird der aktuelle Stand geladen und als einzige Offline-Kopie unter der versionsfreien URL gespeichert. Bei Netzwerkausfall wird die letzte erfolgreich gespeicherte Bildversion verwendet. Alte Versionen sammeln sich nicht pro Hash an. Fehlt eine Datei vollständig, zeichnet die App weiterhin ihre prozedurale Oberfläche.
+Der PWA-Service-Worker verwendet `sonnensystem-shell-v109` für Anwendung/Katalog und weiterhin `sonnensystem-textures-v1` für bereits gespeicherte WebP-Bilddateien. **Netzwerk zuerst**: Online wird der aktuelle Stand geladen und als einzige Offline-Kopie unter der versionsfreien URL gespeichert. Bei Netzwerkausfall wird die letzte erfolgreich gespeicherte Bildversion verwendet. Alte Versionen sammeln sich nicht pro Hash an. Fehlt eine Datei vollständig, zeichnet die App weiterhin ihre prozedurale Oberfläche.
 
-Für **rein statisches Hosting ohne `/api/textures/manifest`** bleibt der Bildabruf mit Cache-brechender URL und Netzwerk-vor-Cache erhalten. Ein neu hochgeladenes oder geändertes Bild wird dann bei erneutem **Online-Laden** der Anwendung übernommen. Die automatische Änderungserkennung innerhalb einer offenen Sitzung erfordert den lokalen Node-Endpunkt.
+Auf **GitHub Pages ohne `/api/textures/manifest`** fragt die App jedes WebP-Bild mit seinem relativen Pfad **ohne Zeitstempel oder sonstige Query-Parameter** an. Der nicht verfügbare Manifest-Endpunkt wird einmal pro Sitzung getestet, nicht alle 30 Sekunden. Scheitert das Laden einer Textur (z. B. durch 404), versucht die Anwendung alle noch nicht getesteten Qualitäts-/Namensalternativen. Anschließend werden die fehlgeschlagenen Dateien und die fehlgeschlagene Objektsuche **nicht automatisch erneut angefragt**, auch nicht bei einem Qualitätswechsel. **Erst nach App-Neustart oder manuellem Neuladen** beginnt die Suche erneut. Das gilt auch für zuvor fehlgeschlagene Texturen am lokalen Node-Server. Die automatische Aktualisierung bereits *erfolgreich geladener* Texturen innerhalb einer Sitzung ist weiterhin über den Node-Endpunkt möglich.
 
 ## Installation und Prüfung
 
-1. Delta v97 direkt im Stamm der bestehenden v96-Installation entpacken; vorhandene Bilddateien nicht überschreiben oder löschen.
-2. Texturen bei Bedarf unter `mobile/`, `standard/`, `high/` nach Dateinamen sortieren. `earth.webp` ist die bevorzugte neue Bezeichnung; `earth.jpg` bleibt gültig.
+1. Delta v109 direkt über eine v108-Installation entpacken; vorhandene Bilddateien nicht überschreiben oder löschen.
+2. Texturen bei Bedarf unter `mobile/`, `standard/`, `high/` nach Dateinamen sortieren. Alle für den Renderer gewünschten Objekttexturen müssen `.webp` sein (`earth.jpg` ist nicht mehr gültig).
 3. Node-Server neu starten (`npm start`), dann die installierte PWA einmal **online** neu laden.
 4. Optional `npm run textures:list` ausführen. Das Kommando listet die gefundenen lokalen Bilder und ihre SHA-256-Versionen. Mit `/api/textures/manifest` kann derselbe Stand im Browser geprüft werden.
-5. Test: eine Bilddatei ersetzen, 30 Sekunden bei aktiver 3D-Ansicht abwarten oder die Seite online neu laden. Sie sollte ohne manuelles Browsercache-Löschen mit neuer Prüfsumme geladen werden.
+5. Test: Beim Node-Server eine **bereits erfolgreich geladene** Bilddatei ersetzen und bei aktiver 3D-Ansicht höchstens 30 Sekunden warten oder die Seite online neu laden. Bei **zuvor fehlenden** Bildern ist ein App-Neustart oder manuelles Neuladen erforderlich. Auf GitHub Pages die Textur-URL direkt prüfen und nach einem Upload die App manuell neu laden.
 
 **Bildrechte:** Bildrechte und korrekte Urhebernennung hängen von den selbst bereitgestellten Texturen ab. Der Betreiber muss Herkunft und Lizenz separat dokumentieren; die App kann diese aus lokalen Bildern nicht ableiten.
+
+## GitHub Pages: Projekt-Unterverzeichnis (v107)
+
+Die App kann unter `https://<account>.github.io/Sonnensystem/` oder in einem tieferen Verzeichnis gehostet werden. Der Browser lädt beispielsweise `https://<account>.github.io/Sonnensystem/textures/standard/earth.webp`. Absolute Domain-Wurzel-Pfade wie `https://<account>.github.io/textures/standard/earth.webp` werden nicht mehr verwendet.
+
+**Vorbedingung:** GitHub Pages muss die tatsächlichen Bilddateien unterhalb des veröffentlichten App-Verzeichnisses bereitstellen. Der Quell-/Delta-Download enthält keine Texturdateien. Fehlt eine Datei, bleibt die prozedurale Darstellung sichtbar. Eine Datei per Browser-Direktaufruf testen; 404 bedeutet fehlende Datei bzw. falsche Verzeichnisstruktur auf dem Hosting. Auf GitHub Pages gibt es keinen Node-Endpunkt zur Erzeugung eines Textur-Manifests, deshalb wird dort die vorhandene direkte Bildsuche verwendet.

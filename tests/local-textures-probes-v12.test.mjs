@@ -13,25 +13,26 @@ const read=async file=>readFile(join(root,file),'utf8');
 test('v12: only safe same-origin local texture paths, with 2K filename aliases',()=>{
   const earthPaths=texturePaths('earth');
   assert.equal(earthPaths[0],'/textures/standard/earth.webp');
-  assert.ok(earthPaths.indexOf('/textures/standard/2k_earth_daymap.webp')<earthPaths.indexOf('/textures/standard/earth.jpg'));
-  assert.ok(texturePaths('earth').includes('/textures/standard/2k_earth_daymap.jpg'));
+  assert.ok(earthPaths.indexOf('/textures/standard/earth.webp')<earthPaths.indexOf('/textures/standard/2k_earth_daymap.webp'));
+  assert.ok(!earthPaths.some(path=>/\.(?:jpg|jpeg|png)$/.test(path)));
   assert.equal(textureSource('../../secret'),null);
   assert.equal(textureSource('earth').url,undefined);
   assert.equal(textureTier({planetId:'earth'},'earth'),'high');
   assert.equal(textureTier({isMobile:true,planetId:'earth'},'earth'),'mobile');
 });
 
-test('v12: server serves user-owned texture file, rejects traversals and private files',async()=>{
+test('v12/v108: server serves user-owned WebP only, rejects traversals and other extensions',async()=>{
   const dir=join(root,'textures','standard');
-  const file=join(dir,'test-v12.png');
+  const file=join(dir,'test-v12.webp');
   await mkdir(dir,{recursive:true});
   try{
-    await writeFile(file,Buffer.from([137,80,78,71,13,10,26,10]));
-    const served=await staticAsset('/textures/standard/test-v12.png');
-    assert.equal(served.type,'image/png');
-    assert.equal(served.bytes.length,8);
+    await writeFile(file,Buffer.from('RIFFtestWEBP'));
+    const served=await staticAsset('/textures/standard/test-v12.webp');
+    assert.equal(served.type,'image/webp');
+    assert.equal(served.bytes.length,12);
+    for(const ext of ['jpg','jpeg','png'])assert.equal(await staticAsset(`/textures/standard/test-v12.${ext}`),null);
     assert.equal(await staticAsset('/textures/standard/../../package.json'),null);
-    assert.equal(await staticAsset('/textures/standard/.secret.jpg'),null);
+    assert.equal(await staticAsset('/textures/standard/.secret.webp'),null);
   }finally{await rm(file,{force:true});}
 });
 

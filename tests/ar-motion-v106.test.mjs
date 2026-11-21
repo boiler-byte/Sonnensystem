@@ -55,8 +55,9 @@ test('v106: the directional toggle sits immediately beside AR and shares its mob
  assert.match(css,/\.viewport-actions \.ar-motion-button\{margin-right:auto\}/);
  assert.match(controller,/motionButton:\$\('ar-motion-btn'\)/);
  assert.match(readme,/Delta v106 – AR-Bewegungsnavigation/);
- assert.match(sw,/sonnensystem-shell-v106/);
- assert.equal(JSON.parse(pkg).version,'106.0.0');
+ const major=Number(JSON.parse(pkg).version.split('.')[0]);
+ assert.ok(major>=106);
+ assert.match(sw,new RegExp(`sonnensystem-shell-v${major}\\b`));
 });
 
 test('v106: motion activation requires AR, valid sensor events and an independent toggle',async()=>{

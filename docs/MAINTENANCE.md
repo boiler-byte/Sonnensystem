@@ -1,3 +1,15 @@
+## Änderung in v109
+
+**Delta v108 → v109:** Der statische GitHub-Pages-Fallback lädt WebP-Texturen ohne `?v=Date.now()`; die SHA-256-Versionierung bei vorhandenem Node-Manifest bleibt. `TextureManager` behält fehlgeschlagene Objektsuchen und einzelne fehlende Texturpfade bis zum nächsten App-Neustart/manuellen Neuladen (kein Retry nach 30 Sekunden, auch nicht bei Qualitätswechsel oder Manifeständerung). Ein nicht erreichbarer optionaler Manifest-Endpunkt wird auf statischem Hosting nur einmal pro Sitzung angefragt. Erfolgreich geladene Texturen bleiben mit Node-Manifest automatisch aktualisierbar. Version `109.0.0`, PWA-Shell `sonnensystem-shell-v109`, Basis v108. Tests: `tests/texture-retry-v109.test.mjs` plus Regressionen. Keine Bilddaten enthalten.
+
+## Änderung in v108
+
+**Delta v107 → v108:** Die zulässigen Objekttextur-Pfade in `src/renderer/texture-sources.js` enden nur noch auf `.webp`. Dasselbe Muster verwendet das Node-Manifest / die lokale Texturroute; der Service Worker behandelt WebP-Objekttexturen weiterhin netzwerkpriorisiert, ohne andere Bildformate als Texturen zu erkennen. Ordner-Fallbacks, 2K-Dateinamens-Aliase als `.webp`, GitHub-Pages-Unterverzeichnisse und das bestehende Textur-Cache-Format bleiben erhalten. Version `108.0.0`, PWA-Shell `sonnensystem-shell-v108`, Basis v107. Keine Bilddaten enthalten.
+
+## Änderung in v107
+
+**Delta v106 → v107:** Objekttextur-Downloads und der optionale Textur-Manifestabruf werden relativ zur installierten App statt ab Domain-Wurzel aufgelöst. Die kanonischen `/textures/...`-Manifestpfade, Texturqualität und Offline-Speicherung bleiben erhalten. Funktioniert bei GitHub Pages unter `/Sonnensystem/`; die eigentlichen Bilddateien werden weiterhin separat bereitgestellt. `tests/github-pages-textures-v107.test.mjs` prüft verschachtelte URLs, fehlenden Manifest-Endpunkt und den Service Worker. Version `107.0.0`, Cache `sonnensystem-shell-v107`, Basis v106.
+
 # Projektpflege und Releases
 
 ## Prüfungen
