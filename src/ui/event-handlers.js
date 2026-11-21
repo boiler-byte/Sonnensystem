@@ -2,7 +2,7 @@ import {$,S,renderer,mobileSheets,arMode,byId} from '../app/state.js';
 import {availableLayerTypes,layerPreset,updateLayerSelection} from '../data/layers.js';
 import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
 import {syncLayers,setLayerPopover} from './layer-panel.js';
-import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
+import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncContrastControl,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody} from '../app/camera-controller.js';
@@ -79,9 +79,15 @@ export function initControls(){
     if(renderer && current!=='galactic' && next==='galactic')renderer.resetGalacticTrails();
     const mode=advanceOrbitDisplayMode(S.settings);
     syncOrbitControls();syncLayers();
-    notifyToggle({normal:'Umlaufbahn: An',contrast:'Umlaufbahn + Bahnkontrast: An',galactic:'Galaktische Bewegung: An',off:'Umlaufbahn und Bahnkontrast: Aus'}[mode]);
+    notifyToggle({normal:'Umlaufbahn: An',galactic:'Galaktische Bewegung: An',off:'Umlaufbahn und galaktische Bewegung: Aus'}[mode]);
   });
   syncOrbitControls();
+  $('orbit-contrast-btn').addEventListener('click',()=>{
+    S.settings.orbitContrast=!S.settings.orbitContrast;
+    syncContrastControl();syncLayers();
+    notifyToggle(`Bahnkontrast: ${S.settings.orbitContrast?'An':'Aus'}`);
+  });
+  syncContrastControl();
   $('toggle-labels').addEventListener('click',()=>{
     // Three levels of detail: names + points -> points only -> off.
     S.settings.labels=S.settings.labels===true?'points':S.settings.labels==='points'?false:true;
@@ -104,6 +110,10 @@ export function initControls(){
     notifyToggle(`Alle Monde: ${S.settings.fourMoons?'Aus (max. 4)':'An (alle)'}`);
   });
   syncFourMoonsControl();
+  $('hero-body').addEventListener('click',()=>{
+    const body=byId(S.selected);
+    if(body?.type!=='probe' && body && renderer)selectBody(body.id,true);
+  });
   $('center-object-btn').addEventListener('click',()=>{
     const body=byId(S.selected);
     if(!body || body.type==='probe' || !renderer)return;

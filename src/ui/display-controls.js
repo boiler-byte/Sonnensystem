@@ -5,38 +5,46 @@ import {syncLayers} from './layer-panel.js';
 import {syncToggleState} from './control-state.js';
 import {refreshRowCameraFrame} from '../app/animation-controls.js';
 
-export const SOLAR_ORBIT_DISPLAY_MODES = Object.freeze(['normal','contrast','galactic','off']);
-export const PLANET_ORBIT_DISPLAY_MODES = Object.freeze(['normal','contrast','off']);
+// Contrast is an independent style toggle; the orbit mode only selects which
+// paths (ordinary/galactic/off) are visible. The two flags may coexist.
+export const SOLAR_ORBIT_DISPLAY_MODES = Object.freeze(['normal','galactic','off']);
+export const PLANET_ORBIT_DISPLAY_MODES = Object.freeze(['normal','off']);
 export const orbitDisplayModes = (view='solar') => view==='solar' ? SOLAR_ORBIT_DISPLAY_MODES : PLANET_ORBIT_DISPLAY_MODES;
 
 export function orbitDisplayMode(settings, view=null){
   view ??= activeView?.() ?? 'solar';
   if(settings?.orbits===false)return 'off';
   if(view==='solar' && settings?.galacticMotion===true)return 'galactic';
-  return settings?.orbitContrast===true?'contrast':'normal';
+  return 'normal';
 }
 export function nextOrbitDisplayMode(settings, view=null){
   view ??= activeView?.() ?? 'solar';
-  const modes=orbitDisplayModes(view), current=orbitDisplayMode(settings,view);
+  const modes=orbitDisplayModes(view),current=orbitDisplayMode(settings,view);
   return modes[(modes.indexOf(current)+1)%modes.length];
 }
 export function advanceOrbitDisplayMode(settings, view=null){
   view ??= activeView?.() ?? 'solar';
   const next=nextOrbitDisplayMode(settings,view);
   settings.orbits=next!=='off';
-  settings.orbitContrast=next==='contrast';
   settings.galacticMotion=view==='solar' && next==='galactic';
+  // Deliberately preserve settings.orbitContrast across all mode transitions.
   return next;
 }
 export function syncOrbitControls(){
   const view=activeView();
   const mode=orbitDisplayMode(S.settings,view),button=$('orbit-visibility-btn');
-  const names={normal:'Umlaufbahn',contrast:'Umlaufbahn + Bahnkontrast',galactic:'Galaktische Bewegung',off:'Beides aus'};
+  const names={normal:'Umlaufbahn',galactic:'Galaktische Bewegung',off:'Aus'};
   const next=nextOrbitDisplayMode(S.settings,view);
-  const status=mode==='off'?'Umlaufbahn und Bahnkontrast: Aus':`${names[mode]}: An`;
+  const status=mode==='off'?'Umlaufbahn und galaktische Bewegung: Aus':`${names[mode]}: An`;
   syncToggleState(button,mode!=='off',`${status} (Nächster Modus: ${names[next]})`);
   button.setAttribute('data-orbit-mode',mode);
   button.setAttribute('aria-label',`${status}. Nächster Modus: ${names[next]}`);
+}
+export function syncContrastControl(){
+  const enabled=S.settings.orbitContrast===true,button=$('orbit-contrast-btn');
+  const label=`Bahnkontrast: ${enabled?'An':'Aus'} (für Umlaufbahnen und galaktische Bewegung)`;
+  syncToggleState(button,enabled,label);
+  button.setAttribute('aria-label',label);
 }
 
 export function syncLabelControl(){
@@ -78,6 +86,6 @@ export function applyDisplayPreset(name){
     renderer._labelState=null;
     refreshRowCameraFrame();
   }
-  syncLabelControl();syncLightingControl();syncFourMoonsControl();syncOrbitControls();
+  syncLabelControl();syncLightingControl();syncFourMoonsControl();syncOrbitControls();syncContrastControl();
   syncLayers();updateDetail();
 }

@@ -1,5 +1,5 @@
 /**
- * Camera tour through the visible physical-size row.
+ * Camera tour through the currently visible row.
  * Every object is held for five seconds at normal playback speed.
  * The opening reorder (largest to smallest) is concealed by a fade. Subsequent
  * objects are reached by continuous camera travel, as in v98.
@@ -16,7 +16,7 @@ export const CINEMA_END_HOLD_MS=200;
 
 
 export function cinemaEligible(settings){
- return settings?.row===true && settings.scaleObjects===true && settings.scaleOrbits===false;
+ return settings?.row===true;
 }
 
 /** Scale the viewing distance to each object's visible sphere or ring extent. */

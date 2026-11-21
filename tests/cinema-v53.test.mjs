@@ -30,17 +30,19 @@ function setup(view='solar'){
  return r;
 }
 
-test('v54: Cinema is gated by row, physical object size, and OFF orbit spacing',()=>{
+test('v118: Cinema requires only row mode, not any scale switch',()=>{
  for(const view of ['solar','planet']){
   const r=setup(view);assert.equal(cinemaEligible(r.settings),true);
-  assert.equal(r.startCinema(100),true);assert.ok(r.cinema?.active);
-  r.stopCinema(200);
-  for(const key of ['row','scaleObjects','scaleOrbits']){
-   const previous=r.settings[key];r.settings[key]=!previous;
-   assert.equal(cinemaEligible(r.settings),false,`${key} must disable Cinema`);
-   assert.equal(r.startCinema(300),false,`no Cinema while ${key} is invalid`);
-   r.settings[key]=previous;
+  for(const scaleObjects of [false,true])for(const scaleOrbits of [false,true]){
+   r.settings.scaleObjects=scaleObjects;r.settings.scaleOrbits=scaleOrbits;
+   assert.equal(cinemaEligible(r.settings),true);
+   assert.equal(r.startCinema(100),true);
+   assert.equal(r.cinema?.active,true);
+   r.stopCinema(200);
   }
+  r.settings.row=false;
+  assert.equal(cinemaEligible(r.settings),false);
+  assert.equal(r.startCinema(300),false);
  }
 });
 
@@ -123,10 +125,12 @@ test('v53: camera tour does not jump after backgrounding; it automatically resto
  assert.deepEqual(r.rowGeometry().ids,setup().rowGeometry().ids);
 });
 
-test('v53: manual panning and invalid toggles cancel Cinema, rather than battling camera control',()=>{
+test('v118: manual pan and leaving row end Cinema, but scale values do not',()=>{
  const r=setup();r.startCinema(100);
  r.markCameraMoved({positionChanged:true});assert.equal(r.cinema,null);
- r.startCinema(200);r.settings.scaleObjects=false;r.advanceCinema(300);
+ r.startCinema(200);r.settings.scaleObjects=false;r.settings.scaleOrbits=true;r.advanceCinema(300);
+ assert.equal(r.cinema?.active,true);
+ r.settings.row=false;r.advanceCinema(400);
  assert.equal(r.cinema,null);
 });
 
@@ -138,7 +142,7 @@ test('v53: UI contains context-only cinema button and dragable bottom transport'
  assert.match(html,/id="cinema-btn"[^>]*aria-label="Cinema-Kamerafahrt starten"[^>]*hidden/);
  assert.match(html,/id="cinema-timeline"[^>]*hidden/);
  assert.match(html,/id="cinema-seek"[^>]*type="range"[^>]*min="0"[^>]*max="1000"/);
- assert.match(app,/S\.settings\.row && S\.settings\.scaleObjects && !S\.settings\.scaleOrbits/);
+ assert.match(app,/const available=Boolean\(renderer && S\.settings\.row\)/);
  assert.match(app,/seek\.addEventListener\('pointerdown'/);
  assert.match(app,/seek\.addEventListener\('input'/);
  assert.match(app,/renderer\.startCinema\(\)/);
@@ -169,8 +173,8 @@ test('v53: Cinema button and timeline visibility react to current row and render
  assert.equal($('cinema-btn').hidden,true);
  S.settings.row=true;S.settings.scaleObjects=false;
  vm.runInContext('syncCinemaControl()',ctx);
- assert.equal($('cinema-btn').hidden,true);
- S.settings.scaleObjects=true;
+ assert.equal($('cinema-btn').hidden,false);
+ S.settings.scaleOrbits=true;
  vm.runInContext('syncCinemaControl()',ctx);
  assert.equal($('cinema-btn').hidden,false);
  assert.equal($('cinema-timeline').hidden,true);

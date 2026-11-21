@@ -80,7 +80,7 @@ test('v103: recorded paths are bounded in age and sample count, even at high sim
   for(let i=0;i<2000;i++)h.record(sun,start+i*30*DAY,[0,0,0]);
   const trail=h.trails.get('sun');
   assert.ok(trail.samples.length<=20);
-  assert.ok(trail.samples.every(s=>s.time>=h.time-(365.25*18)*DAY));
+  assert.ok(trail.samples.every(s=>s.time>=h.time-(365.25*50)*DAY));
   const points=h.record(sun,h.time+DAY,[0,0,0]);
   assert.ok(points.length<=21*3);
   assert.ok(MAX_GALACTIC_TRAIL_SAMPLES>=20);

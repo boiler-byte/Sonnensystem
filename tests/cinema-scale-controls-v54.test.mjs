@@ -29,12 +29,12 @@ function renderer(){
  return r;
 }
 
-test('v54: Play is available only with Reihe on, Objekt on, Bahn off',()=>{
+test('v118: Play is available whenever Reihe is on, independent of both scales',()=>{
  const s={row:true,scaleObjects:true,scaleOrbits:false};
  assert.equal(cinemaEligible(s),true);
- for(const [key,value] of [['row',false],['scaleObjects',false],['scaleOrbits',true]]){
-  const invalid={...s,[key]:value};assert.equal(cinemaEligible(invalid),false);
- }
+ for(const scaleObjects of [false,true])for(const scaleOrbits of [false,true])
+  assert.equal(cinemaEligible({...s,scaleObjects,scaleOrbits}),true);
+ assert.equal(cinemaEligible({...s,row:false}),false);
 });
 
 test('v91: every object type has the same five-second Cinema hold',()=>{
@@ -115,8 +115,8 @@ test('v55: Cinema prerequisites have three direct controls, nine moon dots in La
  const html=await read('index.html'),css=await read('css/styles.css');
  const main=html.slice(html.indexOf('class="scale-main-controls"'),html.indexOf('id="layer-picker-wrap"'));
  assert.deepEqual([...main.matchAll(/<button class="scale-option(?: scale-row-toggle)?" id="([a-z-]+)"/g)].map(x=>x[1]),
-  ['scale-objects-btn','scale-orbits-btn','orbit-row-btn']);
- for(const label of ['Objekt','Bahn','Reihe'])assert.match(main,new RegExp(`<span class="scale-option-label">${label}</span>`));
+  ['orbit-row-btn','scale-objects-btn','scale-orbits-btn']);
+ for(const label of ['Reihe','Objekt','Bahn'])assert.match(main,new RegExp(`<span class="scale-option-label">${label}</span>`));
  assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
  const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="time-panel"'));
  const moonButton=layer.match(/<button[^>]*id="toggle-four-moons"[^>]*>[\s\S]*?<\/button>/)?.[0];

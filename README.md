@@ -1,4 +1,4 @@
-# Sonnensystem – interaktiver 3D-Atlas (v109.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v118.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
 
@@ -20,10 +20,10 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 
 ## Aktuelle Funktionen
 
-- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, standardmäßig aktiviertes **Folgen** des ausgewählten Körpers und drei Kameraperspektiven. Die Nachführung lässt sich in den Objektdetails ausschalten.
+- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, standardmäßig aktiviertes **Folgen** des ausgewählten Körpers und drei Kameraperspektiven. Ein zu schneller Körper oder eine manuelle Kameraverschiebung unterbricht nur die Nachführung; die aktivierte Folgen-Option bleibt erhalten.
 - **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit Zwei-Finger-Umschauen (unten = Blick nach unten, oben = Blick nach oben); gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links zurück; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
-- **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung und Monde sowie ein Umlaufbahn-Button mit vier Stufen im Sonnensystem (Umlaufbahn → Umlaufbahn + Bahnkontrast → Galaktische Bewegung → Aus) und drei Stufen in Planetenansichten; getrennte Ansichts-Einstellungen.
-- **Maßstab:** Objektgrößen, Bahnabstände sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe mit einer Überblendung vom größten zum kleinsten Körper und fährt danach kontinuierlich von klein nach groß. In der Entfernungsreihe bleibt die Anordnung unverändert; bereits der Einstieg erfolgt per Kamerafahrt. Auch das Beenden führt die Kamera weich zurück.
+- **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung und Monde sowie einen Umlaufbahn-Button mit drei Stufen im Sonnensystem (Umlaufbahn → Galaktische Bewegung → Aus) und zwei Stufen in Planetenansichten (Umlaufbahn → Aus). Der eigenständige **Kontrast-Toggle** kann beide Bahnarten verstärken; getrennte Ansichts-Einstellungen.
+- **Maßstab:** Objektgrößen, Bahnabstände (nur außerhalb der Reihen-Darstellung) sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe mit einer Überblendung vom größten zum kleinsten Körper und fährt danach kontinuierlich von klein nach groß. In der Entfernungsreihe bleibt die Anordnung unverändert; bereits der Einstieg erfolgt per Kamerafahrt. Auch das Beenden führt die Kamera weich zurück.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
 - **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Die zuletzt gewählte Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
 - **Texturen:** Drei getrennte Verzeichnisse `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px). **Nur `.webp` wird als Objekttextur gesucht**; fehlende Stufen werden aus vorhandenen Nachbarstufen geladen und GPU-seitig verkleinert.
@@ -52,6 +52,90 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 - [Texturquellen](docs/TEXTURE-SOURCES.md) – Bild- und Quellenangaben.
 - [Versionshistorie](docs/RELEASE-HISTORY.md) – ältere Delta-Dokumente v2–v67 und Hotfix v6.1 in einem Archiv.
 - [Projektpflege](docs/MAINTENANCE.md) – Releases, Prüfungen und aktuelle Änderungen.
+
+## Delta v118 – Reihen-Modi, Bahnmaßstab und Cinema-Play
+
+**Basis:** v117. `Sonnensystem-Delta-v118-Reihen-Darstellung.zip` über die bisherige v117 kopieren und anschließend die PWA online neu laden (`sonnensystem-shell-v118`). Enthalten sind nur geänderte und neue Dateien.
+
+- **Bahn nur außerhalb der Reihe:** Der Bahn-Toggle ist in den Reihenmodi **Größe** und **Entfernung** ausgeblendet. Während der Reihe hat `scaleOrbits` weder auf Größen noch auf Abstände Einfluss; der zuvor gespeicherte Wert bleibt für die normale Ansicht erhalten.
+- **Cinema-Play immer in Reihe:** Der Start-/Stop-Button ist in beiden Reihenmodi sichtbar und benutzbar, unabhängig von den Objekt- und Bahnmaßstab-Schaltern. Die Cinema-Zeitleiste mit Play/Pause und 2x erscheint weiterhin erst während einer laufenden Kamerafahrt.
+- **Modusfarben:** **Groß nach klein = Grün**, **nah nach fern = Blau**. Der ausgeschaltete Reihen-Toggle verwendet die bisherigen neutralen Farben. Andere Controls und Startwerte bleiben unverändert.
+
+## Delta v117 – Startwerte ohne Objektauswahl
+
+**Basis:** v116. `Sonnensystem-Delta-v117-Startwerte.zip` über das vollständige v115-Projekt mit bereits angewendetem Delta v116 kopieren. Anschließend die Änderungen veröffentlichen und die PWA online neu laden (`sonnensystem-shell-v117`). Im Delta liegen nur neue/geänderte Dateien.
+
+- **Beim App-Start keine Selektion:** `S.selected` und `SolarRenderer.selectedId` beginnen mit `null`. Beim Katalogladen wird diese absichtliche Leerauswahl nicht durch das erste Objekt ersetzt. Die Detailansicht zeigt bei keiner Auswahl passende neutrale Platzhalter.
+- **Objektkatalog geöffnet:** Die Desktop-Sidebar zeigt den Tab **Objekte**; der mobile Tab **Objekte** ist vorausgewählt, die bisherige Sheet-Höhe bleibt unverändert.
+- **Perspektive Schräg/oben:** Der bisherige Kamera-Startwert (Preset 0, `theta=.63`, `phi=.99`) bleibt erhalten.
+- **Alle anderen Startwerte unverändert:** Insbesondere bleibt der globale Folgen-Schalter eingeschaltet, aber ohne Ziel, bis ein Objekt aktiv ausgewählt wird. Zeit, Geschwindigkeit, Maßstäbe, Layer und Cinema bleiben unverändert.
+
+## Delta v116 – Flachere Cinema-Zeitleiste in der Reihendarstellung
+
+**Basis:** v115. `Sonnensystem-Delta-v116-Cinema-Zeitleiste.zip` über das vollständige v115-Projekt kopieren; Änderungen auf GitHub Pages veröffentlichen und die PWA anschließend online neu laden (`sonnensystem-shell-v116`). Das ZIP enthält ausschließlich geänderte und neu hinzugefügte Dateien.
+
+- **Nur eine Beschriftungszeile:** Die unteren Hinweise „Klein/Groß“ bzw. „Nah/Fern“ entfallen vollständig.
+- **Kopfzeile rechts neben den Tasten:** „Cinema · Objekt“ und die Laufzeit stehen unmittelbar über dem Slider. Ihre obere Kante liegt auf Höhe der Oberkante von Play/Pause und 2x.
+- **Slider auf der unteren Tastenhöhe:** Die Zeitleiste ist zusammen mit der Kopfzeile in einer 36 px hohen Spalte angeordnet; der Range-Slider endet auf Höhe der Unterkante von Play/Pause und 2x. Das Cinema-HUD wird dadurch deutlich niedriger, mobil bleibt die Position direkt am Sheet erhalten.
+- **Verhalten unverändert:** Play/Pause, 2x, Scrubbing, Zeit-/Objektanzeige und Cinema-Fahrten funktionieren weiter.
+
+## Delta v115 – Kameraverhalten der v113-Reihe wiederhergestellt
+
+**Basis:** v114. `Sonnensystem-Delta-v115-Reihen-Kamera.zip` über die vollständige v114 kopieren, auf GitHub Pages veröffentlichen und die PWA online neu laden (`sonnensystem-shell-v115`).
+
+- **Reihendarstellung wie v113:** Ein bereits unterbrochenes Kamera-Folgen wird beim Umschalten von Aus/Größe/Entfernung nicht automatisch wieder gestartet. Die normale Gesamtreihen-Ansicht und ihre ursprünglichen Blickwinkel sowie Kameraabstände werden wieder verwendet, statt ungewollt auf das zuvor gewählte Objekt zu springen.
+- **Nur aktive Nachführung darf Kamera neu ausrichten:** Folgt die Kamera einem Objekt tatsächlich, wird das Ziel bei Reihen-/Szenenwechseln weiter aktualisiert. Ein pausiertes Folgen bleibt auch bei Katalog-Updates und beim Wechsel zwischen Sonnensystem und Planetenszene pausiert, bis ein Objekt explizit neu ausgewählt wird.
+- **v114-Bedienfunktionen bleiben:** Der Folgen-Schalter bleibt trotz Abbruch aktiviert, Renderer-Klick zentriert ohne Zoom und Katalog/Detail-Hero zentrieren mit Zoom. Reihe-Toggle, eigenständiger Kontrastschalter und die restlichen v114-Funktionen werden nicht zurückgesetzt.
+- **Unverändert:** Cinema-Fahrten, Zeitsteuerung, AR, galaktische Spuren und Texturen.
+
+## Delta v114 – Darstellungsschalter, Folgen und Objektfokus
+
+**Basis:** v113. `Sonnensystem-Delta-v114-Toggle-Folgen-Kamera.zip` über die vollständige v113 kopieren und geänderte Dateien auf GitHub Pages veröffentlichen. PWA danach online neu laden (`sonnensystem-shell-v114`).
+
+- **Reihe vor Objekt:** In der rechten oberen Maßstabsleiste lautet die Reihenfolge **Reihe | Objekt | Bahn**.
+- **Bahnkontrast separat:** Das Layer-Dropdown hat wieder einen eigenständigen Kontrast-Toggle am Beginn der zweiten Schalterreihe. Umlaufbahn schaltet **Umlaufbahn → Galaktische Bewegung → Aus** (in Planetenansichten Umlaufbahn → Aus), ohne den Kontraststatus zu verändern. Bahnkontrast wirkt bei beiden Bahndarstellungen und wird auch zwischen deren Moduswechseln beibehalten.
+- **Folgen bleibt aktiv:** Automatisches Ende der Nachführung bei zu schnellen Objekten, manuellen Kameraaktionen oder beim Verlassen der Nachführung schaltet nur das aktuelle Kameratracking ab, nicht den Folgen-Toggle. Eine neue Objektauswahl kann die Nachführung wieder aufnehmen; der Toggle selbst wird nur manuell ausgeschaltet.
+- **Auswahl unterscheidet Fokus und Zoom:** Klicks auf Planeten im WebGL-Renderer **zentrieren bei unverändertem Zoom**. Klicks im Objektkatalog und auf das Objektbild im Detail-Hero **zentrieren und zoomen**; der Hero ist dafür als zugänglicher Button ausgeführt.
+- **Sonstiges:** WebP-Texturen, PWA-Offlinekonzept, Zeitsimulation, galaktische Spuren und AR-Blicksteuerung bleiben unverändert.
+
+## Delta v113 – Durchgehende galaktische Spuraufzeichnung bei Tempoänderungen
+
+**Basis:** v112. `Sonnensystem-Delta-v113-Spuren-Kontinuierlich.zip` direkt über v112 entpacken; geänderte Dateien auf GitHub Pages veröffentlichen und die PWA online neu laden (`sonnensystem-shell-v113`).
+
+- **Jeder Simulationsschritt zählt:** Bei Planeten und anderen umlaufenden Körpern wird der jeweils vorherige Live-Endpunkt bei jeder weitergelaufenen Simulationszeit als Stützpunkt festgehalten. Eine Mindestkrümmung oder ein Zeitabstand ist dafür nicht mehr nötig. So verbinden sich beim Verringern der Simulationsgeschwindigkeit keine weit auseinanderliegenden älteren Stützpunkte mit der langsam wandernden aktuellen Position.
+- **Nur alte Abschnitte reduzieren:** Bleibt die Spur am 1.000-Punkte-Limit, sind die jüngsten 20 % der gespeicherten Punkte plus das Live-Ende vor der Vereinfachung geschützt. Ältere Segmente dürfen nach galaktischer 3D-Geometrie und projizierter Bildschirmabweichung zusammengefasst werden. Startpunkt und die Zeitfenster (50/30/100 Jahre) bleiben geschützt.
+- **Pause bleibt Pause:** Bei unveränderter Simulationszeit werden keine neuen Punkte erfasst; ausgeblendete Objekte werden weiter nicht aufgezeichnet. Die gerade Sonnenbahn bleibt als zwei Endpunkte optimiert. Simulationsuhr, galaktische Geschwindigkeit, Sternenparallaxe, Texturen und AR bleiben unverändert.
+- **Begrenzung:** Während schnellster Wiedergabe können große tatsächliche Simulationszeitschritte naturgemäß größere Abstände zwischen aufeinanderfolgend beobachteten Positionen erzeugen. Nicht beobachtete Zwischenzeiten werden weiterhin nicht rückwirkend berechnet.
+
+## Delta v112 – Glattere galaktische Spuren mit sichtbarkeitsorientierter Punktreduktion
+
+**Basis:** v111. `Sonnensystem-Delta-v112-Spuren.zip` über v111 entpacken, geänderte Dateien überschreiben und auf GitHub Pages neu veröffentlichen. Danach die PWA online neu laden (`sonnensystem-shell-v112`).
+
+- **Bis zu 1.000 Punkte:** Pro sichtbarem Objekt werden höchstens 1.000 Linienpunkte inklusive des aktuellen Live-Endes gespeichert/gezeichnet (zuvor 240).
+- **Kurven statt starrer Rasterung:** Neue Stützpunkte werden anhand der gekrümmten *galaktischen* 3D-Bahn und zusätzlich der aktuellen Bildschirmdarstellung aufgenommen. Gerade Abschnitte benötigen weniger Punkte.
+- **Schonende Ausdünnung:** Beim Erreichen des Budgets werden die Punkte mit der kleinsten projizierten und räumlichen Abweichung entfernt. Bereits verworfene Geometrie fließt über einen Fehlergrenzwert in spätere Entscheidungen ein; das verhindert, dass mehrfaches Reduzieren unbemerkt große Ecken abschneidet. Das älteste Ende bleibt bis zur maximalen Zeitspanne erhalten und das aktuelle Ende bleibt immer sichtbar. Bei extremen Flugbahnkrümmungen ist ein fester 1.000-Punkte-Rahmen weiterhin eine Detailgrenze.
+- **Geringe Zusatzkosten:** Projektionswerte werden in einem wiederverwendeten Puffer verarbeitet. Die bisherigen Aufzeichnungsregeln gelten: keine neuen Daten im Pausenmodus, keine rückwirkende Rekonstruktion, keine Aufzeichnung ausgeblendeter Objekte.
+- **Unverändert:** 50/30/100-Jahres-Fenster, Simulationszeit, Sonnenflugrichtung, Sternenparallaxe, Texturen und AR.
+
+## Delta v111 – Dezente Sternenparallaxe im galaktischen Modus
+
+**Basis:** v110. `Sonnensystem-Delta-v111-Parallaxe.zip` über v110 entpacken, Dateien überschreiben, bei GitHub Pages neu veröffentlichen und die PWA mit `sonnensystem-shell-v111` aktualisieren.
+
+- **Sterne als Tiefenebenen:** Die vorhandenen 2.200 Sterne besitzen bereits variable Modellabstände. Im Vertex-Shader wird ihre Position entsprechend diesem Abstand leicht verschoben: nahe Sterne reagieren stärker, weit entfernte kaum (2 % der Nahstern-Verschiebung).
+- **Simulationsgebunden:** Der Effekt folgt dem tatsächlich vergangenen Simulationszeitraum seit Aktivieren der galaktischen Bewegung. Eine höhere Zeitgeschwindigkeit verschiebt die Sterne schneller; Pausieren stoppt die Bewegung und Rückwärtslauf kehrt sie um. Die Zeitsteuerung selbst bleibt unberührt.
+- **Gegenläufig:** Die Verschiebung erfolgt entgegen dem festen galaktischen Flugvektor der Sonne. Bei Deaktivierung oder neuem Einstieg wird die Parallaxe sanft ein- bzw. ausgeblendet (ca. 320 ms).
+- **Dezent und performant:** Maximal acht visuelle Welteinheiten Hintergrundverschiebung, keine Partikelströme und keine zusätzlichen Stern-Uploads oder Renderdurchläufe. Die Bewegung ist eine künstlerische Tiefenillusion, keine reale stellare Positionsberechnung in Parsec.
+- **Unverändert:** Geradlinige Sonnenbahn, 50/30/100-Jahres-Spuren, AR, WebP-Texturen und relative GitHub-Pages-Pfade.
+
+## Delta v110 – AR vereinfachen und galaktische Spuren verlängern
+
+**Basis:** v109. `Sonnensystem-Delta-v110-Galaktische-Spuren.zip` in die bestehende Installation entpacken; gleichnamige Dateien überschreiben. GitHub Pages anschließend aktualisieren und die PWA neu laden (`sonnensystem-shell-v110`).
+
+- **AR:** Der in v106 ergänzte Button mit Vier-Wege-Kreuz und dessen `devicemotion`-Kameraverschiebung sind entfernt. Der AR-Button und das räumliche Umsehen durch Geräteorientierung bleiben bestehen.
+- **Galaktische Sonne:** Konstante Geschwindigkeit in unveränderlicher Richtung (negative Y- und negative Z-Achse für die Vergangenheit); keine Sinus- oder Seitenschwankungen. Die Sonnenbahn ist exakt eine Gerade. Das Modell ist illustrativ, keine gemessene Milchstraßen-Ephemeride.
+- **Spurlängen:** Sonne **50 Jahre**; Merkur, Venus, Erde und Mars **30 Jahre**; Jupiter bis Neptun sowie transneptunische Objekte **100 Jahre**. Sonstige Kleinobjekte: 30 Jahre innerhalb von 5 AE, sonst 100 Jahre. Die Spuren starten weiterhin leer und wachsen ausschließlich mit tatsächlich durchlaufener Simulationszeit.
+- **Aufzeichnung:** Zwischenpunkte werden nur bei erkennbarer Krümmung bzw. zur zeitlichen Abdeckung übernommen, gerade Linien kommen ohne redundante Zwischenpunkte aus. Maximal 240 Punkte einschließlich der aktuellen Position je sichtbarem Körper; beim Erreichen der Punktzahl werden zuerst wenig relevante *innere* Punkte reduziert, das älteste Ende bleibt bis zum Ablauf des jeweiligen Zeitfensters erhalten. Ausgeblendete Objektlayer werden nicht erfasst; ihre vorhandene Aufzeichnung wird verworfen, sodass sie nach Einblenden neu beginnt. Wiederholte Frames bei unveränderter Simulation verwenden vorhandene Darstellungspuffer.
+- **Unverändert:** Simulationszeit, Zeitregler, WebP-Texturen und GitHub-Pages-Pfade.
 
 ## Delta v109 – Texturabrufe auf GitHub Pages ohne Zeitstempel und automatische Wiederholungen
 
@@ -334,7 +418,7 @@ Körperpositionen und Bahnen dienen der anschaulichen Darstellung. Historische, 
 
 `Sonnensystem-Delta-v105.zip` wird über die vollständige v104 installiert. Nur gerenderte Umlauf- und Eigendrehungen werden auf maximal fünf Umdrehungen pro realer Sekunde begrenzt. Die Zeitsteuerung ist unverändert.
 
-## Delta v106 – AR-Bewegungsnavigation
+## Delta v106 – AR-Bewegungsnavigation (historisch, in v110 entfernt)
 
 Bei aktivem AR-Modus erscheint links unten **direkt neben dem AR-Schalter** ein zweiter, zunächst deaktivierter Bewegungs-Button (Vier-Richtungs-Symbol). Nach Antippen fordert der Browser bei Bedarf Zugriff auf den Bewegungssensor an. Erkennt er gültige Bewegungsdaten, kann das Smartphone durch physische Bewegungen vor/zurück/links/rechts den Kamerastandort wie beim Ein-Finger-Verschieben verändern. Der bestehende AR-Sensorblick bleibt aktiv. Erneutes Antippen schaltet die Bewegung aus. Beim Abschalten des AR-Modus oder beim Verlassen der Seite wird sie automatisch deaktiviert.
 

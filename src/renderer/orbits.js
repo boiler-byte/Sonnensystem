@@ -83,7 +83,7 @@ function drawPath(renderer, points, appearance, vp, visibility=1) {
 export function drawSunTrail(renderer, vp, opacity=1, settings=renderer.settings) {
   if(!settings?.galacticMotion || renderer.planetId)return;
   const sun=renderer.byId.get('sun')||{id:'sun',type:'star'};
-  const points=recordedGalacticTrail(renderer,sun);
+  const points=recordedGalacticTrail(renderer,sun,vp);
   if(points.length<6)return;
   const ribbonSize=(points.length/3-1)*18;
   const buffers=renderer._sunTrailRibbons ??= {glow:null,core:null};
@@ -105,7 +105,7 @@ export function drawOrbitLine(renderer, body, center, vp, alpha, selected, optio
   const settings=options.settings ?? renderer.settings;
   const appearance=orbitAppearance(body,settings,alpha,selected);
   if(settings?.galacticMotion && !renderer.planetId){
-    const points=recordedGalacticTrail(renderer,body);
+    const points=recordedGalacticTrail(renderer,body,vp);
     if(points.length>=6)drawPath(renderer,points,appearance,vp,visibility);
     return;
   }

@@ -105,7 +105,7 @@ test('v108: static GitHub Pages fallback attempts only WebP even when several fi
 
 test('v108: service worker caches only WebP as object textures; PWA PNG icons remain assets',async()=>{
   const code=await readFile(new URL('../sw.js',import.meta.url),'utf8');
-  assert.match(code,/sonnensystem-shell-v109/);
+  assert.match(code,/sonnensystem-shell-v\d+/);
   assert.match(code,/\*\\\.webp\$/,'WebP-only path matcher');
   assert.doesNotMatch(code,/\(\?:webp\|jpg\|jpeg\|png\)/);
   assert.match(code,/"\.\/icons\/icon-192.png"/);

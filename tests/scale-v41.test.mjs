@@ -75,8 +75,8 @@ test('v41: renderer position and orbit use the same physical radius in isolated 
 test('v55: scale buttons are direct controls and only Layer/Time are popovers',async()=>{
  const html=await read('index.html'),css=await read('css/styles.css');
  const panel=html.slice(html.indexOf('id="view-mode-status"'),html.indexOf('id="canvas-error"'));
+ assert.ok(panel.indexOf('id="orbit-row-btn"')<panel.indexOf('id="scale-objects-btn"'));
  assert.ok(panel.indexOf('id="scale-objects-btn"')<panel.indexOf('id="scale-orbits-btn"'));
- assert.ok(panel.indexOf('id="scale-orbits-btn"')<panel.indexOf('id="orbit-row-btn"'));
  assert.ok(panel.indexOf('id="orbit-row-btn"')<panel.indexOf('id="layer-btn"'));
  assert.ok(panel.indexOf('id="layer-btn"')<panel.indexOf('id="speed-btn"'));
  assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"/);

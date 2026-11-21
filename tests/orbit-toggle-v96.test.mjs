@@ -3,98 +3,93 @@ import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {S} from '../src/app/state.js';
 import {createViewSettings,displayPreset,displayMatchesPreset} from '../src/data/layers.js';
-import {advanceOrbitDisplayMode,orbitDisplayMode,syncOrbitControls} from '../src/ui/display-controls.js';
+import {advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncOrbitControls,syncContrastControl} from '../src/ui/display-controls.js';
 import {orbitAppearance} from '../src/renderer/orbits.js';
 
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 
-test('v100: orbit toggle cycles normal → contrast → galactic → off → normal without inconsistent flags',()=>{
+test('v114: orbit modes cycle without changing contrast, in solar and planet views',()=>{
   for(const view of ['solar','planet']){
     const settings=createViewSettings(view);
-    assert.equal(orbitDisplayMode(settings),'normal');
-    const transitions=[
-      {mode:'contrast',orbits:true,orbitContrast:true,galacticMotion:false},
-      {mode:'galactic',orbits:true,orbitContrast:false,galacticMotion:true},
-      {mode:'off',orbits:false,orbitContrast:false,galacticMotion:false},
-      {mode:'normal',orbits:true,orbitContrast:false,galacticMotion:false}
-    ];
-    for(const want of transitions){
-      assert.equal(advanceOrbitDisplayMode(settings),want.mode);
-      assert.equal(orbitDisplayMode(settings),want.mode);
-      assert.equal(settings.orbits,want.orbits);
-      assert.equal(settings.orbitContrast,want.orbitContrast);
-      assert.equal(settings.galacticMotion,want.galacticMotion);
+    const modes=view==='solar'?['galactic','off','normal']:['off','normal'];
+    for(const contrast of [false,true]){
+      settings.orbitContrast=contrast;
+      for(const mode of modes){
+        assert.equal(advanceOrbitDisplayMode(settings,view),mode);
+        assert.equal(orbitDisplayMode(settings,view),mode);
+        assert.equal(settings.orbits,mode!=='off');
+        assert.equal(settings.galacticMotion,mode==='galactic');
+        assert.equal(settings.orbitContrast,contrast,'contrast remains independent');
+      }
     }
   }
-  const old={orbits:false,orbitContrast:true};
-  assert.equal(orbitDisplayMode(old),'off','a legacy contradictory state is considered off');
-  assert.equal(advanceOrbitDisplayMode(old),'normal');
-  assert.deepEqual(old,{orbits:true,orbitContrast:false,galacticMotion:false});
+  const legacy={orbits:false,orbitContrast:true};
+  assert.equal(orbitDisplayMode(legacy,'solar'),'off');
+  assert.equal(advanceOrbitDisplayMode(legacy,'solar'),'normal');
+  assert.deepEqual(legacy,{orbits:true,orbitContrast:true,galacticMotion:false});
 });
 
-test('v96: presets and view preferences preserve the combined modes',()=>{
+test('v114: presets and per-view preferences preserve their own contrast states',()=>{
   const solar=createViewSettings('solar'),planet=createViewSettings('planet');
-  advanceOrbitDisplayMode(solar);
-  advanceOrbitDisplayMode(solar);
-  advanceOrbitDisplayMode(solar);
-  assert.equal(orbitDisplayMode(solar),'off');
-  assert.equal(orbitDisplayMode(planet),'normal');
+  advanceOrbitDisplayMode(solar,'solar');
+  advanceOrbitDisplayMode(solar,'solar');
+  assert.equal(orbitDisplayMode(solar,'solar'),'off');
+  assert.equal(orbitDisplayMode(planet,'planet'),'normal');
   Object.assign(planet,displayPreset('all','planet'));
-  assert.equal(orbitDisplayMode(planet),'contrast');
+  assert.equal(orbitDisplayMode(planet,'planet'),'normal');
+  assert.equal(planet.orbitContrast,true);
   assert.equal(displayMatchesPreset(planet,'all','planet'),true);
-  assert.equal(orbitDisplayMode(solar),'off');
   Object.assign(solar,displayPreset('standard','solar'));
-  assert.equal(orbitDisplayMode(solar),'normal');
+  assert.equal(orbitDisplayMode(solar,'solar'),'normal');
   assert.equal(displayMatchesPreset(solar,'standard','solar'),true);
-  assert.equal(orbitDisplayMode(planet),'contrast');
   assert.ok(orbitAppearance({id:'earth',type:'planet'},planet).widthPx>orbitAppearance({id:'earth',type:'planet'},solar).widthPx);
 });
 
-test('v100: orbit button reports all accessible states including galactic mode',()=>{
-  const previousDocument=globalThis.document;
-  const previousSettings=S.settings;
-  const attrs={};const classes=new Set();const button={title:'',
-    setAttribute(k,v){attrs[k]=String(v)},
-    classList:{toggle(name,on){if(on)classes.add(name);else classes.delete(name)}}
+test('v114: two controls expose independent accessible pressed states',()=>{
+  const previousDocument=globalThis.document,previousSettings=S.settings;
+  const elements=new Map();
+  const node=id=>{
+    if(!elements.has(id)){
+      const attrs={},classes=new Set();
+      elements.set(id,{attrs,classes,title:'',setAttribute(k,v){attrs[k]=String(v)},
+        classList:{toggle(name,on){if(on)classes.add(name);else classes.delete(name)}}});
+    }
+    return elements.get(id);
   };
-  globalThis.document={getElementById:id=>id==='orbit-visibility-btn'?button:undefined};
+  globalThis.document={getElementById:node};
   S.settings=createViewSettings('solar');
   try{
-    const states=[
-      ['normal','true',/Nächster Modus: Umlaufbahn \+ Bahnkontrast/],
-      ['contrast','true',/Nächster Modus: Galaktische Bewegung/],
-      ['galactic','true',/Nächster Modus: Beides aus/],
-      ['off','false',/Nächster Modus: Umlaufbahn/]
-    ];
-    for(const [mode,pressed,title] of states){
-      syncOrbitControls();
-      assert.equal(attrs['data-orbit-mode'],mode);
-      assert.equal(attrs['aria-pressed'],pressed);
-      assert.match(attrs['aria-label'],title);
-      assert.match(button.title,title);
-      assert.equal(classes.has('active'),pressed==='true');
-      advanceOrbitDisplayMode(S.settings);
+    for(const [mode,next] of [['normal','Galaktische Bewegung'],['galactic','Aus'],['off','Umlaufbahn']]){
+      syncOrbitControls();syncContrastControl();
+      assert.equal(node('orbit-visibility-btn').attrs['data-orbit-mode'],mode);
+      assert.match(node('orbit-visibility-btn').attrs['aria-label'],new RegExp(`Nächster Modus: ${next}`));
+      assert.equal(node('orbit-contrast-btn').attrs['aria-pressed'],'false');
+      advanceOrbitDisplayMode(S.settings,'solar');
     }
-    assert.equal(attrs['data-orbit-mode'],'off');
-    assert.equal(orbitDisplayMode(S.settings),'normal');
+    S.settings.orbitContrast=true;
+    syncContrastControl();
+    assert.equal(node('orbit-contrast-btn').attrs['aria-pressed'],'true');
+    assert.equal(node('orbit-contrast-btn').classes.has('active'),true);
+    S.settings.galacticMotion=true;
+    syncOrbitControls();syncContrastControl();
+    assert.equal(node('orbit-visibility-btn').attrs['data-orbit-mode'],'galactic');
+    assert.equal(node('orbit-contrast-btn').attrs['aria-pressed'],'true');
   }finally{
     S.settings=previousSettings;
-    if(previousDocument===undefined)delete globalThis.document;
-    else globalThis.document=previousDocument;
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
   }
 });
 
-test('v100: Layer UI has galactic orbit icon and no standalone contrast control',async()=>{
+test('v114: Layer popover contains standalone contrast in row two, and galactic icon stays in orbit button',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css');
   const area=html.slice(html.indexOf('class="layer-display-toggles"'),html.indexOf('class="layer-options"'));
   const ids=[...area.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(match=>match[1]);
-  assert.deepEqual(ids,['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons']);
-  assert.equal((area.match(/<button /g)||[]).length,4);
-  assert.doesNotMatch(html,/id="orbit-contrast-btn"/);
+  assert.deepEqual(ids,['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-lighting','toggle-four-moons']);
+  assert.equal((area.match(/<button /g)||[]).length,5);
   assert.match(area,/data-orbit-mode="normal"/);
-  assert.match(area,/class=\"orbit-contrast-icon\"/);
-  assert.match(area,/class=\"orbit-galactic-icon\"/);
+  assert.match(area,/class="orbit-galactic-icon"/);
+  assert.match(area,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
   assert.match(css,/\.viewport>\.control-panel \.layer-display-toggles\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css,/#orbit-visibility-btn\[data-orbit-mode="contrast"\] \.orbit-contrast-icon\{display:block\}/);
   assert.match(css,/#orbit-visibility-btn\[data-orbit-mode="galactic"\] \.orbit-galactic-icon\{display:block\}/);
+  assert.doesNotMatch(css,/#orbit-visibility-btn\[data-orbit-mode="contrast"\]/);
 });

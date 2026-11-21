@@ -64,8 +64,10 @@ test('v38: manual pan stops follow; rotation, zoom and presets retain global tog
   const {renderer:r}=makeRenderer();
   r.follow('earth',0);
   r.panByPixels(5,0);
-  assert.equal(r.followedBodyId,null,'manual pan cancels following');
-  r.follow('earth',100);
+  assert.equal(r.followEnabled,true,'manual pan keeps the global switch on');
+  assert.equal(r.followedBodyId,null,'manual pan suspends steering');
+  r.setSelected('earth',{focus:true}); // Explicitly reselect to resume.
+  assert.equal(r.followedBodyId,'earth');
   r.markCameraMoved();
   assert.equal(r.followEnabled,true,'manual rotation or zoom keeps global following');
   assert.equal(r.followedBodyId,'earth');
@@ -86,7 +88,9 @@ test('v38: changing selection switches the followed target without switching off
   assert.equal(r.focusedBodyId,'mars');
   assert.deepEqual(r.camera.desiredTarget,[4,0,0]);
   r.selectedId='earth';r.updateFollowTarget(250);
-  assert.equal(r.followedBodyId,'earth','also catches direct selection changes');
+  assert.equal(r.followedBodyId,null,'direct mutation suspends tracking until explicit selection');
+  r.setSelected('earth',{focus:true});
+  assert.equal(r.followedBodyId,'earth','explicit selection resumes steering');
   assert.equal(r.followEnabled,true);
 });
 
@@ -100,7 +104,8 @@ test('v37: high projected movement speed stops following without moving camera t
   r.updateFollowTarget(20);
   assert.equal(r.followedBodyId,null);
   assert.deepEqual(r.camera.desiredTarget,target,'no violent jump to the fast target');
-  assert.deepEqual(changes,[true,false]);
+  assert.deepEqual(changes,[true],'high velocity does not toggle off Folgen');
+  assert.equal(r.followEnabled,true);
 });
 
 test('v37: cannot follow unpositioned spacecraft or lost bodies',()=>{

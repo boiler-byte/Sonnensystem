@@ -16,7 +16,10 @@ export const PLANET_RADIUS_UNITS = 1.28;
 export const OPTIMIZED_ORBIT_FACTOR = 4;
 export const OPTIMIZED_SUN_MAGNIFICATION = 3;
 export const SOLAR_REFERENCE_RADIUS_KM = 696340;
-export const optimizedSolarMode = settings => settings?.scaleObjects === true && settings?.scaleOrbits !== true;
+// Physical orbital spacing has no meaning in the lined-up representation.
+// Keep the saved switch untouched so it takes effect again after leaving Reihe.
+export const orbitScaleActive = settings => settings?.scaleOrbits === true && settings?.row !== true;
+export const optimizedSolarMode = settings => settings?.scaleObjects === true && !orbitScaleActive(settings);
 const OPTIMIZED_PLANET_REFERENCE_RADIUS = OPTIMIZED_ORBIT_FACTOR * renderRadius({id:'sun',type:'star'});
 export const OPTIMIZED_SUN_RADIUS = OPTIMIZED_PLANET_REFERENCE_RADIUS * OPTIMIZED_SUN_MAGNIFICATION;
 
@@ -66,7 +69,7 @@ export function displayBodyRadius(body, settings = {}, center = null) {
   if (!settings?.scaleObjects) {
     // Solar overview only: for Objekt aus / Bahn an, shrink the Sun to one
     // third of its schematic radius without changing any planetary bodies.
-    if (!center && settings?.scaleOrbits === true && body?.id === 'sun') return renderRadius(body) / 3;
+    if (!center && orbitScaleActive(settings) && body?.id === 'sun') return renderRadius(body) / 3;
     return center ? planetBodyRadius(body) : renderRadius(body);
   }
   const radiusKm = Math.max(0, Number(body?.radiusKm) || 0);
@@ -82,7 +85,7 @@ export function displayBodyRadius(body, settings = {}, center = null) {
 
 /** Orbits remain Keplerian; only the semi-major axis mapping changes. */
 export function displayOrbitRadius(body, parent, settings = {}, center = null) {
-  if (!settings?.scaleOrbits) {
+  if (!orbitScaleActive(settings)) {
     const schematic = center ? planetOrbitRadius(body, center) : orbitalRadius(body, parent);
     if (!center && optimizedSolarMode(settings)) {
       return parent?.id==='sun' ? optimizedSolarOrbitRadius(body.a) : schematic * OPTIMIZED_ORBIT_FACTOR;

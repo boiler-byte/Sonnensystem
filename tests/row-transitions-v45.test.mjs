@@ -24,11 +24,11 @@ function renderer(ids=['sun','earth','jupiter','mars','moon'],settings=createVie
   return r;
 }
 
-test('v55: Reihe remains third always-visible scale button with accessible label and three dots',async()=>{
+test('v114: Reihe is first always-visible scale button with accessible label and three dots',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const controls=html.slice(html.indexOf('class="scale-main-controls"'),html.indexOf('id="layer-picker-wrap"'));
  const a=controls.indexOf('id="scale-objects-btn"'),b=controls.indexOf('id="scale-orbits-btn"'),c=controls.indexOf('id="orbit-row-btn"');
- assert.ok(a>=0&&a<b&&b<c,'row appears as third top-level scale option');
+ assert.ok(c>=0&&c<a&&a<b,'Reihe appears left of Objekt and Bahn');
  assert.match(controls.slice(c),/<span class="scale-option-label">Reihe<\/span>/);
  assert.match(controls,/id="orbit-row-btn"[^>]*aria-label="Reihe[^>]*aria-pressed="false"/);
  assert.match(controls,/class="row-order-icon row-icon-size"[\s\S]*?cx="5\.5"[^>]*r="4\.1"[\s\S]*?cx="14\.5"[^>]*r="2\.7"[\s\S]*?cx="21"[^>]*r="1\.15"/);

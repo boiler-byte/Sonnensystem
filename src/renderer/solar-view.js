@@ -15,20 +15,31 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const visible=b=>layerEnabled(settings.layers,b.type);
   const selected=renderer.byId.get(selectedId);
+  const orbitBodies=solarOrbitBodies(renderer.bodies,settings.layers)
+    .filter(body=>renderer.shouldDraw?.(body)!==false);
+  const binaryOrbits=renderer.bodies.filter(body=>{
+    const parent=renderer.byId.get(body.parentId);
+    return body.type==='binary'&&parent?.type==='binary'&&visible(body)&&
+      renderer.shouldDraw?.(body)!==false&&renderer.positions.has(parent.id);
+  });
+  if(settings.galacticMotion&&renderer._galacticTrails){
+    const ids=new Set([...orbitBodies,...binaryOrbits].map(body=>body.id));
+    const sun=renderer.byId.get('sun');
+    if(settings.orbits&&sun&&visible(sun)&&renderer.shouldDraw?.(sun)!==false)ids.add('sun');
+    renderer._galacticTrails.retainVisible(ids);
+  }
   if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
     const animatedCenter=renderer.positions.get('sun')||[0,0,0];
     drawSunTrail(renderer,vp,.92,settings);
-    for(const body of solarOrbitBodies(renderer.bodies,settings.layers)){
+    for(const body of orbitBodies){
       const selectedOrbit=body.id===selectedId;
       const opacity=selectedOrbit?.70:body.type==='planet'?.20:.16;
       renderer.orbitLine(body,animatedCenter,vp,opacity,selectedOrbit);
     }
-    for (const body of renderer.bodies) {
-      const parent=renderer.byId.get(body.parentId);
-      if (body.type!=='binary' || parent?.type!=='binary' || !visible(body) || !renderer.shouldDraw(body)) continue;
-      const center=renderer.positions.get(parent.id);
-      if(center)renderer.orbitLine(body,center,vp,body.id===selectedId?.70:.22,body.id===selectedId);
+    for(const body of binaryOrbits){
+      const center=renderer.positions.get(body.parentId);
+      renderer.orbitLine(body,center,vp,body.id===selectedId?.70:.22,body.id===selectedId);
     }
     gl.depthMask(true);
   }

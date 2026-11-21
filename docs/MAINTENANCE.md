@@ -1,3 +1,39 @@
+## Änderung in v118
+
+**Delta v117 → v118:** `syncRowControl()` versteckt den Bahnmaßstab-Schalter in beiden Reihenmodi, ohne die für die Normalansicht gespeicherten `scaleOrbits`-Werte zu ändern. `orbitScaleActive()` schaltet den Bahnabstandseinfluss während der Reihe für Objektgrößen und Bahnberechnungen ab (einschließlich optionaler JPL-Overrides), außerhalb der Reihe bleibt die bisherige Berechnung erhalten. Cinema-Berechtigung und UI-Freigabe hängen nur noch von `row=true` ab; die laufende Kamerafahrt stoppt nicht mehr allein wegen eines anderen Maßstabswerts. Neue CSS-Farben gelten spezifisch für `data-row-mode=size` (grün) bzw. `distance` (blau). Regressionen `tests/row-controls-v118.test.mjs`, aktualisierte v53/v54 Cinema-Tests. Version `118.0.0`, Shell `sonnensystem-shell-v118`, Basis v117.
+
+## Änderung in v117
+
+**Delta v116 → v117:** `src/app/state.js` und `src/renderer/renderer.js` starten ohne Objektauswahl (`selected` / `selectedId` = `null`). Die Kataloginitialisierung in `src/app/runtime.js` respektiert diesen Zustand und wählt nicht das erste Objekt als Ersatz; bei tatsächlich ungültigen Nicht-null-Auswahlen bleibt die alte Fallback-Regel erhalten. Die neutralen Initial-Platzhalter in `index.html` entsprechen der Detailanzeige vor dem ersten Rendern. Sidebar und Mobile-Sheet beginnen weiterhin im Tab „Objekte“; die Kamera weiterhin bei Preset 0 „Schräg/oben“. Der globale Folgen-Schalter bleibt eingeschaltet, bekommt aber erst bei expliziter Auswahl ein Ziel. Neue Regressionen: `tests/start-defaults-v117.test.mjs`; der veraltete v115-HTML-Fixwerttest wurde aktualisiert. Version `117.0.0`, Cache `sonnensystem-shell-v117`, Basis v116.
+
+## Änderung in v116
+
+**Delta v115 → v116:** Die Cinema-Zeitleiste ist auf eine einzelne, rechts der Play-/2x-Tasten in einer 36-px-Spalte angeordnete Kopfzeile mit darunter liegendem Slider verkürzt. Der Text oben und die Schieberegler-Unterkante sind an die beiden Bedientasten gekoppelt, die dynamische Beschriftung „Klein/Groß“ bzw. „Nah/Fern“ entfällt vollständig. Die mobile Bottom-Sheet-Anbindung und die Cinema-Steuerlogik bleiben unverändert. Tests: `tests/cinema-timeline-v116.test.mjs`. Paket `116.0.0`, PWA-Shell `sonnensystem-shell-v116`, Basis v115.
+
+## Änderung in v115
+
+**Delta v114 → v115:** Das visuelle Reihen-Kameraverhalten aus v113 wird wiederhergestellt. Beim Umschalten der Reihensortierung darf der seit v114 dauerhaft eingeschaltete Folgen-Schalter eine zuvor unterbrochene Kamera-Nachführung nicht automatisch reaktivieren. Nur bei bestehendem `followedBodyId` wird die Position mitgeführt. Nach Katalog-Aktualisierungen und Szenenwechseln bleiben unterbrochene Nachführungen ebenfalls ausgesetzt; die erste Katalogladung übernimmt weiterhin das standardmäßig aktive Folgen. Cinema, Reihen-Geometrie, Blickwinkel, Kameraentfernung und die v114-UI bleiben unverändert. Regressionen in `tests/camera-row-v115.test.mjs`, Version `115.0.0`, PWA-Shell `sonnensystem-shell-v115`, Basis v114.
+
+## Änderung in v114
+
+**Delta v113 → v114:** Der Reihe-Schalter steht links neben Objekt; die separate Bahnkontrast-Option kehrt in die zweite Darstellungsreihe zurück. `orbits`, `galacticMotion` und `orbitContrast` werden unabhängig verwaltet, sodass Kontrast zu normalen und galaktischen Spuren schaltbar ist. `followEnabled` ist ein rein nutzergesteuerter Schalter; bei schnellem Objekt oder manueller Kameraaktion wird nur das aktuelle `followedBodyId` ausgesetzt. WebGL-Auswahl zentriert ohne Zoom, Katalog und Detail-Hero zentrieren mit Zoom. Hero-Objektbild ist ein echter Button. Tests prüfen die UI-Struktur, Umschaltzustände und Kamera-/Folgeabbruch. Version `114.0.0`, PWA-Cache `sonnensystem-shell-v114`, Basis v113.
+
+## Änderung in v113
+
+**Delta v112 → v113:** Die Aufnahme im galaktischen Modus speichert für alle Nicht-Sonnenobjekte jeden weiteren beobachteten Simulationsschritt, anstatt erst nach Krümmungs- oder Zeitschwellwerten einen Stützpunkt zu übernehmen. Damit wachsen auch bei langsamen äußeren Planeten und unmittelbar nach einer Geschwindigkeitsreduzierung gleichmäßig kurze jüngste Liniensegmente. Wenn das 1.000-Punkte-Limit erreicht wird, schützt `simplify(..., olderOnly=true)` die jüngsten 20 % der Historie; nur ältere Segmente werden unter Beibehaltung der v112-Fehlerkontrolle reduziert. Ein einzelnes Live-Ende bleibt reserviert, die geradlinige Sonne speichert weiterhin nur den Anfang und das aktuelle Ende. Neue Regressionen `tests/galactic-continuous-trails-v113.test.mjs`; bestehende v112-Geometrieprüfung wurde auf die konservative kumulierte Fehlergrenze abgestimmt und durch einen Test der tatsächlichen Weltkurvenabweichung ergänzt. Version `113.0.0`, Cache `sonnensystem-shell-v113`, Basis v112.
+
+## Änderung in v112
+
+**Delta v111 → v112:** Galaktische Spuraufzeichnung auf maximal 1.000 Punkte einschließlich des Live-Endes erweitert. Bei der kurvenabhängigen Punktaufnahme und dem Entfernen am Budgetlimit wird jetzt der vollständige Flugpfad (Sonnenbewegung plus Umlauf) genutzt. Zusätzlich fließt der projizierte Bildschirmfehler ein; Segment-Fehlergrenzen verhindern unbemerkte Kumulation gelöschter Kurven. Optimierte Wiederverwendung eines Projektionspuffers, bestehende 50/30/100-Jahre-Fenster bleiben. Neue Regressionstests unter `tests/galactic-smart-trails-v112.test.mjs`. Version `112.0.0`, Cache `sonnensystem-shell-v112`, Basis v111.
+
+## Änderung in v111
+
+**Delta v110 → v111:** Sternenparallaxe im galaktischen Modus: pro Stern GPU-seitig berechneter Tiefenfaktor aus dem bestehenden Abstandsradius (100–225 Einheiten). Eine einheitliche, dezente Shader-Verschiebung entgegen `galacticOffsetAt()` folgt der simulierten Zeitdifferenz seit Modeintritt. Geschwindigkeitsänderungen wirken direkt über die Simulationszeit, Pausieren lässt die Sterne stehen, Rückwärtslauf kehrt die Richtung um. Offset ist auf 8 Einheiten begrenzt und wird für Ein-/Austritt und Datumssprünge geglättet. Kein CPU-Neuaufbau des Sternbuffers. `src/renderer/galactic-parallax.js`, Renderer, Shader und Service-Worker-Paket erweitert. Version `111.0.0`, PWA-Shell `sonnensystem-shell-v111`, Basis v110. Regressionen in `tests/galactic-parallax-v111.test.mjs`.
+
+## Änderung in v110
+
+**Delta v109 → v110:** AR-Vier-Wege-Toggle und `devicemotion` vollständig entfernt, AR-Blicksteuerung unverändert. Galaktische Sonnenbahn auf konstante lineare Bewegung ohne Sinus umgestellt; Spurdauer: Sonne 50, innere Planeten 30, äußere und transneptunische 100 Jahre. Speicheroptimierte, kurvenabhängige Aufzeichnung mit maximal 240 Punkten pro sichtbarem Körper, ältestes Ende bleibt bis zum maximalen Zeitfenster; nicht sichtbare Layer verlieren ihre Aufzeichnung und beginnen beim erneuten Anzeigen neu. Kein Eingriff in Zeitsimulation oder Texturlogik. Version `110.0.0`, PWA-Shell `sonnensystem-shell-v110`, Basis v109. Neue Regressionen: `tests/galactic-v110.test.mjs`, ersetzter `tests/ar-motion-v106.test.mjs` sowie aktualisierte historische galaktische Tests. Keine Bilddaten im Delta.
+
 ## Änderung in v109
 
 **Delta v108 → v109:** Der statische GitHub-Pages-Fallback lädt WebP-Texturen ohne `?v=Date.now()`; die SHA-256-Versionierung bei vorhandenem Node-Manifest bleibt. `TextureManager` behält fehlgeschlagene Objektsuchen und einzelne fehlende Texturpfade bis zum nächsten App-Neustart/manuellen Neuladen (kein Retry nach 30 Sekunden, auch nicht bei Qualitätswechsel oder Manifeständerung). Ein nicht erreichbarer optionaler Manifest-Endpunkt wird auf statischem Hosting nur einmal pro Sitzung angefragt. Erfolgreich geladene Texturen bleiben mit Node-Manifest automatisch aktualisierbar. Version `109.0.0`, PWA-Shell `sonnensystem-shell-v109`, Basis v108. Tests: `tests/texture-retry-v109.test.mjs` plus Regressionen. Keine Bilddaten enthalten.

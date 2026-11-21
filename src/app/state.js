@@ -4,7 +4,7 @@ import {SPEED_MODES} from '../ui/timeline.js';
 export const $ = id => document.getElementById(id);
 export const viewSettings = {solar:createViewSettings('solar'),planet:createViewSettings('planet')};
 export const S = {
-  bodies:[], selected:'earth', search:'', catalogPlanetOnly:true, catalogSort:'default',
+  bodies:[], selected:null, search:'', catalogPlanetOnly:true, catalogSort:'default',
   playing:true, speed:SPEED_MODES.solar.defaultSpeed, timelineMode:'solar', modeSpeeds:{solar:SPEED_MODES.solar.defaultSpeed,planet:SPEED_MODES.planet.defaultSpeed}, time:Date.now(),
   viewSettings, settings:viewSettings.solar,
   status:{ catalog:['loading','Lädt ...'],solar:['loading','Verbinde'],sbdb:['idle','Auf Abruf'],celestrak:['loading','Verbinde'],horizons:['idle','Auf Abruf'] }

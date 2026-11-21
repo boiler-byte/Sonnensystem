@@ -10,15 +10,15 @@ test('v100/v103: galactic offset is anchored at the current sun position',()=>{
   const past=galacticOffsetAt(1000-DAY*10,1000);
   assert.ok(past[1] < 0,'historical trail extends below the present Sun in 3D world coordinates');
   assert.ok(Math.abs(past[1]) > 4*Math.abs(past[0]),'downward drift dominates sideways sway');
-  assert.notEqual(past[0],0);
+  assert.equal(past[0],0,'v110 removes the sideways sine wave');
   assert.notEqual(past[2],0);
 });
 
-test('v100/v103: galactic maximum stored duration scales with orbital period but stays bounded',()=>{
+test('v110: galactic duration follows fixed body categories instead of orbital-period scaling',()=>{
   assert.equal(galacticHistoryDays({id:'sun',type:'star'}),GALACTIC_SUN_HISTORY_DAYS);
   assert.equal(galacticHistoryDays({id:'mercury',periodDays:88}),GALACTIC_MIN_HISTORY_DAYS);
   const earth=galacticHistoryDays({id:'earth',periodDays:365.25});
-  assert.ok(earth >= GALACTIC_MIN_HISTORY_DAYS && earth <= GALACTIC_MAX_HISTORY_DAYS);
+  assert.equal(earth,GALACTIC_MIN_HISTORY_DAYS);
   assert.equal(galacticHistoryDays({id:'neptune',periodDays:60190.03}),GALACTIC_MAX_HISTORY_DAYS);
 });
 

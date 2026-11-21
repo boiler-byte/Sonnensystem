@@ -25,7 +25,7 @@ test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',
   assert.match(layerModel,/orbitContrast:false,\s*galacticMotion:false,\s*labels:true/);
   assert.match(app,/\$\('layer-btn'\)\.addEventListener\('click'/);
   assert.match(app,/advanceOrbitDisplayMode\(S\.settings\)/);
-  assert.doesNotMatch(layer,/id="orbit-contrast-btn"/);
+  assert.match(layer,/id="orbit-contrast-btn"/);
 });
 
 test('v21: time menu header has only speed, and a stacked slider precedes two action buttons and date/time',async()=>{

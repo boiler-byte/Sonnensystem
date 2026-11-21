@@ -1,35 +1,34 @@
-import {DAY, TAU, clamp} from './math.js';
+import {DAY} from './math.js';
 
-// Illustrative Sun-relative galactic motion, not a measured Milky Way ephemeris.
-// Scene Y is vertical and the historical trail has negative Y; a much smaller
-// negative-Z component gives depth while the camera remains entirely unchanged.
+// Schematic, Sun-relative galactic drift. A fixed direction and constant speed
+// make the Sun's observed path exactly straight, regardless of elapsed time.
 export const GALACTIC_DRIFT_UNITS_PER_DAY = 0.012;
 export const GALACTIC_DEPTH_FRACTION = 0.16;
-export const GALACTIC_SIDE_SWAY_AMPLITUDE = 0.65;
-export const GALACTIC_SIDE_SWAY_PERIOD_DAYS = 365.25 * 7;
-export const GALACTIC_SWAY_Y_AMPLITUDE = 1.15;
-export const GALACTIC_SWAY_Z_AMPLITUDE = 0.72;
-export const GALACTIC_SWAY_Y_PERIOD_DAYS = 365.25 * 9.5;
-export const GALACTIC_SWAY_Z_PERIOD_DAYS = 365.25 * 15.5;
-export const GALACTIC_MIN_HISTORY_DAYS = 365.25 * 2.2;
-export const GALACTIC_MAX_HISTORY_DAYS = 365.25 * 16;
-export const GALACTIC_SUN_HISTORY_DAYS = 365.25 * 18;
+export const GALACTIC_YEAR_DAYS = 365.25;
+export const GALACTIC_SUN_HISTORY_DAYS = GALACTIC_YEAR_DAYS * 50;
+export const GALACTIC_INNER_HISTORY_DAYS = GALACTIC_YEAR_DAYS * 30;
+export const GALACTIC_OUTER_HISTORY_DAYS = GALACTIC_YEAR_DAYS * 100;
+// Kept as the bounds for non-star objects (and for existing integrations).
+export const GALACTIC_MIN_HISTORY_DAYS = GALACTIC_INNER_HISTORY_DAYS;
+export const GALACTIC_MAX_HISTORY_DAYS = GALACTIC_OUTER_HISTORY_DAYS;
 
 export function galacticOffsetAt(timeMs, referenceTimeMs=timeMs){
-  const deltaDays=(Number(timeMs)-Number(referenceTimeMs))/DAY;
-  const sideSway=GALACTIC_SIDE_SWAY_AMPLITUDE*Math.sin(deltaDays*TAU/GALACTIC_SIDE_SWAY_PERIOD_DAYS);
-  const swayY=GALACTIC_SWAY_Y_AMPLITUDE*Math.sin(deltaDays*TAU/GALACTIC_SWAY_Y_PERIOD_DAYS);
-  const swayZ=GALACTIC_SWAY_Z_AMPLITUDE*(Math.sin(deltaDays*TAU/GALACTIC_SWAY_Z_PERIOD_DAYS + TAU/8)-Math.sin(TAU/8));
-  return [
-    sideSway, // No sideways drift: camera rotations never re-define "down".
-    deltaDays*GALACTIC_DRIFT_UNITS_PER_DAY+swayY,
-    deltaDays*GALACTIC_DRIFT_UNITS_PER_DAY*GALACTIC_DEPTH_FRACTION+swayZ
-  ];
+  const days=(Number(timeMs)-Number(referenceTimeMs))/DAY;
+  return [0,days*GALACTIC_DRIFT_UNITS_PER_DAY,
+    days*GALACTIC_DRIFT_UNITS_PER_DAY*GALACTIC_DEPTH_FRACTION];
 }
 
+/** Visible history window per body class, independent of playback speed. */
 export function galacticHistoryDays(body){
-  const period=Math.abs(Number(body?.periodDays)||0);
-  if(body?.id==='sun' || body?.type==='star')return GALACTIC_SUN_HISTORY_DAYS;
-  const scaled=period>0 ? period*1.6 : GALACTIC_MIN_HISTORY_DAYS;
-  return clamp(scaled,GALACTIC_MIN_HISTORY_DAYS,GALACTIC_MAX_HISTORY_DAYS);
+  if(body?.id==='sun'||body?.type==='star')return GALACTIC_SUN_HISTORY_DAYS;
+  if(body?.type==='tno')return GALACTIC_OUTER_HISTORY_DAYS;
+  if(['mercury','venus','earth','mars'].includes(body?.id))return GALACTIC_INNER_HISTORY_DAYS;
+  if(['jupiter','saturn','uranus','neptune'].includes(body?.id))return GALACTIC_OUTER_HISTORY_DAYS;
+  if(body?.type==='planet')return Number(body?.a)>=5
+    ? GALACTIC_OUTER_HISTORY_DAYS:GALACTIC_INNER_HISTORY_DAYS;
+  // Dwarf planets in the Kuiper belt are trans-Neptunian, even if their
+  // catalog type is 'dwarf'. Other small bodies use their solar distance.
+  const distance=Number(body?.a);
+  return Number.isFinite(distance)&&distance>=5 ? GALACTIC_OUTER_HISTORY_DAYS
+    : GALACTIC_INNER_HISTORY_DAYS;
 }

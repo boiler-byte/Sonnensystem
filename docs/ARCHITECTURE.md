@@ -1,4 +1,12 @@
-# Architektur – Sonnensystem v98
+## Reihen-Steuerung v118
+
+`syncRowControl()` verbirgt bei `settings.row=true` neben der Zeitschaltfläche den Maßstabs-Toggle **Bahn**, ohne `scaleOrbits` zu überschreiben. `orbitScaleActive(settings)` aus `src/data/orbital-math.js` behandelt in der Reihe sämtliche physikalischen Bahnabstandsmaßstäbe als inaktiv; die gespeicherten Maßstäbe wirken sofort wieder in der Orbitalansicht. Die UI unterscheidet die Reihenmodi per `data-row-mode` mit Grün für **size** und Blau für **distance**; **off** bleibt neutral. `cinemaEligible()` sowie `syncCinemaControl()` sind bei funktionsfähigem Renderer nur von `row=true` abhängig. Die Cinema-Timeline wird weiterhin nur bei aktivem Film eingeblendet.
+
+## Startzustand v117
+
+Der App-Zustand `S.selected` und der Renderer-Zustand `selectedId` sind beim Start `null`; der Katalog-Fallback ersetzt nur eine ungültige, *nicht-leere* Objektauswahl. `setBodies()` lässt `followEnabled` eingeschaltet, hat aber ohne ausgewähltes Objekt kein Follow-Ziel. Erst eine manuelle Auswahl setzt `S.selected`, `selectedId` und gegebenenfalls `followedBodyId`. Das gemeinsame Desktop-/Mobile-Tab-Modul startet mit `panel='catalog'`, und das erste Kamerapreset bleibt „Schräg/oben“ (Preset 0, `theta=.63`, `phi=.99`). Sonstige Standardwerte unverändert.
+
+# Architektur – Sonnensystem v118
 
 ## Prinzipien
 
@@ -45,6 +53,16 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 - `cycleCameraPerspective()` steuert eine vom Layoutübergang getrennte 1.050-ms-Kamerafahrt (`cameraFlight`) über Blickrichtung, Position und Distanz. `cameraView()` nutzt in dieser Zeit die interpolierte Pose; währenddessen dürfen Layout-/AR-Updates die Fahrt nicht überschreiben. Ein manueller Eingriff kann sie bildsprungfrei beenden. Bei reduzierter Bewegung wird sie übersprungen.
 - Freies Umschauen per Zwei-Finger-Wischen verwendet die unveränderte vertikale Touch-Mittelpunktsbewegung für `lookAroundFixedEye()` (Finger nach unten = Blick nach unten), auch ohne Auswahl. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
 
+## Flache Cinema-Zeitleiste (v116)
+
+Das Cinema-HUD verwendet `.cinema-timeline-transport` als gemeinsame Tasten-/Track-Zeile. `.cinema-timeline-track` enthält die live aktualisierte `.cinema-timeline-header` und direkt darunter `#cinema-seek`. Beide bilden eine 36 px hohe Spalte neben Play/Pause und 2x. Die früheren Endlabels und ihre Updates sind entfallen; der mobile `--sheet-visible`-Versatz bleibt unverändert.
+
+## Reihen-Kamera nach v113 und dauerhaftes Folgen (v115)
+
+In v113 war `followEnabled` nach einem manuellen oder geschwindigkeitsbedingten Abbruch ausgeschaltet. Seit v114 bleibt dieser **UI-Zustand** eingeschaltet, während `followedBodyId` auf `null` gesetzt wird. Für die Kamerasteuerung sind daher allein ein **aktives** `followedBodyId` und gegebenenfalls `focusedBodyId` maßgeblich; ein eingeschalteter Toggle ohne aktives Ziel entspricht kamera-seitig dem v113-Zustand „Folgen aus“.
+
+`updateRow()` darf `followSelectedBody()` nur bei `followedBodyId != null` aufrufen. Die bestehenden Bedingungen `!followedBodyId && !focusedBodyId` für das Reihengesamtbild in `animation-controls.js` und `view-mode.js` bleiben richtig: Sie stellen nach ausgesetzter Nachführung den v113-Überblick wieder her. Auch `showPlanetSystem()`, `reset()` und spätere `setBodies()`-Aktualisierungen dürfen ein ausgesetztes Ziel nicht automatisch neu wählen. Ausnahme ist der **erste** Katalogstart, der wie bisher das anfänglich eingeschaltete Folgen initialisiert. Ein expliziter Objektklick darf weiterhin die Nachführung wieder aufnehmen; die in v114 getrennte Fokussierung mit und ohne Zoom bleibt unverändert.
+
 ## Cinema-Übergänge und Folgen-Initialisierung (v104)
 
 Der Cinema-Track nutzt während der Haltephasen und zwischen den Objekten die **gleiche** interpolierte Pose aus `cinemaPoseAt()`: geometrisch geglättete Zieldistanz und kontinuierliche Verschiebung des Kameraziels. `cinemaSceneAt()` ergänzt `opacity:0`; der alte `cinemaFadeSceneAt()`-Export verweist aus Kompatibilitätsgründen darauf. Nur die Startneuordnung der **Größenreihe** wird über `cinemaEntryOpacity()` bei vollständiger Dunkelheit geschnitten. Die **Entfernungsreihe** benötigt keine Umordnung und fliegt beim Einstieg kontinuierlich zum ersten Körper. `stopCinema()` verwendet wieder den normalen `cinema`-Layout-/Kameraübergang statt eines schwarzen Endschnitts. Die Scanneraktivierung prüft nach wie vor stabile Haltepositionen; Scrubbing zeigt exakt die interpolierte Timelinepose.
@@ -71,9 +89,12 @@ Optional unterstützte Rohdaten: `physical.rotationPeriodHours` (von null versch
 
 `server/texture-manifest.mjs` liest den vorhandenen Dateibestand, berechnet SHA-256 und verwendet Dateigröße, Inode, `mtimeNs` und `ctimeNs` zum kostengünstigen Wiederverwenden unveränderter Hashes. `GET /api/textures/manifest` antwortet mit `Cache-Control: no-store`; dessen Hash-Versionen stehen an Bildrequests unter `?v=...`. `TextureManager.refreshManifest()` vergleicht spätestens alle 30 Sekunden bei aktivem Rendering die Signaturen pro Objekt/Qualität. **Nur erfolgreich geladene Ressourcen** werden bei Änderungen automatisch ungültig und neu geladen. Fehlgeschlagene Objekt/Qualitäts-Anfragen behalten während der gesamten Sitzung ihren Status `failed`; zusätzlich verhindert ein sitzungsbezogenes `failedPaths`-Set erneute Versuche bereits gescheiterter WebP-URLs bei Qualitätswechseln. Ein laufender Download wird vor der Übernahme gegen die jeweils aktuelle Signatur geprüft; veraltete Ergebnisse werden entsorgt. Ohne Node-Manifest (GitHub Pages) erfolgt ein **URL-Aufruf ohne Zeitstempel/Query**. Der fehlende Manifest-Endpunkt wird pro App-Start nur einmal getestet; fehlgeschlagene Bilder werden erst nach Neustart oder manuellem Neuladen erneut angefragt. Der PWA-Texturcache bleibt netzwerkpriorisiert.
 
-## Gemeinsamer Bahn-/Kontrast-Toggle (v96)
+## Getrennte Bahnmodi und Kontrast (v114; ersetzt v96)
 
-Im Layer-Panel stehen vier Buttons in einem **2×2-Raster**: oben Beschriftung/Umlaufbahn, darunter Beleuchtung/Monde. Der separate Kontrast-Button entfällt. `src/ui/display-controls.js` übersetzt die drei zugänglichen Umlaufbahn-Modi in die **bestehenden** Rendererflags `orbits` und `orbitContrast`: **normal** (`true/false`) → **contrast** (`true/true`) → **off** (`false/false`) → normal. `data-orbit-mode` steuert das passende SVG und Titel/ARIA nennen den aktuellen und den nächsten Modus. `src/ui/event-handlers.js` verändert die beiden Flags gemeinsam; ein widersprüchlicher alter Zustand (`orbits:false`, `orbitContrast:true`) wird als „aus“ behandelt und beim nächsten Klick normalisiert. `displayPreset('standard')` setzt normal, `displayPreset('all')` kontrastreich. Beide Ansichten behalten ihre getrennten Einstellungen. Renderer und Orbit-Geometrie bleiben unverändert. Regressionen: `tests/orbit-toggle-v96.test.mjs` und angepasste UI-Tests.
+Das Layer-Panel enthält fünf Schalter in zwei Spalten: **Beschriftung | Umlaufbahn**, **Kontrast | Beleuchtung**, **Monde**. `src/ui/display-controls.js` verwaltet den Bahnmodus getrennt von `orbitContrast`. Das Sonnensystem durchläuft **normal → galactic → off**, die Planetenansicht **normal → off**. Der Kontrast bleibt bei jedem Wechsel unverändert und wird mit `syncContrastControl()` separat synchronisiert. Die Rendererflags `orbits` und `galacticMotion` bestimmen den sichtbaren Pfad, `orbitContrast` bestimmt unabhängig davon die Geometrie und Deckkraft des Bandes in `src/renderer/orbits.js` (auch beim galaktischen Pfad). `standard` setzt den Kontrast auf aus, `all` auf an; Ansichtsspeicherung bleibt getrennt. Der Reihe-Schalter steht im Control-Panel **links** von Objekt und Bahn.
+
+**Folgen und Kamerafokus:** `SolarRenderer.followEnabled` repräsentiert nur die vom Nutzer gesetzte Option. `followedBodyId` wird durch `suspendFollowing()` bei zu schneller Bahnbewegung bzw. manueller Bewegung entfernt, ohne `followEnabled` abzuschalten. `updateFollowTarget()` startet die Nachführung nicht automatisch neu; `setSelected()` kann sie bei einer erneuten expliziten Auswahl wieder aufnehmen. `stopFollowing()` ist ausschließlich für manuelles Abschalten zuständig. `selectBody(id,focus,{zoom})` und `SolarRenderer.focus(id,{zoom})` unterscheiden Zielzentrum von Zieldistanz: WebGL-Picking zentriert bei `zoom:false`, Katalog und Detail-Hero nutzen `zoom:true`. Beim Setzen eines neuen Zentrums wird die Distanz nur geändert, wenn Zoom verlangt wurde.
+
 
 ## Gruppierte Kategorie-Filter (v90)
 
@@ -197,11 +218,29 @@ Der statische Server erlaubt nur definierte Root-Assets, auflösbare Frontend-ES
 
 Weitere Informationen: [Datenarchitektur](DATA-ARCHITECTURE.md), [Projektpflege](MAINTENANCE.md), [Versionshistorie](RELEASE-HISTORY.md).
 
-## AR-Sensortranslation (v106)
+## Kontinuierliche galaktische Spuraufnahme (v113)
 
-`src/renderer/ar-mode.js` verwaltet zusätzlich zum bisherigen `deviceorientation`-Blick optional einen über `#ar-motion-btn` gesteuerten `devicemotion`-Listener. Der zweite Button wird nur bei **aktivem AR-Modus** sichtbar. `DeviceMotionEvent.requestPermission()` wird synchron beim Buttonklick angestoßen (iOS), anschließend bestätigt erst ein gültiges Ereignis den aktiven Zustand. Die Zuweisung prüft Session-IDs, damit späte Freigaben nach Abschalten nicht wirken; Timeout, Hintergrundwechsel, Pagehide und `dispose()` räumen beide Listener auf.
+`GalacticTrailHistory.record()` übernimmt bei jedem **Fortschritt der Simulationszeit** den bisher live gezeichneten Punkt in die Historie. Damit fallen die früheren Schwellen für Krümmung, Bildschirmabweichung und einen zeitlichen Mindestabstand bei der **Aufnahme** weg: Auch bei sehr kleinen Bewegungen (etwa äußeren Planeten oder nach einem Geschwindigkeitswechsel) bleibt der jüngste Spurabschnitt in jedem Frame zusammenhängend. Das aktuelle Ende wird weiterhin als separater Live-Punkt gezeichnet. Doppelte, pausierte Frames erzeugen keine zusätzlichen Knoten. Sonnenbewegung (konstant geradlinig) verwendet weiterhin nur den ältesten und aktuellen Punkt.
 
-Die Funktion `deviceMotionInScene()` transformiert gerätebezogene Beschleunigungen mittels der vorhandenen Orientierung und der kalibrierten Startbasis in den Szenenraum. `motionPanStep()` filtert kleine Störungen (Deadzone), begrenzt Ausschläge/Geschwindigkeit, dämpft Impulse exponentiell und berechnet `dx/dy` passend zum vorhandenen `renderer.panByPixels()` (Ein-Finger-Geste). Für Geräte mit nur `accelerationIncludingGravity` wird die Schwerkraft per Hochpass-Baseline entfernt. Während Kameraflügen ist die Translation ausgesetzt. Die Sensorik liefert nur *relative Bewegungsimpulse*, keine zuverlässige absolute 6-DoF-Positionsmessung. Katalog, physikalische Simulationszeit und Zeitregler bleiben unberührt.
+Am 1.000-Punkte-Limit werden nur die **älteren** Punkte untersucht: `simplify(..., olderOnly=true)` schützt die jüngsten 20 % der gespeicherten Stützpunkte und beide Endpunkte. Die räumliche und bei vorhandener Kameramatrix auch bildschirmbezogene Fehlerbewertung aus v112 gilt **nur noch für diese älteren Segmente**; im jüngsten Abschnitt wird nichts vorzeitig gelöscht. Die äußeren Zeitschranken (30/50/100 Jahre), unsichtbare Objekte und rückwärts laufende Zeit behalten ihre bisherigen Regeln. Der feste Speicherrahmen begrenzt weiterhin die maximal rekonstruierbare Genauigkeit einer langen Bahn.
+
+## Geometrieorientierte Spurkompression (v112)
+
+Die galaktische Historie in `src/renderer/galactic-trails.js` speichert bis zu 1.000 beobachtete Positionspunkte einschließlich des aktuellen Endpunktes. Für die Kompression wird die Position im festen galaktischen Bezugssystem (Objektposition plus lineare Sonnendrift) verwendet, weil die rohe Sonnen-relative Bahn die sichtbare Spurkrümmung nicht zuverlässig wiedergibt. Bei Bedarf wird die Abweichung zusätzlich auf die aktuell aktive `vp`-Matrix und Viewportgröße projiziert. Ein wiederverwendetes Float64-Projektionsarray verhindert häufige Allokationen an der Speichergrenze. Für verworfene Abschnitte behalten die verbliebenen Kanten konservative Fehlergrenzen, sodass wiederholtes Vereinfachen die Bildabweichung nicht verdeckt. Die zeitliche Grenze und der aktuelle Live-Endpunkt bleiben geschützt. Bei äußerst vielen Umläufen innerhalb eines Spurzeitfensters bleibt die feste Punktanzahl ein Qualitätskompromiss. Die Aufzeichnung entsteht weiterhin nur aus bereits durchlaufenen Simulationspositionen und ist für verborgene Layer abgeschaltet.
+
+## Sternenparallaxe bei galaktischer Bewegung (v111)
+
+`src/renderer/galactic-parallax.js` leitet aus `galacticOffsetAt(simTime, entryTime)` einen **entgegengesetzten** Stern-Offset ab (Skalierung 0,006, auf 8 Welteinheiten begrenzt). Beim Eintritt in die galaktische Ansicht wird eine neue Simulationszeitreferenz gesetzt. Pausieren verändert den Ziel-Offset nicht, schnellerer Zeitverlauf beschleunigt die sichtbare Bewegung. Auch Rückwärtslauf wird unterstützt. Beim Verlassen bzw. erneuten Betreten wird zwischen aktuellem und neuem Ziel mit ca. 320 ms Zeitkonstante geglättet; eine Änderung des Datums mit `resetGalacticTrails()` setzt die Referenz zurück.
+
+Der `STARS_VS`-Shader verschiebt ausschließlich die vorhandenen Stern-Vertices um den Abstandsfaktor `0.02 + 0.98 * pow(clamp((225 - radius)/125, 0, 1), 2)`. Nahsterne (100 Einheiten) reagieren voll, Fernsterne (225 Einheiten) nur zu 2 %. GPU-Daten bleiben unverändert; pro Frame genügt `uniform3f`. Kein zusätzlicher Draw-Call, kein Trail, keine simulierte reale Sternentfernung. In normalen Ansichten und Planeten-/Reihenmodi ist das Parallaxeziel null.
+
+## AR-Modus und galaktische Spuren (v110)
+
+`src/renderer/ar-mode.js` verwaltet nur `deviceorientation` für das relative Umsehen der stationären Kamera. Der in v106 eingeführte `devicemotion`-Listener, sein UI-Button und sämtliche Positionsintegrationsfunktionen wurden in v110 wieder entfernt. Es bleibt bei der Ein-Finger-Kameraverschiebung aus `controls.js` und `camera.js` und bei der aktiven AR-Kalibrierung samt sauberem Listener-Reset.
+
+`galacticOffsetAt()` in `src/renderer/galactic-motion.js` bildet die zeitabhängige Verschiebung als lineare Funktion eines festen Vektors ab (X=0, Y=0,012 Einheiten/Tag, Z=0,00192 Einheiten/Tag). Keine Sinus-Schwankungen. `galacticHistoryDays()` wählt 50/30/100/100 Jahre für Sonne/innere/äußere/transneptunische Körper; Kleinobjekte ohne Klassenzugehörigkeit werden nach großer Halbachse (Grenze 5 AE) eingeteilt.
+
+`GalacticTrailHistory` zeichnet nur tatsächlich im aktivierten Modus gesehene Simulationspositionen auf. Live-Endpunkt und Startpunkt bleiben erhalten, bei Biegungen werden relevante Zwischenpunkte hinzugefügt. Ein begrenztes Punktekontingent wird durch Entfernen von Zwischenpunkten mit geringem Formfehler eingehalten, ohne den Anfang vor dem jeweiligen maximalen Zeitfenster zu verwerfen. Danach wird der Anfang in die Fenstergrenze interpoliert. Wiederholte Frames bei stillstehender Zeit verwenden bereits erzeugte Float32-Puffer. `solar-view.js` gleicht die aktiven Layer mit den gespeicherten IDs ab; ausgeblendete Körper werden sofort aus `GalacticTrailHistory` gelöscht und erst bei erneuter Anzeige neu erfasst. Das gilt ebenso für die Sonnen-Spur.
 
 ## Installationsverzeichnis und Textur-URLs (v107)
 

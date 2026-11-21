@@ -85,7 +85,7 @@ void main() {
 }`;
 export const LINE_VS=`attribute vec3 aPosition;uniform mat4 uVP;void main(){gl_Position=uVP*vec4(aPosition,1.0);}`;
 export const LINE_FS=`precision mediump float; uniform vec4 uColor;void main(){gl_FragColor=uColor;}`;
-export const STARS_VS=`attribute vec3 aPosition;attribute float aSize;uniform mat4 uVP;uniform float uPixelRatio;varying float vAlpha;void main(){gl_Position=uVP*vec4(aPosition,1.0);gl_PointSize=aSize*uPixelRatio;vAlpha=clamp(aSize/2.8,.25,1.0);}`;
+export const STARS_VS=`attribute vec3 aPosition;attribute float aSize;uniform mat4 uVP;uniform float uPixelRatio;uniform vec3 uGalacticStarOffset;varying float vAlpha;void main(){float near=clamp((225.0-length(aPosition))/125.0,0.0,1.0);float depthWeight=.02+.98*near*near;vec3 position=aPosition+uGalacticStarOffset*depthWeight;gl_Position=uVP*vec4(position,1.0);gl_PointSize=aSize*uPixelRatio;vAlpha=clamp(aSize/2.8,.25,1.0);}`;
 export const STARS_FS=`precision mediump float;varying float vAlpha;void main(){float r=length(gl_PointCoord-.5);float a=1.0-smoothstep(.14,.48,r);gl_FragColor=vec4(.65,.81,1.0,a*.77*vAlpha);}`;
 export const RING_VS=`attribute vec3 aPosition;uniform mat4 uMVP;varying float vR;void main(){vR=length(aPosition.xz);gl_Position=uMVP*vec4(aPosition,1.0);}`;
 export const RING_FS=`precision mediump float;uniform float uOpacity;varying float vR;void main(){float bands=sin(vR*135.0)*.13+sin(vR*41.0)*.11;float gap=1.0-smoothstep(.82,.84,vR)+smoothstep(.88,.90,vR);float fade=smoothstep(.70,.78,vR)*(1.0-smoothstep(1.14,1.20,vR));float a=fade*(.41+bands)*gap;gl_FragColor=vec4(.78,.69,.52,a*clamp(uOpacity,0.0,1.0));}`;

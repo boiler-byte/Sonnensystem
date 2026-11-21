@@ -20,7 +20,7 @@ export function openPlanetScene(id){
   }
   return true;
 }
-export function selectBody(id,focus=false){
+export function selectBody(id,focus=false,{zoom=focus}={}){
   if(renderer?.cinema?.active)renderer.stopCinema();
   const body=byId(id);if(!body)return;
   if(renderer?.planetId && id!==renderer.planetId && body.parentId!==renderer.planetId){
@@ -29,7 +29,7 @@ export function selectBody(id,focus=false){
     updateMode();
   }
   S.selected=id;
-  renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe'});
+  renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe',zoom:zoom&&body.type!=='probe'});
   // Selecting a catalog body moves the camera's orbit target. In AR the gaze
   // is sensor-relative and otherwise remains pointed at the previous object.
   // Adopt the new perspective as the neutral phone posture, with no new prompt.

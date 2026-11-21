@@ -1,5 +1,5 @@
 import { J2000, AU_KM } from '../data/bodies.js';
-import { keplerPosition, displayOrbitRadius, orbitalRadius, sceneRadius, SOLAR_UNITS_PER_KM, optimizedSolarMode, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
+import { keplerPosition, displayOrbitRadius, orbitalRadius, sceneRadius, SOLAR_UNITS_PER_KM, optimizedSolarMode, orbitScaleActive, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
 import { vadd } from './math.js';
 
 /** Horizons ECLIPTIC x/y define the orbital plane; scene y points to latitude. */
@@ -27,7 +27,7 @@ export function computePositions(renderer, timeMs) {
      let pos=keplerPosition(child,planet,(renderer.renderOrbitTime?.(child,timeMs)??timeMs),null,r);
      if(ov?.date===date){
       const length=Math.hypot(...ov.vector)||1;
-      const factor=renderer.settings?.scaleOrbits ? (1.28/Math.max(1,Number(planet.radiusKm)||0)) : r/length;
+      const factor=orbitScaleActive(renderer.settings) ? (1.28/Math.max(1,Number(planet.radiusKm)||0)) : r/length;
       pos=eclipticVectorToScene(ov.vector,factor);
      }
      renderer.positions.set(child.id,pos);
@@ -45,7 +45,7 @@ export function computePositions(renderer, timeMs) {
     let rel=keplerPosition(b,parent,(renderer.renderOrbitTime?.(b,timeMs)??timeMs),null,displayOrbitRadius(b,parent,renderer.settings));
     const ov=renderer.overrides.get(id);
     if(ov&&ov.date===date){const length=Math.hypot(...ov.vector)||1;
-      const scale=renderer.settings?.scaleOrbits
+      const scale=orbitScaleActive(renderer.settings)
         ? ((b.type==='moon'||b.type==='satellite'||(b.type==='binary'&&b.parentId!=='sun')) ? SOLAR_UNITS_PER_KM : 3.4/AU_KM)
         : b.parentId==='sun' && Number(b.a)>0
           // Use the same semi-major-axis scale as the drawn Kepler orbit.

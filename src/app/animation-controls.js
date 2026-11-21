@@ -52,6 +52,8 @@ export function syncRowControl(){
   // The row runs at a fixed 30 simulated minutes per second; its usual
   // speed/date dropdown is not interactive here. Leave saved speeds intact.
   $('time-panel').hidden=enabled;
+  // In a row there are no orbital distances to scale; retain Bahn for the normal view.
+  $('scale-orbits-btn').hidden=enabled;
   if(enabled)setSpeedPopover(false);
   button.setAttribute('data-row-mode',order);
   button.setAttribute('aria-label',`${title}. Nächster Modus: ${order==='off'?'Größe':order==='size'?'Entfernung':'Aus'}`);
@@ -89,16 +91,18 @@ export function updateRow(){
   }
   renderer.callbacks?.onCameraChange?.();
   renderer.calcPositions(S.time);
-  if(!renderer.followEnabled && !renderer.focusedBodyId){
+  if(!renderer.followedBodyId && !renderer.focusedBodyId){
     renderer.camera.desiredTarget=enabled?renderer.rowFrame().target:[0,0,0];
     renderer.camera.desiredDist=enabled?renderer.rowDistance()
       : renderer.planetId?renderer.planetFrameDistance():renderer.solarOverviewDistance();
   }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
-  if(renderer.followEnabled)renderer.followSelectedBody();
+  // As in v113, changing the row must not restore a previously interrupted
+  // camera follow. The global Folgen toggle may still be on in v114+.
+  if(renderer.followEnabled && renderer.followedBodyId!=null)renderer.followSelectedBody();
 }
-/** Cinema is available for the physical-size lineup without scaled orbits. */
+/** Every row order offers Cinema, regardless of the separately saved scale toggles. */
 export function syncCinemaControl(){
-  const available=Boolean(renderer && S.settings.row && S.settings.scaleObjects && !S.settings.scaleOrbits);
+  const available=Boolean(renderer && S.settings.row);
   const active=Boolean(renderer?.cinema?.active);
   const button=$('cinema-btn');
   button.hidden=!available;
@@ -120,8 +124,6 @@ export function syncCinemaControl(){
   speed.setAttribute('aria-pressed',String(doubleSpeed));
   speed.setAttribute('aria-label',doubleSpeed?'Cinema mit normaler Geschwindigkeit abspielen':'Cinema mit doppelter Geschwindigkeit abspielen');
   speed.title=doubleSpeed?'Cinema 1x':'Cinema 2x';
-  $('cinema-start-label').textContent=S.settings.rowOrder==='distance'?'Nah':'Klein';
-  $('cinema-end-label').textContent=S.settings.rowOrder==='distance'?'Fern':'Groß';
   if(!active)$('cinema-seek').value='0';
 }
 export function updateCinemaTimeline({active,progress=0,durationMs=0,objectId=null}){

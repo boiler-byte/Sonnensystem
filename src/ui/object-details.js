@@ -50,7 +50,7 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     $('detail-name').textContent='Kein Objekt ausgewählt';
     $('detail-description').textContent='Wähle einen Himmelskörper in der Szene oder im Katalog aus.';
     $('texture-credit').hidden=true;$('texture-credit').innerHTML='';
-    $('hero-body').className='hero-body';
+    $('hero-body').className='hero-body';$('hero-body').disabled=true;
     $('editorial-content').innerHTML='';$('editorial-content').hidden=true;
     $('planet-view-actions').hidden=true;
     $('detail-scene-actions').hidden=true;
@@ -67,7 +67,7 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     $('texture-credit').hidden=true;$('texture-credit').textContent='';
     $('planet-view-actions').hidden=true;
     $('detail-scene-actions').hidden=true;
-    $('hero-body').className='hero-body rock';
+    $('hero-body').className='hero-body rock';$('hero-body').disabled=true;
     const date=b.launchDate.split('-').reverse().join('.');
     $('stats-grid').innerHTML=[['START',date,'launch'],['STATUS',b.missionStatus,'status']].map(renderStat).join('');
     $('orbit-facts').innerHTML=`<div><span>Ziele</span><b>${esc(b.targets)}</b></div><div><span>Position</span><b>Nicht dargestellt – keine Ephemeriden</b></div>`;
@@ -118,6 +118,7 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     planetButton.setAttribute('aria-pressed',String(active));
   }
   const orb=$('hero-body');orb.className='hero-body '+(b.style||'rock');orb.style.setProperty('--planet-color',b.color);
+  orb.disabled=!renderer;orb.title=`${b.name} zentrieren und heranzoomen`;orb.setAttribute('aria-label',orb.title);
   const stats=[ ['RADIUS',b.radiusKm?(b.radiusKm<1?`${formatInt(b.radiusKm*1000)} m`:`${formatInt(b.radiusKm)} km`):'—','radius'],
     [b.type==='satellite'?'HÖHE (ca.)':'GR. HALBACHSE',b.type==='satellite'&&b.a?`${formatInt(Math.max(0,b.a-6371))} km`:displayA(b),'orbit'],
     ['UMLAUFZEIT',displayPeriod(b.periodDays),'period'],

@@ -16,15 +16,15 @@ const segment=(source,start,end)=>{
   return source.slice(a,b);
 };
 
-test('v96: three always-visible scale toggles; four paired icon-only Layer tools',async()=>{
+test('v96: three always-visible scale toggles; five icon-only Layer tools',async()=>{
  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
  assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
  const main=segment(html,'class="scale-main-controls"','id="layer-picker-wrap"');
  const layer=segment(html,'class="layer-display-toggles"','class="layer-options"');
  const mainIds=[...main.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
- assert.deepEqual(mainIds,['scale-objects-btn','scale-orbits-btn','orbit-row-btn']);
+ assert.deepEqual(mainIds,['orbit-row-btn','scale-objects-btn','scale-orbits-btn']);
  const appearanceIds=[...layer.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
- assert.deepEqual(appearanceIds,['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons']);
+ assert.deepEqual(appearanceIds,['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-lighting','toggle-four-moons']);
  for(const id of [...mainIds,...appearanceIds]){
    const button=html.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
    assert.match(button,/aria-pressed="(true|false)"/);assert.match(button,/<svg /);assert.match(button,/title="[^"]+"/);
@@ -93,7 +93,7 @@ test('v43: repeated snackbar updates replace prior message and reset dismissal t
   }
 });
 
-test('v100: four icon toggles update state, aria-pressed and status snackbar',()=>{
+test('v100: five icon toggles update state, aria-pressed and status snackbar',()=>{
   const elements=new Map();
   const get=id=>{
     if(!elements.has(id)){

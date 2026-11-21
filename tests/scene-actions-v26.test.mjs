@@ -113,7 +113,7 @@ test('v26: dwarf-centred isolated 3D scene positions and renders Pluto and its m
 
 test('v26: opening a dwarf scene enables its central layer and moon opens its parent',async()=>{
   const source=await read('src/app.js');
-  const method=source.slice(source.indexOf('/** Planetary isolation also supports'),source.indexOf('function selectBody(id,focus=false)'));
+  const method=source.slice(source.indexOf('/** Planetary isolation also supports'),source.indexOf('function selectBody('));
   const settings={planet:createViewSettings('planet')};
   const opened=[];
   const ctx=vm.createContext({

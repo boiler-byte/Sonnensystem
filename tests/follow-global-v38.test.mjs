@@ -89,16 +89,18 @@ test('v38: rotate, zoom and perspective presets retain follow and keep target ce
   assert.deepEqual(r.camera.desiredTarget,[1.1,0,0]);
 });
 
-test('v38: panning and excess velocity still turn the global toggle off',()=>{
+test('v114: pan and high velocity suspend tracking but keep the global switch on',()=>{
   const {renderer:r,changes}=makeRenderer();
   r.follow('earth',0);
   r.panByPixels(15,-5);
-  assert.equal(r.followEnabled,false);
+  assert.equal(r.followEnabled,true);
   assert.equal(r.followedBodyId,null);
-  r.follow('earth',100);
-  r.positions.set('earth',[100,0,0]);r.updateFollowTarget(120);
-  assert.equal(r.followEnabled,false);
-  assert.deepEqual(changes,[true,false,true,false]);
+  r.setSelected('earth',{focus:true}); // New explicit click restarts following.
+  assert.equal(r.followedBodyId,'earth');
+  r.positions.set('earth',[100,0,0]);r.updateFollowTarget(r.followLastAtMs+20);
+  assert.equal(r.followEnabled,true);
+  assert.equal(r.followedBodyId,null);
+  assert.deepEqual(changes,[true], 'a manual toggle is the only way to switch off');
 });
 
 test('v38: scene and preset transitions retain global follow with fresh speed baselines',()=>{
@@ -181,7 +183,8 @@ test('v38: mouse wheel, right drag and two-finger look keep following; left drag
     handlers.pointerup(pointer(21,212,100,'touch'));
     handlers.pointerdown(pointer(30,100,100,'touch'));
     handlers.pointermove(pointer(30,125,116,'touch'));
-    assert.equal(r.followEnabled,false,'one-finger pan cancels follow');
+    assert.equal(r.followEnabled,true,'one-finger pan keeps Folgen enabled');
+    assert.equal(r.followedBodyId,null,'one-finger pan suspends tracking');
   }finally{
     if(oldDocument===undefined)delete globalThis.document;else globalThis.document=oldDocument;
     if(oldWindow===undefined)delete globalThis.window;else globalThis.window=oldWindow;

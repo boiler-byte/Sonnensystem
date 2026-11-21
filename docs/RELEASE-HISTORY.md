@@ -1,3 +1,63 @@
+## v118 – Reihendarstellung mit Farbmodi und unabhängigem Cinema-Play
+
+- Der **Bahn**-Maßstab-Toggle wird in beiden Reihenmodi verborgen und erscheint nach Verlassen der Reihe mit dem zuvor gespeicherten Wert. Solange die Reihe läuft, ist `scaleOrbits` für die sichtbare Geometrie ohne Wirkung.
+- Der Cinema-Startbutton erscheint bei jeder aktiven Reihe, auch mit ausgeschaltetem Objektmaßstab oder zuvor aktiviertem Bahnmaßstab. Die Tour ist in jeder dieser Konstellationen startbar; Play/Pause und 2x der Timeline erscheinen weiterhin erst im Film.
+- Der Reihen-Button ist bei **groß nach klein** grün und bei **nah bis fern** blau; außerhalb der Reihe bleibt der bisherige neutrale Zustand. Paket `118.0.0`, HTML `V118.0`, Shell `sonnensystem-shell-v118`, Delta-Basis v117. Regressionstests: `tests/row-controls-v118.test.mjs` plus aktualisierte Cinema-Regressionen.
+
+## v117 – Start ohne Objektauswahl, Katalog und Schrägperspektive
+
+- Beim Start sind weder im App-Zustand noch im Renderer Objekte ausgewählt (`null`). Das Laden des Katalogs behält `null` bei; erst die explizite Auswahl setzt ein Objekt. Die Detail-HTML-Platzhalter beginnen neutral.
+- Die bereits bestehenden Starts **Objekte** (Desktop-Sidebar sowie Tab-Auswahl im Mobile-Sheet) und **Schräg/oben** (Kamerapreset 0) werden beibehalten und durch neue Regressionstests abgesichert.
+- Alle anderen Startwerte und Einstellungen unverändert, einschließlich standardmäßig aktiviertem globalen Folgen ohne anfängliches Ziel. Paket `117.0.0`, HTML `V117.0`, PWA-Shell `sonnensystem-shell-v117`, Delta-Basis v116. Tests in `tests/start-defaults-v117.test.mjs`.
+
+## v116 – Kompakte Cinema-Zeitleiste in der Reihendarstellung
+
+- Untere Textzeile „Klein/Groß“ beziehungsweise „Nah/Fern“ aus der Cinema-Zeitleiste und deren UI-Aktualisierung entfernt.
+- Cinema-Objekt und Laufzeit direkt über den Range-Slider in dieselbe rechte Spalte gesetzt; die obere Kopfzeile liegt an der Oberkante der 36-px-Play/2x-Buttons, die Unterkante des Sliders auf deren Unterkante. Das HUD wird dadurch deutlich flacher.
+- Desktop und Mobile behalten ihre jeweiligen Einblendpositionen, und der mobile Abstand zum Sheet bleibt dynamisch. Cinema-Fahrten, Abspieloptionen und Barrierefreiheitsbezeichnungen unverändert. Paket `116.0.0`, HTML `V116.0`, PWA-Shell `sonnensystem-shell-v116`, Delta-Basis v115. Regressionen in `tests/cinema-timeline-v116.test.mjs`.
+
+## v115 – Kamera in der Reihen-Darstellung wie v113
+
+- Die v114-Regressionsursache behoben: Ein noch eingeschalteter, aber ausgesetzter Folgen-Schalter startete beim Reihenwechsel die Kamera-Nachführung erneut und ersetzte den gewohnten v113-Reihenausschnitt durch ein Objektzentrum und einen anderen Zoom.
+- Nur bei tatsächlich aktivem `followedBodyId` wird die Kamera beim Wechsel der Reihenordnung oder Szene nachgeführt. Neu geladene Katalogdaten stellen unterbrochenes Folgen nicht mehr ungefragt wieder her; der erste Katalogstart aktiviert weiterhin standardmäßig Folgen.
+- Blickwinkel und Abstände der Reihenansicht (Aus, Größe, Entfernung) sowie Cinema-Rückfahrten entsprechen wieder dem v113-Verhalten für nicht verfolgte Objekte. Der v114-Folgen-Toggle bleibt bewusst eingeschaltet und wird erst durch eine neue Objektauswahl erneut nachgeführt.
+- Unverändert: v114-Reihenfolge der Toggle-Schalter, Kontrast-Toggle, Renderer-Auswahl ohne Zoom, Katalog-/Hero-Auswahl mit Zoom. `115.0.0`, HTML `V115.0`, Cache `sonnensystem-shell-v115`, Delta-Basis v114. Regressionstests: `tests/camera-row-v115.test.mjs`.
+
+## v114 – Getrennte Darstellung, dauerhafter Folgen-Schalter und gezielter Objektfokus
+
+- Maßstabs-Schalter auf **Reihe | Objekt | Bahn** sortiert. Im Layer-Panel wieder eigenständiger Kontrast-Schalter in Reihe zwei. Bahnmodus im Sonnensystem **Umlaufbahn → Galaktische Bewegung → Aus**, in Planetenansichten **Umlaufbahn → Aus**, jeweils unabhängig von `orbitContrast`. Kontrast wirkt sowohl auf Umlaufbahnen als auch auf galaktische Spuren.
+- Nachführung stoppt bei zu schneller Objektbewegung oder manueller Kamerabewegung, ohne global `followEnabled` zu deaktivieren. Keine ungewollte Wiederaufnahme in der Render-Schleife; explizite Auswahl nimmt sie wieder auf.
+- Renderer-Klick zentriert ohne Zoomänderung; Katalogauswahl und Klick auf das Objektbild in der Detailansicht zentrieren inklusive Zoom. Hero-Bild ist ein Button mit passendem ARIA-Label.
+- Paketversion `114.0.0`, HTML `V114.0`, PWA-Shell `sonnensystem-shell-v114`, Delta-Basis v113. Regressionen für die neuen Interaktionen und angepasste bestehende Tests.
+
+## v113 – Kontinuierliche Spuraufzeichnung, Reduktion ausschließlich älterer Abschnitte
+
+- Zu langsame Bewegungen und ein Wechsel von hoher zu niedriger Zeitgeschwindigkeit führen nicht mehr zu neu entstehenden langen Geraden hinter dem Planeten: Jeder tatsächlich erreichte Simulationsschritt wird als Stützpunkt übernommen, unabhängig von Biegung oder Mindestzeitabstand.
+- Beim Limit von 1.000 Punkten pro Objekt bleiben die neuesten 20 % der gespeicherten Punkte inklusive des Live-Endes ohne Vereinfachung; ältere Punkte werden weiterhin nach 3D- und Bildschirmfehler reduziert. Der erste Punkt wird weiterhin nur nach dem 30/50/100-Jahres-Fenster vorgezogen.
+- Die exakt gerade Sonne bleibt auf zwei Endpunkte reduziert. Pausen, verdeckte Layer, Sternenparallaxe und Zeitsteuerung sind unverändert. Keine rückwirkende Bahnberechnung für bei sehr schneller Simulation übersprungene Zwischenzeiten.
+- Tests: `tests/galactic-continuous-trails-v113.test.mjs` einschließlich Realgeometrie- und Tempoänderungsregressionen. Version `113.0.0`, PWA-Shell `sonnensystem-shell-v113`, Delta-Basis v112.
+
+## v112 – Verbesserte galaktische Spuraufzeichnung
+
+- Standardlimit pro sichtbarem Objekt von 240 auf 1.000 Punkte angehoben (einschließlich Live-Endpunkt). Anfang und laufendes Ende bleiben bei der Reduktion geschützt; die 50-/30-/100-Jahres-Fenster bleiben unverändert.
+- Kurvenpunkte anhand der tatsächlich dargestellten galaktischen 3D-Flugbahn und, wenn verfügbar, der Bildschirmprojektion ausgewählt. Mehrfache Vereinfachung berücksichtigt bereits ausgelassene Kurvenstücke durch konservative Abweichungsgrenzen und bevorzugt subpixelgenaue Reduktionen statt auffälliger Linienkürzungen.
+- Wiederverwendbarer Puffer für Projektionswerte, unveränderte Simulationsuhr und unveränderte Sternenparallaxe. Version `112.0.0`, Offline-Shell `sonnensystem-shell-v112`, Delta-Basis v111.
+
+## v111 – Sternenparallaxe bei galaktischer Bewegung
+
+- Die 2.200 Sternpunkte werden nur bei aktivem galaktischen Modus perspektivisch leicht gegen den festen Sonnen-Flugvektor verschoben. Der Einfluss hängt vom im Sternmodell bereits vorhandenen Abstand ab (nahe stärker, ferne kaum).
+- Die Parallaxe folgt der seit dem Einstieg durchlaufenen Simulationszeit. Pause, Rückwärtslauf und Änderung der Abspielgeschwindigkeit wirken ohne Änderung der Zeitsteuerung; Ein-/Austritt wird weich interpoliert.
+- Verschiebung auf acht Weltkoordinaten begrenzt, keine Sternenschweife oder zusätzlichen Draw-Calls. Mit neuem Modul `src/renderer/galactic-parallax.js` und eigenständigen Regressionstests.
+- Version `111.0.0`, PWA-Shell `sonnensystem-shell-v111`, Delta-Basis v110.
+
+## v110 – AR-Bewegung entfernen; geradlinige, längere und sparsame galaktische Spuren
+
+- Der zweite AR-Button (Vier-Wege-Kreuz) und der entsprechende `devicemotion`-Code aus v106 sind entfernt. Sensorblick über `deviceorientation` bleibt bestehen.
+- Illustrative Sonnenbewegung mit konstantem, festem Vektor statt sinusförmiger Abweichungen: Sonnen-Spur geometrisch exakt gerade.
+- Neue Zeitfenster für aufgezeichnete Spuren: Sonne 50 Jahre; innere Planeten 30 Jahre; äußere Planeten und transneptunische Objekte 100 Jahre. Weitere Kleinkörper nach 5-AE-Grenze.
+- Kurvenabhängige, auf höchstens 240 Punkte je Objekt begrenzte Aufzeichnung mit aktuellem Live-Endpunkt; bei Erreichen des Punktbudgets werden unwichtige Zwischenpunkte entfernt, der Startpunkt erst nach Ablauf der zeitlichen Spurlänge vorgezogen. Unsichtbare Objektlayer erzeugen keine Spur und behalten keine Aufzeichnung.
+- Bestehendes Simulationszeitmodell, WebP- und GitHub-Pages-Verhalten bleiben unverändert. Paketversion `110.0.0`, HTML `V110.0`, PWA-Shell `sonnensystem-shell-v110`, Delta-Basis v109.
+
 ## v109 – Texturabrufe ohne Zeitstempel auf GitHub Pages; fehlende Dateien nur beim Neustart erneut suchen
 
 - Auf statischen GitHub Pages verwendet der Renderer für WebP-Texturen saubere relative URLs ohne zeitbasierte `?v=`-Parameter.
@@ -34,7 +94,7 @@
 
 # Versionshistorie – Sonnensystem
 
-Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v108 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
+Dieses Dokument enthält die **vollständigen ursprünglichen Delta-Notizen für v2 bis v67** sowie den historischen Hotfix v6.1. Die früheren Einzeldateien wurden in v68 zusammengelegt. Die Releases v69 bis v112 stehen vor den archivierten Deltas. Angaben über frühere Bedienoberflächen, Testzahlen und Installationswege sind **historisch**; maßgeblich für den aktuellen Stand sind [README](../README.md), [Architektur](ARCHITECTURE.md) und [Hilfe](HILFE.md).
 
 ## Schnellindex
 

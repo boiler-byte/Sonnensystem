@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V109.0" />
+  <meta name="app-version" content="V118.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -37,20 +37,20 @@
       </aside>
       <aside class="detail" id="detail" role="tabpanel" aria-labelledby="sidebar-tab-detail" hidden>
         <div class="detail-top">
-          <h2 id="detail-name" class="detail-title">Erde</h2>
+          <h2 id="detail-name" class="detail-title">Kein Objekt ausgewählt</h2>
           <nav class="detail-index-nav" aria-label="Objekte derselben Kategorie durchschalten">
             <button class="detail-index-button" id="detail-prev" type="button" aria-label="Vorheriges Objekt derselben Kategorie" title="Vorheriges Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 5-7 7 7 7"/></svg></button>
-            <span class="detail-index" id="detail-index" aria-live="polite">01 / 09</span>
+            <span class="detail-index" id="detail-index" aria-live="polite">— / —</span>
             <button class="detail-index-button" id="detail-next" type="button" aria-label="Nächstes Objekt derselben Kategorie" title="Nächstes Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 5 7 7-7 7"/></svg></button>
           </nav>
         </div>
         <div class="detail-scroll">
           <div class="detail-hero">
             <div class="hero-orbit ring1"></div><div class="hero-orbit ring2"></div>
-            <div id="hero-body" class="hero-body earth"><div class="hero-shade"></div></div>
-            <div class="hero-ref"><span class="type-dot" id="type-dot"></span><span id="detail-type">PLANET</span><span class="hero-ref-divider" aria-hidden="true">/</span><span id="detail-origin">SONNENSYSTEM</span></div>
+            <button id="hero-body" class="hero-body" type="button" aria-label="Kein Objekt ausgewählt" title="Kein Objekt ausgewählt" disabled><span class="hero-shade" aria-hidden="true"></span></button>
+            <div class="hero-ref"><span class="type-dot" id="type-dot"></span><span id="detail-type">KEINE AUSWAHL</span><span class="hero-ref-divider" aria-hidden="true">/</span><span id="detail-origin">SONNENSYSTEM</span></div>
           </div>
-          <div class="detail-scene-actions" id="detail-scene-actions">
+          <div class="detail-scene-actions" id="detail-scene-actions" hidden>
             <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Planetenansicht</strong></span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
             <button id="center-object-btn" class="object-center-btn active" type="button" aria-label="Folgen ausschalten" title="Folgen ausschalten (für alle Objekte)" aria-pressed="true">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>
@@ -62,7 +62,7 @@
             <button class="detail-tab" id="detail-tab-wissen" type="button" role="tab" data-detail-tab="wissen" aria-controls="detail-wissen" aria-selected="false" tabindex="-1">Wissen</button>
           </div>
           <div class="detail-tab-panel" id="detail-wissen" role="tabpanel" aria-labelledby="detail-tab-wissen" tabindex="0" hidden>
-            <p id="detail-description" class="detail-description"></p>
+            <p id="detail-description" class="detail-description">Wähle einen Himmelskörper in der Szene oder im Katalog aus.</p>
             <p id="texture-credit" class="texture-credit" hidden></p>
             <div id="editorial-content" class="editorial-content" hidden></div>
           </div>
@@ -70,7 +70,7 @@
             <div id="related" class="related"></div>
             <div class="facts-title">PHYSIKALISCHE DATEN <span>↗</span></div><div id="stats-grid" class="stats-grid"></div>
             <div class="detail-divider"></div><div class="facts-title">ORBIT &amp; ZUGEHÖRIGKEIT</div><div class="orbit-facts" id="orbit-facts"></div>
-            <div class="detail-divider"></div><div class="facts-title">PRÄZISIONSDATEN</div><button id="horizons-btn" class="horizons-btn" type="button"><span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span></button><p class="source-hint" id="horizons-note">Position für das gewählte Datum von NASA/JPL abrufen.</p>
+            <div class="detail-divider"></div><div class="facts-title">PRÄZISIONSDATEN</div><button id="horizons-btn" class="horizons-btn" type="button" disabled><span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span></button><p class="source-hint" id="horizons-note">Wähle zunächst einen Himmelskörper aus.</p>
             <div class="detail-sources"><div class="source-head"><span>DATENQUELLEN</span><span>LIVE / FALLBACK</span></div><div class="source-status" id="source-status"></div></div>
           </div>
         </div>
@@ -85,9 +85,6 @@
         <div class="viewport-actions" role="group" aria-label="Kamerasteuerung">
           <button class="ar-mode-button" id="ar-mode-btn" type="button" aria-label="AR-Modus: Durch Bewegen des Smartphones umsehen" aria-pressed="false" aria-busy="false" title="AR-Modus" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/><path d="M12 6v2m0 8v2M6 12h2m8 0h2"/><circle cx="12" cy="12" r="3.5"/></svg>
-          </button>
-          <button class="ar-mode-button ar-motion-button" id="ar-motion-btn" type="button" aria-label="AR-Bewegungsnavigation einschalten: Smartphone vor, zurück, links oder rechts bewegen" aria-pressed="false" aria-busy="false" title="AR-Bewegung" hidden>
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v7m0-7L9 5m3-3 3 3M12 22v-7m0 7-3-3m3 3 3-3M2 12h7m-7 0 3-3m-3 3 3 3M22 12h-7m7 0-3-3m3 3-3 3"/><circle cx="12" cy="12" r="2"/></svg>
           </button>
           <button class="icon-button camera-reset-button" id="reset-camera" type="button" title="Kamera zurücksetzen" aria-label="Kamera zurücksetzen" data-current-perspective="oblique" data-next-perspective="topdown">
             <!-- free/reset: the camera looks straight at the viewer's own position -->
@@ -141,6 +138,11 @@
             <svg class="cinema-icon-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.4"/></svg>
           </button>
           <div class="scale-main-controls" role="group" aria-label="Maßstab und Reihendarstellung">
+            <button class="scale-option scale-row-toggle" id="orbit-row-btn" type="button" title="Reihe: Aus" aria-label="Reihe – Objekte nach Größe aufreihen" aria-pressed="false">
+                    <svg class="row-order-icon row-icon-size" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="4.1"/><circle cx="14.5" cy="12" r="2.7"/><circle cx="21" cy="12" r="1.15"/></svg>
+                    <svg class="row-order-icon row-icon-distance" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="4.5" cy="12" r="4.1"/><circle cx="12" cy="12" r="1.35"/><circle cx="17" cy="12" r="1.35"/><circle cx="22" cy="12" r="1.35"/></svg>
+                    <span class="scale-option-label">Reihe</span>
+                  </button>
             <button class="scale-option" id="scale-objects-btn" type="button" aria-pressed="false" title="Objektgrößen: schematisch">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14M5 20h14M12 6v12M8.5 9.5 12 6l3.5 3.5M8.5 14.5 12 18l3.5-3.5"/></svg>
                     <span class="scale-option-label">Objekt</span>
@@ -148,11 +150,6 @@
             <button class="scale-option" id="scale-orbits-btn" type="button" aria-pressed="false" title="Bahnabstände: schematisch">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5v14M20 5v14M6 12h12M9.5 8.5 6 12l3.5 3.5M14.5 8.5 18 12l-3.5 3.5"/></svg>
                     <span class="scale-option-label">Bahn</span>
-                  </button>
-            <button class="scale-option scale-row-toggle" id="orbit-row-btn" type="button" title="Reihe: Aus" aria-label="Reihe – Objekte nach Größe aufreihen" aria-pressed="false">
-                    <svg class="row-order-icon row-icon-size" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="4.1"/><circle cx="14.5" cy="12" r="2.7"/><circle cx="21" cy="12" r="1.15"/></svg>
-                    <svg class="row-order-icon row-icon-distance" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="4.5" cy="12" r="4.1"/><circle cx="12" cy="12" r="1.35"/><circle cx="17" cy="12" r="1.35"/><circle cx="22" cy="12" r="1.35"/></svg>
-                    <span class="scale-option-label">Reihe</span>
                   </button>
           </div>
           <div class="layer-picker-wrap" id="layer-picker-wrap">
@@ -170,10 +167,12 @@
                     <svg class="tab-label-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.5h11l5 5v8H4zM15 5.5v5h5M7 13h10M7 16h7"/></svg>
                     <svg class="tab-label-point-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.8"/></svg>
                   </button>
-                  <button class="scale-tool-toggle active" id="orbit-visibility-btn" type="button" title="Umlaufbahn: An (nächster Modus: Umlaufbahn + Bahnkontrast)" aria-label="Umlaufbahn: An. Nächster Modus: Umlaufbahn + Bahnkontrast" aria-pressed="true" data-orbit-mode="normal">
+                  <button class="scale-tool-toggle active" id="orbit-visibility-btn" type="button" title="Umlaufbahn: An (nächster Modus: Galaktische Bewegung)" aria-label="Umlaufbahn: An. Nächster Modus: Galaktische Bewegung" aria-pressed="true" data-orbit-mode="normal">
                     <svg class="orbit-visibility-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/></svg>
-                    <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" stroke-width="3"/><circle cx="12" cy="12" r="4.6" stroke-width="2.6"/></svg>
                     <svg class="orbit-galactic-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 14.5c3.2-5.3 8.2-8 16.8-9"/><path d="M4 17.8c3.8-2.2 7.6-2.8 12.4-2.3 1.6.17 2.9.48 4.1.9"/><circle cx="18.9" cy="5.6" r="1.75"/><circle cx="10.1" cy="15.1" r="1.25"/></svg>
+                  </button>
+                  <button class="scale-tool-toggle" id="orbit-contrast-btn" type="button" title="Bahnkontrast: Aus (für Umlaufbahnen und galaktische Bewegung)" aria-label="Bahnkontrast: Aus" aria-pressed="false">
+                    <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" stroke-width="3"/><circle cx="12" cy="12" r="4.6" stroke-width="2.6"/></svg>
                   </button>
                   <button class="scale-tool-toggle" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert)" aria-label="Beleuchtung" aria-pressed="false">
                     <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>
@@ -228,16 +227,17 @@
           </div>
         </section>
         <div class="cinema-timeline" id="cinema-timeline" aria-label="Cinema-Kamerafahrt" hidden>
-          <div class="cinema-timeline-header"><span id="cinema-object">Cinema-Modus</span><output id="cinema-time" for="cinema-seek">00:00 / 00:00</output></div>
           <div class="cinema-timeline-transport">
             <button class="cinema-play-pause" id="cinema-play-pause" type="button" aria-label="Cinema pausieren" aria-pressed="false" title="Cinema pausieren">
               <svg class="cinema-pause-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h4v14H7zM14 5h4v14h-4z"/></svg>
               <svg class="cinema-resume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13L19 12z"/></svg>
             </button>
             <button class="cinema-play-pause cinema-speed-button" id="cinema-speed-toggle" type="button" aria-label="Cinema mit doppelter Geschwindigkeit abspielen" aria-pressed="false" title="Cinema 2x">2x</button>
-            <input id="cinema-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Cinema-Zeitleiste – Position der Kamerafahrt" aria-valuetext="0 Prozent" />
+            <div class="cinema-timeline-track">
+              <div class="cinema-timeline-header"><span id="cinema-object">Cinema-Modus</span><output id="cinema-time" for="cinema-seek">00:00 / 00:00</output></div>
+              <input id="cinema-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Cinema-Zeitleiste – Position der Kamerafahrt" aria-valuetext="0 Prozent" />
+            </div>
           </div>
-          <div class="cinema-timeline-ends" aria-hidden="true"><span id="cinema-start-label">Klein</span><span id="cinema-end-label">Groß</span></div>
         </div>
         <div id="canvas-error" class="canvas-error" hidden>WebGL konnte nicht initialisiert werden. Bitte Hardwarebeschleunigung im Browser aktivieren.</div>
       </section>

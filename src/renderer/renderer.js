@@ -1,5 +1,5 @@
 import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, hex, projected } from './math.js';
-import { displayBodyRadius, displayOrbitRadius, optimizedSolarMode, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
+import { displayBodyRadius, displayOrbitRadius, optimizedSolarMode, orbitScaleActive, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
 import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
@@ -15,6 +15,7 @@ import { drawSolarSystemScene, solarOrbitBodies } from './solar-view.js';
 import {planetOrbitIds} from './scene-objects.js';
 import {bodyModel,ringModel,localLightDirection} from './object-orientation.js';
 import {VisualAngularClocks,DAY_MS} from './visual-angular-limit.js';
+import {galacticStarParallaxTarget,easeGalacticStarOffset} from './galactic-parallax.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
 import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaSceneAt, cinemaEntryOpacity, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
@@ -38,7 +39,8 @@ export class SolarRenderer {
   this.focusedBodyId=null;this.focusOffsetY=0;
   this.followEnabled=true;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
   this.visualAngularClocks=new VisualAngularClocks();
-  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId='earth';this.settings={orbits:true,labels:true,row:false,rowOrder:'size'};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
+  this._galacticStarReferenceTime=null;this._galacticStarOffset=[0,0,0];this._galacticStarFrameAt=null;
+  this.bodies=[];this.byId=new Map();this.positions=new Map();this.rendered=[];this.selectedId=null;this.settings={orbits:true,labels:true,row:false,rowOrder:'size'};this.overrides=new Map();this.simTime=Date.now();this.planetId=null;
   this.transitionsEnabled=true;this.transition=null;this.cameraFlight=null;this._rowPreviousAngles=null;
   this.cinema=null;this._cinemaRestoreFocus=null;
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
@@ -88,7 +90,7 @@ export class SolarRenderer {
   this.cancelCameraFlight();
   this.cameraManuallyMoved=true;
   if(this.transition)this.transition.cameraTo=null; // Manual rotation wins over an animated camera angle.
-  if(positionChanged){this.focusedBodyId=null;this.stopFollowing();}
+  if(positionChanged)this.suspendFollowing();
   else if(!this.followEnabled)this.focusedBodyId=null;
   this.callbacks?.onCameraChange?.(); // Immediately switch the next-view icon on pan/zoom/rotation.
  }
@@ -96,7 +98,13 @@ export class SolarRenderer {
  clearFollowTarget(){
   this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
  }
- /** Leave the camera where it is when tracking ends; do not change the selection. */
+ /** Stop steering the camera, keeping the user's global Folgen switch on. */
+ suspendFollowing(){
+  const active=this.followedBodyId!==null && this.followedBodyId!==undefined;
+  this.clearFollowTarget();this.focusedBodyId=null;
+  return active;
+ }
+ /** Only the explicit Folgen switch may disable the global mode. */
  stopFollowing(){
   const active=this.followEnabled===true;
   this.followEnabled=false;this.clearFollowTarget();
@@ -109,14 +117,12 @@ export class SolarRenderer {
   const body=this.byId.get(id);
   if(!body || body.type==='probe' || id!==this.selectedId)return false;
   this.followEnabled=true;
-  if(!this.followSelectedBody(now)){
-    this.followEnabled=false;return false;
-  }
+  this.followSelectedBody(now);
   this.callbacks?.onFollowChange?.(true);
   return true;
  }
  /** Track the current selection; reset the speed sample when the object/scene changes. */
- followSelectedBody(now=performance.now()){
+ followSelectedBody(now=performance.now(),{zoom=true}={}){
   if(!this.followEnabled)return false;
   const id=this.selectedId,body=this.byId.get(id);
   if(!body || body.type==='probe'){
@@ -128,23 +134,24 @@ export class SolarRenderer {
     this.clearFollowTarget();this.focusedBodyId=null;return false;
   }
   this.followedBodyId=id;
-  this.focus(id);
+  this.focus(id,{zoom});
   this.camera.desiredTarget=position.slice();
   this.followLastPosition=position.slice();this.followLastAtMs=now;
   return true;
  }
  /** Follow each slow scene update, without interpreting a selection change as motion. */
  updateFollowTarget(now=performance.now()){
-  if(!this.followEnabled)return;
+  // A suspended target does not resume automatically until a new selection.
+  if(!this.followEnabled || this.followedBodyId==null)return;
   const id=this.selectedId;
-  if(this.followedBodyId!==id){this.followSelectedBody(now);return;}
+  if(this.followedBodyId!==id){this.suspendFollowing();return;}
   const position=this.positions.get(id);
   if(!position || position.some(value=>!Number.isFinite(value))){
     this.clearFollowTarget();this.focusedBodyId=null;return;
   }
   if(!this.transition && followMotionTooFast(this.followLastPosition,position,this.camera.desiredDist,
       this.height,now-this.followLastAtMs)){
-    this.stopFollowing();return;
+    this.suspendFollowing();return;
   }
   this.camera.desiredTarget=position.slice();
   this.followLastPosition=position.slice();this.followLastAtMs=now;
@@ -238,7 +245,7 @@ export class SolarRenderer {
   const saved={target:this.camera.target.slice(),dist:this.camera.dist,
     theta:this.camera.theta,phi:this.camera.phi,
     cameraManuallyMoved:this.cameraManuallyMoved,focusedBodyId:this.focusedBodyId};
-  this.stopFollowing();
+  this.suspendFollowing();
   const reorder=this.settings?.rowOrder!=='distance';
   this.beginTransition('cinema',now); // Capture camera and positions, even when no reorder occurs.
   this.cinema={active:true,reorder,paused:false,speed:1,progress:0,elapsedMs:0,lastAt:now,
@@ -543,7 +550,7 @@ export class SolarRenderer {
   return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
  }
  /** A new galactic session starts without history, regardless of playback speed. */
- resetGalacticTrails(){this._galacticTrails?.clear();}
+ resetGalacticTrails(){this._galacticTrails?.clear();this._galacticStarReferenceTime=null;}
  /** Identical wave timing for an orbit stroke and its moving moon/satellite. */
  orbitTransitionAmount(body){
   const t=this.transition;
@@ -562,7 +569,7 @@ export class SolarRenderer {
  /** Return to the origin of the current scene after an Objekt/Bahn scale change. */
  resetViewCamera(){
   this.cancelCameraFlight();
-  this.stopFollowing();
+  this.suspendFollowing();
   this.focusedBodyId=null;
   this.cameraManuallyMoved=false;
   this.camera.freeLook=null;
@@ -616,7 +623,8 @@ export class SolarRenderer {
   const mobile=preferredMobileQuality();
   if(this.textures && this.textures.mobile!==mobile)this.textures.setMobile(mobile);
  }
- setBodies(list){this.bodies=list;this.byId=new Map(list.map(o=>[o.id,o]));
+ setBodies(list){const firstCatalogLoad=!this.bodies?.length;
+  this.bodies=list;this.byId=new Map(list.map(o=>[o.id,o]));
   this._sceneRevision=(this._sceneRevision||0)+1;
   this._orbitGeometryCache?.clear(); // Drop stale geometry from replaced live catalogs.
   this._childrenSource=list;
@@ -628,9 +636,10 @@ export class SolarRenderer {
   }
   this.fourMoonIds=largestMoonIds(list);
   if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
-  // The global "Folgen" toggle starts on; acquire the position as soon as
-  // catalog entries are available and refresh it after future catalog loads.
-  if(this.followEnabled)this.followSelectedBody();
+  // The global "Folgen" toggle starts on, but v117 has no initial selected body.
+  // Follow only an existing selection: never choose a catalog body implicitly.
+  // Later catalog updates must not resume suspended tracking (v115).
+  if(this.followEnabled && this.selectedId!=null && (firstCatalogLoad || this.followedBodyId!=null))this.followSelectedBody();
  }
  /** The planet and its direct natural/artificial orbiters form an isolated scene. */
  planetChildren(id=this.planetId){
@@ -650,36 +659,38 @@ export class SolarRenderer {
   const frame=this.settings?.row?this.rowDistance():this.planetFrameDistance(id);
   if(!animated)this.camera.dist=frame;this.camera.desiredDist=frame;
   this.calcPositions(this.simTime);
-  if(this.followEnabled)this.followSelectedBody();
+  if(this.followEnabled && this.followedBodyId!=null)this.followSelectedBody();
   return true;
  }
- setSelected(id,{focus=false}={}){
-  // A new selection restores the ordinary orbit camera at exactly the same
-  // eye/gaze before focus animation starts. Clearing selection does not jump.
-  if(id!==null && id!==undefined && this.camera.freeLook)
-    restoreOrbitFromLook(this.camera);
+ setSelected(id,{focus=false,zoom=focus}={}){
+  // Canvas picks center at the current zoom; catalog and hero also zoom in.
+  if(id!=null && this.camera.freeLook)restoreOrbitFromLook(this.camera);
   const changed=id!==this.selectedId;
   this.selectedId=id;
-  if(this.followEnabled && changed){this.followSelectedBody();return;}
-  if(focus && id!==this.followedBodyId)this.focus(id);
+  if(id==null){this.suspendFollowing();return;}
+  if(this.followEnabled && (changed || focus)){
+    this.followSelectedBody(performance.now(),{zoom:focus?zoom:false});return;
+  }
+  if(focus)this.focus(id,{zoom});
   else if(id!==this.focusedBodyId && !this.followEnabled)this.focusedBodyId=null;
  }
- focus(id){const b=this.byId.get(id);if(!b)return;
+ focus(id,{zoom=true}={}){const b=this.byId.get(id);if(!b)return;
   if(this.camera.freeLook)restoreOrbitFromLook(this.camera);
   this.markCameraMoved();this.focusedBodyId=id;
   if(this.planetId){
-   if(id===this.planetId){this.camera.desiredTarget=[0,0,0];this.camera.desiredDist=this.planetFrameDistance();}
+   if(id===this.planetId){this.camera.desiredTarget=[0,0,0];if(zoom)this.camera.desiredDist=this.planetFrameDistance();}
    else if(b.parentId===this.planetId){
     const pos=this.positions.get(id);if(pos)this.camera.desiredTarget=pos.slice();
-    this.camera.desiredDist=b.type==='satellite'?5.5:6.5;
+    if(zoom)this.camera.desiredDist=b.type==='satellite'?5.5:6.5;
    }
-   if(this.settings?.scaleObjects){
+   if(zoom && this.settings?.scaleObjects){
     const radius=this.bodyRadius(b);
     if(radius>0)this.camera.desiredDist=Math.max(this.minCameraDistance()*2,radius*10);
    }
    return;
   }
   const pos=this.positions.get(id);if(pos)this.camera.desiredTarget=pos.slice();
+  if(!zoom)return; // Renderer selection must never modify the distance.
   const dist=b.type==='star'?24:b.type==='planet'?10.5:b.type==='moon'?3.8:b.type==='satellite'?3.6:b.type==='dwarf'?8.7:7.5;
   const radius=this.settings?.scaleObjects?this.bodyRadius(b):0;
   this.camera.desiredDist=radius>0?Math.max(this.minCameraDistance()*2,radius*10):dist;
@@ -693,7 +704,7 @@ export class SolarRenderer {
   if(wasPlanet){
     if(!animated){this.camera.target=[0,0,0];this.camera.dist=this.solarOverviewDistance();}
     this.calcPositions(this.simTime);
-    if(this.followEnabled)this.followSelectedBody();
+    if(this.followEnabled && this.followedBodyId!=null)this.followSelectedBody();
   }
  }
  setOverride(id,date,vector){this.overrides.set(id,{date,vector});this._sceneRevision=(this._sceneRevision||0)+1;}
@@ -752,9 +763,11 @@ export class SolarRenderer {
     this.resetGalacticTrails();
     this._galacticTrailModeActive=recording;
   }
+  if(recording && !Number.isFinite(this._galacticStarReferenceTime))
+    this._galacticStarReferenceTime=time;
   const layers=settings?.layers;
   const rowLayers=settings?.row ? (layers?.mode==='all' ? 'all' : [...(layers?.types||[])].sort().join(',')) : '';
-  const frameKey=[time,this.planetId||'solar',!!settings?.scaleOrbits,!!settings?.scaleObjects,
+  const frameKey=[time,this.planetId||'solar',orbitScaleActive(settings),!!settings?.scaleObjects,
     !!settings?.row,settings?.row?!!settings?.fourMoons:'',rowLayers,this._sceneRevision||0].join('|');
   // The camera and GPU still render each frame. Only Kepler world positions are
   // reused when simulated time and scene geometry did not change.
@@ -805,7 +818,17 @@ export class SolarRenderer {
   return p;
  }
  orbitLine(b,center,vp,alpha,selected,options){drawOrbitLine(this,b,center,vp,alpha,selected,options);}
+  advanceGalacticStarParallax(now=performance.now()){
+  const target=galacticStarParallaxTarget(this.simTime,this._galacticStarReferenceTime,
+    this._galacticTrailModeActive===true);
+  const elapsed=this._galacticStarFrameAt===null||this._galacticStarFrameAt===undefined
+    ?16:Math.max(0,now-this._galacticStarFrameAt);
+  this._galacticStarFrameAt=now;
+  this._galacticStarOffset=easeGalacticStarOffset(this._galacticStarOffset,target,elapsed);
+  return this._galacticStarOffset;
+ }
   drawStars(vp){const gl=this.gl,p=this.starsProgram;gl.useProgram(p);gl.uniformMatrix4fv(this.uniform(p,'uVP'),false,vp);
+  gl.uniform3f(this.uniform(p,'uGalacticStarOffset'),...this.advanceGalacticStarParallax());
   gl.uniform1f(this.uniform(p,'uPixelRatio'),this.dpr);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.starVB);
   const pos=this.attribute(p,'aPosition'),size=this.attribute(p,'aSize');gl.enableVertexAttribArray(pos);gl.enableVertexAttribArray(size);

@@ -22,11 +22,11 @@ test('v101/v103: past Sun positions lead downward in the fixed 3D Y-axis at all 
   }
 });
 
-test('v101/v103: the old leftward drift is replaced by bounded sideways sway',()=>{
+test('v110: the old sinusoidal drift is replaced by fixed vector translation',()=>{
   const past=galacticOffsetAt(now-GALACTIC_SUN_HISTORY_DAYS*DAY,now);
-  almost(past[1], -GALACTIC_SUN_HISTORY_DAYS*GALACTIC_DRIFT_UNITS_PER_DAY,1.2);
-  almost(past[2], -GALACTIC_SUN_HISTORY_DAYS*GALACTIC_DRIFT_UNITS_PER_DAY*GALACTIC_DEPTH_FRACTION,1.5);
-  assert.ok(Math.abs(past[0])<1,'sideways displacement does not grow linearly with time');
+  almost(past[1], -GALACTIC_SUN_HISTORY_DAYS*GALACTIC_DRIFT_UNITS_PER_DAY,1e-8);
+  almost(past[2], -GALACTIC_SUN_HISTORY_DAYS*GALACTIC_DRIFT_UNITS_PER_DAY*GALACTIC_DEPTH_FRACTION,1e-8);
+  assert.equal(past[0],0,'there is no lateral sway');
 });
 
 test('v101/v103: recorded Sun trail extends downward and ends at current origin',()=>{
@@ -37,7 +37,7 @@ test('v101/v103: recorded Sun trail extends downward and ends at current origin'
   for(let i=0;i<=480;i++){
     samples=history.record(sun,start+(now-start)*i/480,[0,0,0]);
   }
-  assert.ok(samples.length>6 && samples.length<=240*3);
+  assert.equal(samples.length,6,'a perfectly straight solar trace needs only two points');
   assert.ok(samples[1]<-70,'long visible trail extends downward after the simulation has advanced');
   let previousY=-Infinity;
   for(let i=0;i<samples.length;i+=3){

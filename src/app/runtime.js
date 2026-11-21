@@ -21,6 +21,11 @@ export async function loadServerStatus(){
     if(!status.nasaContactConfigured){updateStatus('sbdb','offline','Kontakt fehlt');updateStatus('horizons','offline','Kontakt fehlt');}
   }catch{/* Server optional für reinen Offline-Katalog */}
 }
+/** Keep an intentional empty selection after loading the catalog. */
+export function selectionAfterCatalogLoad(current,bodies){
+  if(current===null || bodies.some(body=>body.id===current))return current;
+  return bodies[0]?.id||null;
+}
 export async function init(){
   connectCatalogSelection(selectBody);
   setMobileSheets(initMobileSheets());initControls();registerServiceWorker();
@@ -31,7 +36,7 @@ export async function init(){
       console.warn('Missionsdaten nicht verfügbar:',error);return {objects:[]};
     });
     S.bodies=[...catalog.bodies,...(missions.objects||[])];
-    if(!S.bodies.some(b=>b.id===S.selected))S.selected=S.bodies[0]?.id||null;
+    S.selected=selectionAfterCatalogLoad(S.selected,S.bodies);
     updateStatus('catalog','ok',`${S.bodies.length} Objekte · v${catalog.version}`);
     syncLayers();updateCatalog();updateDetail();
   }catch(e){
@@ -42,7 +47,7 @@ export async function init(){
     return;
   }
   try{
-    setRenderer(new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline,
+    setRenderer(new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true,{zoom:false}),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline,
       onCameraChange:()=>syncSceneMode(S,renderer,arMode?.active)}));
     setARMode(connectARMode(renderer));
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);

@@ -10,14 +10,14 @@ const part = (text,start,end) => {
   return text.slice(a,b);
 };
 
-const PRIMARY=['scale-objects-btn','scale-orbits-btn','orbit-row-btn'];
-const EXTRA=['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons'];
+const PRIMARY=['orbit-row-btn','scale-objects-btn','scale-orbits-btn'];
+const EXTRA=['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-lighting','toggle-four-moons'];
 
 test('v55: all three scale modes are direct top-level buttons in the right order',async()=>{
   const html=await read('index.html'),control=part(html,'id="view-mode-status"','id="layer-picker-wrap"');
   assert.match(control,/class="scale-main-controls" role="group" aria-label="Maßstab und Reihendarstellung"/);
   assert.deepEqual([...control.matchAll(/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn)"/g)].map(x=>x[1]),PRIMARY);
-  for(const [id,label] of PRIMARY.map((id,i)=>[id,['Objekt','Bahn','Reihe'][i]])){
+  for(const [id,label] of PRIMARY.map((id,i)=>[id,['Reihe','Objekt','Bahn'][i]])){
     const button=control.match(new RegExp(`<button[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/button>`))?.[0];
     assert.ok(button,id);
     assert.match(button,/<svg\b/);
@@ -27,7 +27,7 @@ test('v55: all three scale modes are direct top-level buttons in the right order
   assert.doesNotMatch(html,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"/);
 });
 
-test('v96: four appearance switches are grouped above the categories within Layer',async()=>{
+test('v96: five appearance switches are grouped above the categories within Layer',async()=>{
  const html=await read('index.html');
  const layer=part(html,'id="layer-popover"','id="time-panel"');
  assert.ok(layer.indexOf('class="layer-presets"')<layer.indexOf('class="layer-display-controls"'));

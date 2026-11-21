@@ -9,7 +9,7 @@ export function syncLayers(){
   const available=new Set(availableLayerTypes(S.bodies,view,renderer?.planetId));
   const summary=layerSummary(selected);
   const row= S.settings.row === true;
-  for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])
+  for(const id of ['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-four-moons'])
     $(id).hidden=row;
   $('layer-popover').classList.toggle('row-layer-options',row);
   $('layer-btn').setAttribute('aria-label',`Objektlayer auswählen (${summary})`);

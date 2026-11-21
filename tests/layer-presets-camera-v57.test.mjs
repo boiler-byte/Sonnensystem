@@ -79,7 +79,7 @@ test('v96: both removed Layer captions are absent and controls form paired rows'
   assert.match(layer,/role="group" aria-label="Darstellungseinstellungen"/,'accessible description remains');
   const tools=segment(layer,'class="layer-display-toggles"','class="layer-options"');
   assert.deepEqual([...tools.matchAll(/id="(toggle-labels|toggle-lighting|toggle-four-moons|orbit-visibility-btn|orbit-contrast-btn)"/g)]
-    .map(m=>m[1]),['toggle-labels','orbit-visibility-btn','toggle-lighting','toggle-four-moons']);
+    .map(m=>m[1]),['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-lighting','toggle-four-moons']);
   assert.match(css,/\.layer-display-toggles\{\s*display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle\{[^}]*grid-column/);
   assert.doesNotMatch(css,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
@@ -181,9 +181,9 @@ test('v57: camera origin is restored in overview, planet view and size-order row
   assert.deepEqual([r.camera.theta,r.camera.phi],expectedAngles);
   assert.equal(r.cameraManuallyMoved,false);
   assert.equal(r.focusedBodyId,null);
-  assert.equal(r.followEnabled,false);
+  assert.equal(r.followEnabled,true,'only a manual Folgen click turns off the switch');
   assert.equal(r.followedBodyId,null);
-  assert.equal(r.followChanges,1);
+  assert.equal(r.followChanges,0,'recenter does not toggle Folgen');
   assert.equal(r.cameraPresetIndex,row?2:0);
  }
 });
@@ -219,7 +219,7 @@ test('v57: both scale switches recenter even after manual motion, focus and foll
  assert.equal(r.camera.desiredDist,188,'optimized solar scale uses the home overview distance');
  assert.deepEqual(r.camera.desiredTarget,[0,0,0]);
  assert.deepEqual(r.transition.cameraTo,[.63,.99]);
- assert.equal(r.focusedBodyId,null);assert.equal(r.followEnabled,false);assert.equal(r.cameraManuallyMoved,false);
+ assert.equal(r.focusedBodyId,null);assert.equal(r.followEnabled,true,'only a manual Folgen click turns off the switch');assert.equal(r.cameraManuallyMoved,false);
 
  r.cameraManuallyMoved=true;r.focusedBodyId='mars';r.camera.theta=1.8;r.camera.phi=.24;
  r.camera.desiredTarget=[65,3,4];
