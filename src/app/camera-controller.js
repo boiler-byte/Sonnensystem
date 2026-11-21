@@ -3,6 +3,7 @@ import {layerEnabled,availableLayerTypes,updateLayerSelection} from '../data/lay
 import {updateCatalog,updateDetail} from '../ui/catalog-controller.js';
 import {updateMode} from './view-mode.js';
 import {loadAsteroid} from './object-catalog.js';
+import {changeLayers} from '../ui/display-controls.js';
 
 /** Planetary isolation also supports dwarf planets that have catalogued moons. */
 export function openPlanetScene(id){
@@ -27,6 +28,14 @@ export function selectBody(id,focus=false,{zoom=focus}={}){
     if(body.type==='planet'||body.type==='dwarf')openPlanetScene(body.id);
     else{renderer.reset();renderer.calcPositions(S.time);}
     updateMode();
+  }
+  // A catalog selection must be visible even if its category was filtered out.
+  // Preserve every other active layer and the independent settings of each view.
+  if(!layerEnabled(S.settings.layers,body.type)){
+    const view=renderer?.planetId?'planet':'solar';
+    const available=availableLayerTypes(S.bodies,view,renderer?.planetId);
+    if(available.includes(body.type))
+      changeLayers(updateLayerSelection(S.settings.layers,body.type,true,view,available));
   }
   S.selected=id;
   renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe',zoom:zoom&&body.type!=='probe'});

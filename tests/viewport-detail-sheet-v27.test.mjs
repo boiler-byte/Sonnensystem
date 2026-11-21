@@ -7,22 +7,19 @@ import {detailNavigation,renderDetail} from '../src/ui/object-details.js';
 
 const read=path=>readProjectSource(path);
 
-test('v27: viewport reset is bottom-right and control panel is frameless 58px',async()=>{
-  const css=await read('css/styles.css');
-  const html=await read('index.html');
-  const panel=css;
-  assert.match(panel,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
-  assert.match(panel,/padding:0!important;border:0!important;background:none!important/);
-  assert.match(panel,/box-shadow:none!important;backdrop-filter:none!important/);
-  assert.match(panel,/\.viewport-actions\{\s*top:auto!important;bottom:max\(16px/);
-  assert.match(panel,/\.viewport-actions\{\s*bottom:calc\(var\(--sheet-visible,45px\)/);
+test('v124: viewport reset is bottom-right and toolbar has one Layer dropdown',async()=>{
+  const [css,html]=await Promise.all([read('css/styles.css'),read('index.html')]);
+  assert.match(css,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
+  assert.match(css,/padding:0!important;border:0!important;background:none!important/);
+  assert.match(css,/box-shadow:none!important;backdrop-filter:none!important/);
+  assert.match(css,/\.viewport-actions\{\s*top:auto!important;bottom:max\(16px/);
+  assert.match(css,/\.viewport-actions\{\s*bottom:calc\(var\(--sheet-visible,45px\)/);
   const layer=html.split('class="layer-button"')[1].split('</button>')[0];
-  const time=html.split('class="timeline-button speed-button time-trigger"')[1].split('</button>')[0];
   assert.match(layer,/<svg[^>]+viewBox=/);
   assert.doesNotMatch(layer,/layer-chevron|⌄/);
-  assert.doesNotMatch(time,/time-trigger-chevron/);
-  assert.match(time,/id="speed-readout"/);
-  assert.match(panel,/speed-popover\{width:120px/,'wider popover remains usable despite the narrow trigger');
+  assert.doesNotMatch(html,/time-trigger-chevron|id="speed-btn"|id="time-panel"/);
+  assert.match(html,/id="layer-speed-value" for="layer-speed"/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
 });
 
 test('v27: detail index cycles across objects of the same category and wraps around',()=>{

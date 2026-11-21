@@ -73,7 +73,7 @@ function mockLayerEnvironment(){
 
 test('v96: both removed Layer captions are absent and controls form paired rows',async()=>{
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
-  const layer=segment(html,'id="layer-popover"','id="time-panel"');
+  const layer=segment(html,'id="layer-popover"','id="canvas-error"');
   assert.doesNotMatch(layer,/class="layer-display-heading"|id="layer-note"|class="layer-note"/);
   assert.doesNotMatch(css,/\.layer-display-heading\{|\.layer-note\{/);
   assert.match(layer,/role="group" aria-label="Darstellungseinstellungen"/,'accessible description remains');

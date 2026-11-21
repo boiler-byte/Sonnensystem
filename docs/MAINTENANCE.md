@@ -1,3 +1,15 @@
+## Änderung in v121
+
+**Delta v120 → v121:** `src/ui/event-handlers.js` sorgt beim Aktivieren der uneingeschränkten Monde (`settings.fourMoons=false`) dafür, dass die Objektkategorie `moon` über den bestehenden `updateLayerSelection`/`changeLayers`-Pfad aktiviert ist, auch wenn sie zuvor abgewählt war. Beim Ausschalten wird die Kategorie nicht zurückgesetzt. Die 8 übrigen Kategorie-Filter und die anderen vier Darstellungs-Toggles bleiben unangetastet. `css/styles.css` färbt ausschließlich `#toggle-labels[data-label-mode="points"].active` und `#orbit-visibility-btn[data-orbit-mode="galactic"].active` in blau ein. Test `tests/layer-panel-modes-v121.test.mjs`, Version `121.0.0`, Cache `sonnensystem-shell-v121`, Basis v120.
+
+## Änderung in v120
+
+**Delta v119 → v120:** Die fünf Toggles im Layer-Control-Panel (`index.html`) sind in zwei explizite Zeilen gegliedert. `layer-display-toggles` behält zwei Spalten für **Beschriftung/Umlaufbahn**, während die neue `layer-display-secondary` drei gleiche Spalten für **Kontrast/Beleuchtung/Monde** nutzt. Für `row-layer-options` fällt die zweite Zeile auf eine volle Spalte zurück, da dort nur Beleuchtung angezeigt wird. Die SVGs für Kontrast (Halbmond-Halbkreis) und Monde (9 unregelmäßige Punkte) ersetzen ausschließlich die Symbolgeometrie; IDs, ARIA, Events, Layerzustände und alle anderen Einstellungen sind unverändert. Test `tests/layer-control-layout-v120.test.mjs`, Version `120.0.0`, Cache `sonnensystem-shell-v120`, Basis v119.
+
+## Änderung in v119
+
+**Delta v118 -> v119:** Die Cinema-Verbindung zwischen Reihenobjekten in `src/renderer/cinema.js` verwendet eine deterministische kubische Bezier-Kurve statt eines linearen Kameraziels. Horizontale Kontrollpunkte liegen bei 25/75 Prozent der Strecke, Y/Z werden für einen sanften Anstieg und Rückzug bei An- und Abflug über einen doppelseitig begrenzten Bogen interpoliert. Das bisherige Smoothstep-Timing und der logarithmische Zoom bleiben. Je Objekt sind Zielkoordinaten, Haltezeit, Ausrichtung und UI-Verhalten unverändert. `cinemaSceneAt`, Slider-Scrubbing, Pause/2x und Kamera-Rückkehr nutzen weiterhin dieselbe geteilte Berechnung. Tests `tests/cinema-curve-v119.test.mjs`, Version `119.0.0`, Cache `sonnensystem-shell-v119`, Basis v118.
+
 ## Änderung in v118
 
 **Delta v117 → v118:** `syncRowControl()` versteckt den Bahnmaßstab-Schalter in beiden Reihenmodi, ohne die für die Normalansicht gespeicherten `scaleOrbits`-Werte zu ändern. `orbitScaleActive()` schaltet den Bahnabstandseinfluss während der Reihe für Objektgrößen und Bahnberechnungen ab (einschließlich optionaler JPL-Overrides), außerhalb der Reihe bleibt die bisherige Berechnung erhalten. Cinema-Berechtigung und UI-Freigabe hängen nur noch von `row=true` ab; die laufende Kamerafahrt stoppt nicht mehr allein wegen eines anderen Maßstabswerts. Neue CSS-Farben gelten spezifisch für `data-row-mode=size` (grün) bzw. `distance` (blau). Regressionen `tests/row-controls-v118.test.mjs`, aktualisierte v53/v54 Cinema-Tests. Version `118.0.0`, Shell `sonnensystem-shell-v118`, Basis v117.

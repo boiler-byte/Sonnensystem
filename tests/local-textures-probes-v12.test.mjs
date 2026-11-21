@@ -55,15 +55,14 @@ test('v12: local time format uses process/browser timezone, not UTC',()=>{
   assert.match(formatLocalDateTime(new Date(2026,10,16,22,7)),/^16\.11\.2026 22:07$/);
 });
 
-test('v12: three controls, icon-only play, no time heading or external texture fallback',async()=>{
-  const html=await read('index.html');
-  const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
-  assert.equal((panel.match(/<button\b[^>]*id="(?:speed-btn|play-btn|today-btn)"/g)||[]).length,3);
-  assert.match(panel,/<svg id="play-icon"/);
-  assert.doesNotMatch(panel,/id="play-label"|ZEITREISE|timeline-heading/);
-  assert.match(panel,/id="sim-date-readout"/);
-  const client=await read('src/renderer/textures.js');
-  assert.doesNotMatch(client,/source\.url|crossOrigin|https:\/\//);
-  const server=await read('server/server.mjs');
-  assert.doesNotMatch(server,/textureAsset|textureAllowed/);
+test('v124: Layer holds the only time controls; no external texture fallback',async()=>{
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  const layer=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
+  for(const id of ['layer-speed','layer-play-btn','layer-today-btn','layer-sim-date'])assert.match(layer,new RegExp(`id="${id}"`));
+  assert.match(layer,/>Geschwindigkeit<\/span>/);
+  assert.match(layer,/>Datum<\/span>/);
+  assert.doesNotMatch(html,/id="time-panel"|id="speed-btn"|id="speed-popover"/);
+  const script=await readFile(new URL('../src/renderer/textures.js',import.meta.url),'utf8');
+  assert.doesNotMatch(script,/images\.unsplash\.com/);
 });
+

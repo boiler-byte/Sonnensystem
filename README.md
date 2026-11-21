@@ -1,6 +1,22 @@
-# Sonnensystem – interaktiver 3D-Atlas (v118.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v124.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+
+## Neu in v124: Eine Zeitsteuerung im Layer Control
+
+- Das separate Zeitsteuerungs-Dropdown wurde vollständig entfernt. Die Tempo-Ansicht im Layer Control ist nun die einzige Oberfläche für die Simulationsgeschwindigkeit, Play/Pause, Heute und die lokale Simulationszeit.
+- Über dem Regler steht **Geschwindigkeit**, über der Simulationszeit **Datum**. Die Zeit läuft weiter, auch wenn der Layer-Dialog geschlossen ist.
+- Der Kategorien/Tempo-Umschalter und die bisherigen Filter bleiben unverändert. In der Reihenansicht ist der Geschwindigkeitsregler weiterhin gesperrt.
+
+## Neu in v123: Layer-Umschalter und Zeitaktionen
+
+- Der **Kategorien/Tempo-Umschalter** befindet sich direkt unter der zweiten Darstellungszeile (**Kontrast / Beleuchtung / Monde**) und zeigt die **momentan sichtbare Ansicht** samt passendem Kategorie- bzw. Tempo-Icon.
+- In der **Tempo-Ansicht** stehen direkt unter dem Geschwindigkeitsregler die synchronisierten Buttons **Play/Pause** und **Heute**, gefolgt von der lokalen Simulationszeit. Die Zeitsteuerung ist ab v124 ausschließlich im Layer-Panel verfügbar. Im Reihenmodus bleibt die Tempo-Ansicht gesperrt.
+
+## Neu in v122: Objektauswahl und Layer-Geschwindigkeit
+
+- Klickt man im Objektkatalog ein Objekt an, aktiviert die Anwendung dessen Objektkategorie im aktuell gültigen Layerfilter, sofern sie ausgeschaltet war. Andere Kategorien und die getrennten Filter der Sonnensystem-/Planetenansicht bleiben erhalten. Gruppierte Filter (Zwergplaneten/TNO, Asteroiden/Doppelasteroiden) werden gemeinsam aktiviert.
+- Im Layer Control Panel wechselt der neue Toggle **Tempo / Kategorien** zwischen den Objektkategorien und einem vertikalen Regler für die Simulationsgeschwindigkeit. Ab v124 ist dies der einzige Geschwindigkeitsregler. In der Reihenansicht ist das Umschalten auf Tempo deaktiviert, weil die Simulationsgeschwindigkeit dort festgelegt ist.
 
 ## Start und Prüfung
 
@@ -52,6 +68,24 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 - [Texturquellen](docs/TEXTURE-SOURCES.md) – Bild- und Quellenangaben.
 - [Versionshistorie](docs/RELEASE-HISTORY.md) – ältere Delta-Dokumente v2–v67 und Hotfix v6.1 in einem Archiv.
 - [Projektpflege](docs/MAINTENANCE.md) – Releases, Prüfungen und aktuelle Änderungen.
+
+## Delta v121 – Monde-Kategorie und blaue Darstellungsmodi
+
+**Basis:** v120. `Sonnensystem-Delta-v121-Layer-Control-Panel.zip` über v120 entpacken; anschließend die PWA online neu laden (`sonnensystem-shell-v121`). Das Paket enthält ausschließlich geänderte und neue Dateien.
+
+Im Layer Control Panel aktiviert **Alle Monde** beim Einschalten nun zugleich die Objektkategorie **Monde**, falls diese noch nicht gewählt ist. Beim Ausschalten gilt wieder das Viererlimit, die Kategorie bleibt aber ausgewählt; man kann sie weiter unabhängig über das Kontrollkästchen deaktivieren. Der **Planetenpunkt**-Modus von *Beschriftung* und der Modus **Galaktische Bewegung** von *Umlaufbahn* sind blau hervorgehoben (einschließlich Hover); die anderen Schalter und ihre normalen bzw. ausgeschalteten Farbstufen bleiben wie zuvor.
+
+## Delta v120 – Layer-Icons und zweireihige Toggle-Anordnung
+
+**Basis:** v119. `Sonnensystem-Delta-v120-Layer-Control-Panel.zip` über v119 entpacken und die PWA online neu laden (`sonnensystem-shell-v120`). Das Paket enthält ausschließlich geänderte und neue Dateien.
+
+Im Layer-Control-Panel bleiben **Beschriftung** und **Umlaufbahn** unverändert in der ersten Zeile. Die zweite Zeile enthält jetzt **Kontrast**, **Beleuchtung** und **Monde** gleich breit nebeneinander. Kontrast zeigt ein typisches halb ausgefülltes Kreis-/Halbmondsymbol, Monde neun frei verteilte Punkte statt eines gleichmäßigen Rings. Die Schaltfunktionen, aktiv/inaktiv-Zustände, Optionen der Reihen-Darstellung und alle übrigen Werte bleiben erhalten.
+
+## Delta v119 – Cinema-Kamerafahrt auf natürlicher Kurve
+
+**Basis:** v118. `Sonnensystem-Delta-v119-Cinema-Kurvenfahrt.zip` über v118 entpacken; anschließend die PWA online neu laden (`sonnensystem-shell-v119`). Das ZIP enthält nur neue bzw. geänderte Dateien.
+
+Zwischen aufeinanderfolgenden Objekten in beiden Reihenmodi verläuft die Cinema-Kamera auf einer sanft gewölbten **3D-Bezierkurve**, statt nur entlang der geraden X-Achse. Sie steigt etwas an, zieht sich leicht zurück und kehrt am nächsten Objekt auf die ursprüngliche Höhe und Tiefe zurück. Die Kurvenhöhe ist durch den Objektabstand und die Kameradistanz begrenzt; Start/Ziel und die 5-Sekunden-Haltezeiten bleiben identisch. Zeitleiste/Scrubbing, Pause und 2x verwenden denselben deterministischen Flugverlauf. Sonstige Darstellung, Steuerung und Startwerte bleiben unverändert.
 
 ## Delta v118 – Reihen-Modi, Bahnmaßstab und Cinema-Play
 

@@ -3,7 +3,6 @@ import {availableLayerTypes,ensureAvailableSelection} from '../data/layers.js';
 import {syncSceneMode} from '../ui/scene-mode.js';
 import {syncSpeedMode,syncControls} from '../ui/timeline.js';
 import {activeView,updateCatalog,updateDetail} from '../ui/catalog-controller.js';
-import {setSpeedPopover} from '../ui/popover-controls.js';
 import {syncLayers} from '../ui/layer-panel.js';
 import {syncLightingControl,syncFourMoonsControl,syncOrbitControls,syncContrastControl,syncLabelControl} from '../ui/display-controls.js';
 import {syncScaleControls,syncRowControl,syncCinemaControl} from './animation-controls.js';
@@ -15,7 +14,6 @@ export const updateMode=()=>{
   S.settings.layers=ensureAvailableSelection(S.settings.layers,availableLayerTypes(S.bodies,view,renderer?.planetId),view);
   syncSceneMode(S,renderer,arMode?.active);
   if(syncSpeedMode(S,view)) {
-    setSpeedPopover(false);
     updateTime();
   }
   // Layer visibility belongs to the renderer; keep catalog selections intact.

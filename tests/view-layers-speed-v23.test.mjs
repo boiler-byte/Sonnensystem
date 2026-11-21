@@ -20,9 +20,9 @@ test('v23: 5 simulated days per real second is the exact initial solar speed', a
   assert.equal(speedAtStep('solar',SPEED_MODES.solar.pivot),5);
   assert.equal(stepForSpeed('solar',5),SPEED_MODES.solar.pivot);
   const html=await read('index.html');
-  assert.match(html,/id="speed-readout">5 Tage \/ s/);
-  assert.match(html,/id="speed-popover-value">5 Tage \/ s/);
-  assert.match(html,new RegExp(`id="speed"[^>]+value="${SPEED_MODES.solar.pivot}"`));
+  assert.match(html,/id="layer-speed-value" for="layer-speed">5 Tage \/ s/);
+  assert.match(html,/class="layer-speed-caption">Geschwindigkeit<\/span>/);
+  assert.match(html,new RegExp(`id="layer-speed"[^>]+value="${SPEED_MODES.solar.pivot}"`));
   const app=await read('src/app.js');
   assert.match(app,/speed:SPEED_MODES\.solar\.defaultSpeed/);
   const state={timelineMode:'solar',speed:5,modeSpeeds:{solar:5,planet:SPEED_MODES.planet.defaultSpeed},playing:false};

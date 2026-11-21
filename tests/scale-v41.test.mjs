@@ -72,19 +72,17 @@ test('v41: renderer position and orbit use the same physical radius in isolated 
   assert.ok(r.planetFrameDistance()>95,'real local distances can be framed beyond the old 95-unit cap');
 });
 
-test('v55: scale buttons are direct controls and only Layer/Time are popovers',async()=>{
- const html=await read('index.html'),css=await read('css/styles.css');
+test('v124: scale buttons are direct controls and only Layer has a popover',async()=>{
+ const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
  const panel=html.slice(html.indexOf('id="view-mode-status"'),html.indexOf('id="canvas-error"'));
  assert.ok(panel.indexOf('id="orbit-row-btn"')<panel.indexOf('id="scale-objects-btn"'));
  assert.ok(panel.indexOf('id="scale-objects-btn"')<panel.indexOf('id="scale-orbits-btn"'));
  assert.ok(panel.indexOf('id="orbit-row-btn"')<panel.indexOf('id="layer-btn"'));
- assert.ok(panel.indexOf('id="layer-btn"')<panel.indexOf('id="speed-btn"'));
- assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"/);
+ assert.doesNotMatch(panel,/id="speed-btn"|id="speed-popover"|id="scale-btn"|id="scale-popover"/);
  for(const id of ['scale-objects-btn','scale-orbits-btn'])
   assert.match(panel,new RegExp(`id="${id}"[^>]*aria-pressed="false"`));
  for(const label of ['Objekt','Bahn','Reihe'])assert.match(panel,new RegExp(`scale-option-label">${label}`));
  assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
- assert.match(panel,/id="speed-btn"[^>]*aria-controls="speed-popover"/);
  assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
 });
 

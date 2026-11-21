@@ -13,7 +13,7 @@ const within=(text,start,end)=>{
 
 test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',async()=>{
   const html=await read('index.html'),app=await read('src/ui/event-handlers.js'),layerModel=await read('src/data/layers.js');
-  const layer=within(html,'id="layer-popover"','id="time-panel"');
+  const layer=within(html,'id="layer-popover"','id="canvas-error"');
   assert.match(layer,/class="layer-display-toggles"/);
   assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
   for(const id of ['orbit-visibility-btn']){
@@ -28,38 +28,27 @@ test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',
   assert.match(layer,/id="orbit-contrast-btn"/);
 });
 
-test('v21: time menu header has only speed, and a stacked slider precedes two action buttons and date/time',async()=>{
+test('v124: single Layer tempo panel groups speed value, actions and date',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css');
-  const menu=within(html,'class="speed-popover" id="speed-popover"','id="canvas-error"');
-  const head=within(menu,'class="speed-popover-header"','class="time-popover-grid"');
-  assert.match(head,/id="speed-popover-value"/);
-  assert.doesNotMatch(head,/ZEITSTEUERUNG|Zeitsteuerung|sim-date-readout/);
-  const grid=menu.slice(menu.indexOf('class="time-popover-grid"'));
-  const slider=within(grid,'class="vertical-speed-control"','class="time-popover-actions"');
-  assert.match(slider,/id="speed" type="range"/);
-  assert.ok(grid.indexOf('id="play-btn"')<grid.indexOf('id="today-btn"'));
-  assert.ok(grid.indexOf('id="today-btn"')<grid.indexOf('id="sim-date-readout"'));
-  assert.match(menu,/id="sim-date-readout" class="time-popover-date"/);
-  assert.match(css,/\.control-panel \.time-panel \.time-popover-grid\{\s*display:flex;flex-direction:column/);
-  assert.match(css,/\.control-panel \.time-panel \.time-popover-buttons\{\s*display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css,/\.control-panel \.time-panel \.time-popover-actions\{\s*display:flex;flex-direction:column/);
-  assert.match(css,/white-space:pre-line/);
+  const panel=within(html,'id="layer-speed-panel"','id="canvas-error"');
+  const order=['>Geschwindigkeit</span>','id="layer-speed-value"','class="layer-speed-layout"','id="layer-speed"','class="layer-speed-actions"','id="layer-play-btn"','id="layer-today-btn"','>Datum</span>','id="layer-sim-date"'];
+  let last=-1;
+  for(const item of order){const at=panel.indexOf(item);assert.ok(at>last,`${item} must appear in order`);last=at;}
+  assert.match(css,/\.layer-speed-heading,\.layer-speed-date-group\{display:flex/);
+  assert.match(css,/\.layer-speed-date-group\{padding-top:9px;border-top:1px solid/);
 });
 
-test('v20: both menus remain aligned under triggers on desktop and mobile',async()=>{
-  const css=await read('css/styles.css'),html=await read('index.html');
-  const v19=css;
-  assert.match(v19,/\.control-panel \.layer-popover\{\s*top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto;/);
-  assert.match(v19,/\.control-panel \.time-panel \.speed-popover\{\s*position:absolute;top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto;/);
-  assert.match(v19,/\.viewport>\.control-panel \.layer-popover\{/);
-  assert.match(v19,/\.viewport>\.control-panel \.time-panel \.time-trigger\{/);
-  assert.doesNotMatch(v19,/\.control-panel \.scene-tools\{/,'removed scene tools have no remaining CSS');
+test('v124: only the Layer menu sits beneath its toolbar button',async()=>{
+  const [css,html]=await Promise.all([read('css/styles.css'),read('index.html')]);
+  assert.match(css,/\.control-panel \.layer-popover\{top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
   assert.equal((html.match(/id="layer-btn"/g)||[]).length,1);
-  assert.equal((html.match(/id="speed-btn"/g)||[]).length,1);
+  assert.equal((html.match(/id="speed-btn"/g)||[]).length,0);
+  assert.equal((html.match(/id="time-panel"/g)||[]).length,0);
 });
 
-test('v19: local time readout breaks between calendar date and time while trigger remains date-only',()=>{
-  const previous=globalThis.document, nodes=new Map();
+test('v124: Layer date is local and shows date plus time',()=>{
+  const previous=globalThis.document,nodes=new Map();
   globalThis.document={getElementById(id){
     if(!nodes.has(id))nodes.set(id,{textContent:'',value:'',attrs:{},setAttribute(k,v){this.attrs[k]=String(v);}});
     return nodes.get(id);
@@ -68,10 +57,9 @@ test('v19: local time readout breaks between calendar date and time while trigge
     const time=new Date(2026,10,17,21,6).getTime();
     const state={time,playing:true,speed:SPEED_MODES.solar.defaultSpeed,timelineMode:'solar'};
     syncControls(state);
-    assert.equal(nodes.get('sim-date-label').textContent,'17.11.2026');
-    assert.equal(nodes.get('sim-date-readout').textContent,'17.11.2026\n21:06');
-    assert.equal(nodes.get('speed-readout').textContent,'5 Tage / s');
-    assert.ok(!nodes.get('speed-btn').attrs['aria-label'].includes('21:06'));
-    assert.match(nodes.get('sim-date-readout').attrs.datetime,/^2026-11-17T/);
+    assert.equal(nodes.get('layer-sim-date').textContent,'17.11.2026 21:06');
+    assert.equal(nodes.get('layer-speed-value').textContent,'5 Tage / s');
+    assert.match(nodes.get('layer-sim-date').attrs.datetime,/^2026-11-17T/);
   }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });
+

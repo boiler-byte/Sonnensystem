@@ -14,8 +14,8 @@ const between=(source,begin,end)=>{
 
 test('v55: labels button lives above Layer categories, not in scene tools',async()=>{
   const html=await read('index.html'),app=await read('src/ui/event-handlers.js');
-  const layer=between(html,'id="layer-popover"','id="time-panel"');
-  const scene=between(html,'id="time-panel"','id="canvas-error"');
+  const layer=between(html,'id="layer-popover"','id="canvas-error"');
+  const scene=html.slice(html.indexOf('id="canvas-error"'));
   assert.match(layer,/class="layer-display-controls"/);
   assert.match(layer,/id="toggle-labels"[^>]*aria-pressed="true"/);
   assert.ok(layer.indexOf('id="toggle-labels"')<layer.indexOf('class="layer-options"'));
@@ -28,7 +28,7 @@ test('v55: labels button lives above Layer categories, not in scene tools',async
 
 test('v55: orbit contrast defaults off and orbit visibility on in Layer controls',async()=>{
   const html=await read('index.html'),app=await read('src/ui/event-handlers.js'),layerModel=await read('src/data/layers.js');
-  const layer=between(html,'id="layer-popover"','id="time-panel"');
+  const layer=between(html,'id="layer-popover"','id="canvas-error"');
   assert.match(layerModel,/orbits:true, orbitContrast:false, galacticMotion:false, labels:true/);
   assert.match(layer,/id="orbit-contrast-btn"[^>]*aria-pressed="false"/);
   assert.match(layer,/class="orbit-contrast-icon"/);

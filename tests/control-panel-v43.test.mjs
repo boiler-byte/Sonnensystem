@@ -20,7 +20,7 @@ test('v96: three always-visible scale toggles; five icon-only Layer tools',async
  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
  assert.doesNotMatch(html,/id="scale-popover"|id="scale-btn"/);
  const main=segment(html,'class="scale-main-controls"','id="layer-picker-wrap"');
- const layer=segment(html,'class="layer-display-toggles"','class="layer-options"');
+ const layer=segment(html,'class="layer-display-toggles"','class="layer-speed-toggle"');
  const mainIds=[...main.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);
  assert.deepEqual(mainIds,['orbit-row-btn','scale-objects-btn','scale-orbits-btn']);
  const appearanceIds=[...layer.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(x=>x[1]);

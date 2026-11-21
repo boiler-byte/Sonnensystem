@@ -1,3 +1,11 @@
+## Layer-Toggle-Kopplung und Modusfarben v121
+
+Die `click`-Routine für `toggle-four-moons` in `src/ui/event-handlers.js` aktiviert beim Umschalten auf **Alle Monde** zusätzlich den `moon`-Layer in `S.settings.layers`, falls dieser ausgeschaltet ist. Sie verwendet dazu `layerEnabled`, `updateLayerSelection` und `changeLayers`; die Layeranzeige wird synchronisiert. Der umgekehrte Klick ändert nur `fourMoons`, nicht die Objektkategorie. Zwei enge CSS-Selektoren färben den aktiven Punktmodus der Beschriftung und die aktive galaktische Bewegung blau, während alle anderen Farben und Events unverändert bleiben.
+
+## Layer-Control-Panel v120
+
+In `index.html` hat die zweispaltige `.layer-display-toggles`-Zeile weiterhin **Beschriftung** und **Umlaufbahn** als direkte Kinder. Die darin enthaltene `.layer-display-secondary` spannt die volle Breite und ordnet die drei Toggles **Kontrast**, **Beleuchtung** und **Monde** in drei gleichen Spalten an. Im Reihenmodus blendet `src/ui/layer-panel.js` weiterhin Beschriftung, Umlaufbahn, Kontrast und Monde aus; die verbliebene Beleuchtung nimmt dank CSS-Ausnahme die volle Breite ein. Die Icon-SVGs sind rein dekorativ; Button-IDs, Events und Zustände bleiben erhalten.
+
 ## Reihen-Steuerung v118
 
 `syncRowControl()` verbirgt bei `settings.row=true` neben der Zeitschaltfläche den Maßstabs-Toggle **Bahn**, ohne `scaleOrbits` zu überschreiben. `orbitScaleActive(settings)` aus `src/data/orbital-math.js` behandelt in der Reihe sämtliche physikalischen Bahnabstandsmaßstäbe als inaktiv; die gespeicherten Maßstäbe wirken sofort wieder in der Orbitalansicht. Die UI unterscheidet die Reihenmodi per `data-row-mode` mit Grün für **size** und Blau für **distance**; **off** bleibt neutral. `cinemaEligible()` sowie `syncCinemaControl()` sind bei funktionsfähigem Renderer nur von `row=true` abhängig. Die Cinema-Timeline wird weiterhin nur bei aktivem Film eingeblendet.
@@ -6,7 +14,7 @@
 
 Der App-Zustand `S.selected` und der Renderer-Zustand `selectedId` sind beim Start `null`; der Katalog-Fallback ersetzt nur eine ungültige, *nicht-leere* Objektauswahl. `setBodies()` lässt `followEnabled` eingeschaltet, hat aber ohne ausgewähltes Objekt kein Follow-Ziel. Erst eine manuelle Auswahl setzt `S.selected`, `selectedId` und gegebenenfalls `followedBodyId`. Das gemeinsame Desktop-/Mobile-Tab-Modul startet mit `panel='catalog'`, und das erste Kamerapreset bleibt „Schräg/oben“ (Preset 0, `theta=.63`, `phi=.99`). Sonstige Standardwerte unverändert.
 
-# Architektur – Sonnensystem v118
+# Architektur – Sonnensystem v120
 
 ## Prinzipien
 
@@ -52,6 +60,10 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 - Im Hintergrundtab pausiert die Animation, ohne Simulationszeit nachzuholen.
 - `cycleCameraPerspective()` steuert eine vom Layoutübergang getrennte 1.050-ms-Kamerafahrt (`cameraFlight`) über Blickrichtung, Position und Distanz. `cameraView()` nutzt in dieser Zeit die interpolierte Pose; währenddessen dürfen Layout-/AR-Updates die Fahrt nicht überschreiben. Ein manueller Eingriff kann sie bildsprungfrei beenden. Bei reduzierter Bewegung wird sie übersprungen.
 - Freies Umschauen per Zwei-Finger-Wischen verwendet die unveränderte vertikale Touch-Mittelpunktsbewegung für `lookAroundFixedEye()` (Finger nach unten = Blick nach unten), auch ohne Auswahl. Maus-Umschauen, Pinch-Zoom und objektbezogene Gesten bleiben unberührt. Im AR-Modus wird die ursprüngliche, **nicht invertierte** relative Sensorrotation verwendet (Gerät nach oben = Blick nach oben); während eines Kameraflugs wird die Sensorausrichtung laufend neu verankert, ohne den Flug zu überschreiben.
+
+## Cinema-Kurvenfahrt (v119)
+
+`src/renderer/cinema.js` berechnet zwischen den identischen Haltepunkten jetzt einen sanft gebogenen 3D-Bezierpfad: X bleibt entlang der Objekt-Reihe monoton, Y steigt leicht an und Z weicht zum Zurückziehen der Kamera nach hinten aus. Die beiden Bezier-Kontrollpunkte liegen bei 25 und 75 Prozent der Horizontalstrecke, die vertikalen und Tiefen-Offsets sind durch die Nachbarabstände und die jeweils größere Kameraentfernung begrenzt. Ein sanfter Zeitverlauf verhindert abrupte Start- und Endgeschwindigkeit. Die Distanzinterpolation bleibt logarithmisch, die Ausrichtung der Kamera unverändert. Wiedergabe und direktes Scrubbing berechnen denselben Punkt mit `cinemaPoseAt()` bzw. `cinemaSceneAt()`; die 5000-ms-Haltezeiten, 1300-ms-Überflüge und der Ein-/Ausstieg bleiben unverändert. Regressionen `tests/cinema-curve-v119.test.mjs`.
 
 ## Flache Cinema-Zeitleiste (v116)
 

@@ -40,7 +40,7 @@ class MockEl {
   hasPointerCapture(){return this.captured;}
   releasePointerCapture(){this.captured=false;}
 }
-const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','cinema-timeline','catalog','detail','view-mode-status','reset-camera','speed-popover','speed-btn','layer-popover','layer-btn','sidebar','sidebar-content'].map(id=>[id,new MockEl(id)]));
+const nodes=Object.fromEntries(['mobile-sheet','sheet-header','sheet-content','mobile-sheet-scrim','cinema-timeline','catalog','detail','view-mode-status','reset-camera','layer-popover','layer-btn','sidebar','sidebar-content'].map(id=>[id,new MockEl(id)]));
 nodes['mobile-sheet'].height=760;nodes['sheet-header'].height=45;
 const buttons=Object.fromEntries(['catalog','detail'].map(name=>[name,new MockEl('tab-'+name)]));
 for(const [name,el] of Object.entries(buttons)){el.dataset.sheetPanel=name;}
@@ -103,7 +103,7 @@ assert.equal(nodes['cinema-timeline'].style.values['--sheet-visible'],`${windowM
 near(controller.focusOffsetFor(canvas),1);
 assert.equal(viewportActions.inert,true);
 controller.open('detail');
-assert.equal(nodes['speed-popover'].hidden,true,'Scene dropdown closes when switching sheet tabs');
+assert.equal(nodes['layer-popover'].hidden,true,'Layer dropdown closes when switching sheet tabs');
 assert.equal(nodes['reset-camera'].parentNode,viewportActions,'Camera reset remains on the viewport while the sheet opens');
 controller.close();
 near(controller.focusOffsetFor(canvas),0);

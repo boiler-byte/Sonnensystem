@@ -106,7 +106,8 @@ test('v90: grouped panel mirrors availability and indicates a legacy half-select
   }};
   const ctx=vm.createContext({$,S,renderer,document,CATEGORY_COLORS,
     LAYER_FILTER_TYPES,layerFilterMembers,availableLayerTypes,layerEnabled,layerSummary,
-    displayMatchesPreset,activeView:()=>renderer.planetId?'planet':'solar',syncToggleState:()=>{}});
+    displayMatchesPreset,activeView:()=>renderer.planetId?'planet':'solar',syncToggleState:()=>{},
+    syncLayerPanelMode:()=>{}});
   vm.runInContext(functionBody,ctx);
   vm.runInContext('syncLayers()',ctx);
   const dwarf=controls.find(i=>i.dataset.layerType==='dwarf');

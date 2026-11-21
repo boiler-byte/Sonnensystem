@@ -71,53 +71,46 @@ test('v10: readable German labels for extreme ranges and exact default speeds',(
   assert.equal(formatSpeed(3652.5),'10 Jahre / s');
 });
 
-test('v10: controls update icon, pause state and speed-range labels in each scene',()=>{
-  const before=globalThis.document;
-  const el=new Map();
+test('v124: Layer controls update icon, pause state and speed-range labels in each scene',()=>{
+  const before=globalThis.document,el=new Map();
   globalThis.document={getElementById:id=>{
-    if(!el.has(id)) el.set(id, {textContent:'',value:'',attrs:{},setAttribute(name,value){this.attrs[name]=value;}});
+    if(!el.has(id))el.set(id,{textContent:'',value:'',attrs:{},setAttribute(name,value){this.attrs[name]=value;}});
     return el.get(id);
   }};
-  try {
+  try{
     const state={playing:true,time:Date.UTC(2026,10,16,23,17),speed:5,timelineMode:'solar'};
     syncControls(state);
-    assert.match(el.get('play-icon-path').attrs.d,/M7 5h4/);
-    assert.equal(el.get('play-btn').attrs['aria-pressed'],'true');
-    assert.equal(el.get('speed-readout').textContent,'5 Tage / s');
-    assert.equal(el.get('speed').value,'101');
-    assert.equal(el.get('speed-max-label').textContent,'10 Jahre / s');
-    assert.match(el.get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026\n\d{2}:\d{2}$/);
-    state.playing=false;
-    state.timelineMode='planet';state.speed=1/24;
+    assert.match(el.get('layer-play-icon-path').attrs.d,/M7 5h4/);
+    assert.equal(el.get('layer-play-btn').attrs['aria-pressed'],'true');
+    assert.equal(el.get('layer-speed-value').textContent,'5 Tage / s');
+    assert.equal(el.get('layer-speed').value,'101');
+    assert.equal(el.get('layer-speed-max-label').textContent,'10 Jahre / s');
+    assert.match(el.get('layer-sim-date').textContent,/^\d{2}\.\d{2}\.2026 \d{2}:\d{2}$/);
+    state.playing=false;state.timelineMode='planet';state.speed=1/24;
     syncControls(state);
-    assert.match(el.get('play-icon-path').attrs.d,/M7 4v16/);
-    assert.equal(el.get('play-btn').attrs['aria-pressed'],'false');
-    assert.equal(el.get('speed').value,'75');
-    assert.equal(el.get('speed-min-label').textContent,'1 Min. / s');
-    assert.equal(el.get('speed-max-label').textContent,'1 Jahr / s');
-  } finally {if(before===undefined)delete globalThis.document;else globalThis.document=before;}
+    assert.match(el.get('layer-play-icon-path').attrs.d,/M7 4v16/);
+    assert.equal(el.get('layer-play-btn').attrs['aria-pressed'],'false');
+    assert.equal(el.get('layer-speed').value,'75');
+    assert.equal(el.get('layer-speed-min-label').textContent,'1 Min. / s');
+    assert.equal(el.get('layer-speed-max-label').textContent,'1 Jahr / s');
+  }finally{if(before===undefined)delete globalThis.document;else globalThis.document=before;}
 });
 
-test('v18: one compact time trigger contains Play, slider, and Heute in its popup',async()=>{
-  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-  const css=await readFile(new URL('../css/styles.css',import.meta.url),'utf8');
-  const app=await readAppSource();
-  const panel=html.split('id="time-panel"')[1].split('id="canvas-error"')[0];
-  assert.equal((panel.match(/<button\b[^>]*id="(?:speed-btn|play-btn|today-btn)"/g)||[]).length,3,'one time trigger and two popup actions');
-  const trigger=panel.slice(0,panel.indexOf('id="speed-popover"'));
-  assert.equal((trigger.match(/<button\b/g)||[]).length,1,'only dropdown trigger is visible when closed');
-  for(const id of ['play-btn','speed-btn','today-btn'])assert.match(panel,new RegExp(`id="${id}"`));
-  assert.match(panel,/id="sim-date-label"/);
-  assert.match(panel,/id="today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
-  assert.doesNotMatch(panel,/<span>Heute<\/span>/);
-  assert.doesNotMatch(panel,/type="date"/);
-  assert.match(panel,/id="speed-popover"[^>]*hidden/);
-  assert.match(panel,/id="speed"[^>]*type="range"[^>]*max="240"/);
+test('v124: one integrated Layer panel contains playback, speed and today',async()=>{
+  const [html,css,app]=await Promise.all([
+    readFile(new URL('../index.html',import.meta.url),'utf8'),
+    readFile(new URL('../css/styles.css',import.meta.url),'utf8'),readAppSource()
+  ]);
+  const panel=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
+  for(const id of ['layer-play-btn','layer-speed','layer-today-btn','layer-sim-date'])assert.match(panel,new RegExp(`id="${id}"`));
+  assert.match(panel,/class="layer-speed-caption">Geschwindigkeit<\/span>/);
+  assert.match(panel,/class="layer-speed-caption">Datum<\/span>/);
   assert.match(panel,/aria-orientation="vertical"/);
-  assert.match(css,/writing-mode:vertical-lr;direction:rtl/);
+  assert.match(css,/\.layer-speed-rail #layer-speed\{[^}]*rotate\(-90deg\)/);
   assert.match(app,/if\(syncSpeedMode\(S,view\)\)/);
-  assert.match(app,/\$\('speed-btn'\)\.addEventListener\('click'/);
-  assert.match(app,/\$\('today-btn'\)\.addEventListener\('click',\(\)=>\{S\.time=Date\.now\(\);renderer\?\.resetGalacticTrails\?\.\(\);updateTime\(\);updateDetail\(\);\}\)/);
+  assert.match(app,/\$\('layer-speed'\)\.addEventListener\('input'/);
+  assert.match(app,/\$\('layer-today-btn'\)\.addEventListener\('click',resetToToday\)/);
   assert.match(app,/if\(e\.key==='Escape'\)\{/);
-  assert.match(app,/!\$\('speed-picker-wrap'\)\.contains\(e\.target\)/);
+  assert.doesNotMatch(html,/id="time-panel"|id="speed-popover"/);
 });
+

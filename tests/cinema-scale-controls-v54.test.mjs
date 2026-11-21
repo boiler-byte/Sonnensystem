@@ -118,7 +118,7 @@ test('v55: Cinema prerequisites have three direct controls, nine moon dots in La
   ['orbit-row-btn','scale-objects-btn','scale-orbits-btn']);
  for(const label of ['Reihe','Objekt','Bahn'])assert.match(main,new RegExp(`<span class="scale-option-label">${label}</span>`));
  assert.match(css,/\.viewport>\.control-panel \.scale-main-controls\{/);
- const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="time-panel"'));
+ const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="canvas-error"'));
  const moonButton=layer.match(/<button[^>]*id="toggle-four-moons"[^>]*>[\s\S]*?<\/button>/)?.[0];
  assert.ok(moonButton);
  assert.match(moonButton,/aria-pressed="false"/);
@@ -126,7 +126,10 @@ test('v55: Cinema prerequisites have three direct controls, nine moon dots in La
  const svg=moonButton.match(/<svg class="nine-moons-icon"[^>]*>([\s\S]*?)<\/svg>/)?.[1];
  const coords=[...svg.matchAll(/<circle cx="([0-9.]+)" cy="([0-9.]+)" r="([0-9.]+)"\/>/g)];
  assert.equal(coords.length,9);
- for(const m of coords)assert.ok(Math.abs(Math.hypot(Number(m[1])-12,Number(m[2])-12)-7.5)<.02);
+ // v120: the moon glyph now scatters dots instead of arranging them on a ring.
+ const distances=coords.map(m=>Math.hypot(Number(m[1])-12,Number(m[2])-12));
+ assert.ok(Math.max(...distances)-Math.min(...distances)>3,'dots no longer follow one circular orbit');
+ assert.ok(new Set(coords.map(m=>m[3])).size>=4,'visible variety in sizes');
 });
 
 test('v54: inversed moon toggle OFF caps to four, ON shows all, with scene defaults intact',async()=>{

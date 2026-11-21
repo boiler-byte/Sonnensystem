@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V118.0" />
+  <meta name="app-version" content="V124.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -171,18 +171,25 @@
                     <svg class="orbit-visibility-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/></svg>
                     <svg class="orbit-galactic-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 14.5c3.2-5.3 8.2-8 16.8-9"/><path d="M4 17.8c3.8-2.2 7.6-2.8 12.4-2.3 1.6.17 2.9.48 4.1.9"/><circle cx="18.9" cy="5.6" r="1.75"/><circle cx="10.1" cy="15.1" r="1.25"/></svg>
                   </button>
-                  <button class="scale-tool-toggle" id="orbit-contrast-btn" type="button" title="Bahnkontrast: Aus (für Umlaufbahnen und galaktische Bewegung)" aria-label="Bahnkontrast: Aus" aria-pressed="false">
-                    <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" stroke-width="3"/><circle cx="12" cy="12" r="4.6" stroke-width="2.6"/></svg>
-                  </button>
-                  <button class="scale-tool-toggle" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert)" aria-label="Beleuchtung" aria-pressed="false">
-                    <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>
-                  </button>
-                  <button class="scale-tool-toggle" id="toggle-four-moons" type="button" title="Alle Monde: Aus (maximal vier Monde je Planet)" aria-label="Alle Monde anzeigen" aria-pressed="false">
-                    <svg class="nine-moons-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12.00" cy="4.50" r="1.65"/><circle cx="16.82" cy="6.25" r="1.65"/><circle cx="19.39" cy="10.70" r="1.65"/><circle cx="18.50" cy="15.75" r="1.65"/><circle cx="14.57" cy="19.05" r="1.65"/><circle cx="9.43" cy="19.05" r="1.65"/><circle cx="5.50" cy="15.75" r="1.65"/><circle cx="4.61" cy="10.70" r="1.65"/><circle cx="7.18" cy="6.25" r="1.65"/></svg>
-                  </button>
+                  <div class="layer-display-secondary" role="group" aria-label="Kontrast, Beleuchtung und Monde">
+                    <button class="scale-tool-toggle" id="orbit-contrast-btn" type="button" title="Bahnkontrast: Aus (für Umlaufbahnen und galaktische Bewegung)" aria-label="Bahnkontrast: Aus" aria-pressed="false">
+                      <svg class="orbit-contrast-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor" stroke="none"/></svg>
+                    </button>
+                    <button class="scale-tool-toggle" id="toggle-lighting" type="button" title="Beleuchtung: Aus (Optimiert)" aria-label="Beleuchtung" aria-pressed="false">
+                      <svg class="flashlight-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3.5h10v5L14.5 12v8a2.5 2.5 0 0 1-5 0v-8L7 8.5zM7 7.5h10M9.5 16h5"/></svg>
+                    </button>
+                    <button class="scale-tool-toggle" id="toggle-four-moons" type="button" title="Alle Monde: Aus (maximal vier Monde je Planet)" aria-label="Alle Monde anzeigen" aria-pressed="false">
+                      <svg class="nine-moons-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="4.0" cy="6.4" r="1.35"/><circle cx="12.1" cy="3.4" r="1.40"/><circle cx="19.3" cy="5.8" r="1.15"/><circle cx="8.8" cy="10.7" r="1.30"/><circle cx="20.1" cy="13.0" r="1.55"/><circle cx="3.3" cy="15.0" r="1.15"/><circle cx="13.5" cy="15.6" r="1.45"/><circle cx="7.3" cy="20.3" r="1.10"/><circle cx="18.6" cy="20.6" r="1.20"/></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">
+              <button class="layer-speed-toggle" id="layer-speed-toggle" type="button" data-layer-view="categories" aria-pressed="false" aria-controls="layer-categories layer-speed-panel" aria-label="Aktuelle Ansicht: Kategorien. Zu Tempo wechseln" title="Aktuelle Ansicht: Kategorien. Zu Tempo wechseln">
+                <svg class="layer-category-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg>
+                <svg class="layer-tempo-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 17a9 9 0 1 1 16 0"/><path d="m12 14 5-5"/><circle cx="12" cy="14" r="1.3"/></svg>
+                <span id="layer-speed-toggle-label">Kategorien</span>
+              </button>
+              <div class="layer-options" id="layer-categories" role="group" aria-label="Einzelne Objektkategorien">
                 <label class="layer-option"><input type="checkbox" data-layer-type="star" checked/><span>Sterne</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="moon"/><span>Monde</span></label>
@@ -192,35 +199,31 @@
                 <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
               </div>
-            </div>
-          </div>
-          <div class="time-panel" id="time-panel">
-            <div class="speed-picker-wrap" id="speed-picker-wrap">
-              <button class="timeline-button speed-button time-trigger" id="speed-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="speed-popover" aria-label="Zeitsteuerung öffnen">
-                <span class="speed-button-copy">
-                  <small id="speed-readout">5 Tage / s</small>
-                  <time id="sim-date-label" aria-live="off"></time>
-                </span>
-              </button>
-              <div class="speed-popover" id="speed-popover" role="group" aria-label="Zeitsteuerung" hidden>
-                <div class="speed-popover-header">
-                  <strong id="speed-popover-value">5 Tage / s</strong>
+              <div class="layer-speed-panel" id="layer-speed-panel" role="group" aria-label="Simulationsgeschwindigkeit" hidden>
+                <div class="layer-speed-heading">
+                  <span class="layer-speed-caption">Geschwindigkeit</span>
+                  <output id="layer-speed-value" for="layer-speed">5 Tage / s</output>
                 </div>
-                <div class="time-popover-grid">
-                  <div class="vertical-speed-control">
-                    <div class="speed-slider-rail"><input id="speed" type="range" min="0" max="240" step="1" value="101" aria-label="Geschwindigkeit in logarithmischen Stufen" aria-describedby="speed-min-label speed-max-label" aria-orientation="vertical" /></div>
-                    <div class="speed-range-labels">
-                      <span id="speed-max-label">10 Jahre / s</span>
-                      <span id="speed-min-label">1 Std. / s</span>
-                    </div>
+                <div class="layer-speed-layout">
+                  <div class="layer-speed-rail"><input id="layer-speed" type="range" min="0" max="240" step="1" value="101" aria-label="Simulationsgeschwindigkeit in logarithmischen Stufen" aria-describedby="layer-speed-min-label layer-speed-max-label" aria-orientation="vertical" /></div>
+                  <div class="layer-speed-bounds">
+                    <span id="layer-speed-max-label">10 Jahre / s</span>
+                    <span id="layer-speed-min-label">1 Std. / s</span>
                   </div>
-                  <div class="time-popover-actions" role="group" aria-label="Wiedergabe und Datum">
-                    <div class="time-popover-buttons">
-                      <button class="timeline-button play-button" id="play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true"><svg id="play-icon" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false"><path id="play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z" fill="currentColor"/></svg></button>
-                      <button class="timeline-button now-button" id="today-btn" type="button" aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.34-5.66M4 4v5h5"/></svg></button>
-                    </div>
-                    <time id="sim-date-readout" class="time-popover-date" aria-live="off"></time>
-                  </div>
+                </div>
+                <div class="layer-speed-actions" role="group" aria-label="Wiedergabe und aktuelles Datum">
+                  <button class="layer-speed-action" id="layer-play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true" title="Simulation pausieren">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path id="layer-play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z"/></svg>
+                    <span id="layer-play-label">Pause</span>
+                  </button>
+                  <button class="layer-speed-action" id="layer-today-btn" type="button" aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.34-5.66M4 4v5h5"/></svg>
+                    <span>Heute</span>
+                  </button>
+                </div>
+                <div class="layer-speed-date-group">
+                  <span class="layer-speed-caption">Datum</span>
+                  <time class="layer-speed-date" id="layer-sim-date" aria-live="off"></time>
                 </div>
               </div>
             </div>

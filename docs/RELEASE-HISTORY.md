@@ -1,3 +1,40 @@
+## v124 – Zeitsteuerung vollständig im Layer Control Panel
+
+- Eigenständiges Zeitsteuerungs-Dropdown samt Auslöser entfernt. Es gibt nur noch einen Geschwindigkeitsschieber, einen Play/Pause- und einen Heute-Button im Layer Control.
+- Die Tempo-Ansicht zeigt die Überschriften **Geschwindigkeit** und **Datum** über Wert/Regler bzw. der lokalen Simulationszeit.
+- Unverändert: logarithmischer Geschwindigkeitsbereich je Ansicht, Pausieren und Rücksetzen auf heute sowie Beschränkung des Tempo-Panels im Reihenmodus.
+- Paketversion `124.0.0`, HTML `V124.0`, PWA-Shell `sonnensystem-shell-v124`.
+
+## v123 – Layer-Umschalter zeigt aktive Ansicht, Zeitsteuerung mit Aktionen
+
+- Umschalter **Kategorien / Tempo** direkt unter der zweiten Darstellungs-Buttonreihe (**Kontrast, Beleuchtung, Monde**). Text, Icon und ARIA-Beschriftung kennzeichnen die **aktuell sichtbare** Ansicht; **Kategorien** hat ein Raster-Icon. Die Beschriftung für den nächsten Klick bleibt in Tooltip und barrierefreier Beschreibung erhalten.
+- Die Layer-Tempoansicht enthält zusätzlich zwei Buttons: **Play/Pause** und **Heute** mit lokaler Datums-/Uhrzeitanzeige. Beide sind mit der bisherigen Zeitsteuerung gekoppelt; die Simulationsgeschwindigkeit und der Pausezustand bleiben bei einem Wechsel der Ansicht erhalten. Im Reihenmodus bleibt der Umschalter deaktiviert.
+- Version `123.0.0`, HTML `V123.0`, PWA-Cache `sonnensystem-shell-v123`, Basis v122. Regressionen: `tests/layer-time-controls-v123.test.mjs`.
+
+## v122 – Katalogauswahl aktiviert Layer und Layer-Tempoansicht
+
+- Die Objektauswahl schaltet eine zuvor ausgeschaltete Kategorie in der aktuellen Szene ein, bevor der Renderer die Auswahl fokussiert. Gruppierte Filter (Zwergplanet/TNO, Asteroid/Doppelasteroid) werden über die bestehende Layerlogik konsistent aktiviert; andere Kategorien und Ansichten bleiben unverändert.
+- Im Layer Control Panel wechselt ein neuer Toggle **Tempo / Kategorien** zwischen der Kategorieliste und einem Regler für die Simulationsgeschwindigkeit. Regler und bisherige Zeitsteuerung bleiben synchron und erhalten Pause sowie getrennte Geschwindigkeitseinstellungen je Ansicht. In der Reihe ist der neue Tempo-Toggle aufgrund der festen Simulationsgeschwindigkeit deaktiviert.
+- Version `122.0.0`, HTML `V122.0`, PWA-Cache `sonnensystem-shell-v122`, Basis v121. Regressionstests in `tests/layer-selection-speed-v122.test.mjs`.
+
+## v121 – Layer Control Panel: Mondkategorie und blaue Modusfarben
+
+- Aktiviert man **Alle Monde** im Layer-Panel, wird die Objektkategorie **Monde** bei Bedarf ebenfalls eingeschaltet (`updateLayerSelection` → `changeLayers`). Andere Kategorie-Filter bleiben unverändert. Beim Deaktivieren des Monde-Toggles bleibt die Kategorie ausgewählt; die Vierer-Begrenzung gilt wieder.
+- **Beschriftung/Planetenpunkt** und **Umlaufbahn/Galaktische Bewegung** erhalten jeweils eine blaue, gut sichtbare Buttonfläche, blauen Rand und blaues Icon. Andere Modi behalten ihre bestehenden Farben und Funktionen.
+- Version `121.0.0`, HTML `V121.0`, PWA-Cache `sonnensystem-shell-v121`, Delta-Basis v120. Regressionen: `tests/layer-panel-modes-v121.test.mjs`.
+
+## v120 – Layer Control Panel mit Kontrast-Halbmond und frei verteilten Monden
+
+- Obere Zeile **Beschriftung / Umlaufbahn** bleibt im bisherigen zweispaltigen Raster. Die drei Schalter **Kontrast / Beleuchtung / Monde** belegen die zweite Zeile mit je einem Drittel Breite. In der Reihen-Darstellung bleiben bisherige Sichtbarkeitsregeln bestehen und der Beleuchtungsschalter nutzt wieder die gesamte Breite.
+- Kontrast-Icon: klassischer halb gefüllter Kreis (Halbmond). Monde-Icon: neun unregelmäßig verteilte Punkte mit unterschiedlichen Größen. Schaltzustände und Funktionen unverändert.
+- Version `120.0.0`, HTML `V120.0`, Cache `sonnensystem-shell-v120`, Delta-Basis v119. Test: `tests/layer-control-layout-v120.test.mjs`.
+
+## v119 – Cinema-Kamera entlang einer natürlichen Kurve
+
+- Zwischen benachbarten Stopps in beiden Reihenmodi führt der Cinema-Modus die Kamera über eine kubische 3D-Bezierkurve. Die Kamera steigt dezent an, zieht sich etwas zurück und erreicht das nächste Objekt ohne Versatz.
+- Die Bogenhöhe ist von Abstand und Zoom abhängig und bleibt begrenzt. Objektzentren, 5-Sekunden-Haltezeiten, Fahrtzeit, 1x/2x, Pause/Scrubbing, Einstieg und Rückkehr bleiben unverändert.
+- Paket `119.0.0`, HTML `V119.0`, Cache `sonnensystem-shell-v119`, Delta-Basis v118; Tests in `tests/cinema-curve-v119.test.mjs`.
+
 ## v118 – Reihendarstellung mit Farbmodi und unabhängigem Cinema-Play
 
 - Der **Bahn**-Maßstab-Toggle wird in beiden Reihenmodi verborgen und erscheint nach Verlassen der Reihe mit dem zuvor gespeicherten Wert. Solange die Reihe läuft, ist `scaleOrbits` für die sichtbare Geometrie ohne Wirkung.

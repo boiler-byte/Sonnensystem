@@ -82,7 +82,7 @@ test('v114: two controls expose independent accessible pressed states',()=>{
 
 test('v114: Layer popover contains standalone contrast in row two, and galactic icon stays in orbit button',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css');
-  const area=html.slice(html.indexOf('class="layer-display-toggles"'),html.indexOf('class="layer-options"'));
+  const area=html.slice(html.indexOf('class="layer-display-toggles"'),html.indexOf('              <button class="layer-speed-toggle"'));
   const ids=[...area.matchAll(/<button[^>]*id="([a-z-]+)"/g)].map(match=>match[1]);
   assert.deepEqual(ids,['toggle-labels','orbit-visibility-btn','orbit-contrast-btn','toggle-lighting','toggle-four-moons']);
   assert.equal((area.match(/<button /g)||[]).length,5);

@@ -13,7 +13,6 @@ const appParts = [
   'src/ui/display-controls.js',
   'src/app/object-catalog.js',
   'src/app/camera-controller.js',
-  'src/ui/popover-controls.js',
   'src/ui/event-handlers.js',
   'src/app/service-worker-registration.js',
   'src/app/animation-loop.js',

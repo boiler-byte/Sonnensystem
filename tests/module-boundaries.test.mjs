@@ -89,9 +89,9 @@ test('real ES module UI handlers still change the shared view settings',()=>{
   assert.equal(S.viewSettings.planet.scaleObjects,true,'scale setting shared by both scenes');
   node('layer-btn').click();
   assert.equal(node('layer-popover').hidden,false);
-  node('speed-btn').click();
-  assert.equal(node('layer-popover').hidden,true,'popovers remain mutually exclusive');
-  assert.equal(node('speed-popover').hidden,false);
+  node('layer-speed-toggle').click();
+  assert.equal(node('layer-speed-panel').hidden,false,'Tempo replaces the category list within Layer');
+  assert.equal(node('layer-categories').hidden,true);
  }finally{
   Object.assign(S.viewSettings.solar,original.solar);
   Object.assign(S.viewSettings.planet,original.planet);

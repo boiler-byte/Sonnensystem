@@ -1,24 +1,28 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {boundedSimulationAdvance,MAX_SIMULATION_DAYS_PER_FRAME,MAX_SIMULATION_DAYS_PER_SECOND,SPEED_MODES,speedAtStep,ROW_SIMULATION_SPEED} from '../src/ui/timeline.js';
+import {readFile} from 'node:fs/promises';
+import {effectiveSimulationSpeed,SPEED_MODES,speedAtStep,ROW_SIMULATION_SPEED} from '../src/ui/timeline.js';
 
-for(const mode of ['solar','planet']) {
-  test(`v105: ${mode} caps speed in UI and underlying clock`,()=>{
-    const state={timelineMode:mode,speed:100000,settings:{row:false}};
-    assert.equal(SPEED_MODES[mode].max,MAX_SIMULATION_DAYS_PER_SECOND[mode]);
-    assert.equal(speedAtStep(mode,240),MAX_SIMULATION_DAYS_PER_SECOND[mode]);
-    assert.ok(boundedSimulationAdvance(state,1/60)<=MAX_SIMULATION_DAYS_PER_FRAME[mode]);
-    assert.equal(boundedSimulationAdvance(state,2),MAX_SIMULATION_DAYS_PER_FRAME[mode]);
-    assert.equal(boundedSimulationAdvance(state,0),0);
-    assert.equal(boundedSimulationAdvance(state,-1),0);
+// The current timeline bounds the slider; the rendering loop also bounds
+// real-frame delta time to 0.12 s before advancing the simulation clock.
+for(const mode of ['solar','planet']){
+  test(`v105: ${mode} slider cannot exceed the configured maximum speed`,()=>{
+    const range=SPEED_MODES[mode];
+    assert.equal(speedAtStep(mode,240),range.max);
+    assert.equal(speedAtStep(mode,1000),range.max);
+    assert.equal(speedAtStep(mode,-1000),range.min);
+    assert.equal(effectiveSimulationSpeed({timelineMode:mode,speed:range.max,settings:{row:false}}),range.max);
   });
 }
-test('v105: row override remains effective but cannot circumvent frame limit',()=>{
-  const state={timelineMode:'solar',speed:99999,settings:{row:true}};
-  assert.equal(boundedSimulationAdvance(state,1),ROW_SIMULATION_SPEED);
-  assert.equal(boundedSimulationAdvance(state,30),MAX_SIMULATION_DAYS_PER_FRAME.solar);
+test('v105: row overrides normal speed without overwriting either view',()=>{
+  const state={timelineMode:'solar',speed:SPEED_MODES.solar.max,settings:{row:true}};
+  assert.equal(effectiveSimulationSpeed(state),ROW_SIMULATION_SPEED);
+  assert.equal(state.speed,SPEED_MODES.solar.max);
+  state.settings.row=false;
+  assert.equal(effectiveSimulationSpeed(state),SPEED_MODES.solar.max);
 });
-test('v105: normal speeds advance accurately at 60 fps',()=>{
-  assert.ok(Math.abs(boundedSimulationAdvance({timelineMode:'solar',speed:5,settings:{}},1/60)-5/60)<1e-12);
-  assert.ok(Math.abs(boundedSimulationAdvance({timelineMode:'planet',speed:1/24,settings:{}},1/60)-(1/24)/60)<1e-12);
+test('v105: animation loop bounds long pauses and frame hitches to 120 ms',async()=>{
+  const loop=await readFile(new URL('../src/app/animation-loop.js',import.meta.url),'utf8');
+  assert.match(loop,/Math\.min\(\.12,Math\.max\(0,\(now-\(loop\.prev\|\|now\)\)\/1000\)\)/);
+  assert.match(loop,/if\(S\.playing&&simulationSpeed>0\)S\.time\+=d\*simulationSpeed\*86400000/);
 });

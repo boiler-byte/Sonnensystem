@@ -11,31 +11,19 @@ function area(html, start, end) {
   return html.slice(a,b);
 }
 
-test('v26: control panel has no view selector; the camera reset is separate and time controls remain in their dropdown',async()=>{
-  const html=await read('index.html');
-  assert.doesNotMatch(html,/class="camera-hints"|class="catalog-intro"/);
+test('v124: viewport controls keep camera reset separate and time controls in Layer',async()=>{
+  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
   const controls=area(html,'id="view-mode-status"','id="canvas-error"');
-  assert.doesNotMatch(html,/id="view-mode-select"|for="view-mode-select"/);
+  assert.doesNotMatch(html,/id="view-mode-select"|id="time-panel"|id="speed-btn"|id="speed-popover"/);
   assert.doesNotMatch(controls,/id="reset-camera"/);
   assert.match(html,/<div class="viewport-actions"[\s\S]*?<button class="icon-button camera-reset-button" id="reset-camera"/);
-  assert.match(html,/data-perspective="oblique"/);
-  assert.match(html,/data-perspective="topdown"/);
-  assert.match(html,/data-perspective="side"/);
-  for(const id of ['play-btn','speed-btn','today-btn','orbit-visibility-btn','toggle-labels'])
-    assert.match(controls,new RegExp(`id="${id}"`));
-  const timeline=area(html,'id="time-panel"','id="canvas-error"');
-  assert.equal((timeline.match(/<button\b[^>]*id="(?:speed-btn|play-btn|today-btn)"/g)||[]).length,3);
-  const trigger=timeline.slice(0,timeline.indexOf('id="speed-popover"'));
-  assert.equal((trigger.match(/<button\b/g)||[]).length,1,'one closed control');
-  assert.doesNotMatch(trigger,/>Heute\s*</);
-  assert.doesNotMatch(trigger,/>Geschwindigkeit\s*</);
-  assert.match(timeline,/id="sim-date-label"/);
-  assert.match(timeline,/id="sim-date-readout"/);
-  assert.match(timeline,/id="today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
-  assert.doesNotMatch(timeline,/<span>Heute<\/span>/);
-  const css=await read('css/styles.css');
+  for(const perspective of ['oblique','topdown','side'])assert.match(html,new RegExp(`data-perspective="${perspective}"`));
+  const layer=area(html,'id="layer-popover"','id="canvas-error"');
+  for(const id of ['layer-play-btn','layer-speed','layer-today-btn','layer-sim-date','orbit-visibility-btn','toggle-labels'])
+    assert.match(layer,new RegExp(`id="${id}"`));
+  assert.match(layer,/>Geschwindigkeit<\/span>/);
+  assert.match(layer,/>Datum<\/span>/);
   assert.match(css,/\.viewport>\.control-panel\{position:absolute/);
-  assert.match(css,/\.viewport>\.control-panel\{\s*width:58px!important/);
 });
 
 test('v13: detail name replaces section label, hero shows object type and origin, tabs separate knowledge/data',async()=>{

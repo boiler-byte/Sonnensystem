@@ -65,34 +65,31 @@ export function formatLocalDateTime(value) {
   return `${two(d.getDate())}.${two(d.getMonth()+1)}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`;
 }
 
-/** Date-only label for the compact trigger; time stays in the open menu. */
+/** Date-only formatter retained for compatibility with existing callers. */
 export function formatLocalDate(value) {
   return formatLocalDateTime(value).slice(0, 10);
 }
 
+/** Keep the single time control in Layer Control in sync with the simulation. */
 export function syncControls(state) {
   const date=formatLocalDateTime(state.time);
-  const dateOnly=formatLocalDate(state.time);
-  if($('sim-date-label').textContent!==dateOnly)$('sim-date-label').textContent=dateOnly;
-  const localDate=new Date(state.time);
-  const pad=n=>String(n).padStart(2,'0');
-  $('sim-date-label').setAttribute('datetime',`${localDate.getFullYear()}-${pad(localDate.getMonth()+1)}-${pad(localDate.getDate())}`);
-  const stackedDate=date.replace(' ', '\n'); // Two lines: local date, then local time.
-  if($('sim-date-readout').textContent!==stackedDate)$('sim-date-readout').textContent=stackedDate;
-  $('sim-date-readout').setAttribute('datetime',new Date(state.time).toISOString());
-  $('play-icon-path').setAttribute('d',state.playing?'M7 5h4v14H7z M14 5h4v14h-4z':'M7 4v16l13-8z');
-  $('play-btn').setAttribute('aria-label',state.playing?'Simulation pausieren':'Simulation starten');
-  $('play-btn').setAttribute('aria-pressed',String(state.playing));
   const mode=state.timelineMode||'solar';
   const speed=formatSpeed(state.speed);
-  $('speed-readout').textContent=speed;
-  $('speed-popover-value').textContent=speed;
+  const layerPlay=$('layer-play-btn');
+  layerPlay.setAttribute('aria-label',state.playing?'Simulation pausieren':'Simulation starten');
+  layerPlay.setAttribute('aria-pressed',String(state.playing));
+  layerPlay.title=state.playing?'Simulation pausieren':'Simulation starten';
+  $('layer-play-icon-path').setAttribute('d',state.playing?'M7 5h4v14H7z M14 5h4v14h-4z':'M7 4v16l13-8z');
+  $('layer-play-label').textContent=state.playing?'Pause':'Play';
+  const layerDate=$('layer-sim-date');
+  if(layerDate.textContent!==date)layerDate.textContent=date;
+  layerDate.setAttribute('datetime',new Date(state.time).toISOString());
   const step=stepForSpeed(mode,state.speed);
-  const slider=$('speed');
+  const slider=$('layer-speed');
   slider.value=String(step);
   slider.setAttribute('style',`--speed-progress:${100*step/SPEED_STEPS}%`);
   slider.setAttribute('aria-valuetext',speed);
-  $('speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
-  $('speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
-  $('speed-btn').setAttribute('aria-label',`Zeitsteuerung: ${speed}, ${dateOnly}. ${state.playing?'Läuft':'Pausiert'}. Menü öffnen`);
+  $('layer-speed-value').textContent=speed;
+  $('layer-speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
+  $('layer-speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
 }

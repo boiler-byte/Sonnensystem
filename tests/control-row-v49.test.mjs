@@ -31,12 +31,12 @@ test('v55: AR, Cinema, three scale controls and Layer/Time fit the responsive to
  assert.match(v55,/--control-icon-width:43px/);
  assert.match(v55,/flex-wrap:wrap/);
  assert.match(v55,/\.scale-main-controls\{/);
- assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);
+ assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
  assert.match(v55,/@media\(max-width:770px\)/);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
- for(const id of ['ar-mode-btn','cinema-btn','scale-objects-btn','scale-orbits-btn','orbit-row-btn','layer-btn','speed-btn'])
+ for(const id of ['ar-mode-btn','cinema-btn','scale-objects-btn','scale-orbits-btn','orbit-row-btn','layer-btn'])
   assert.match(html,new RegExp(`id="${id}"`));
- assert.doesNotMatch(html,/id="scale-btn"|id="scale-popover"/);
+ assert.doesNotMatch(html,/id="scale-btn"|id="scale-popover"|id="speed-btn"|id="speed-popover"/);
 });
 
 test('v49: row gap between first and second is unchanged, subsequent gaps are 30% larger',()=>{

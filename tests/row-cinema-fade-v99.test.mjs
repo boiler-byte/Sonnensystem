@@ -57,15 +57,14 @@ test('v99: UI hides row-only controls and restores them with original layer sele
   const selected=S.settings.layers;
   syncLayers();syncRowControl();
   for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])assert.equal(node(id).hidden,false);
-  assert.equal(node('time-panel').hidden,false);
+  assert.equal(node('layer-speed-toggle').disabled,false);
   assert.equal(checks.find(x=>x.dataset.layerType==='moon').parentElement.hidden,false);
   assert.equal(checks.find(x=>x.dataset.layerType==='satellite').parentElement.hidden,false);
   S.settings.row=true;
   syncRowControl();syncLayers();
   for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])assert.equal(node(id).hidden,true,id);
-  assert.equal(node('time-panel').hidden,true);
-  assert.equal(node('speed-popover').hidden,true,'an already open speed menu closes');
-  assert.equal(node('speed-btn').attributes['aria-expanded'],'false');
+  assert.equal(node('layer-speed-toggle').disabled,true,'row mode fixes speed');
+  assert.equal(node('layer-speed-panel').hidden,true);
   assert.equal(checks.find(x=>x.dataset.layerType==='moon').parentElement.hidden,true);
   assert.equal(checks.find(x=>x.dataset.layerType==='satellite').parentElement.hidden,true);
   assert.equal(checks.find(x=>x.dataset.layerType==='planet').parentElement.hidden,false);
@@ -74,7 +73,7 @@ test('v99: UI hides row-only controls and restores them with original layer sele
   S.settings.row=false;
   syncRowControl();syncLayers();
   for(const id of ['toggle-labels','orbit-visibility-btn','toggle-four-moons'])assert.equal(node(id).hidden,false,id);
-  assert.equal(node('time-panel').hidden,false);
+  assert.equal(node('layer-speed-toggle').disabled,false);
   assert.equal(checks.find(x=>x.dataset.layerType==='moon').parentElement.hidden,false);
   assert.equal(checks.find(x=>x.dataset.layerType==='satellite').parentElement.hidden,false);
  }finally{

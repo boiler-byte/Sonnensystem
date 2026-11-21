@@ -11,26 +11,23 @@ const extract=(text,start,end)=>{
   return text.slice(a,b);
 };
 
-test('v27: reset is separate from the compact control panel, with time controls in the dropdown',async()=>{
+test('v124: reset remains independent from integrated Layer time controls',async()=>{
   const html=await read('index.html');
   const panel=extract(html,'id="view-mode-status"','id="canvas-error"');
-  const controls=panel.slice(panel.indexOf('id="time-panel"'));
   const scenes=extract(html,'class="viewport-actions"','<canvas id="space"');
-  const ids=['speed-btn','play-btn','today-btn'];
-  assert.ok(ids.map(id=>controls.indexOf(`id="${id}"`)).every((pos,i,all)=>pos>=0&&(i===0||all[i-1]<pos)), 'A time trigger opens the playback and today actions');
-  assert.equal((controls.slice(0,controls.indexOf('id="speed-popover"')).match(/<button\b/g)||[]).length,1);
+  const controls=extract(panel,'id="layer-speed-panel"','id="layer-sim-date"');
+  const ids=['layer-speed','layer-play-btn','layer-today-btn'];
+  assert.ok(ids.map(id=>controls.indexOf(`id="${id}"`)).every((pos,i,all)=>pos>=0&&(i===0||all[i-1]<pos)));
+  assert.doesNotMatch(panel,/id="time-panel"|id="speed-popover"|id="speed-btn"/);
   const resetIconMarkup=scenes.slice(scenes.indexOf('id="reset-camera"'),scenes.indexOf('</button>',scenes.indexOf('id="reset-camera"')));
-  assert.equal((resetIconMarkup.match(/<svg /g)||[]).length,4,'Three preset and one free-look SVG belong to the separate reset action');
-  for(const id of ['reset-camera']){
-    assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,`${id} must not be duplicated`);
-    assert.match(scenes,new RegExp(`<button[^>]*id="${id}"[^>]*aria-label="[^"]+"`));
-  }
-  assert.doesNotMatch(panel,/class="scene-tools"|id="view-mode-select"/,'No redundant panel tools or view dropdown');
-  assert.doesNotMatch(html,/data-sheet-panel="control"/);
-  assert.doesNotMatch(html,/data-sheet-panel="time"/);
+  assert.equal((resetIconMarkup.match(/<svg /g)||[]).length,4);
+  assert.equal((html.match(/id="reset-camera"/g)||[]).length,1);
+  assert.match(scenes,/<button[^>]*id="reset-camera"[^>]*aria-label="[^"]+"/);
+  assert.doesNotMatch(panel,/class="scene-tools"|id="view-mode-select"/);
+  assert.doesNotMatch(html,/data-sheet-panel="control"|data-sheet-panel="time"/);
   const css=await read('css/styles.css');
   assert.match(css,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
-  assert.match(css,/\.control-panel \.time-panel \.time-trigger\{/);
+  assert.match(css,/\.layer-speed-caption\{/);
   assert.match(css,/\.viewport-actions \.camera-reset-button svg\{/);
 });
 
@@ -51,7 +48,7 @@ test('v14: renderer and timeline retain existing behavior and cache is invalidat
   const app=await read('src/app.js');
   const sw=await read('sw.js');
   const pkg=JSON.parse(await read('package.json'));
-  for(const id of ['toggle-labels','reset-camera','play-btn','speed-btn','today-btn'])
+  for(const id of ['toggle-labels','reset-camera','layer-play-btn','layer-today-btn'])
     assert.match(app,new RegExp(`\\$\\('${id}'\\)\\.addEventListener\\(`));
   assert.match(app,/mobileSheets\?\.close\(\)/);
   assert.match(app,/S\.time=Date\.now\(\)/);

@@ -176,7 +176,7 @@ test('v48: SVG trigger sits left of the three menus, with conditional width and 
   .map(f=>readProjectSource(f)));
  assert.ok(html.indexOf('id="ar-mode-btn"')<html.indexOf('id="scale-objects-btn"'));
  assert.ok(html.indexOf('id="scale-objects-btn"')<html.indexOf('id="layer-btn"'));
- assert.ok(html.indexOf('id="layer-btn"')<html.indexOf('id="speed-btn"'));
+ assert.doesNotMatch(html,/id="speed-btn"/);
  assert.match(html,/<button class="ar-mode-button"[^>]*hidden>/);
  assert.match(html,/id="ar-mode-btn"[\s\S]*?<svg viewBox="0 0 24 24"/);
  assert.match(css,/\.viewport>\.control-panel\.ar-available,[^\n]*\{[^\n]*width:max-content!important/);

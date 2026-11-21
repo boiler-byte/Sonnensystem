@@ -29,7 +29,7 @@ test('v55: all three scale modes are direct top-level buttons in the right order
 
 test('v96: five appearance switches are grouped above the categories within Layer',async()=>{
  const html=await read('index.html');
- const layer=part(html,'id="layer-popover"','id="time-panel"');
+ const layer=part(html,'id="layer-popover"','id="canvas-error"');
  assert.ok(layer.indexOf('class="layer-presets"')<layer.indexOf('class="layer-display-controls"'));
  assert.ok(layer.indexOf('class="layer-display-controls"')<layer.indexOf('class="layer-options"'));
  assert.match(layer,/aria-label="Darstellungseinstellungen"/);
@@ -45,8 +45,9 @@ test('v96: five appearance switches are grouped above the categories within Laye
 
 test('v55: the moon and orbit toggles preserve their previous semantics and SVGs',async()=>{
  const [html,app]=await Promise.all([read('index.html'),read('src/app.js')]);
- const layer=part(html,'id="layer-popover"','id="time-panel"');
- const moon=part(layer,'id="toggle-four-moons"','class="layer-options"');
+ const layer=part(html,'id="layer-popover"','id="canvas-error"');
+ const moon=layer.match(/<button[^>]*id="toggle-four-moons"[\s\S]*?<\/button>/)?.[0];
+ assert.ok(moon,'moon button remains present');
  assert.equal((moon.match(/<circle /g)||[]).length,9);
  assert.match(moon,/aria-pressed="false"/);
  assert.match(moon,/maximal vier Monde je Planet/);
@@ -60,8 +61,8 @@ test('v55: the removed scale popup has no script event or dangling references',a
  assert.doesNotMatch(app,/setScalePopover|\$\('scale-btn'\)|\$\('scale-popover'\)/);
  assert.match(app,/\['scale-objects-btn','scaleObjects'\]/);
  assert.match(app,/\$\('orbit-row-btn'\)\.addEventListener\('click',updateRow\)/);
- assert.match(app,/if\(opening\)setSpeedPopover\(false\)/);
- assert.match(app,/if\(opening\)setLayerPopover\(false\)/);
+ assert.doesNotMatch(app,/setSpeedPopover|speed-popover/);
+ assert.match(app,/setLayerPopover\(opening\)/);
  assert.match(app,/if\(!\$\('layer-popover'\)\.hidden\)/);
 });
 
@@ -72,7 +73,7 @@ test('v96: small viewports wrap the toolbar and the Layer switches form two pair
  assert.match(v55,/max-width:calc\(100% - var\(--control-right-inset\) - 8px\)!important/);
  assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.doesNotMatch(v55,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
- assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{[\s\S]*?top:calc\(100% \+ 7px\)/);
+ assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
  assert.match(v55,/@media\(max-width:770px\)/);
 });
 

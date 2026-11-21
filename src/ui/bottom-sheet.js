@@ -104,7 +104,7 @@ export function initMobileSheets() {
     content.scrollTop=0;
   }
   function dismissScenePopovers(){
-    for(const [popover,button] of [['speed-popover','speed-btn'],['layer-popover','layer-btn']]){
+    for(const [popover,button] of [['layer-popover','layer-btn']]){
       $(popover).hidden=true;$(button).setAttribute('aria-expanded','false');
     }
   }

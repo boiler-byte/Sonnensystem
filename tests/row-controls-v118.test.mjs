@@ -48,13 +48,13 @@ test('v118: Bahn hides only during both row modes; its value is preserved when r
  syncRowControl();syncCinemaControl();
  assert.equal(el('scale-orbits-btn').hidden,false);
  assert.equal(el('cinema-btn').hidden,true);
- assert.equal(el('time-panel').hidden,false);
+
  assert.equal(el('orbit-row-btn').attributes['data-row-mode'],'off');
  for(const mode of ['size','distance']){
   S.settings.row=true;S.settings.rowOrder=mode;
   syncRowControl();syncCinemaControl();
   assert.equal(el('scale-orbits-btn').hidden,true,`${mode}: Bahn must hide`);
-  assert.equal(el('time-panel').hidden,true,`${mode}: keep row timeline layout`);
+
   assert.equal(el('cinema-btn').hidden,false,`${mode}: Cinema Play must show`);
   assert.equal(el('orbit-row-btn').attributes['data-row-mode'],mode);
   assert.equal(S.settings.scaleOrbits,true,`${mode}: saved Bahn scale remains on`);

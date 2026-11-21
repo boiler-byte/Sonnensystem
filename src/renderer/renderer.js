@@ -550,7 +550,7 @@ export class SolarRenderer {
   return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
  }
  /** A new galactic session starts without history, regardless of playback speed. */
- resetGalacticTrails(){this._galacticTrails?.clear();this._galacticStarReferenceTime=null;}
+ resetGalacticTrails(){this._galacticTrails?.clear();this._sunTrailFlow?.reset();this._galacticStarReferenceTime=null;}
  /** Identical wave timing for an orbit stroke and its moving moon/satellite. */
  orbitTransitionAmount(body){
   const t=this.transition;

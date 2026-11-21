@@ -2,7 +2,6 @@ import {$,S,renderer,byId} from './state.js';
 import {cinemaClock} from '../renderer/cinema.js';
 import {notifyToggle} from '../ui/status.js';
 import {syncToggleState} from '../ui/control-state.js';
-import {setSpeedPopover} from '../ui/popover-controls.js';
 import {syncLayers} from '../ui/layer-panel.js';
 
 export function syncScaleControls(){
@@ -50,11 +49,9 @@ export function syncRowControl(){
     :'Reihe: Nach Größe (groß nach klein)';
   syncToggleState(button,enabled,title);
   // The row runs at a fixed 30 simulated minutes per second; its usual
-  // speed/date dropdown is not interactive here. Leave saved speeds intact.
-  $('time-panel').hidden=enabled;
+  // speed controls are disabled in row mode. Leave saved speeds intact.
   // In a row there are no orbital distances to scale; retain Bahn for the normal view.
   $('scale-orbits-btn').hidden=enabled;
-  if(enabled)setSpeedPopover(false);
   button.setAttribute('data-row-mode',order);
   button.setAttribute('aria-label',`${title}. Nächster Modus: ${order==='off'?'Größe':order==='size'?'Entfernung':'Aus'}`);
 }

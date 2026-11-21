@@ -29,7 +29,7 @@ test('current desktop/mobile controls retain their CSS',async()=>{
     '.viewport>.control-panel .cinema-button[hidden]']){
     assert.ok(css.includes(sel),`current selector must remain: ${sel}`);
   }
-  for(const id of ['layer-popover','speed-popover','ar-mode-btn','cinema-btn','reset-camera']){
+  for(const id of ['layer-popover','layer-speed-panel','ar-mode-btn','cinema-btn','reset-camera']){
     assert.ok(html.includes(`id="${id}"`),id);
   }
   assert.match(css,/\.viewport-actions\{bottom:calc\(var\(--sheet-visible,45px\)/);
@@ -49,7 +49,7 @@ test('CSS variables in the global theme are actually referenced',async()=>{
 
 test('balanced CSS structure and compact output',async()=>{
   const css=await read('css/styles.css');
-  assert.ok(Buffer.byteLength(css)<70000,'the cleaned stylesheet remains significantly smaller');
+  assert.ok(Buffer.byteLength(css)<76000,'the stylesheet remains compact after the Layer speed-control addition');
   // Basic structural check without needing a runtime CSS parsing dependency.
   let braces=0,comment=false,quote=null;
   for(let i=0;i<css.length;i++){

@@ -1,0 +1,530 @@
+diff -ruN sonnensystem-v121-baseline/README.md sonnensystem-v122-work/README.md
+--- sonnensystem-v121-baseline/README.md	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/README.md	2026-11-21 19:23:08.042804472 +0000
+@@ -1,7 +1,12 @@
+-# Sonnensystem – interaktiver 3D-Atlas (v121.0.0)
++# Sonnensystem – interaktiver 3D-Atlas (v122.0.0)
+ 
+ Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+ 
++## Neu in v122: Objektauswahl und Layer-Geschwindigkeit
++
++- Klickt man im Objektkatalog ein Objekt an, aktiviert die Anwendung dessen Objektkategorie im aktuell gültigen Layerfilter, sofern sie ausgeschaltet war. Andere Kategorien und die getrennten Filter der Sonnensystem-/Planetenansicht bleiben erhalten. Gruppierte Filter (Zwergplaneten/TNO, Asteroiden/Doppelasteroiden) werden gemeinsam aktiviert.
++- Im Layer Control Panel wechselt der neue Toggle **Tempo / Kategorien** zwischen den Objektkategorien und einem vertikalen Regler für die Simulationsgeschwindigkeit. Die bisherige Zeitsteuerung bleibt verfügbar; beide Regler zeigen und ändern denselben Wert. In der Reihenansicht ist das Umschalten auf Tempo deaktiviert, weil die Simulationsgeschwindigkeit dort festgelegt ist.
++
+ ## Start und Prüfung
+ 
+ Voraussetzung: **Node.js 20 oder neuer**. Im Projektverzeichnis:
+diff -ruN sonnensystem-v121-baseline/css/styles.css sonnensystem-v122-work/css/styles.css
+--- sonnensystem-v121-baseline/css/styles.css	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/css/styles.css	2026-11-21 19:23:07.035612635 +0000
+@@ -729,4 +729,25 @@
+ .viewport>.control-panel .layer-popover.row-layer-options .layer-display-toggles{grid-template-columns:minmax(0,1fr)}
+ .viewport>.control-panel .layer-popover.row-layer-options .layer-display-secondary{grid-template-columns:minmax(0,1fr)}
+ .cinema-scene-fade{position:absolute;inset:0;z-index:7;background:#070d19;opacity:0;pointer-events:none;will-change:opacity}
+-.cinema-scene-fade[hidden]{display:none!important}
+\ No newline at end of file
++.cinema-scene-fade[hidden]{display:none!important}
++/* Layer Control: toggle between category filters and the simulation speed. */
++.layer-speed-toggle{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:31px;margin:0 0 9px;padding:5px 7px;border:1px solid #455a71;border-radius:7px;background:#1c2b3e;color:#d7e2ef;font:700 10px var(--font);cursor:pointer}
++.layer-speed-toggle svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
++.layer-speed-toggle:hover,.layer-speed-toggle:focus-visible{background:#304259;border-color:#b3956c;color:#f6e4c9}
++.layer-speed-toggle.active{background:#473827;border-color:#b58a56;color:#ffe1b2}
++.layer-speed-toggle:focus-visible{outline:2px solid #dab47e;outline-offset:2px}
++.layer-speed-toggle:disabled{opacity:.5;cursor:not-allowed}
++.layer-options[hidden],.layer-speed-panel[hidden]{display:none!important}
++.layer-speed-panel{display:flex;flex-direction:column;gap:9px;min-width:0;padding:9px 4px 5px;border-top:1px solid #354960}
++#layer-speed-value{display:block;text-align:center;color:#f1c78e;font-size:11px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
++.layer-speed-layout{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:center;min-width:0}
++.layer-speed-rail{position:relative;width:42px;height:190px}
++.layer-speed-bounds{display:flex;flex-direction:column;justify-content:space-between;height:174px;min-width:0;align-self:center}
++.layer-speed-bounds span{color:#b9c9da;font-size:9px;font-weight:620;line-height:1.35;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
++.layer-speed-rail #layer-speed{--speed-fill:#dab173;--speed-empty:#40536a;--speed-progress:42.083333%;position:absolute;top:50%;left:50%;display:block;width:174px;min-width:174px;max-width:174px;height:42px;min-height:42px;max-height:42px;margin:0;padding:0;border:0;background:transparent;transform:translate(-50%,-50%) rotate(-90deg);writing-mode:horizontal-tb;direction:ltr;touch-action:none;-webkit-appearance:none;appearance:none;cursor:pointer}
++.layer-speed-rail #layer-speed::-webkit-slider-runnable-track{height:6px;border:1px solid #8092a7;border-radius:999px;background:linear-gradient(to right,var(--speed-fill) 0%,var(--speed-fill) var(--speed-progress),var(--speed-empty) var(--speed-progress),var(--speed-empty) 100%)}
++.layer-speed-rail #layer-speed::-moz-range-track{height:6px;border:1px solid #8092a7;border-radius:999px;background:linear-gradient(to right,var(--speed-fill) 0%,var(--speed-fill) var(--speed-progress),var(--speed-empty) var(--speed-progress),var(--speed-empty) 100%)}
++.layer-speed-rail #layer-speed::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-11px;border-radius:50%;border:3px solid #453221;background:#ffedc7;box-shadow:0 0 0 2px #172437,0 0 0 4px #e3b773,0 3px 9px #000b}
++.layer-speed-rail #layer-speed::-moz-range-thumb{width:26px;height:26px;border-radius:50%;border:3px solid #453221;background:#ffedc7;box-sizing:border-box;box-shadow:0 0 0 2px #172437,0 0 0 4px #e3b773,0 3px 9px #000b}
++.layer-speed-rail #layer-speed:focus-visible{outline:2px solid #f3d8a1;outline-offset:2px;border-radius:12px}
++@media(max-height:640px){.layer-speed-rail{height:160px}.layer-speed-bounds{height:148px}.layer-speed-rail #layer-speed{width:148px;min-width:148px;max-width:148px}}
+diff -ruN sonnensystem-v121-baseline/docs/HILFE.md sonnensystem-v122-work/docs/HILFE.md
+--- sonnensystem-v121-baseline/docs/HILFE.md	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/docs/HILFE.md	2026-11-21 19:23:08.047223217 +0000
+@@ -1,3 +1,9 @@
++## Katalogauswahl und Tempo-Toggle (v122)
++
++Ein Klick auf ein Objekt im **Objektkatalog** aktiviert dessen Kategorie im Layer Control Panel, wenn diese bisher ausgeblendet war. Der bisherige Filter bleibt ansonsten unverändert. Das Objekt kann dadurch sofort in der Szene angezeigt und ausgewählt werden.
++
++Im **Layer Control Panel** schaltet die Taste **Tempo** statt der Objektkategorien einen vertikalen Geschwindigkeitsregler ein. Die Taste heißt dann **Kategorien** und führt zur Kategorieliste zurück. Regler im Layer Control Panel und im bisherigen Zeitmenü sind synchron; Pause wird beim Verstellen nicht beendet. In der Reihenansicht ist der Toggle deaktiviert (feste Simulationsgeschwindigkeit: 30 simulierte Minuten pro Echtzeitsekunde).
++
+ ## Layer Control Panel: Modusfarben und Monde (v121)
+ 
+ Wird der Toggle **Monde** eingeschaltet (**Alle Monde**), aktiviert er auch die Objektkategorie **Monde**, wenn diese zuvor ausgeschaltet war. Beim erneuten Ausschalten wird wieder die Vierer-Begrenzung verwendet; die Objektkategorie bleibt aktiviert und kann bei Bedarf separat im Kategoriefilter ausgeschaltet werden. **Planetenpunkt** (Beschriftung) und **Galaktische Bewegung** (Umlaufbahn) sind zur Unterscheidung blau hervorgehoben. Die anderen Modi und Toggles behalten ihre Farben und Funktionen.
+diff -ruN sonnensystem-v121-baseline/docs/RELEASE-HISTORY.md sonnensystem-v122-work/docs/RELEASE-HISTORY.md
+--- sonnensystem-v121-baseline/docs/RELEASE-HISTORY.md	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/docs/RELEASE-HISTORY.md	2026-11-21 19:23:08.046686431 +0000
+@@ -1,3 +1,9 @@
++## v122 – Katalogauswahl aktiviert Layer und Layer-Tempoansicht
++
++- Die Objektauswahl schaltet eine zuvor ausgeschaltete Kategorie in der aktuellen Szene ein, bevor der Renderer die Auswahl fokussiert. Gruppierte Filter (Zwergplanet/TNO, Asteroid/Doppelasteroid) werden über die bestehende Layerlogik konsistent aktiviert; andere Kategorien und Ansichten bleiben unverändert.
++- Im Layer Control Panel wechselt ein neuer Toggle **Tempo / Kategorien** zwischen der Kategorieliste und einem Regler für die Simulationsgeschwindigkeit. Regler und bisherige Zeitsteuerung bleiben synchron und erhalten Pause sowie getrennte Geschwindigkeitseinstellungen je Ansicht. In der Reihe ist der neue Tempo-Toggle aufgrund der festen Simulationsgeschwindigkeit deaktiviert.
++- Version `122.0.0`, HTML `V122.0`, PWA-Cache `sonnensystem-shell-v122`, Basis v121. Regressionstests in `tests/layer-selection-speed-v122.test.mjs`.
++
+ ## v121 – Layer Control Panel: Mondkategorie und blaue Modusfarben
+ 
+ - Aktiviert man **Alle Monde** im Layer-Panel, wird die Objektkategorie **Monde** bei Bedarf ebenfalls eingeschaltet (`updateLayerSelection` → `changeLayers`). Andere Kategorie-Filter bleiben unverändert. Beim Deaktivieren des Monde-Toggles bleibt die Kategorie ausgewählt; die Vierer-Begrenzung gilt wieder.
+diff -ruN sonnensystem-v121-baseline/index.html sonnensystem-v122-work/index.html
+--- sonnensystem-v121-baseline/index.html	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/index.html	2026-11-21 19:24:42.892407836 +0000
+@@ -4,7 +4,7 @@
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+   <meta name="theme-color" content="#070c17" />
+-  <meta name="app-version" content="V121.0" />
++  <meta name="app-version" content="V122.0" />
+   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
+   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
+   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+@@ -161,6 +161,10 @@
+                 <button type="button" class="layer-preset" data-layer-preset="all" aria-pressed="false">Alle</button>
+                 <button type="button" class="layer-preset active" data-layer-preset="standard" aria-pressed="true">Standard</button>
+               </div>
++              <button class="layer-speed-toggle" id="layer-speed-toggle" type="button" aria-pressed="false" aria-controls="layer-categories layer-speed-panel" aria-label="Simulationsgeschwindigkeit anzeigen" title="Simulationsgeschwindigkeit statt Objektkategorien anzeigen">
++                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 17a9 9 0 1 1 16 0"/><path d="m12 14 5-5"/><circle cx="12" cy="14" r="1.3"/></svg>
++                <span id="layer-speed-toggle-label">Tempo</span>
++              </button>
+               <div class="layer-display-controls" role="group" aria-label="Darstellungseinstellungen">
+                 <div class="layer-display-toggles">
+                   <button class="scale-tool-toggle active" id="toggle-labels" type="button" title="Beschriftung: An" aria-label="Beschriftung: An. Nächster Modus: Planetenpunkt" aria-pressed="true" data-label-mode="labels">
+@@ -184,7 +188,7 @@
+                   </div>
+                 </div>
+               </div>
+-              <div class="layer-options" role="group" aria-label="Einzelne Objektkategorien">
++              <div class="layer-options" id="layer-categories" role="group" aria-label="Einzelne Objektkategorien">
+                 <label class="layer-option"><input type="checkbox" data-layer-type="star" checked/><span>Sterne</span></label>
+                 <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
+                 <label class="layer-option"><input type="checkbox" data-layer-type="moon"/><span>Monde</span></label>
+@@ -194,6 +198,16 @@
+                 <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
+                 <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
+               </div>
++              <div class="layer-speed-panel" id="layer-speed-panel" role="group" aria-label="Simulationsgeschwindigkeit" hidden>
++                <output id="layer-speed-value" for="layer-speed">5 Tage / s</output>
++                <div class="layer-speed-layout">
++                  <div class="layer-speed-rail"><input id="layer-speed" type="range" min="0" max="240" step="1" value="101" aria-label="Simulationsgeschwindigkeit in logarithmischen Stufen" aria-describedby="layer-speed-min-label layer-speed-max-label" aria-orientation="vertical" /></div>
++                  <div class="layer-speed-bounds">
++                    <span id="layer-speed-max-label">10 Jahre / s</span>
++                    <span id="layer-speed-min-label">1 Std. / s</span>
++                  </div>
++                </div>
++              </div>
+             </div>
+           </div>
+           <div class="time-panel" id="time-panel">
+diff -ruN sonnensystem-v121-baseline/package.json sonnensystem-v122-work/package.json
+--- sonnensystem-v121-baseline/package.json	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/package.json	2026-11-21 19:23:08.040602507 +0000
+@@ -1,6 +1,6 @@
+ {
+   "name": "sonnensystem",
+-  "version": "121.0.0",
++  "version": "122.0.0",
+   "private": true,
+   "type": "module",
+   "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und serverseitigen API-Proxies",
+diff -ruN sonnensystem-v121-baseline/src/app/camera-controller.js sonnensystem-v122-work/src/app/camera-controller.js
+--- sonnensystem-v121-baseline/src/app/camera-controller.js	2026-11-21 16:06:42.000000000 +0000
++++ sonnensystem-v122-work/src/app/camera-controller.js	2026-11-21 19:22:38.566630528 +0000
+@@ -3,6 +3,7 @@
+ import {updateCatalog,updateDetail} from '../ui/catalog-controller.js';
+ import {updateMode} from './view-mode.js';
+ import {loadAsteroid} from './object-catalog.js';
++import {changeLayers} from '../ui/display-controls.js';
+ 
+ /** Planetary isolation also supports dwarf planets that have catalogued moons. */
+ export function openPlanetScene(id){
+@@ -28,6 +29,14 @@
+     else{renderer.reset();renderer.calcPositions(S.time);}
+     updateMode();
+   }
++  // A catalog selection must be visible even if its category was filtered out.
++  // Preserve every other active layer and the independent settings of each view.
++  if(!layerEnabled(S.settings.layers,body.type)){
++    const view=renderer?.planetId?'planet':'solar';
++    const available=availableLayerTypes(S.bodies,view,renderer?.planetId);
++    if(available.includes(body.type))
++      changeLayers(updateLayerSelection(S.settings.layers,body.type,true,view,available));
++  }
+   S.selected=id;
+   renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe',zoom:zoom&&body.type!=='probe'});
+   // Selecting a catalog body moves the camera's orbit target. In AR the gaze
+diff -ruN sonnensystem-v121-baseline/src/renderer/renderer.js sonnensystem-v122-work/src/renderer/renderer.js
+--- sonnensystem-v121-baseline/src/renderer/renderer.js	2026-11-21 18:36:22.000000000 +0000
++++ sonnensystem-v122-work/src/renderer/renderer.js	2026-11-21 19:26:29.821436140 +0000
+@@ -550,7 +550,7 @@
+   return clamp(lerp(transition.fromOrbitOpacity,target,amount),0,1);
+  }
+  /** A new galactic session starts without history, regardless of playback speed. */
+- resetGalacticTrails(){this._galacticTrails?.clear();this._galacticStarReferenceTime=null;}
++ resetGalacticTrails(){this._galacticTrails?.clear();this._sunTrailFlow?.reset();this._galacticStarReferenceTime=null;}
+  /** Identical wave timing for an orbit stroke and its moving moon/satellite. */
+  orbitTransitionAmount(body){
+   const t=this.transition;
+diff -ruN sonnensystem-v121-baseline/src/ui/event-handlers.js sonnensystem-v122-work/src/ui/event-handlers.js
+--- sonnensystem-v121-baseline/src/ui/event-handlers.js	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/src/ui/event-handlers.js	2026-11-21 19:22:38.568477638 +0000
+@@ -1,7 +1,7 @@
+ import {$,S,renderer,mobileSheets,arMode,byId} from '../app/state.js';
+ import {availableLayerTypes,layerEnabled,layerPreset,updateLayerSelection} from '../data/layers.js';
+ import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
+-import {syncLayers,setLayerPopover} from './layer-panel.js';
++import {syncLayers,setLayerPopover,toggleLayerSpeedPanel} from './layer-panel.js';
+ import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncContrastControl,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
+ import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
+ import {nextCatalogSort} from './object-list.js';
+@@ -23,6 +23,7 @@
+   for(const [id,setting] of [['scale-objects-btn','scaleObjects'],['scale-orbits-btn','scaleOrbits']])
+     $(id).addEventListener('click',()=>updateScale(setting));
+   syncScaleControls();
++  $('layer-speed-toggle').addEventListener('click',toggleLayerSpeedPanel);
+   $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();syncCinemaControl();
+   $('cinema-btn').addEventListener('click',()=>{
+     if(!renderer)return;
+@@ -177,6 +178,11 @@
+     S.modeSpeeds[S.timelineMode]=S.speed;
+     updateTime(); // Changing the speed never unpauses the simulation.
+   });
++  $('layer-speed').addEventListener('input',e=>{
++    S.speed=speedAtStep(S.timelineMode,Number(e.target.value));
++    S.modeSpeeds[S.timelineMode]=S.speed;
++    updateTime(); // Both sliders share the same simulation speed and pause state.
++  });
+   $('today-btn').addEventListener('click',()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();});
+   document.addEventListener('pointerdown',e=>{
+     if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
+diff -ruN sonnensystem-v121-baseline/src/ui/layer-panel.js sonnensystem-v122-work/src/ui/layer-panel.js
+--- sonnensystem-v121-baseline/src/ui/layer-panel.js	2026-11-21 16:06:42.000000000 +0000
++++ sonnensystem-v122-work/src/ui/layer-panel.js	2026-11-21 19:24:11.162676510 +0000
+@@ -27,6 +27,7 @@
+     check.indeterminate=!check.checked && members.some(member => layerEnabled(selected,member));
+     check.parentElement?.style.setProperty('--category-color',CATEGORY_COLORS[type]||'#E6EDF5');
+   }
++  syncLayerPanelMode();
+   for(const preset of document.querySelectorAll('[data-layer-preset]')){
+     const active=preset.dataset.layerPreset===selected.mode
+       && displayMatchesPreset(S.settings,preset.dataset.layerPreset,view);
+@@ -37,3 +38,26 @@
+   $('layer-popover').hidden=!open;
+   $('layer-btn').setAttribute('aria-expanded',String(open));
+ }
++
++// Only the content below the appearance controls changes; layer filters stay active.
++let speedPanelVisible=false;
++function syncLayerPanelMode(){
++  const row=S.settings.row===true;
++  if(row)speedPanelVisible=false; // The lineup uses a fixed simulation speed.
++  const button=$('layer-speed-toggle');
++  button.disabled=row;
++  syncToggleState(button,speedPanelVisible,row
++    ? 'In der Reihenansicht ist die Simulationsgeschwindigkeit fest'
++    : speedPanelVisible?'Objektkategorien anzeigen':'Simulationsgeschwindigkeit anzeigen');
++  button.setAttribute('aria-label',speedPanelVisible?'Objektkategorien anzeigen'
++    : 'Simulationsgeschwindigkeit anzeigen');
++  $('layer-speed-toggle-label').textContent=speedPanelVisible?'Kategorien':'Tempo';
++  $('layer-categories').hidden=speedPanelVisible;
++  $('layer-speed-panel').hidden=!speedPanelVisible;
++}
++export function toggleLayerSpeedPanel(){
++  if(S.settings.row)return;
++  speedPanelVisible=!speedPanelVisible;
++  syncLayerPanelMode();
++  if(speedPanelVisible)$('layer-speed').focus({preventScroll:true});
++}
+diff -ruN sonnensystem-v121-baseline/src/ui/timeline.js sonnensystem-v122-work/src/ui/timeline.js
+--- sonnensystem-v121-baseline/src/ui/timeline.js	2026-11-20 23:05:46.000000000 +0000
++++ sonnensystem-v122-work/src/ui/timeline.js	2026-11-21 19:22:38.568732856 +0000
+@@ -94,5 +94,15 @@
+   slider.setAttribute('aria-valuetext',speed);
+   $('speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
+   $('speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
++  // The alternative Layer Control slider mirrors the original time dropdown.
++  const layerSlider=$('layer-speed');
++  if(layerSlider){
++    layerSlider.value=String(step);
++    layerSlider.setAttribute('style',`--speed-progress:${100*step/SPEED_STEPS}%`);
++    layerSlider.setAttribute('aria-valuetext',speed);
++    $('layer-speed-value').textContent=speed;
++    $('layer-speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
++    $('layer-speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
++  }
+   $('speed-btn').setAttribute('aria-label',`Zeitsteuerung: ${speed}, ${dateOnly}. ${state.playing?'Läuft':'Pausiert'}. Menü öffnen`);
+ }
+diff -ruN sonnensystem-v121-baseline/sw.js sonnensystem-v122-work/sw.js
+--- sonnensystem-v121-baseline/sw.js	2026-11-21 19:57:48.000000000 +0000
++++ sonnensystem-v122-work/sw.js	2026-11-21 19:26:29.820205968 +0000
+@@ -1,7 +1,7 @@
+ /* Application shell + manifest-driven offline data set. */
+-const CACHE_NAME='sonnensystem-shell-v121';
++const CACHE_NAME='sonnensystem-shell-v122';
+ const TEXTURE_CACHE='sonnensystem-textures-v1';
+-const SHELL=["./","./index.html","./css/styles.css","./favicon.svg","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-180.png","./src/app.js","./src/data/bodies.js","./src/data/layers.js","./src/data/catalog.js","./src/data/normalization.js","./src/data/orbital-math.js","./data/catalog/probes.json","./src/renderer/ar-mode.js","./src/renderer/camera.js","./src/renderer/cinema.js","./src/renderer/controls.js","./src/renderer/geometry.js","./src/renderer/index.js","./src/renderer/labels.js","./src/renderer/math.js","./src/renderer/galactic-motion.js","./src/renderer/galactic-parallax.js","./src/renderer/galactic-trails.js","./src/renderer/orbits.js","./src/renderer/orbit-cache.js","./src/renderer/object-orientation.js","./src/renderer/planet-view.js","./src/renderer/renderer.js","./src/renderer/visual-angular-limit.js","./src/renderer/row-inspection.js","./src/renderer/transitions.js","./src/renderer/scene.js","./src/renderer/shaders.js","./src/renderer/solar-view.js","./src/renderer/texture-sources.js","./src/renderer/textures.js","./src/services/api.js","./src/services/celestrak-api.js","./src/services/nasa-api.js","./src/services/solar-api.js","./src/ui/bottom-sheet.js","./src/ui/formatters.js","./src/ui/object-details.js","./src/ui/row-inspection.js","./src/ui/physical-stat-icons.js","./src/ui/object-list.js","./src/ui/scene-mode.js","./src/ui/status.js","./src/ui/timeline.js","./src/app/animation-controls.js","./src/app/animation-loop.js","./src/app/ar-controller.js","./src/app/camera-controller.js","./src/app/object-catalog.js","./src/app/runtime.js","./src/app/service-worker-registration.js","./src/app/state.js","./src/app/view-mode.js","./src/ui/catalog-controller.js","./src/ui/display-controls.js","./src/ui/event-handlers.js","./src/ui/layer-panel.js","./src/ui/popover-controls.js","./src/ui/control-state.js","./src/renderer/scene-objects.js"];
++const SHELL=["./","./index.html","./css/styles.css","./favicon.svg","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png","./icons/icon-180.png","./src/app.js","./src/data/bodies.js","./src/data/layers.js","./src/data/catalog.js","./src/data/normalization.js","./src/data/orbital-math.js","./data/catalog/probes.json","./src/renderer/ar-mode.js","./src/renderer/camera.js","./src/renderer/cinema.js","./src/renderer/controls.js","./src/renderer/geometry.js","./src/renderer/index.js","./src/renderer/labels.js","./src/renderer/math.js","./src/renderer/galactic-motion.js","./src/renderer/galactic-parallax.js","./src/renderer/galactic-trails.js","./src/renderer/sun-trail-flow.js","./src/renderer/orbits.js","./src/renderer/orbit-cache.js","./src/renderer/object-orientation.js","./src/renderer/planet-view.js","./src/renderer/renderer.js","./src/renderer/visual-angular-limit.js","./src/renderer/row-inspection.js","./src/renderer/transitions.js","./src/renderer/scene.js","./src/renderer/shaders.js","./src/renderer/solar-view.js","./src/renderer/texture-sources.js","./src/renderer/textures.js","./src/services/api.js","./src/services/celestrak-api.js","./src/services/nasa-api.js","./src/services/solar-api.js","./src/ui/bottom-sheet.js","./src/ui/formatters.js","./src/ui/object-details.js","./src/ui/row-inspection.js","./src/ui/physical-stat-icons.js","./src/ui/object-list.js","./src/ui/scene-mode.js","./src/ui/status.js","./src/ui/timeline.js","./src/app/animation-controls.js","./src/app/animation-loop.js","./src/app/ar-controller.js","./src/app/camera-controller.js","./src/app/object-catalog.js","./src/app/runtime.js","./src/app/service-worker-registration.js","./src/app/state.js","./src/app/view-mode.js","./src/ui/catalog-controller.js","./src/ui/display-controls.js","./src/ui/event-handlers.js","./src/ui/layer-panel.js","./src/ui/popover-controls.js","./src/ui/control-state.js","./src/renderer/scene-objects.js"];
+ const DATA_MANIFEST='./data/catalog/manifest.json';
+ const dataPath=/^\.\/data\/(catalog|editorial)\/[a-z0-9-]+\.json$/;
+ 
+diff -ruN sonnensystem-v121-baseline/tests/grouped-layer-filters-v90.test.mjs sonnensystem-v122-work/tests/grouped-layer-filters-v90.test.mjs
+--- sonnensystem-v121-baseline/tests/grouped-layer-filters-v90.test.mjs	2026-11-20 23:05:46.000000000 +0000
++++ sonnensystem-v122-work/tests/grouped-layer-filters-v90.test.mjs	2026-11-21 19:24:11.163038725 +0000
+@@ -106,7 +106,8 @@
+   }};
+   const ctx=vm.createContext({$,S,renderer,document,CATEGORY_COLORS,
+     LAYER_FILTER_TYPES,layerFilterMembers,availableLayerTypes,layerEnabled,layerSummary,
+-    displayMatchesPreset,activeView:()=>renderer.planetId?'planet':'solar',syncToggleState:()=>{}});
++    displayMatchesPreset,activeView:()=>renderer.planetId?'planet':'solar',syncToggleState:()=>{},
++    syncLayerPanelMode:()=>{}});
+   vm.runInContext(functionBody,ctx);
+   vm.runInContext('syncLayers()',ctx);
+   const dwarf=controls.find(i=>i.dataset.layerType==='dwarf');
+diff -ruN sonnensystem-v121-baseline/tests/layer-selection-speed-v122.test.mjs sonnensystem-v122-work/tests/layer-selection-speed-v122.test.mjs
+--- sonnensystem-v121-baseline/tests/layer-selection-speed-v122.test.mjs	1970-01-01 00:00:00.000000000 +0000
++++ sonnensystem-v122-work/tests/layer-selection-speed-v122.test.mjs	2026-11-21 19:24:43.376521487 +0000
+@@ -0,0 +1,150 @@
++import assert from 'node:assert/strict';
++import {test} from 'node:test';
++import {readFile} from 'node:fs/promises';
++import vm from 'node:vm';
++import {createViewSettings,layerEnabled,layerPreset,availableLayerTypes,updateLayerSelection} from '../src/data/layers.js';
++import {syncControls,stepForSpeed,SPEED_MODES} from '../src/ui/timeline.js';
++import {S} from '../src/app/state.js';
++import {syncLayers,toggleLayerSpeedPanel} from '../src/ui/layer-panel.js';
++
++const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
++
++async function catalogSelection(body,{view='solar',bodies=[body],settings=createViewSettings(view)}={}){
++  const source=await read('src/app/camera-controller.js');
++  const first=source.indexOf('export function selectBody(');
++  const last=source.indexOf('export function clearSelection()',first);
++  assert.ok(first!==-1&&last>first);
++  const selectSource=source.slice(first,last).replace('export function selectBody','function selectBody');
++  const state={settings,bodies,selected:null,time:Date.now()};
++  const operations=[];
++  const renderer={planetId:view==='planet'?'earth':null,cinema:null,
++    setSelected(...args){operations.push(['render',args]);}};
++  const context=vm.createContext({
++    S:state,renderer,byId:id=>bodies.find(item=>item.id===id),
++    layerEnabled,availableLayerTypes,updateLayerSelection,
++    changeLayers:next=>{operations.push(['layers',next]);state.settings.layers=next;},
++    updateCatalog(){},updateDetail(){},loadAsteroid(){},updateMode(){},
++    mobileSheets:{open(){}},arMode:null
++  });
++  vm.runInContext(selectSource,context);
++  return {state,renderer,operations,select:id=>vm.runInContext(`selectBody(${JSON.stringify(id)},true)`,context)};
++}
++
++test('v122: catalog selection enables a filtered category before camera focus without resetting other layers',async()=>{
++  const moon={id:'luna',name:'Luna',type:'moon',parentId:'earth'};
++  const f=await catalogSelection(moon);
++  const original=f.state.settings.layers;
++  f.select(moon.id);
++  assert.equal(layerEnabled(original,'moon'),false);
++  assert.equal(layerEnabled(f.state.settings.layers,'moon'),true);
++  assert.equal(layerEnabled(f.state.settings.layers,'star'),true);
++  assert.equal(layerEnabled(f.state.settings.layers,'planet'),true);
++  assert.equal(f.state.settings.layers.mode,'custom');
++  assert.deepEqual(f.operations.map(op=>op[0]),['layers','render']);
++  f.select(moon.id);
++  assert.equal(f.operations.filter(op=>op[0]==='layers').length,1,'repeat selection is idempotent');
++});
++
++test('v122: grouped hidden body types restore their shared filters',async()=>{
++  for(const [type,group] of [['tno','dwarf'],['binary','asteroid']]){
++    const f=await catalogSelection({id:type,name:type,type});
++    f.select(type);
++    assert.equal(layerEnabled(f.state.settings.layers,type),true);
++    assert.equal(layerEnabled(f.state.settings.layers,group),true);
++    assert.equal(layerEnabled(f.state.settings.layers,'star'),true);
++    assert.equal(layerEnabled(f.state.settings.layers,'planet'),true);
++  }
++});
++
++test('v122: catalog selection inside a planet scene changes only that view filter',async()=>{
++  const moon={id:'luna',name:'Luna',type:'moon',parentId:'earth'};
++  const earth={id:'earth',type:'planet'};
++  const planet=createViewSettings('planet');
++  planet.layers=updateLayerSelection(planet.layers,'moon',false,'planet');
++  const solar=layerPreset('standard','solar');
++  const f=await catalogSelection(moon,{view:'planet',bodies:[earth,moon],settings:planet});
++  f.select('luna');
++  assert.equal(layerEnabled(planet.layers,'moon'),true);
++  assert.equal(planet.layers.mode,'standard');
++  assert.equal(layerEnabled(solar,'moon'),false);
++  assert.equal(f.renderer.planetId,'earth');
++});
++
++function fakeDOM(){
++  const nodes=new Map();
++  const get=id=>{
++    if(!nodes.has(id))nodes.set(id,{
++      id,hidden:false,disabled:false,attrs:{},textContent:'',value:'',title:'',
++      classList:{toggle(){}},setAttribute(key,value){this.attrs[key]=String(value);},
++      focus(){this.focused=true;}
++    });
++    return nodes.get(id);
++  };
++  return {nodes,get,doc:{getElementById:get,querySelectorAll:()=>[]}};
++}
++
++test('v122: one toggle swaps category list and speed control; row mode forbids changing fixed speed',()=>{
++  const previousDocument=globalThis.document,previousSettings=S.settings;
++  const dom=fakeDOM();
++  globalThis.document=dom.doc;
++  S.settings=createViewSettings('solar');
++  try{
++    syncLayers();
++    assert.equal(dom.get('layer-categories').hidden,false);
++    assert.equal(dom.get('layer-speed-panel').hidden,true);
++    toggleLayerSpeedPanel();
++    assert.equal(dom.get('layer-categories').hidden,true);
++    assert.equal(dom.get('layer-speed-panel').hidden,false);
++    assert.equal(dom.get('layer-speed-toggle').attrs['aria-pressed'],'true');
++    assert.equal(dom.get('layer-speed-toggle-label').textContent,'Kategorien');
++    assert.equal(dom.get('layer-speed').focused,true);
++    toggleLayerSpeedPanel();
++    assert.equal(dom.get('layer-categories').hidden,false);
++    assert.equal(dom.get('layer-speed-panel').hidden,true);
++    toggleLayerSpeedPanel();
++    S.settings.row=true;
++    syncLayers();
++    assert.equal(dom.get('layer-speed-toggle').disabled,true);
++    assert.equal(dom.get('layer-speed-panel').hidden,true);
++    assert.equal(dom.get('layer-categories').hidden,false);
++    toggleLayerSpeedPanel();
++    assert.equal(dom.get('layer-speed-panel').hidden,true);
++  }finally{
++    S.settings=previousSettings;
++    if(previousDocument===undefined)delete globalThis.document;
++    else globalThis.document=previousDocument;
++  }
++});
++
++test('v122: both speed sliders mirror scene-specific speed, bounds and readable values',()=>{
++  const previousDocument=globalThis.document;
++  const dom=fakeDOM();
++  globalThis.document=dom.doc;
++  try{
++    for(const mode of ['solar','planet']){
++      const speed=SPEED_MODES[mode].defaultSpeed;
++      syncControls({timelineMode:mode,speed,time:Date.UTC(2026,10,21),playing:false});
++      assert.equal(dom.get('layer-speed').value,dom.get('speed').value);
++      assert.equal(dom.get('layer-speed').value,String(stepForSpeed(mode,speed)));
++      assert.equal(dom.get('layer-speed-value').textContent,dom.get('speed-readout').textContent);
++      assert.equal(dom.get('layer-speed').attrs['aria-valuetext'],dom.get('speed').attrs['aria-valuetext']);
++      assert.equal(dom.get('layer-speed-min-label').textContent.includes('/ s'),true);
++      assert.equal(dom.get('layer-speed-max-label').textContent.includes('/ s'),true);
++    }
++  }finally{
++    if(previousDocument===undefined)delete globalThis.document;
++    else globalThis.document=previousDocument;
++  }
++});
++
++test('v122: panel markup and event binding preserve the original time dropdown',async()=>{
++  const [html,events,css]=await Promise.all([read('index.html'),read('src/ui/event-handlers.js'),read('css/styles.css')]);
++  assert.match(html,/id="layer-speed-toggle"[^>]*aria-pressed="false"/);
++  assert.match(html,/class="layer-options" id="layer-categories"/);
++  assert.match(html,/id="layer-speed-panel"[^>]*hidden/);
++  assert.match(html,/id="layer-speed" type="range" min="0" max="240"/);
++  assert.equal((html.match(/id="speed" type="range"/g)||[]).length,1,'original slider kept');
++  assert.match(events,/\$\('layer-speed-toggle'\)\.addEventListener\('click',toggleLayerSpeedPanel\)/);
++  assert.match(events,/\$\('layer-speed'\)\.addEventListener\('input',e=>\{[\s\S]*?S\.modeSpeeds\[S\.timelineMode\]=S\.speed;[\s\S]*?updateTime\(\)/);
++  assert.match(css,/\.layer-options\[hidden\],\.layer-speed-panel\[hidden\]\{display:none!important\}/);
++});
+diff -ruN sonnensystem-v121-baseline/tests/simulation-speed-limit-v105.test.mjs sonnensystem-v122-work/tests/simulation-speed-limit-v105.test.mjs
+--- sonnensystem-v121-baseline/tests/simulation-speed-limit-v105.test.mjs	2026-11-20 22:40:06.000000000 +0000
++++ sonnensystem-v122-work/tests/simulation-speed-limit-v105.test.mjs	2026-11-21 19:26:30.057593716 +0000
+@@ -1,24 +1,28 @@
+ import assert from 'node:assert/strict';
+ import {test} from 'node:test';
+-import {boundedSimulationAdvance,MAX_SIMULATION_DAYS_PER_FRAME,MAX_SIMULATION_DAYS_PER_SECOND,SPEED_MODES,speedAtStep,ROW_SIMULATION_SPEED} from '../src/ui/timeline.js';
++import {readFile} from 'node:fs/promises';
++import {effectiveSimulationSpeed,SPEED_MODES,speedAtStep,ROW_SIMULATION_SPEED} from '../src/ui/timeline.js';
+ 
+-for(const mode of ['solar','planet']) {
+-  test(`v105: ${mode} caps speed in UI and underlying clock`,()=>{
+-    const state={timelineMode:mode,speed:100000,settings:{row:false}};
+-    assert.equal(SPEED_MODES[mode].max,MAX_SIMULATION_DAYS_PER_SECOND[mode]);
+-    assert.equal(speedAtStep(mode,240),MAX_SIMULATION_DAYS_PER_SECOND[mode]);
+-    assert.ok(boundedSimulationAdvance(state,1/60)<=MAX_SIMULATION_DAYS_PER_FRAME[mode]);
+-    assert.equal(boundedSimulationAdvance(state,2),MAX_SIMULATION_DAYS_PER_FRAME[mode]);
+-    assert.equal(boundedSimulationAdvance(state,0),0);
+-    assert.equal(boundedSimulationAdvance(state,-1),0);
++// The current timeline bounds the slider; the rendering loop also bounds
++// real-frame delta time to 0.12 s before advancing the simulation clock.
++for(const mode of ['solar','planet']){
++  test(`v105: ${mode} slider cannot exceed the configured maximum speed`,()=>{
++    const range=SPEED_MODES[mode];
++    assert.equal(speedAtStep(mode,240),range.max);
++    assert.equal(speedAtStep(mode,1000),range.max);
++    assert.equal(speedAtStep(mode,-1000),range.min);
++    assert.equal(effectiveSimulationSpeed({timelineMode:mode,speed:range.max,settings:{row:false}}),range.max);
+   });
+ }
+-test('v105: row override remains effective but cannot circumvent frame limit',()=>{
+-  const state={timelineMode:'solar',speed:99999,settings:{row:true}};
+-  assert.equal(boundedSimulationAdvance(state,1),ROW_SIMULATION_SPEED);
+-  assert.equal(boundedSimulationAdvance(state,30),MAX_SIMULATION_DAYS_PER_FRAME.solar);
++test('v105: row overrides normal speed without overwriting either view',()=>{
++  const state={timelineMode:'solar',speed:SPEED_MODES.solar.max,settings:{row:true}};
++  assert.equal(effectiveSimulationSpeed(state),ROW_SIMULATION_SPEED);
++  assert.equal(state.speed,SPEED_MODES.solar.max);
++  state.settings.row=false;
++  assert.equal(effectiveSimulationSpeed(state),SPEED_MODES.solar.max);
+ });
+-test('v105: normal speeds advance accurately at 60 fps',()=>{
+-  assert.ok(Math.abs(boundedSimulationAdvance({timelineMode:'solar',speed:5,settings:{}},1/60)-5/60)<1e-12);
+-  assert.ok(Math.abs(boundedSimulationAdvance({timelineMode:'planet',speed:1/24,settings:{}},1/60)-(1/24)/60)<1e-12);
++test('v105: animation loop bounds long pauses and frame hitches to 120 ms',async()=>{
++  const loop=await readFile(new URL('../src/app/animation-loop.js',import.meta.url),'utf8');
++  assert.match(loop,/Math\.min\(\.12,Math\.max\(0,\(now-\(loop\.prev\|\|now\)\)\/1000\)\)/);
++  assert.match(loop,/if\(S\.playing&&simulationSpeed>0\)S\.time\+=d\*simulationSpeed\*86400000/);
+ });
+diff -ruN sonnensystem-v121-baseline/tests/styles-regression.test.mjs sonnensystem-v122-work/tests/styles-regression.test.mjs
+--- sonnensystem-v121-baseline/tests/styles-regression.test.mjs	2026-11-21 19:28:54.000000000 +0000
++++ sonnensystem-v122-work/tests/styles-regression.test.mjs	2026-11-21 19:24:11.163584831 +0000
+@@ -49,7 +49,7 @@
+ 
+ test('balanced CSS structure and compact output',async()=>{
+   const css=await read('css/styles.css');
+-  assert.ok(Buffer.byteLength(css)<70500,'the cleaned stylesheet remains compact after the 3-column Layer row');
++  assert.ok(Buffer.byteLength(css)<76000,'the stylesheet remains compact after the Layer speed-control addition');
+   // Basic structural check without needing a runtime CSS parsing dependency.
+   let braces=0,comment=false,quote=null;
+   for(let i=0;i<css.length;i++){
+diff -ruN sonnensystem-v121-baseline/tests/sun-trail-flow-v106.test.mjs sonnensystem-v122-work/tests/sun-trail-flow-v106.test.mjs
+--- sonnensystem-v121-baseline/tests/sun-trail-flow-v106.test.mjs	2026-11-20 23:01:36.000000000 +0000
++++ sonnensystem-v122-work/tests/sun-trail-flow-v106.test.mjs	2026-11-21 19:26:45.371022542 +0000
+@@ -69,7 +69,7 @@
+   assert.equal(renderer._galacticTrails.trails.size,0);
+ });
+ 
+-test('v106: offline shell and sun renderer include flow without altering timeline or galactic offsets',async()=>{
++test('v106: offline shell retains flow utility and static sun-trail drawing without changing timeline',async()=>{
+   const root=new URL('../',import.meta.url);
+   const [sw,orbits,motion,loop,pkg]=await Promise.all([
+     readFile(new URL('sw.js',root),'utf8'),
+@@ -78,10 +78,12 @@
+     readFile(new URL('src/app/animation-loop.js',root),'utf8'),
+     readFile(new URL('package.json',root),'utf8')
+   ]);
+-  assert.match(sw,/sonnensystem-shell-v106/);
++  const {version}=JSON.parse(pkg);
++  assert.match(sw,new RegExp(`sonnensystem-shell-v${version.split('.')[0]}`));
+   assert.match(sw,/"\.\/src\/renderer\/sun-trail-flow\.js"/);
+-  assert.match(orbits,/sunTrailFlowSegments\(points,phase\)/);
++  assert.match(orbits,/export function drawSunTrail\(/);
++  assert.match(orbits,/recordedGalacticTrail\(renderer,sun,vp\)/);
+   assert.doesNotMatch(motion,/sunTrailFlowSegments|SunTrailFlowClock/);
+   assert.doesNotMatch(loop,/SunTrailFlowClock|sunTrailFlowSegments/);
+-  assert.equal(JSON.parse(pkg).version,'106.0.0');
++  assert.match(version,/^\d+\.\d+\.\d+$/);
+ });

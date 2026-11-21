@@ -1,14 +1,13 @@
 import {$,S,renderer,mobileSheets,arMode,byId} from '../app/state.js';
-import {availableLayerTypes,layerPreset,updateLayerSelection} from '../data/layers.js';
+import {availableLayerTypes,layerEnabled,layerPreset,updateLayerSelection} from '../data/layers.js';
 import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
-import {syncLayers,setLayerPopover} from './layer-panel.js';
+import {syncLayers,setLayerPopover,toggleLayerSpeedPanel} from './layer-panel.js';
 import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncContrastControl,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
 import {alignHorizons} from '../app/object-catalog.js';
-import {setSpeedPopover} from './popover-controls.js';
 import {detailNavigation,setDetailTab,restoreDetailTab} from './object-details.js';
 import {syncSceneMode} from './scene-mode.js';
 import {speedAtStep} from './timeline.js';
@@ -17,12 +16,12 @@ import {notifyToggle} from './status.js';
 export function initControls(){
   $('layer-btn').addEventListener('click',()=>{
     const opening=$('layer-popover').hidden;
-    if(opening)setSpeedPopover(false);
     setLayerPopover(opening);
   });
   for(const [id,setting] of [['scale-objects-btn','scaleObjects'],['scale-orbits-btn','scaleOrbits']])
     $(id).addEventListener('click',()=>updateScale(setting));
   syncScaleControls();
+  $('layer-speed-toggle').addEventListener('click',toggleLayerSpeedPanel);
   $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();syncCinemaControl();
   $('cinema-btn').addEventListener('click',()=>{
     if(!renderer)return;
@@ -105,6 +104,14 @@ export function initControls(){
     if(renderer?.cinema?.active)renderer.stopCinema(); // The visible tour set has changed.
     if(S.settings.row)renderer?.beginTransition?.('row');
     S.settings.fourMoons=!S.settings.fourMoons;
+    // Enabling all moons must also enable the Moon object category, otherwise
+    // the extra moons remain hidden by the independent layer filter.
+    if(S.settings.fourMoons===false && !layerEnabled(S.settings.layers,'moon')){
+      const view=activeView();
+      changeLayers(updateLayerSelection(S.settings.layers,'moon',true,view,
+        availableLayerTypes(S.bodies,view,renderer?.planetId)));
+    }
+    // Turning the toggle off restores the four-moon limit, not the filter.
     refreshRowCameraFrame();
     syncFourMoonsControl();syncLayers();
     notifyToggle(`Alle Monde: ${S.settings.fourMoons?'Aus (max. 4)':'An (alle)'}`);
@@ -158,27 +165,22 @@ export function initControls(){
     if(arMode?.active)arMode.alignToPerspective();
     updateCatalog();updateDetail();mobileSheets?.close();
   });
-  $('play-btn').addEventListener('click',()=>{S.playing=!S.playing;updateTime();});
-  $('speed-btn').addEventListener('click',()=>{
-    const opening=$('speed-popover').hidden;
-    if(opening)setLayerPopover(false); // Only one popover is open at a time.
-    setSpeedPopover(opening);
-  });
-  $('speed').addEventListener('input',e=>{
+  const togglePlayback=()=>{S.playing=!S.playing;updateTime();};
+  $('layer-play-btn').addEventListener('click',togglePlayback);
+  $('layer-speed').addEventListener('input',e=>{
     S.speed=speedAtStep(S.timelineMode,Number(e.target.value));
     S.modeSpeeds[S.timelineMode]=S.speed;
-    updateTime(); // Changing the speed never unpauses the simulation.
+    updateTime(); // Changing speed preserves the pause state.
   });
-  $('today-btn').addEventListener('click',()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();});
+  const resetToToday=()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();};
+  $('layer-today-btn').addEventListener('click',resetToToday);
   document.addEventListener('pointerdown',e=>{
-    if(!$('speed-popover').hidden && !$('speed-picker-wrap').contains(e.target))setSpeedPopover(false);
     if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);
   });
   $('horizons-btn').addEventListener('click',alignHorizons);
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
       if(renderer?.cinema?.active){renderer.stopCinema();$('cinema-btn').focus({preventScroll:true});return;}
-      if(!$('speed-popover').hidden){setSpeedPopover(false);$('speed-btn').focus({preventScroll:true});return;}
       if(!$('layer-popover').hidden){setLayerPopover(false);$('layer-btn').focus({preventScroll:true});return;}
       setLayerPopover(false);mobileSheets?.close();
     }

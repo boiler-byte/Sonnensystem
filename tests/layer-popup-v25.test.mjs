@@ -6,7 +6,7 @@ import {STANDARD_LAYERS, PLANET_STANDARD_LAYERS, LAYER_TYPES, LAYER_FILTER_TYPES
 import {INITIAL_BODIES} from './helpers/catalog-fixture.mjs';
 
 const read=async path=>readProjectSource(path);
-const popover=html=>html.split('id="layer-popover"')[1].split('id="time-panel"')[0];
+const popover=html=>html.split('id="layer-popover"')[1].split('id="canvas-error"')[0];
 
 test('v25: solar standard contains only Sun/star and planets; renderer layer mask is independent',()=>{
   assert.deepEqual(STANDARD_LAYERS,['star','planet']);

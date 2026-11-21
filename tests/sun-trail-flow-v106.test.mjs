@@ -69,7 +69,7 @@ test('v106: session reset clears highlight phase alongside the history',()=>{
   assert.equal(renderer._galacticTrails.trails.size,0);
 });
 
-test('v106: offline shell and sun renderer include flow without altering timeline or galactic offsets',async()=>{
+test('v106: offline shell retains flow utility and static sun-trail drawing without changing timeline',async()=>{
   const root=new URL('../',import.meta.url);
   const [sw,orbits,motion,loop,pkg]=await Promise.all([
     readFile(new URL('sw.js',root),'utf8'),
@@ -78,10 +78,12 @@ test('v106: offline shell and sun renderer include flow without altering timelin
     readFile(new URL('src/app/animation-loop.js',root),'utf8'),
     readFile(new URL('package.json',root),'utf8')
   ]);
-  assert.match(sw,/sonnensystem-shell-v106/);
+  const {version}=JSON.parse(pkg);
+  assert.match(sw,new RegExp(`sonnensystem-shell-v${version.split('.')[0]}`));
   assert.match(sw,/"\.\/src\/renderer\/sun-trail-flow\.js"/);
-  assert.match(orbits,/sunTrailFlowSegments\(points,phase\)/);
+  assert.match(orbits,/export function drawSunTrail\(/);
+  assert.match(orbits,/recordedGalacticTrail\(renderer,sun,vp\)/);
   assert.doesNotMatch(motion,/sunTrailFlowSegments|SunTrailFlowClock/);
   assert.doesNotMatch(loop,/SunTrailFlowClock|sunTrailFlowSegments/);
-  assert.equal(JSON.parse(pkg).version,'106.0.0');
+  assert.match(version,/^\d+\.\d+\.\d+$/);
 });

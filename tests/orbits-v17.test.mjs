@@ -106,7 +106,7 @@ test('v17: orbital draw switches GL_TRIANGLES/GL_LINE_STRIP without touching obj
 
 test('v55: orbit switches are in Layer appearance controls without a separate menu',async()=>{
  const html=await read('index.html'),app=await read('src/app.js'),mobile=await read('src/ui/bottom-sheet.js');
- const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="time-panel"'));
+ const layer=html.slice(html.indexOf('id="layer-popover"'),html.indexOf('id="canvas-error"'));
  assert.match(layer,/class="layer-display-toggles"/);
  for(const id of ['orbit-visibility-btn']){
    assert.equal((html.match(new RegExp(`id="${id}"`,'g'))||[]).length,1,id);

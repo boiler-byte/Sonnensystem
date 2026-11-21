@@ -2,7 +2,7 @@
  * Camera tour through the currently visible row.
  * Every object is held for five seconds at normal playback speed.
  * The opening reorder (largest to smallest) is concealed by a fade. Subsequent
- * objects are reached by continuous camera travel, as in v98.
+ * objects are reached by continuous, gently arched 3D camera travel.
  * Sampling by elapsed time makes playback and timeline scrubbing consistent.
  */
 import { CAMERA_FOV, clamp, lerp } from './math.js';
@@ -45,7 +45,29 @@ export function cinemaTrack(layout,width,height,bodyById){
 
 const smooth=t=>{const k=clamp(t,0,1);return k*k*(3-2*k);};
 
-/** Continuous camera travel between the individual five-second holds. */
+/**
+ * Cubic Bezier dolly arc: move sideways while gently rising and pulling back,
+ * then descend to the next body's exact center. Both handles stay in front
+ * of their respective endpoints, so x never reverses along a sorted row.
+ * The offset is limited by both spacing and framing distance; an unusually
+ * large gap cannot turn the camera into a steep leap, and close bodies do
+ * not receive an oversized arc. The same deterministic path is used by
+ * playback, pause/resume, seeking and the 2x transport.
+ */
+function cinemaTravelTarget(from,to,t){
+ const dx=to.x-from.x;
+ const spacing=Math.abs(dx);
+ const framing=Math.max(from.distance,to.distance);
+ const rise=Math.min(spacing*.18,framing*.30);
+ const retreat=Math.min(spacing*.08,framing*.14);
+ const u=1-t;
+ const arc=3*u*t; // Equal elevated handles: zero at both object centers.
+ // Cubic Bezier X with handles at 25% and 75% of the inter-object span.
+ const advance=3*u*u*t*.25+3*u*t*t*.75+t*t*t;
+ return [from.x+dx*advance,rise*arc,retreat*arc];
+}
+
+/** Continuous curved camera travel between the individual five-second holds. */
 export function cinemaPoseAt(track,progress){
  const frames=track?.frames??[];
  if(!frames.length)return {target:[0,0,0],distance:1,objectId:null,holding:false};
@@ -60,7 +82,7 @@ export function cinemaPoseAt(track,progress){
    const t=smooth((elapsedMs-frame.holdEndMs)/CINEMA_TRAVEL_MS);
    // Exponential interpolation avoids linear-zoom jolts across orders of magnitude.
    const distance=Math.exp(lerp(Math.log(frame.distance),Math.log(next.distance),t));
-   return {target:[lerp(frame.x,next.x,t),0,0],distance,
+   return {target:cinemaTravelTarget(frame,next,t),distance,
      objectId:t<.5?frame.id:next.id,holding:false};
   }
  }

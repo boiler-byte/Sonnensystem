@@ -12,27 +12,24 @@ const between=(text,start,end)=>{
   return text.slice(a,b);
 };
 
-test('v55: three scale toggles precede Layer and Time, without scale dropdown',async()=>{
-  const html=await read('index.html'),css=await read('css/styles.css');
+test('v124: three scale toggles precede the single Layer control',async()=>{
+  const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
   const panel=between(html,'id="view-mode-status"','id="canvas-error"');
-  const ids=['orbit-row-btn','scale-objects-btn','scale-orbits-btn','layer-btn','speed-btn'];
-  const re=/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn|layer-btn|speed-btn)"/g;
-  assert.deepEqual([...panel.matchAll(re)].map(m=>m[1]),ids);
+  const ids=['orbit-row-btn','scale-objects-btn','scale-orbits-btn','layer-btn'];
+  assert.deepEqual([...panel.matchAll(/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn|layer-btn)"/g)].map(m=>m[1]),ids);
   assert.match(panel,/class="scale-main-controls" role="group"/);
   for(const label of ['Reihe','Objekt','Bahn'])assert.match(panel,new RegExp(`class="scale-option-label">${label}</span>`));
-  assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"/);
+  assert.doesNotMatch(panel,/id="scale-btn"|id="scale-popover"|id="scale-picker-wrap"|id="speed-btn"/);
   assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
-  assert.match(panel,/id="speed-btn"[^>]*aria-controls="speed-popover"/);
-  const v55=css;
-  assert.match(v55,/\.scale-main-controls\{/);
-  assert.match(v55,/flex-wrap:wrap/);
-  assert.match(v55,/\.layer-popover,[\s\S]*?\.time-panel \.speed-popover\{/);
+  assert.match(css,/\.scale-main-controls\{/);
+  assert.match(css,/flex-wrap:wrap/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
 });
 
 test('v96: two toolbar scale toggles plus Reihe; five icon controls above Layer categories',async()=>{
   const html=await read('index.html');
   const scale=between(html,'class="scale-main-controls"','id="layer-picker-wrap"');
-  const layer=between(html,'id="layer-popover"','id="time-panel"');
+  const layer=between(html,'id="layer-popover"','id="canvas-error"');
   const ids=['orbit-row-btn','scale-objects-btn','scale-orbits-btn'];
   assert.deepEqual([...scale.matchAll(/id="(scale-objects-btn|scale-orbits-btn|orbit-row-btn)"/g)].map(m=>m[1]),ids);
   assert.match(scale,/id="orbit-row-btn"[\s\S]*?scale-option-label">Reihe<\/span>/);
@@ -72,7 +69,7 @@ test('v42: moon category colour remains #E6EDF5 everywhere it is reused',()=>{
 
 test('v55: appearance toggles retain aria-pressed states, titles and keyboard focus styling',async()=>{
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
-  const layer=between(html,'id="layer-popover"','id="time-panel"');
+  const layer=between(html,'id="layer-popover"','id="canvas-error"');
   const defaults={'toggle-labels':true,'toggle-lighting':false,'toggle-four-moons':false,'orbit-contrast-btn':false,
                   'orbit-visibility-btn':true};
   for(const [id,enabled] of Object.entries(defaults)){

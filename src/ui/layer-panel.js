@@ -27,6 +27,7 @@ export function syncLayers(){
     check.indeterminate=!check.checked && members.some(member => layerEnabled(selected,member));
     check.parentElement?.style.setProperty('--category-color',CATEGORY_COLORS[type]||'#E6EDF5');
   }
+  syncLayerPanelMode();
   for(const preset of document.querySelectorAll('[data-layer-preset]')){
     const active=preset.dataset.layerPreset===selected.mode
       && displayMatchesPreset(S.settings,preset.dataset.layerPreset,view);
@@ -36,4 +37,30 @@ export function syncLayers(){
 export function setLayerPopover(open){
   $('layer-popover').hidden=!open;
   $('layer-btn').setAttribute('aria-expanded',String(open));
+}
+
+// Only the content below the appearance controls changes; layer filters stay active.
+let speedPanelVisible=false;
+function syncLayerPanelMode(){
+  const row=S.settings.row===true;
+  if(row)speedPanelVisible=false; // The lineup uses a fixed simulation speed.
+  const button=$('layer-speed-toggle');
+  button.disabled=row;
+  const current=speedPanelVisible?'Tempo':'Kategorien';
+  const next=speedPanelVisible?'Kategorien':'Tempo';
+  const description=row
+    ? 'Aktuelle Ansicht: Kategorien. In der Reihenansicht ist die Simulationsgeschwindigkeit fest'
+    : `Aktuelle Ansicht: ${current}. Zu ${next} wechseln`;
+  syncToggleState(button,speedPanelVisible,description);
+  button.setAttribute('aria-label',description);
+  button.setAttribute('data-layer-view',speedPanelVisible?'tempo':'categories');
+  $('layer-speed-toggle-label').textContent=current;
+  $('layer-categories').hidden=speedPanelVisible;
+  $('layer-speed-panel').hidden=!speedPanelVisible;
+}
+export function toggleLayerSpeedPanel(){
+  if(S.settings.row)return;
+  speedPanelVisible=!speedPanelVisible;
+  syncLayerPanelMode();
+  if(speedPanelVisible)$('layer-speed').focus({preventScroll:true});
 }

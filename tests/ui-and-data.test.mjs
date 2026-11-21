@@ -62,7 +62,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('reset-camera').title,'Nächste Perspektive: Topdown');
     changeStatus(state.status,'solar','offline','Startdaten');
     assert.match(get('source-status').innerHTML,/Startdaten/);
-    assert.match(get('sim-date-readout').textContent,/^\d{2}\.\d{2}\.2026\n\d{2}:\d{2}$/);
+    assert.match(get('layer-sim-date').textContent,/^\d{2}\.\d{2}\.2026 \d{2}:\d{2}$/);
   }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });
 
