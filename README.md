@@ -1,6 +1,47 @@
-# Sonnensystem – interaktiver 3D-Atlas (v124.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v130.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+
+## Neu in v130: Intelligentes Schließen des mobilen Sheets
+
+- In der Objektliste und in den Objektdetails bleibt normales vertikales Scrollen erhalten. Wird der obere Rand des Inhalts erreicht und weiter **nach unten gewischt**, übernimmt das Sheet die Geste und wechselt zur nächstniedrigeren Stufe (voll → halb → geschlossen), genauso wie beim Ziehen am Header.
+- Die **Objekt-Titelleiste (`detail-top`)** lässt sich wie der Sheet-Header nach oben bzw. unten ziehen, um das Sheet zu vergrößern oder zu verkleinern. Die Pfeile zur Objektnavigation funktionieren bei einem normalen Tippen weiterhin.
+- Ein Tap auf eine freie Stelle der 3D-Szene schließt das mobile Sheet, **wenn bereits kein Objekt ausgewählt ist**. Eine bestehende Auswahl wird beim ersten leeren Tap weiterhin nur aufgehoben und der Tab **Objekte** angezeigt. Das Desktop-Verhalten bleibt unverändert.
+- Neue Regressionstests in `tests/mobile-sheet-smart-close-v130.test.mjs`; App-Version und Offline-Cache aktualisiert.
+
+## Neu in v129: Objekte-Tab bei leerer Auswahl und Parent-Abstände für Satelliten
+
+- Wird die Auswahl aufgehoben (etwa durch einen Klick auf einen freien Bereich oder durch die Rückkehr aus einer Planetenansicht), schaltet die Seitenleiste automatisch auf **Objekte**. Desktop-Tabs und mobiles Bottom-Sheet sind synchron; ein bereits geschlossenes mobiles Sheet wird nicht automatisch geöffnet. Auch beim erneuten Aufheben einer bereits leeren Auswahl bleibt **Objekte** aktiv.
+- Bei **Entfernung ↑** ohne Suche und ohne aktiven Planetenfilter übernehmen jetzt auch **künstliche Satelliten** die Sonnenentfernung ihres Parent-Systems, genau wie Monde und natürliche Doppelasteroid-Begleiter. **ISS, Hubble und die weiteren Erdsatelliten** erscheinen damit beim Erdwert (ca. 1 AE) und nicht nach ihrem lokalen Abstand von wenigen tausend Kilometern.
+- Suche und aktiver Planetenfilter verwenden für alle Begleiter weiterhin deren **eigene** mittlere Bahndistanz. Sonden sind von der Parent-Regel ausgenommen; astronomische Daten und Objektdetails bleiben unangetastet.
+- Regressionen: `tests/selection-satellite-v129.test.mjs` und angepasste Distanz-/Mobile-Sheet-Tests. App-Version und Offline-Shellcache aktualisiert.
+
+## Neu in v128: Dauerhaftes Folgen und neutrale Kamerarückkehr
+
+- Der **Folgen-Toggle** wurde aus den Objektdetails entfernt. Nach einer Objektauswahl verfolgt die Kamera das ausgewählte darstellbare Objekt automatisch. Es gibt keinen Ausschalter mehr. Manuelles Verschieben oder eine zu schnelle Objektbewegung unterbricht nur das aktive Kameratracking bis zur nächsten expliziten Auswahl.
+- Überschreitet das verfolgte Objekt die Geschwindigkeitsgrenze, kehrt die Kamera zur **Schräg/oben-Standardperspektive** zurück und stellt den Gesamtüberblick der aktuellen Ansicht wieder her. Die Auswahl bleibt bestehen, nur das Bewegungsziel wird verworfen.
+- Der Button **Sonnensystem** in einer Planetenansicht setzt jetzt die **Objektauswahl und das Verfolgungsziel** zurück und stellt den neutralen Schräg/oben-Blick des Sonnensystems her. Dies gilt auch nach vorherigem manuellem Kameradrehen oder Zoomen.
+- Regressionen: `tests/follow-overview-v128.test.mjs`; Version und Offline-Cache aktualisiert.
+
+## Neu in v127: Einheitliche Entfernungen für natürliche Begleiter
+
+- Im **ungefilterten Objektkatalog** mit Sortierung **Entfernung ↑** übernehmen alle Monde und natürliche Begleiter in Doppelasteroid-Systemen die mittlere Sonnenentfernung ihres Parent-Systems. Das gilt auch für verschachtelte natürliche Begleiter.
+- **Dimorphos** wird damit gemeinsam mit **(65803) Didymos** bei **1,6444 AE** eingeordnet und entsprechend angezeigt, statt mit seinem lokalen Abstand von **1,152 km** am Listenanfang zu stehen. Die Objektdaten und die reale lokale Bahn bleiben unverändert.
+- In v127 behielten künstliche Satelliten noch ihren eigenen Abstand; **seit v129** übernehmen sie in der ungefilterten Liste ebenfalls den Parent-Abstand. Bei aktiver Suche oder eingeschaltetem Planetenfilter gilt für alle Begleiter wieder die eigene Bahndistanz. Sonden bleiben ausgenommen.
+- Neue Regressionstests: `tests/catalog-parent-distance-v127.test.mjs`; Version und Offline-Shellcache aktualisiert.
+
+## Neu in v126: Layerbreite, Reihenfokus und Klick-Zonen
+
+- Das **Layer Control Panel** ist in allen Desktop- und Mobilvarianten **140 px** breit (vorher 155 px).
+- Ein Klick auf einen sichtbaren Himmelskörper in der **Reihen-Darstellung** zentriert die Kamera und zoomt passend zur tatsächlichen Objektgröße heran, sowohl im Sonnensystem als auch in einer isolierten Planetenansicht. Die Auswahl außerhalb der Reihe zentriert weiterhin ohne Zoom; Auswahl über Katalog und Detailansicht bleibt unverändert.
+- Die **Klick-Zonen** orientieren sich an der projizierten Größe der gerenderten Kugeln statt an einer starren Maximalgröße. Auch die vergrößerten Reihen-Hoverobjekte, angeschnittene große Kugeln und kleine Objekte mit Mindest-Treffergröße lassen sich wählen.
+- Regressionen: `tests/layer-row-picking-v126.test.mjs`; PWA-Shellcache wurde aktualisiert.
+
+## Neu in v125: Kompakte Tempo-Ansicht
+
+- **Geschwindigkeit**, **Pause**, **Heute** und **Datum** sind nicht mehr als sichtbare Beschriftungen vorhanden. Der Play/Pause- und der Heute-Button bleiben als Icons mit vollständigen Tooltips und Screenreader-Namen bedienbar.
+- Der Simulationsgeschwindigkeitswert steht direkt **rechts neben dem Slider-Griff**. Er folgt diesem in beiden Ansichtsmodi und bei kompakten Viewports. Er hat Vorrang vor den Min-/Max-Texten und kann diese an den Reglerenden überlagern.
+- Simulationsdatum und -uhrzeit bleiben als reine Wertanzeige unter den beiden Buttons erhalten.
 
 ## Neu in v124: Eine Zeitsteuerung im Layer Control
 
@@ -36,12 +77,12 @@ npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 
 ## Aktuelle Funktionen
 
-- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, standardmäßig aktiviertes **Folgen** des ausgewählten Körpers und drei Kameraperspektiven. Ein zu schneller Körper oder eine manuelle Kameraverschiebung unterbricht nur die Nachführung; die aktivierte Folgen-Option bleibt erhalten.
-- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit Zwei-Finger-Umschauen (unten = Blick nach unten, oben = Blick nach oben); gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links zurück; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
+- **Szenen:** Sonnensystemübersicht und Planeten-/Zwergplanetensysteme; Objektfokus, **dauerhaft aktiviertes Folgen** des ausgewählten Körpers (ohne Toggle) und drei Kameraperspektiven. Eine manuelle Kameraverschiebung setzt die Nachführung aus; bei zu schneller Objektbewegung kehrt die Kamera zusätzlich zum Schräg/oben-Überblick zurück. Eine erneute Auswahl nimmt die Verfolgung wieder auf.
+- **Kamera:** Maus, Touch und Tastatur; freie Perspektive mit Zwei-Finger-Umschauen (unten = Blick nach unten, oben = Blick nach oben); gleitende Fahrten beim Perspektivwechsel per Kamerataste **innerhalb der aktuellen Ansicht**. In isolierten Planetensystemen führt ein separater Button **„Sonnensystem“** oben links in die Standardperspektive zurück und hebt die Auswahl auf; optional AR-Blicksteuerung mit natürlicher vertikaler Sensorbewegung (nur auf geeigneten Geräten in sicherem Kontext).
 - **Darstellung:** acht gemeinsam schaltbare Kategorie-Filter (Asteroiden inklusive Doppelasteroiden; Zwergplaneten inklusive transneptunischen Objekten) bei weiterhin getrennten wissenschaftlichen Objekttypen; Beschriftung in drei Modi (Namen und Punkte → nur Planetenpunkte → Aus), Beleuchtung und Monde sowie einen Umlaufbahn-Button mit drei Stufen im Sonnensystem (Umlaufbahn → Galaktische Bewegung → Aus) und zwei Stufen in Planetenansichten (Umlaufbahn → Aus). Der eigenständige **Kontrast-Toggle** kann beide Bahnarten verstärken; getrennte Ansichts-Einstellungen.
 - **Maßstab:** Objektgrößen, Bahnabstände (nur außerhalb der Reihen-Darstellung) sowie drei Reihenmodi **Aus → Größe (groß bis klein) → Entfernung (nah bis fern)**. Die Reihe enthält nur das Zentralobjekt der Ansicht und seine direkten Kinder mit bekanntem Radius. Beim Maus-Hover wird ein kleiner Körper bis mindestens 160 px Durchmesser vergrößert und erhält einen animierten Sci-Fi-Messrahmen mit dem Durchmesser oben und darunter zwei ikonbasierten Messwerten (Gravitation und mittlere Temperatur) sowie einem zum Parent-Rand gerichteten Entfernungspfeil (km/AE). Der Name steht über dem Körper. Cinema besitzt Play/Pause und einen zuschaltbaren 2x-Button; jedes Objekt erhält bei 1x eine Verweildauer von 5 Sekunden. Die Scannerwirkung erscheint an Kamerahaltepunkten. Cinema startet in der Größenreihe mit einer Überblendung vom größten zum kleinsten Körper und fährt danach kontinuierlich von klein nach groß. In der Entfernungsreihe bleibt die Anordnung unverändert; bereits der Einstieg erfolgt per Kamerafahrt. Auch das Beenden führt die Kamera weich zurück.
 - **Zeit:** Simulationsgeschwindigkeit und Datum; schematische Bahnen sind keine präzisen Ephemeriden.
-- **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde die Entfernung ihres Parent-Objekts und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Die zuletzt gewählte Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
+- **Katalog:** 192 Himmelskörper und 192 deutsche redaktionelle Einträge; Sortier-Toggle **Standard → Entfernung (aufsteigend) → Größe (absteigend)** mit mittlerem Abstand in AE bzw. bei maximal 0,2 AE in km sowie Durchmesser in km rechts im Listeneintrag. Ohne Suche und ohne aktiven Planetenfilter zeigen Monde, natürliche Begleiter von Doppelasteroiden und künstliche Satelliten den Sonnenabstand ihres Parent-Systems und werden entsprechend einsortiert. In der Planetenansicht ist der Filter für den aktuellen Planeten beim Öffnen aktiv und manuell ausschaltbar. Temperatur (halbe Kachelbreite; halb gefülltes schwarzes Thermometer ohne Hintergrund für den Mittelwert, verfügbare Min./Max.-Werte kompakt rechts übereinander), mittlerer Parent-Abstand, Atmosphärendruck und Gravitation in G mit SVG-Symbolen sind im bei der ersten Nutzung standardmäßig geöffneten Daten-Tab verfügbar; unbekannte Werte bleiben offen. Bei aufgehobener Objektauswahl wechselt die gemeinsame Seitenleiste zu **Objekte**; ein geschlossenes mobiles Sheet bleibt geschlossen. Die zuletzt gewählte Detail-Registerkarte (Daten oder Wissen) bleibt über Objektwechsel und Neustarts gespeichert. Der Desktop-Detailbereich reserviert die Scrollleistenbreite, sodass beim Umschalten kein seitliches Springen entsteht.
 - **Texturen:** Drei getrennte Verzeichnisse `textures/mobile/` (512 px), `textures/standard/` (2048 px) und `textures/high/` (4096 px). **Nur `.webp` wird als Objekttextur gesucht**; fehlende Stufen werden aus vorhandenen Nachbarstufen geladen und GPU-seitig verkleinert.
 - **Offline:** App-Shell und Katalogdaten werden vom Service Worker gespeichert. Texturen nutzen einen separaten, netzwerkpriorisierten Cache; bei geänderten Dateien werden SHA-256-Versionen automatisch erkannt. Bereits geladene Bilder bleiben offline verfügbar. Andere API-Daten sind nicht Bestandteil des Offline-Caches.
 
@@ -224,7 +265,7 @@ Im Detail-Tab **Daten** erhält jede physikalische Messwertkachel ein eigenes In
 
 `Sonnensystem-Delta-v75.zip` enthält **nur neue oder geänderte Dateien gegenüber v74**. Es wird über die bestehende **v74-Installation** gelegt (v71 + Delta v72 + v73 + v74). Anschließend `npm run check` ausführen und die App online neu laden, um `sonnensystem-shell-v75` zu aktivieren. Katalogdaten und Schema (`10.1.0` / `1`) bleiben unverändert.
 
-In der Sortierung **Entfernung ↑** werden mittlere Abstände **bis einschließlich 0,2 AE in km** angezeigt, darüber weiterhin in AE. Die numerische Sortierung verwendet durchgehend intern AE. **Ohne Suchbegriff und ohne aktiven Planetenfilter** übernehmen Monde die Entfernung ihres Elternkörpers für **Sortierung und Listenanzeige** (z. B. Mond → Erde → 1 AE). Bei eingegebenem Suchbegriff oder eingeschaltetem Planetenfilter gilt wieder die eigene mittlere Bahnentfernung des Mondes (z. B. Mond → 384.400 km). Ein in der Sonnenübersicht sichtbarer, aber nicht aktiver Filterzustand schränkt die Regel nicht ein. Andere Objekttypen, Größe und Standardsortierung bleiben unverändert; unbekannte Entfernungen bleiben am Ende.
+In der Sortierung **Entfernung ↑** werden mittlere Abstände **bis einschließlich 0,2 AE in km** angezeigt, darüber weiterhin in AE. Die numerische Sortierung verwendet durchgehend intern AE. **Ohne Suchbegriff und ohne aktiven Planetenfilter** übernehmen Monde, Doppelasteroid-Begleiter und künstliche Satelliten die Entfernung ihres Parent-Systems für **Sortierung und Listenanzeige** (z. B. Mond → Erde → 1 AE). Bei eingegebenem Suchbegriff oder eingeschaltetem Planetenfilter gilt wieder die eigene mittlere Bahnentfernung der Begleiter (z. B. Mond → 384.400 km). Ein in der Sonnenübersicht sichtbarer, aber nicht aktiver Filterzustand schränkt die Regel nicht ein. Sonden, andere Objekttypen, Größe und Standardsortierung bleiben unverändert; unbekannte Entfernungen bleiben am Ende.
 
 ## Delta-Update auf v76
 

@@ -31,7 +31,7 @@ test('v55: AR, Cinema, three scale controls and Layer/Time fit the responsive to
  assert.match(v55,/--control-icon-width:43px/);
  assert.match(v55,/flex-wrap:wrap/);
  assert.match(v55,/\.scale-main-controls\{/);
- assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
+ assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:140px/);
  assert.match(v55,/@media\(max-width:770px\)/);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  for(const id of ['ar-mode-btn','cinema-btn','scale-objects-btn','scale-orbits-btn','orbit-row-btn','layer-btn'])

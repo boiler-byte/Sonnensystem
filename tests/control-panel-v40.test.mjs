@@ -15,7 +15,7 @@ test('v124: compact toolbar has exactly one aligned Layer popover',async()=>{
   assert.match(layout,/--control-main-scale-width:46px/);
   assert.match(layout,/flex-wrap:wrap/);
   assert.match(layout,/width:max-content!important/);
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px;max-width:calc\(100vw - 20px\)/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:140px;max-width:calc\(100vw - 20px\)/);
 });
 
 test('v124: Layer popover is the only time and category menu',async()=>{

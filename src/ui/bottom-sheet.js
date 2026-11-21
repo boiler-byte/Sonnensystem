@@ -9,6 +9,7 @@ export function visibleCanvasFocusOffset(sceneRect,sheetTop){
 export function initMobileSheets() {
   const mq = window.matchMedia('(max-width: 770px)');
   const sheet = $('mobile-sheet'), header = $('sheet-header'), content = $('sheet-content');
+  const detailTop = $('detail-top');
   const scrim = $('mobile-sheet-scrim');
   const cameraActions = $('reset-camera').parentElement;
   const cinemaTimeline = $('cinema-timeline');
@@ -171,53 +172,125 @@ export function initMobileSheets() {
   });
   scrim.addEventListener('click',close);
 
-  // Pointergesten auf dem gesamten Kopfbereich: nach oben öffnen, nach unten schließen.
-  header.addEventListener('pointerdown',e=>{
-    if(!mobile()||e.button!==0)return;
-    drag={id:e.pointerId,startY:e.clientY,startVisible:levels()[snap],startSnap:snap,delta:0,started:performance.now()};
-  });
-  header.addEventListener('pointermove',e=>{
-    if(!drag||e.pointerId!==drag.id)return;
-    const dy=e.clientY-drag.startY;
+  // Header und Objekttitel verwenden dieselbe Snap-Geste und dieselben
+  // animierten Abstände der Szene. Capture erst nach 7px: Buttons bleiben klickbar.
+  function startDrag(id,y,captureTarget=null){
+    if(!mobile()||drag)return false;
+    drag={id,startY:y,startVisible:levels()[snap],startSnap:snap,delta:0,captureTarget};
+    return true;
+  }
+  function moveDrag(id,y,preventDefault){
+    if(!drag||drag.id!==id)return false;
+    const dy=y-drag.startY;
     if(!isDragging&&Math.abs(dy)>7){
       isDragging=true;
-      header.setPointerCapture(e.pointerId);
+      drag.captureTarget?.setPointerCapture(id);
       sheet.classList.add('dragging');
       cameraActions.classList.add('sheet-dragging');
       cinemaTimeline?.classList.add('sheet-dragging');
     }
-    if(!isDragging)return;
-    e.preventDefault();
+    if(!isDragging)return false;
+    preventDefault?.();
     drag.delta=dy;
-    const visible=clamp(drag.startVisible-dy,levels().closed,levels().full);
-    setVisibleHeight(visible);
-  });
-  function finishDrag(e){
-    if(!drag||e.pointerId!==drag.id)return;
-    const moved=isDragging, diff=drag.delta, prior=drag.startSnap;
+    setVisibleHeight(clamp(drag.startVisible-dy,levels().closed,levels().full));
+    return true;
+  }
+  function clearDrag(){
     drag=null;isDragging=false;
     sheet.classList.remove('dragging');
     cameraActions.classList.remove('sheet-dragging');
     cinemaTimeline?.classList.remove('sheet-dragging');
+  }
+  function finishDrag(id){
+    if(!drag||drag.id!==id)return;
+    const {delta,startSnap,captureTarget}=drag,moved=isDragging;
+    if(captureTarget?.hasPointerCapture(id))captureTarget.releasePointerCapture(id);
+    clearDrag();
     if(!moved)return;
     const order=['closed','half','full'];
-    let choice=prior;
-    if(Math.abs(diff)>35){choice=order[clamp(order.indexOf(prior)+(diff<0?1:-1),0,2)];}
+    let choice=startSnap;
+    if(Math.abs(delta)>35)choice=order[clamp(order.indexOf(startSnap)+(delta<0?1:-1),0,2)];
     else{
       const current=parseFloat(sheet.style.getPropertyValue('--sheet-visible'));
       choice=order.reduce((best,key)=>Math.abs(levels()[key]-current)<Math.abs(levels()[best]-current)?key:best,order[0]);
     }
     snapTo(choice);
     suppressClickUntil=performance.now()+240;
-    if(header.hasPointerCapture(e.pointerId))header.releasePointerCapture(e.pointerId);
   }
-  header.addEventListener('pointerup',finishDrag);
-  header.addEventListener('pointercancel',e=>{
-    if(!drag||e.pointerId!==drag.id)return;
-    drag=null;isDragging=false;sheet.classList.remove('dragging');
-    cameraActions.classList.remove('sheet-dragging');
-    cinemaTimeline?.classList.remove('sheet-dragging');snapTo(snap);
-  });
+  function cancelDrag(id){
+    if(!drag||drag.id!==id)return;
+    clearDrag();snapTo(snap);
+  }
+  for(const handle of [header,detailTop].filter(Boolean)){
+    handle.addEventListener('pointerdown',e=>{
+      if(!mobile()||e.button!==0 || !e.isPrimary && e.isPrimary!==undefined)return;
+      startDrag(e.pointerId,e.clientY,handle);
+    });
+    handle.addEventListener('pointermove',e=>{
+      if(drag?.captureTarget!==handle)return;
+      moveDrag(e.pointerId,e.clientY,()=>e.preventDefault());
+    });
+    handle.addEventListener('pointerup',e=>finishDrag(e.pointerId));
+    handle.addEventListener('pointercancel',e=>cancelDrag(e.pointerId));
+    // Nach einem Swipe darf z. B. die Nächstes-Objekt-Taste nicht auslösen.
+    handle.addEventListener('click',event=>{
+      if(mobile()&&performance.now()<suppressClickUntil){
+        event.preventDefault();event.stopImmediatePropagation();
+      }
+    },true);
+  }
+
+  // Der Katalog und die Details dürfen normal scrollen. Erst wenn der Scrollbereich
+  // oben steht und der Finger weiter nach unten wandert, übernimmt das Sheet die
+  // Geste. touchmove (nicht pointermove) ist nötig, weil natives Scrollen sonst
+  // bereits pointercancel auslösen kann. Mehrfinger-Gesten werden nicht übernommen.
+  for(const scroller of [$('object-list'),$('detail-scroll')].filter(Boolean)){
+    let touch=null;
+    const touchById=(list,id)=>Array.from(list).find(item=>item.identifier===id);
+    scroller.addEventListener('touchstart',e=>{
+      touch=null;
+      if(!mobile()||snap==='closed'||e.touches.length!==1)return;
+      const finger=e.touches[0];
+      touch={id:finger.identifier,lastY:finger.clientY,dragging:false};
+    },{passive:true});
+    scroller.addEventListener('touchmove',e=>{
+      if(!touch||!mobile())return;
+      if(e.touches.length!==1){cancelDrag(`touch-${touch.id}`);touch=null;return;}
+      const finger=touchById(e.touches,touch.id);
+      if(!finger)return;
+      const step=finger.clientY-touch.lastY;
+      const previousY=touch.lastY;
+      touch.lastY=finger.clientY;
+      if(!touch.dragging){
+        if(step<=0||scroller.scrollTop>1||drag)return;
+        // Übergabe am Scrollanfang ohne Sprung durch den zuvor gescrollten Weg.
+        touch.dragging=startDrag(`touch-${touch.id}`,previousY);
+      }
+      if(touch.dragging){
+        // Bei Touch-Swipes das native Scrollen nur während des Sheet-Drags sperren.
+        // Auch unterhalb der 7px-Schwelle darf der Browser nicht erneut scrollen.
+        if(e.cancelable)e.preventDefault();
+        moveDrag(`touch-${touch.id}`,finger.clientY);
+      }
+    },{passive:false});
+    const endTouch=e=>{
+      if(!touch)return;
+      const finger=touchById(e.changedTouches,touch.id);
+      if(!finger)return;
+      if(touch.dragging){
+        if(e.type==='touchcancel')cancelDrag(`touch-${touch.id}`);
+        else finishDrag(`touch-${touch.id}`);
+      }
+      touch=null;
+    };
+    scroller.addEventListener('touchend',endTouch);
+    scroller.addEventListener('touchcancel',endTouch);
+    scroller.addEventListener('click',event=>{
+      if(mobile()&&performance.now()<suppressClickUntil){
+        event.preventDefault();event.stopImmediatePropagation();
+      }
+    },true);
+  }
   window.addEventListener('popstate',event=>{
     const onSheetEntry=isSheetEntry(event.state);
     historyBackPending=false;
@@ -250,5 +323,7 @@ export function initMobileSheets() {
     const blend=clamp((visibleSheet-collapsed)/collapsed,0,1);
     return visibleCanvasFocusOffset(sceneRect,sheetRect.top)*blend;
   }
-  return {open,close,expand,focusOffsetFor};
+  // Switch the active sidebar tab without expanding a collapsed mobile sheet.
+  // Used when the scene clears its selection; both tab bars stay synchronized.
+  return {open,close,expand,selectPanel:showPanel,focusOffsetFor};
 }

@@ -22,14 +22,12 @@ const makeRenderer=()=>{
   return {renderer,changes};
 };
 
-test('v38: planet button shows only Planetenansicht and the follow icon is unchanged',async()=>{
+test('v128: planet button stays available but permanent following has no button',async()=>{
   const html=await read('index.html'),detail=await read('src/ui/object-details.js');
   const action=html.split('id="detail-scene-actions"')[1].split('class="detail-tabs"')[0];
   assert.match(action,/<strong id="planet-view-title">Planetenansicht<\/strong>/);
   assert.doesNotMatch(action,/planet-view-subtitle|Mond[e]? und Satelliten|Planetenansicht öffnen/);
-  assert.match(action,/id="center-object-btn"[\s\S]*?<circle cx="12" cy="12" r="6\.5"\/>/);
-  assert.match(action,/<span>Folgen<\/span>/);
-  assert.match(action,/aria-pressed="false"/);
+  assert.doesNotMatch(action,/center-object-btn|<span>Folgen<\/span>/);
   assert.doesNotMatch(detail,/planet-view-subtitle|moons} Monde|satellites} Satelliten/);
   assert.match(detail,/\$\('planet-view-title'\)\.textContent='Planetenansicht'/);
 });
@@ -51,10 +49,10 @@ test('v38: global toggle follows each selected body without switching off',()=>{
   r.setSelected('earth',{focus:true});
   assert.equal(r.followEnabled,true);
   assert.equal(r.followedBodyId,'earth');
-  assert.deepEqual(changes,[true], 'no false toggles on selection');
-  assert.equal(r.follow('earth',300),false);
-  assert.equal(r.followEnabled,false);
-  assert.deepEqual(changes,[true,false]);
+  assert.deepEqual(changes,[], 'selection never toggles the permanent mode');
+  assert.equal(r.follow('earth',300),true,'re-engaging is idempotent');
+  assert.equal(r.followEnabled,true);
+  assert.deepEqual(changes,[]);
 });
 
 test('v38: follow persists on no selection and a probe; resumes when a positionable body is selected',()=>{
@@ -100,7 +98,8 @@ test('v114: pan and high velocity suspend tracking but keep the global switch on
   r.positions.set('earth',[100,0,0]);r.updateFollowTarget(r.followLastAtMs+20);
   assert.equal(r.followEnabled,true);
   assert.equal(r.followedBodyId,null);
-  assert.deepEqual(changes,[true], 'a manual toggle is the only way to switch off');
+  assert.deepEqual(changes,[], 'automatic suspensions never change follow mode');
+  assert.deepEqual(r.camera.desiredTarget,[0,0,0],'speed cutoff returns to overview');
 });
 
 test('v38: scene and preset transitions retain global follow with fresh speed baselines',()=>{
@@ -129,7 +128,7 @@ test('v38: scene and preset transitions retain global follow with fresh speed ba
   assert.equal(r.followEnabled,true,'changing coordinate systems must not count as sudden motion');
 });
 
-test('v38: DOM shows a global pressed state regardless of selected body',()=>{
+test('v128: detail actions only show a planet-view button, never a tracking toggle',()=>{
   const old=globalThis.document,nodes=new Map();
   const el=id=>{
     if(!nodes.has(id))nodes.set(id,{hidden:false,disabled:false,innerHTML:'',textContent:'',title:'',style:{setProperty(){}},attrs:{},classList:{toggle(){}},querySelectorAll(){return []},setAttribute(k,v){this.attrs[k]=v}});
@@ -139,15 +138,14 @@ test('v38: DOM shows a global pressed state regardless of selected body',()=>{
   const {renderer:r}=makeRenderer();r.overrides=new Map();
   const state={bodies:INITIAL_BODIES,selected:'earth'};
   try{
-    r.follow('earth',0);
     renderDetail(state,r,()=>{});
-    assert.equal(el('center-object-btn').attrs['aria-pressed'],'true');
-    assert.equal(el('center-object-btn').attrs['aria-label'],'Folgen ausschalten');
-    state.selected='mars';renderDetail(state,r,()=>{});
-    assert.equal(el('center-object-btn').attrs['aria-pressed'],'true');
+    assert.equal(el('detail-scene-actions').hidden,false);
     assert.equal(el('planet-view-title').textContent,'Planetenansicht');
-    r.stopFollowing();renderDetail(state,r,()=>{});
-    assert.equal(el('center-object-btn').attrs['aria-pressed'],'false');
+    state.selected='mars';renderDetail(state,r,()=>{});
+    assert.equal(el('detail-scene-actions').hidden,false);
+    state.selected='sun';renderDetail(state,r,()=>{});
+    assert.equal(el('detail-scene-actions').hidden,true,'no empty action row for Sun');
+    assert.equal(nodes.has('center-object-btn'),false);
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });
 

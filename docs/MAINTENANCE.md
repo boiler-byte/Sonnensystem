@@ -1,3 +1,15 @@
+## Änderung in v130
+
+**Delta v129 → v130:** `src/ui/bottom-sheet.js` verwendet gemeinsam genutzte Dragfunktionen für `sheet-header`, `detail-top` sowie für Abwärts-Wischgesten in `object-list` und `detail-scroll` am Scrollanfang. Bei normalem Scrollen wird nicht in die Sheet-Höhe eingegriffen; erst nach Erreichen des oberen Scrollrands wird der Touch-Drag mit `passive:false` übernommen. Die Drag-Klassen, History-Interaktion und der Kamerabedienelementabstand werden wie beim Header aktualisiert. Die beiden Scroll-Container und `detail-top` sind per ID adressierbar. `clearSceneSelection()` in `src/app/runtime.js` unterscheidet zwischen einem ersten leeren Szenenklick, der die Selektion aufhebt, und einem zweiten leeren Klick, der das bereits unselektierte mobile Sheet schließt. Version `130.0.0`, Offline-Cache `sonnensystem-shell-v130`, Basis v129.
+
+## Änderung in v129
+
+**Delta v128 → v129:** `clearSelection()` schaltet bei aufgehobener oder bereits leerer Auswahl zur gemeinsamen Kategorie **Objekte**. Die Bottom-Sheet-API `selectPanel('catalog')` wechselt Desktop- und Mobil-Tab, ohne einen geschlossenen mobilen Sheet zu öffnen oder einen History-Eintrag zu erzeugen. `catalogListingDistance()` berücksichtigt zusätzlich künstliche Satelliten in der ungefilterten Entfernungssortierung; die bestehende Option `useParentForMoons` bleibt für Aufrufer erhalten und gilt nun auch für Satelliten. Die Suche, aktive Planetenfilter, Probes, Datenbasis und physikalischen Detailansichten bleiben unverändert. Regressionen in `tests/selection-satellite-v129.test.mjs`, überarbeiteten v75/v127-Katalogtests und ergänztem v33-Sheet-Test. App-Version `129.0.0`, Shell `sonnensystem-shell-v129`, Basis v128.
+
+## Änderung in v128
+
+**Delta v127 → v128:** Entfernt sind Folgen-Toggle, Eventhandler, Status-Synchronisierung und CSS. `follow()` ist idempotent und kann das permanent eingeschaltete Folgen nicht ausschalten; `returnToStandardCamera()` zentriert bei überhöhter Objektgeschwindigkeit auf die neutrale Schräg/oben-Ansicht. `#back-to-solar` löscht zuerst UI- und Renderer-Selektion und stellt nach `updateMode()` die Standardkamera der Sonnensystemansicht her. Die frei bleibende Detail-Aktionszeile wird bei Objekten ohne Planetenansicht verborgen. Tests: `follow-overview-v128.test.mjs` sowie aktualisierte ältere Regressionen, Version `128.0.0`, Shell `sonnensystem-shell-v128`, Basis v127.
+
 ## Änderung in v121
 
 **Delta v120 → v121:** `src/ui/event-handlers.js` sorgt beim Aktivieren der uneingeschränkten Monde (`settings.fourMoons=false`) dafür, dass die Objektkategorie `moon` über den bestehenden `updateLayerSelection`/`changeLayers`-Pfad aktiviert ist, auch wenn sie zuvor abgewählt war. Beim Ausschalten wird die Kategorie nicht zurückgesetzt. Die 8 übrigen Kategorie-Filter und die anderen vier Darstellungs-Toggles bleiben unangetastet. `css/styles.css` färbt ausschließlich `#toggle-labels[data-label-mode="points"].active` und `#orbit-visibility-btn[data-orbit-mode="galactic"].active` in blau ein. Test `tests/layer-panel-modes-v121.test.mjs`, Version `121.0.0`, Cache `sonnensystem-shell-v121`, Basis v120.

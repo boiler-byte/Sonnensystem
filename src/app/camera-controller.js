@@ -49,8 +49,12 @@ export function selectBody(id,focus=false,{zoom=focus}={}){
 }
 export function clearSelection(){
   if(renderer?.cinema?.active)renderer.stopCinema();
-  if(S.selected===null)return;
-  S.selected=null;
-  renderer?.setSelected(null);
-  updateCatalog();updateDetail();
+  if(S.selected!==null){
+    S.selected=null;
+    renderer?.setSelected(null);
+    updateCatalog();updateDetail();
+  }
+  // On desktop and mobile, show "Objekte" whenever no object is selected.
+  // Do not expand a closed mobile bottom sheet just to change its active tab.
+  mobileSheets?.selectPanel('catalog');
 }

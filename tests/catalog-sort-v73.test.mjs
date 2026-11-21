@@ -78,7 +78,7 @@ test('v75: distance sort groups moons at their parent in the unfiltered atlas',(
   ];
   const before=bodies.map(b=>b.id);
   assert.deepEqual(filteredBodies({bodies,search:'',catalogSort:'distance'}).map(b=>b.id),
-    ['iss','venus','earth','moon','sun','unknown']);
+    ['venus','earth','iss','moon','sun','unknown']);
   assert.deepEqual(bodies.map(b=>b.id),before,'sort must not reorder catalog source');
 });
 

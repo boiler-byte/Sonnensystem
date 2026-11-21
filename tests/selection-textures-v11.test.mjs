@@ -152,6 +152,6 @@ test('v11: browser PWA preloads the texture modules and caches maps only on dema
   assert.match(sw,/\.\/src\/renderer\/textures\.js/);
   assert.match(sw,/textures\\\//);
   assert.match(html,/id="texture-credit"/);
-  assert.match(app,/onClearSelect:clearSelection/);
+  assert.match(app,/onClearSelect:clearSceneSelection/);
   assert.doesNotMatch(server,/textureAsset\(url\.pathname\)/);
 });

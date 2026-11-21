@@ -80,7 +80,6 @@ export function syncControls(state) {
   layerPlay.setAttribute('aria-pressed',String(state.playing));
   layerPlay.title=state.playing?'Simulation pausieren':'Simulation starten';
   $('layer-play-icon-path').setAttribute('d',state.playing?'M7 5h4v14H7z M14 5h4v14h-4z':'M7 4v16l13-8z');
-  $('layer-play-label').textContent=state.playing?'Pause':'Play';
   const layerDate=$('layer-sim-date');
   if(layerDate.textContent!==date)layerDate.textContent=date;
   layerDate.setAttribute('datetime',new Date(state.time).toISOString());
@@ -89,7 +88,11 @@ export function syncControls(state) {
   slider.value=String(step);
   slider.setAttribute('style',`--speed-progress:${100*step/SPEED_STEPS}%`);
   slider.setAttribute('aria-valuetext',speed);
-  $('layer-speed-value').textContent=speed;
+  const value=$('layer-speed-value');
+  value.textContent=speed;
+  // The rotated slider's thumb travels (track length - thumb diameter).
+  // A matching CSS track follows the handle in both normal and short layouts.
+  value.setAttribute('style',`--speed-label-position:${100*(SPEED_STEPS-step)/SPEED_STEPS}%`);
   $('layer-speed-min-label').textContent=formatSpeed(SPEED_MODES[mode].min);
   $('layer-speed-max-label').textContent=formatSpeed(SPEED_MODES[mode].max);
 }

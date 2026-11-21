@@ -6,15 +6,16 @@ import {syncControls,SPEED_MODES,SPEED_STEPS,speedAtStep} from '../src/ui/timeli
 const read=async filename=>readFile(new URL('../'+filename,import.meta.url),'utf8');
 
 // Keep the v21 time-control markup and CSS layout in sync across desktop/mobile.
-test('v124: the Layer tempo panel displays speed, transport and date in order',async()=>{
+test('v125: the Layer tempo panel displays moving speed, icon actions and date in order',async()=>{
   const [html,css]=await Promise.all([read('index.html'),read('css/styles.css')]);
   const panel=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
-  const order=['class="layer-speed-heading"','id="layer-speed-value"','class="layer-speed-layout"','id="layer-speed"','class="layer-speed-actions"','id="layer-play-btn"','id="layer-today-btn"','class="layer-speed-date-group"','id="layer-sim-date"'];
+  const order=['class="layer-speed-layout"','id="layer-speed"','class="layer-speed-value-track"','id="layer-speed-value"','class="layer-speed-actions"','id="layer-play-btn"','id="layer-today-btn"','id="layer-sim-date"'];
   let last=-1;
   for(const part of order){const at=panel.indexOf(part);assert.ok(at>last,`${part} follows previous elements`);last=at;}
   assert.match(css,/\.layer-speed-panel\{display:flex;flex-direction:column/);
   assert.match(css,/\.layer-speed-actions\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(css,/\.layer-speed-date-group\{padding-top:9px/);
+  assert.match(css,/\.layer-speed-value-track\{position:absolute/);
+  assert.match(css,/\.layer-speed-date\{[^}]*padding:9px 0 0/);
 });
 
 test('v124: Layer speed range remains keyboard accessible and has filled tracks in WebKit and Firefox',async()=>{

@@ -27,7 +27,7 @@ test('v124: reset remains independent from integrated Layer time controls',async
   assert.doesNotMatch(html,/data-sheet-panel="control"|data-sheet-panel="time"/);
   const css=await read('css/styles.css');
   assert.match(css,/\.viewport>\.control-panel,[^\n]*\{[^\n]*width:max-content!important/);
-  assert.match(css,/\.layer-speed-caption\{/);
+  assert.match(css,/\.layer-speed-value-track\{position:absolute/);
   assert.match(css,/\.viewport-actions \.camera-reset-button svg\{/);
 });
 

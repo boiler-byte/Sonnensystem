@@ -103,8 +103,8 @@ test('v124: one integrated Layer panel contains playback, speed and today',async
   ]);
   const panel=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
   for(const id of ['layer-play-btn','layer-speed','layer-today-btn','layer-sim-date'])assert.match(panel,new RegExp(`id="${id}"`));
-  assert.match(panel,/class="layer-speed-caption">Geschwindigkeit<\/span>/);
-  assert.match(panel,/class="layer-speed-caption">Datum<\/span>/);
+  assert.doesNotMatch(panel,/class="layer-speed-caption"|>Geschwindigkeit<\/span>|>Datum<\/span>/);
+  assert.match(panel,/class="layer-speed-value-track"/);
   assert.match(panel,/aria-orientation="vertical"/);
   assert.match(css,/\.layer-speed-rail #layer-speed\{[^}]*rotate\(-90deg\)/);
   assert.match(app,/if\(syncSpeedMode\(S,view\)\)/);

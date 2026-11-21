@@ -72,21 +72,23 @@ test('v114: speed cutoff suspends steering until explicit reselection without to
   const changes=[];r.callbacks.onFollowChange=v=>changes.push(v);
   assert.equal(r.follow('earth',100),true);
   assert.equal(r.followEnabled,true);
-  const previous=r.camera.desiredTarget.slice();
+  r.camera.theta=1.3;r.camera.phi=1.4;r.camera.desiredTarget=[1,0,0];
   r.positions.set('earth',[100,0,0]);r.updateFollowTarget(110);
   assert.equal(r.followEnabled,true);
   assert.equal(r.followedBodyId,null);
-  assert.deepEqual(r.camera.desiredTarget,previous);
+  assert.deepEqual(r.camera.desiredTarget,[0,0,0]);
+  assert.deepEqual([r.camera.theta,r.camera.phi],[.63,.99]);
+  assert.equal(r.cameraPresetIndex,0);
   r.positions.set('earth',[101,0,0]);r.updateFollowTarget(120);
   assert.equal(r.followedBodyId,null,'do not resume on next render frame');
-  assert.deepEqual(r.camera.desiredTarget,previous);
+  assert.deepEqual(r.camera.desiredTarget,[0,0,0]);
   r.setSelected('earth',{focus:true,zoom:false});
   assert.equal(r.followedBodyId,'earth');
   assert.deepEqual(r.camera.desiredTarget,[101,0,0]);
-  assert.deepEqual(changes,[true]);
-  r.follow('earth',200);
-  assert.equal(r.followEnabled,false);
-  assert.deepEqual(changes,[true,false]);
+  assert.deepEqual(changes,[]);
+  assert.equal(r.follow('earth',200),true,'repeated follow requests cannot disable the mode');
+  assert.equal(r.followEnabled,true);
+  assert.deepEqual(changes,[]);
 });
 
 test('v114: picking, catalog selection and hero invoke the distinct focus/zoom paths',async()=>{
@@ -94,7 +96,7 @@ test('v114: picking, catalog selection and hero invoke the distinct focus/zoom p
   const handlers=await read('src/ui/event-handlers.js');
   const catalog=await read('src/ui/object-list.js');
   const camera=await read('src/app/camera-controller.js');
-  assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:false\}\)/);
+  assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:renderer\?\.settings\?\.row===true\}\)/);
   assert.match(catalog,/onSelect\(b\.dataset\.id,true\)/);
   assert.match(handlers,/\$\('hero-body'\)\.addEventListener\('click',\(\)=>\{[\s\S]*?selectBody\(body\.id,true\)/);
   assert.match(camera,/setSelected\(body\.type==='probe'\?null:id,\{focus:focus&&body\.type!=='probe',zoom:zoom&&body\.type!=='probe'\}\)/);

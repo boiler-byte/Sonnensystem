@@ -17,9 +17,10 @@ import {bodyModel,ringModel,localLightDirection} from './object-orientation.js';
 import {VisualAngularClocks,DAY_MS} from './visual-angular-limit.js';
 import {galacticStarParallaxTarget,easeGalacticStarOffset} from './galactic-parallax.js';
 import { TextureManager,preferredMobileQuality } from './textures.js';
-import { rowLayout, rowFrameDistance, rowCameraFrame, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
+import { rowLayout, rowFrameDistance, rowCameraFrame, rowBodyFocusDistance, rubberEase, gentleEase, planetOrbitWaveDelays, planetOrbitWaveEase, blendPosition, LAYOUT_TRANSITION_MS } from './transitions.js';
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaSceneAt, cinemaEntryOpacity, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
 import { rowHoveredBody, rowInspectionRadius, ROW_INSPECTION_ANIMATION_MS } from './row-inspection.js';
+import { projectedHitArea } from './picking.js';
 
 export class SolarRenderer {
  constructor(canvas, labelCanvas, glow, callbacks={}) {
@@ -84,7 +85,7 @@ export class SolarRenderer {
   return current*this.height/(2*Math.tan(CAMERA_FOV/2)*screen.depth);
  }
  panByPixels(dx,dy){if(dx || dy){this.markCameraMoved({positionChanged:true});panCameraByPixels(this.camera,dx,dy,this.height);}}
- /** Rotation and zoom change the view but must not disable the global follow toggle. */
+ /** Rotation and zoom change the view but preserve permanent following. */
  markCameraMoved({positionChanged=false}={}){
   if(this.cinema?.active)this.stopCinema(); // Manual input always wins over the flythrough.
   this.cancelCameraFlight();
@@ -104,22 +105,12 @@ export class SolarRenderer {
   this.clearFollowTarget();this.focusedBodyId=null;
   return active;
  }
- /** Only the explicit Folgen switch may disable the global mode. */
- stopFollowing(){
-  const active=this.followEnabled===true;
-  this.followEnabled=false;this.clearFollowTarget();
-  if(active)this.callbacks?.onFollowChange?.(false);
-  return active;
- }
- /** The single toggle persists across selections and view changes. */
+ /** Re-engage a selected object after a manual pan or speed cutoff. */
  follow(id=this.selectedId,now=performance.now()){
-  if(this.followEnabled){this.stopFollowing();return false;}
   const body=this.byId.get(id);
   if(!body || body.type==='probe' || id!==this.selectedId)return false;
-  this.followEnabled=true;
-  this.followSelectedBody(now);
-  this.callbacks?.onFollowChange?.(true);
-  return true;
+  this.followEnabled=true; // Permanent mode; there is no off switch.
+  return this.followSelectedBody(now);
  }
  /** Track the current selection; reset the speed sample when the object/scene changes. */
  followSelectedBody(now=performance.now(),{zoom=true}={}){
@@ -151,7 +142,9 @@ export class SolarRenderer {
   }
   if(!this.transition && followMotionTooFast(this.followLastPosition,position,this.camera.desiredDist,
       this.height,now-this.followLastAtMs)){
-    this.suspendFollowing();return;
+    // Leave the selection intact but abandon the rapidly moving target and
+    // return to the neutral oblique overview of the current scene.
+    this.returnToStandardCamera();return;
   }
   this.camera.desiredTarget=position.slice();
   this.followLastPosition=position.slice();this.followLastAtMs=now;
@@ -566,6 +559,20 @@ export class SolarRenderer {
   const origin=this.transition?.fromOrbits?.get(body.id);
   return origin===undefined?destination:Math.max(0,origin+(destination-origin)*this.orbitTransitionAmount(body));
  }
+ /** Return to the neutral oblique scene overview, even if a row is active. */
+ returnToStandardCamera(){
+  this.cancelCameraFlight();
+  this.suspendFollowing();
+  this.cameraManuallyMoved=false;
+  this.cameraPresetIndex=0;
+  this.camera.freeLook=null;
+  const row=this.settings?.row===true;
+  this.camera.desiredTarget=row?this.rowFrame().target.slice():[0,0,0];
+  this.camera.desiredDist=row?this.rowDistance()
+    :this.planetId?this.planetFrameDistance():this.solarOverviewDistance();
+  this.setCameraAngles(.63,this.planetId?.84:.99);
+  this.callbacks?.onCameraChange?.();
+ }
  /** Return to the origin of the current scene after an Objekt/Bahn scale change. */
  resetViewCamera(){
   this.cancelCameraFlight();
@@ -636,7 +643,7 @@ export class SolarRenderer {
   }
   this.fourMoonIds=largestMoonIds(list);
   if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
-  // The global "Folgen" toggle starts on, but v117 has no initial selected body.
+  // Following is permanently enabled, but the initial catalog has no selected body.
   // Follow only an existing selection: never choose a catalog body implicitly.
   // Later catalog updates must not resume suspended tracking (v115).
   if(this.followEnabled && this.selectedId!=null && (firstCatalogLoad || this.followedBodyId!=null))this.followSelectedBody();
@@ -677,6 +684,15 @@ export class SolarRenderer {
  focus(id,{zoom=true}={}){const b=this.byId.get(id);if(!b)return;
   if(this.camera.freeLook)restoreOrbitFromLook(this.camera);
   this.markCameraMoved();this.focusedBodyId=id;
+  if(this.settings?.row){
+   // The row's sizes differ from the normal solar/planet focus distances.
+   const pos=this.positions.get(id);if(pos)this.camera.desiredTarget=pos.slice();
+   if(zoom){
+    const frame=rowBodyFocusDistance(this.bodyRadius(b));
+    if(frame!==null)this.camera.desiredDist=clamp(frame,this.minCameraDistance()*2,this.maxCameraDistance());
+   }
+   return;
+  }
   if(this.planetId){
    if(id===this.planetId){this.camera.desiredTarget=[0,0,0];if(zoom)this.camera.desiredDist=this.planetFrameDistance();}
    else if(b.parentId===this.planetId){
@@ -906,12 +922,16 @@ export class SolarRenderer {
   else drawSolarSystemScene(this,selectedId,settings,vp);
  }
   pick(x,y){if(!this.vp)return;let best=null,dist=Infinity;
-  for(const b of this.rendered){const pos=this.positions.get(b.id);if(!pos)continue;
-   const p=projected(pos,this.vp,this.width,this.height);if(!p?.visible)continue;
-   const radius=this.settings?.row?this.rowRenderedRadiusPx(b,p)
-     :this.bodyRadius(b)*this.height/(this.camera.dist*.6);
-   const d=Math.hypot(x-p.x,y-p.y);const threshold=Math.max(12,Math.min(radius+5,this.settings?.row?90:40));
-   if(d<threshold&&d<dist){best=b;dist=d;}
+  for(const b of this.rendered){
+   const pos=this.positions.get(b.id);if(!pos)continue;
+   const original=this.bodyRadius(b);
+   const radius=this.settings?.row?this.rowInspectedRadius(b,original):original;
+   const hit=projectedHitArea(pos,this.vp,this.width,this.height,radius,{
+    selected:b.id===this.selectedId,scaleObjects:this.settings?.scaleObjects===true
+   });
+   if(!hit)continue;
+   const d=Math.hypot(x-hit.x,y-hit.y);
+   if(d<=hit.hitRadiusPx && d<dist){best=b;dist=d;}
   }
   if(best){this.callbacks.onSelect?.(best.id);}
   else{this.callbacks.onClearSelect?.();}

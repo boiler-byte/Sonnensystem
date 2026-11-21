@@ -1,3 +1,44 @@
+## v130 – Intelligentes Schließen und Ziehen des Mobile-Sheets
+
+- Der Katalog- und Detail-Scrollbereich übergibt nach Erreichen von `scrollTop = 0` eine weitere Abwärtswischgeste an den bestehenden dreistufigen Bottom-Sheet-Snap (geschlossen/halb/voll), ohne die normale Scrollfunktion zu ersetzen.
+- `detail-top` übernimmt dieselbe vertikale Pointer-Drag-Steuerung wie der Sheet-Header. Drags unterdrücken versehentliche Klicks auf Navigationspfeile bzw. Katalogeinträge.
+- Ein Klick auf freien Raum der Szene schließt das Sheet nur dann sofort, wenn **schon zuvor** kein Objekt ausgewählt war; andernfalls wird nur die Auswahl aufgehoben und der Tab „Objekte“ gewählt.
+- Regressionen: `tests/mobile-sheet-smart-close-v130.test.mjs`; Version `130.0.0`, HTML `V130.0`, PWA-Shell `sonnensystem-shell-v130`, Basis v129.
+
+## v129 – Objekte-Tab bei aufgehobener Auswahl und Parent-Distanz für Satelliten
+
+- `clearSelection()` aktiviert nun **Objekte** in beiden Seitenleisten-Tabs (Desktop und mobiles Bottom-Sheet), selbst wenn bereits keine Auswahl besteht. Die neue Methode `selectPanel()` öffnet ein eingeklapptes mobiles Sheet nicht und verändert den Browser-Verlauf nicht.
+- Die ungefilterte Sortierung **Entfernung ↑** behandelt nun auch `satellite` wie `moon` und nicht-sonnenbezogene `binary`-Begleiter: Der Sonnenabstand des Parent-Systems wird für Sortierung und Listenwert übernommen, bei verschachtelten Elternbeziehungen bis zum sonnenzentrierten Körper. Alle neun Erdsatelliten erscheinen bei der Erde (ca. 1 AE).
+- Suche und aktiver Planetenfilter zeigen weiterhin die tatsächlichen lokalen Bahndistanzen; `probe` bleibt unverändert. Katalogdaten und Objektdetails werden nicht überschrieben.
+- Regressionen: `tests/selection-satellite-v129.test.mjs`, angepasste Katalogtests und erweiterte Sheet-Tests. Version `129.0.0`, HTML `V129.0`, PWA-Shell `sonnensystem-shell-v129`, Basis v128.
+
+## v128 – Permanentes Folgen, Rückkehr zum Überblick und klare Planetennavigation
+
+- Entfernt: `#center-object-btn` samt Label, CSS, Eventhandler und Zustandsanzeige in den Details. `followEnabled` bleibt permanent an; `follow()` dient nur noch zum gezielten Wiederaufnehmen nach einer Unterbrechung und schaltet nicht mehr aus.
+- Überschreitet `updateFollowTarget()` die bestehende bildschirmbezogene Bewegungsgrenze, verwirft `returnToStandardCamera()` das Nachführungsziel und setzt Kamerazentrum, Abstand, Preset sowie die Standardwinkel **Schräg/oben** zurück. Die ausgewählte Objekt-ID bleibt für den nächsten Klick erhalten. Auch im Reihenmodus bleibt der Bildausschnitt sinnvoll gerahmt.
+- Der obere **Sonnensystem**-Button aus der isolierten Planetenansicht ruft zuerst `clearSelection()`, dann `renderer.reset()` und `updateMode()` auf; nach dem Szenenwechsel folgt die endgültige Standardkamera. Das verhindert das erneute Zentrieren auf den zuvor verfolgten Körper. AR-Richtung wird anschließend neu ausgerichtet.
+- In den Objektdetails bleibt die Aktionenzeile nur sichtbar, wenn das gewählte Objekt eine Planetenansicht öffnen kann. Tests: `tests/follow-overview-v128.test.mjs` und angepasste historische Regressionen. Version `128.0.0`, HTML `V128.0`, PWA-Shell `sonnensystem-shell-v128`, Basis v127.
+
+## v127 – Natürliche Begleiter mit gemeinsamer Entfernung im Objektkatalog
+
+- **Entfernung ↑** ohne Suche und ohne eingeschalteten Planetenfilter: Monde und natürliche Doppelasteroid-Begleiter verwenden für Sortierung und sichtbaren Abstand die mittlere Sonnenentfernung ihres Parent-Systems. Bei verschachtelten Elternbeziehungen wird zum heliozentrischen Ursprung aufgelöst.
+- Beispiel: **Dimorphos** ist als Typ `binary` katalogisiert und wurde daher von der bisherigen Mondregel übersehen. Er steht jetzt mit **(65803) Didymos** bei ca. **1,6444 AE**, statt mit 1,152 km vor den Sonnenorbitern zu erscheinen.
+- Bei Suche oder aktivem Planetenfilter bleibt die eigene Entfernung zum Elternkörper maßgeblich. Künstliche Satelliten, Sonden und heliosolarsystemische Primärkörper sind ausgenommen; die gespeicherten Bahndaten bleiben unverändert.
+- Regressionen: `tests/catalog-parent-distance-v127.test.mjs`. Version `127.0.0`, HTML `V127.0`, PWA-Shell `sonnensystem-shell-v127`, Basis v126.
+
+## v126 – Schmales Layer-Panel, Objektfokus in der Reihe, dynamische Klick-Zonen
+
+- Layer Control Panel in Desktop-/Mobilansicht einheitlich 140 px breit; andere Layoutbreiten bleiben unverändert.
+- Ein Canvas-Klick in der Größen- oder Entfernungsreihe fokussiert und zoomt auf die normale Kugelgröße des ausgewählten Himmelskörpers. Kein automatischer Kamera-Zoom durch Canvas-Klick in der gewöhnlichen Orbitalansicht; Katalog/Hero behalten ihr bisheriges Verhalten.
+- Die Klicktrefferzone basiert auf dem projizierten Kugelradius einschließlich vorübergehender Reihen-Vergrößerung und ausgewählter Kugel-Skalierung. Entfernt wurden die festen Trefferobergrenzen von 40/90 px. Angeschnittene Kugeln bleiben auswählbar; kleine Objekte erhalten mindestens 12 px Trefferradius. Die Hoverzone einer bereits vergrößerten Kugel folgt deren sichtbarer Größe.
+- Relevante Module: `src/renderer/picking.js`, `src/renderer/renderer.js`, `src/renderer/row-inspection.js`, `src/renderer/transitions.js`, `src/app/runtime.js`, `css/styles.css`. Version `126.0.0`, HTML `V126.0`, PWA-Shell `sonnensystem-shell-v126`, Basis v125.
+
+## v125 – Reduzierte Tempo-Ansicht mit Griffwert
+
+- Die sichtbaren Beschriftungen „Geschwindigkeit“, „Pause“, „Heute“ und „Datum“ entfallen; die beiden Aktionen bleiben als Icons mit unveränderten ARIA-Bezeichnungen und Titeln erhalten.
+- Die Geschwindigkeitsanzeige wandert in einen nicht-interaktiven Overlay-Bereich rechts des vertikalen Slider-Griffs. Die Position wird passend zu den logarithmischen Schritten aktualisiert und liegt bei Überlappung vor den Minimum-/Maximum-Angaben. Die lokale Datums-/Uhrzeitanzeige bleibt sichtbar.
+- Version `125.0.0`, HTML `V125.0`, PWA-Cache `sonnensystem-shell-v125`, Basis v124.
+
 ## v124 – Zeitsteuerung vollständig im Layer Control Panel
 
 - Eigenständiges Zeitsteuerungs-Dropdown samt Auslöser entfernt. Es gibt nur noch einen Geschwindigkeitsschieber, einen Play/Pause- und einen Heute-Button im Layer Control.

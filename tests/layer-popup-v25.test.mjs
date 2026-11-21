@@ -74,8 +74,8 @@ test('v25: initial checkbox state matches solar only; view transition still sync
 
 test('v25: dropdown is about one third narrower; preset switch shares border and options have no divider',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.layer-popover\{[^\n]*width:155px/);
-  assert.match(css,/\.control-panel \.layer-popover\{[\s\S]*?width:155px/);
+  assert.match(css,/\.layer-popover\{[^\n]*width:140px/);
+  assert.match(css,/\.control-panel \.layer-popover\{[\s\S]*?width:140px/);
   assert.ok(Math.abs(155/227-2/3)<0.02);
   assert.match(css,/\.layer-presets\{[^\n]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:0/);
   assert.match(css,/\.layer-preset\{[^\n]*border:0/);

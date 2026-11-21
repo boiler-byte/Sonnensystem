@@ -4,7 +4,7 @@
 
 ## Entfernungssortierung im Objektkatalog (v75; keine Datenmigration)
 
-Die Katalogfelder `orbit.meanDistance` und `orbit.unit` bleiben unverändert. Die Sortierung normalisiert in AE, die **Anzeige** verwendet für Distanzen **bis einschließlich 0,2 AE km**, darüber AE. Im vollständig geöffneten Atlas **ohne Suchtext und ohne aktiven Planetenfilter** erben Monde lediglich in der **Liste** die mittlere Entfernung ihres direkten Elternkörpers. Eine Suche oder ein aktiver Planetenfilter zeigt und sortiert nach der **eigenen Bahnentfernung** des Mondes. Messwerte, Stern- und Planetenbahnen und physikalische Objektdetails sind davon nicht betroffen. Diese kontextabhängigen Listenwerte sind keine zusätzlichen astronomischen Messungen.
+Die Katalogfelder `orbit.meanDistance` und `orbit.unit` bleiben unverändert. Die Sortierung normalisiert in AE, die **Anzeige** verwendet für Distanzen **bis einschließlich 0,2 AE km**, darüber AE. Im vollständig geöffneten Atlas **ohne Suchtext und ohne aktiven Planetenfilter** erben Monde, Begleiter von Doppelasteroiden und künstliche Satelliten nur in der **Liste** die mittlere Sonnenentfernung ihres Parent-Systems (bei Bedarf entlang einer verschachtelten Parent-Kette). Eine Suche oder ein aktiver Planetenfilter zeigt und sortiert nach der **eigenen Bahnentfernung** des Begleiters zum Parent. Raumsonden sind ausgenommen. Messwerte, Stern- und Planetenbahnen und physikalische Objektdetails sind davon nicht betroffen. Diese kontextabhängigen Listenwerte sind keine zusätzlichen astronomischen Messungen.
 
 ## Zusätzliche physikalische Katalogfelder (v72)
 

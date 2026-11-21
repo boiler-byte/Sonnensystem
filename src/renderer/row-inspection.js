@@ -57,7 +57,8 @@ export function rowHoveredBody(renderer, pointer) {
     // Honor the true visible arc of a cropped giant, instead of requiring
     // a hit near its offscreen center. Small dots keep a usable 12px target.
     const ownRadius=Math.max(12,screen.radius+6);
-    const held=body.id===renderer.rowHoveredId ? Math.max(ownRadius,Math.min(92,renderer.rowRenderedRadiusPx?.(body,screen)??0)) : ownRadius;
+    // Hover remains stable across the entire temporarily enlarged disc.
+    const held=body.id===renderer.rowHoveredId ? Math.max(ownRadius,renderer.rowRenderedRadiusPx?.(body,screen)??0) : ownRadius;
     const d=Math.hypot(pointer.x-screen.x,pointer.y-screen.y);
     if(d>held)continue;
     // Prefer a genuinely hit sphere to an enlarged neighboring hover footprint.

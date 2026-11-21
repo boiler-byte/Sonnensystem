@@ -33,7 +33,7 @@ export const model=(p,s,tilt=0)=>{
 export const hex=(h)=>{const n=parseInt(String(h||'#aaa').slice(1),16);return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255];};
 export const shadeColor=(hexCode,amount=.22) => {const v=hex(hexCode);return v.map(x=>clamp(x*amount,0,1));};
 
-export function projected(p,m,w,h){const x=p[0],y=p[1],z=p[2],cw=m[3]*x+m[7]*y+m[11]*z+m[15];if(cw<.01)return null;
+export function projected(p,m,w,h){const x=p[0],y=p[1],z=p[2],cw=m[3]*x+m[7]*y+m[11]*z+m[15];if(!Number.isFinite(cw)||cw<=1e-8)return null;
  const cx=(m[0]*x+m[4]*y+m[8]*z+m[12])/cw,cy=(m[1]*x+m[5]*y+m[9]*z+m[13])/cw;
  return {x:(cx*.5+.5)*w,y:(-.5*cy+.5)*h,depth:cw,visible:Math.abs(cx)<1.5&&Math.abs(cy)<1.5};
 }

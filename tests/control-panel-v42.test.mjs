@@ -23,7 +23,7 @@ test('v124: three scale toggles precede the single Layer control',async()=>{
   assert.match(panel,/id="layer-btn"[^>]*aria-controls="layer-popover"/);
   assert.match(css,/\.scale-main-controls\{/);
   assert.match(css,/flex-wrap:wrap/);
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:140px/);
 });
 
 test('v96: two toolbar scale toggles plus Reihe; five icon controls above Layer categories',async()=>{

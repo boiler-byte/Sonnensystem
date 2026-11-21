@@ -93,23 +93,14 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   extra.hidden=!sections.length&&!refs.length;
   extra.innerHTML=sections.map(s=>`<section class="editorial-section"><h3>${esc(s.heading)}</h3><p>${esc(s.text)}</p></section>`).join('')+
     (refs.length?`<div class="editorial-references"><strong>QUELLEN</strong>${refs.map(r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>`).join('')}</div>`:'');
-  $('detail-scene-actions').hidden=false;
-  const centerButton=$('center-object-btn');
-  // Follow is a single global toggle, not a property of the current selection.
-  const following=renderer?.followEnabled===true;
-  centerButton.disabled=!renderer;
-  centerButton.classList.toggle('active',following);
-  centerButton.setAttribute('aria-pressed',String(following));
-  centerButton.setAttribute('aria-label',following?'Folgen ausschalten':'Ausgewähltem Objekt folgen');
-  centerButton.title=following
-    ? 'Folgen ausschalten (für alle Objekte)'
-    : 'Folgen einschalten (auch bei Objektwechsel, Drehung und Zoom)';
   const planetActions=$('planet-view-actions'),planetButton=$('planet-view-btn');
   // An orbital moon opens its parent system; dwarfs can themselves be the
   // center of the isolated scene (e.g. Pluto with Charon and smaller moons).
   const systemCenter=b.type==='moon'?byId(b.parentId):b;
   const canOpenSystem=['planet','dwarf'].includes(systemCenter?.type);
   planetActions.hidden=!canOpenSystem;
+  // Without the former Folgen button, only the planet scene action needs this row.
+  $('detail-scene-actions').hidden=!canOpenSystem;
   if(canOpenSystem){
     const active=renderer?.planetId===systemCenter.id;
     $('planet-view-title').textContent='Planetenansicht';

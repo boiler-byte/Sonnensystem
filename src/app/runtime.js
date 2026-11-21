@@ -26,6 +26,12 @@ export function selectionAfterCatalogLoad(current,bodies){
   if(current===null || bodies.some(body=>body.id===current))return current;
   return bodies[0]?.id||null;
 }
+/** A second tap on empty space dismisses an already unselected mobile sheet. */
+export function clearSceneSelection(){
+  const wasEmpty=S.selected===null;
+  clearSelection();
+  if(wasEmpty)mobileSheets?.close();
+}
 export async function init(){
   connectCatalogSelection(selectBody);
   setMobileSheets(initMobileSheets());initControls();registerServiceWorker();
@@ -47,7 +53,7 @@ export async function init(){
     return;
   }
   try{
-    setRenderer(new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true,{zoom:false}),onClearSelect:clearSelection,onFollowChange:()=>updateDetail(),onCinemaChange:updateCinemaTimeline,
+    setRenderer(new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true,{zoom:renderer?.settings?.row===true}),onClearSelect:clearSceneSelection,onCinemaChange:updateCinemaTimeline,
       onCameraChange:()=>syncSceneMode(S,renderer,arMode?.active)}));
     setARMode(connectARMode(renderer));
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);

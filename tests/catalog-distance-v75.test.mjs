@@ -55,7 +55,9 @@ test('v75: moon inherits exactly its parent distance only when configured for th
   assert.deepEqual(catalogListingDistance(moon,{byId,useParentForMoons:false}),
     {au:384400/AU_KM,fromParent:null});
   assert.deepEqual(catalogListingDistance(iss,{byId,useParentForMoons:true}),
-    {au:6800/AU_KM,fromParent:null},'non-moon satellites must not inherit');
+    {au:1,fromParent:'Erde'},'satellites share their parent distance in the full atlas');
+  assert.deepEqual(catalogListingDistance(iss,{byId,useParentForMoons:false}),
+    {au:6800/AU_KM,fromParent:null},'filtered satellite values are still local');
   assert.equal(catalogListingDistance(body('orphan',{type:'moon',parentId:'missing',a:12000}),
     {byId,useParentForMoons:true}).au,12000/AU_KM,'missing parent falls back to own distance');
   const missing=body('missing-parent',{a:0});
@@ -66,17 +68,17 @@ test('v75: moon inherits exactly its parent distance only when configured for th
 
 test('v75: sorting inherits moon distances in solar overview even with default filter state',()=>{
   assert.deepEqual(list({catalogPlanetOnly:true}),
-    ['iss','venus','earth','moon','mars','phobos','sun']);
+    ['venus','earth','iss','moon','mars','phobos','sun']);
   assert.deepEqual(list({catalogPlanetOnly:false}),
-    ['iss','venus','earth','moon','mars','phobos','sun']);
+    ['venus','earth','iss','moon','mars','phobos','sun']);
   assert.deepEqual(list({catalogPlanetOnly:false},{planetId:'earth'}),
-    ['iss','venus','earth','moon','mars','phobos','sun'],'filter switched off in planet scene');
+    ['venus','earth','iss','moon','mars','phobos','sun'],'filter switched off in planet scene');
   assert.deepEqual(list({catalogPlanetOnly:true},{planetId:'earth'}),
     ['iss','moon','earth'],'active planet filter uses original moon orbit and hides other systems');
   assert.deepEqual(list({search:'Erde',catalogPlanetOnly:false}),
     ['iss','moon','earth'],'search uses original moon orbit even with filter switched off');
   assert.deepEqual(list({search:'   ',catalogPlanetOnly:false}),
-    ['iss','venus','earth','moon','mars','phobos','sun'],'whitespace is an empty query');
+    ['venus','earth','iss','moon','mars','phobos','sun'],'whitespace is an empty query');
 });
 
 test('v75: visible metric and sorting use identical distances for each context',()=>{
@@ -84,12 +86,16 @@ test('v75: visible metric and sorting use identical distances for each context',
   assert.match(row(full,'moon'),/>1 AE<\/span>/);
   assert.match(row(full,'moon'),/Mittlere Entfernung wie Erde/);
   assert.match(row(full,'phobos'),/>1,524 AE<\/span>/);
-  assert.match(row(full,'iss'),/>6\.800 km<\/span>/);
+  assert.match(row(full,'iss'),/>1 AE<\/span>/);
+  assert.match(row(full,'iss'),/Mittlere Entfernung wie Erde/);
   const search=rendered({search:'Erde',catalogPlanetOnly:false});
   assert.match(row(search,'moon'),/>384\.400 km<\/span>/);
   assert.doesNotMatch(row(search,'moon'),/Entfernung wie Erde/);
+  assert.match(row(search,'iss'),/>6\.800 km<\/span>/);
   const filtered=rendered({catalogPlanetOnly:true},{planetId:'earth'});
   assert.match(row(filtered,'moon'),/>384\.400 km<\/span>/);
+  assert.match(row(filtered,'iss'),/>6\.800 km<\/span>/);
   const unfiltered=rendered({catalogPlanetOnly:false},{planetId:'earth'});
   assert.match(row(unfiltered,'moon'),/>1 AE<\/span>/);
+  assert.match(row(unfiltered,'iss'),/>1 AE<\/span>/);
 });

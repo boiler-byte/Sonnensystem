@@ -179,3 +179,36 @@ test('v33: sheet still works when History API is unavailable',()=>{
     assert.equal(env.getSnap(),'closed');
   }finally{env.restore();}
 });
+
+
+test('v129: selecting Objekte without a selection changes both tabs without opening the mobile sheet',async()=>{
+  const env=setup();
+  try{
+    const {controller,elements,mq}=env;
+    assert.equal(env.getSnap(),'closed');
+    controller.selectPanel('detail');
+    assert.equal(elements.detail.hidden,false);
+    assert.equal(elements.catalog.hidden,true);
+    controller.selectPanel('catalog');
+    assert.equal(elements.catalog.hidden,false);
+    assert.equal(elements.detail.hidden,true);
+    assert.equal(elements['sheet-content'].scrollTop,0);
+    assert.equal(env.getSnap(),'closed','switching tabs must not expand a collapsed sheet');
+    assert.equal(env.pushes,0,'switching tabs must not add history entries');
+    for(const tab of [...env.tabButtons,...env.desktopButtons]){
+      assert.equal(tab.getAttribute('aria-selected'),tab.dataset.sheetPanel==='catalog'||tab.dataset.sidebarPanel==='catalog'?'true':'false');
+    }
+    controller.open('detail');
+    assert.equal(env.getSnap(),'half');
+    controller.selectPanel('catalog');
+    assert.equal(env.getSnap(),'half','switching tabs must preserve the visible snap level');
+    assert.equal(env.pushes,1);
+    mq.matches=false;mq.handlers.forEach(handler=>handler());
+    await flush();
+    assert.equal(env.getSnap(),'closed');
+    controller.selectPanel('detail');
+    controller.selectPanel('catalog');
+    assert.equal(elements.catalog.hidden,false,'desktop sidebar also switches to Objekte');
+    assert.equal(elements.detail.hidden,true);
+  }finally{env.restore();}
+});

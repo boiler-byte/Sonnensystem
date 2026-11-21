@@ -5,8 +5,9 @@ const $=id=>document.getElementById(id);
 const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','binary','comet','satellite','probe'];
 const TYPE_ORDER = new Map(['planet','dwarf','moon','star','tno','asteroid','binary','comet','satellite','probe'].map((type,index)=>[type,index]));
 
-// Distance sorting always uses AU internally. The list can show km and,
-// without a query or planet filter, place moons at their parent's distance.
+// Distance sorting always uses AU internally. Without a query or planet filter,
+// moons, binary-asteroid companions and artificial satellites share the distance
+// of their parent system from the Sun, not their short orbit around the parent.
 export const CATALOG_SORT_MODES=Object.freeze(['default','distance','size']);
 export const nextCatalogSort=mode=>CATALOG_SORT_MODES[(Math.max(0,CATALOG_SORT_MODES.indexOf(mode))+1)%CATALOG_SORT_MODES.length];
 export function catalogDistanceAu(body){
@@ -16,13 +17,27 @@ export function catalogDistanceAu(body){
   const unit=body.meanDistanceUnit||(body.parentId==='sun'?'AU':'km');
   return unit==='AU'?distance:unit==='km'?distance/AU_KM:null;
 }
-/** Shared sort/display distance. In the unfiltered full atlas, moons share
- * their parent's mean distance so they appear in the same distance range.
- * Search and isolated planet views use each moon's own orbital separation.
+/** Shared sort/display distance. In the unfiltered atlas moons, binary
+ * companions and artificial satellites inherit their parent's heliocentric
+ * distance. Walk up any nested parent chain to use the solar-system reference;
+ * search and isolated views retain each body's own orbital distance.
+ * Keep the option name for compatibility with previous catalog callers.
+ * Probes and primary Sun-orbiters continue using their own distance.
  */
 export function catalogListingDistance(body,{byId=null,useParentForMoons=false}={}){
-  const parent=useParentForMoons && body?.type==='moon' ? byId?.get(body.parentId) : null;
-  return {au:catalogDistanceAu(parent||body),fromParent:parent?.name||null};
+  const companion=body?.parentId && body.parentId!=='sun'
+    && ['moon','binary','satellite'].includes(body.type);
+  const parent=useParentForMoons && companion ? byId?.get(body.parentId) : null;
+  if(!parent)return {au:catalogDistanceAu(body),fromParent:null};
+  let reference=parent;
+  const seen=new Set([body.id,parent.id]);
+  while(reference.parentId && reference.parentId!=='sun'){
+    const ancestor=byId?.get(reference.parentId);
+    if(!ancestor||seen.has(ancestor.id))break;
+    seen.add(ancestor.id);
+    reference=ancestor;
+  }
+  return {au:catalogDistanceAu(reference),fromParent:parent.name||null};
 }
 export function catalogDiameterKm(body){
   const radius=body?.radiusKm;
@@ -114,8 +129,8 @@ export function filteredBodies(state,{planetId=null}={}) {
   const list=state.bodies.filter(b=>belongsToPlanet(b) && catalogMatches(b,query,byId));
   const mode=CATALOG_SORT_MODES.includes(state.catalogSort)?state.catalogSort:'default';
   if(mode!=='default'){
-    // In the global atlas (also when the filter button is off in a planet
-    // scene), moon rows inherit their parent's distance, not their orbit radius.
+    // Without search or an active planet filter, moons, binary companions
+    // and satellites inherit their system's heliocentric distance.
     const useParentForMoons=!query&&!planetOnly;
     const metric=mode==='distance'
       ?b=>catalogListingDistance(b,{byId,useParentForMoons}).au

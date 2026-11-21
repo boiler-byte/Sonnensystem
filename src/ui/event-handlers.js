@@ -5,7 +5,7 @@ import {syncLayers,setLayerPopover,toggleLayerSpeedPanel} from './layer-panel.js
 import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncContrastControl,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
 import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
-import {openPlanetScene,selectBody} from '../app/camera-controller.js';
+import {openPlanetScene,selectBody,clearSelection} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
 import {alignHorizons} from '../app/object-catalog.js';
 import {detailNavigation,setDetailTab,restoreDetailTab} from './object-details.js';
@@ -121,25 +121,16 @@ export function initControls(){
     const body=byId(S.selected);
     if(body?.type!=='probe' && body && renderer)selectBody(body.id,true);
   });
-  $('center-object-btn').addEventListener('click',()=>{
-    const body=byId(S.selected);
-    if(!body || body.type==='probe' || !renderer)return;
-    // Activating Folgen for an orbiter starts in its parent's (dwarf)planet
-    // scene. Keep the child selected so that tracking targets the child,
-    // rather than the parent. Switching the toggle off never changes scenes.
-    if(!renderer.followEnabled){
-      const parent=byId(body.parentId);
-      if(['planet','dwarf'].includes(parent?.type) && renderer.planetId!==parent.id && openPlanetScene(parent.id))
-        updateMode();
-    }
-    renderer.follow(body.id); // Global An/Aus: follow stays on across selections.
-    updateDetail();
-  });
   $('back-to-solar').addEventListener('click',()=>{
     if(!renderer?.planetId)return;
     if(renderer.cinema?.active)renderer.stopCinema();
+    // Clear both UI selection and camera follow before exiting the local scene.
+    // Otherwise reset() immediately centers the solar camera on the old body.
+    clearSelection();
     renderer.reset();
     updateMode();
+    // Apply the oblique overview after restoring solar-specific layer/row settings.
+    renderer.returnToStandardCamera();
     if(arMode?.active)arMode.alignToPerspective();
     mobileSheets?.close();
   });

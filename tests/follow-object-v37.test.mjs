@@ -22,23 +22,22 @@ const makeRenderer=()=>{
   return {renderer,changes};
 };
 
-test('v59: 155px layer popover, 120px time popover, existing range height intact',async()=>{
+test('v59: 140px layer popover, 120px time popover, existing range height intact',async()=>{
   const css=await read('css/styles.css');
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:140px/);
   assert.match(css,/\.viewport>\.control-panel \.time-panel \.speed-popover\{width:120px;min-width:120px/);
   assert.match(css,/\.vertical-speed-control #speed\{[\s\S]*?width:182px;min-width:182px/);
   assert.match(css,/\.speed-slider-rail\{\s*position:relative;width:44px;height:200px/);
 });
 
-test('v37: center control is adjacent to planet view, accessible and toggleable',async()=>{
+test('v128: obsolete Folgen control and styling are absent from object details',async()=>{
   const html=await read('index.html'),app=await read('src/app.js'),css=await read('css/styles.css');
   const action=html.split('id="detail-scene-actions"')[1].split('<div class="detail-description"')[0];
-  assert.match(action,/id="planet-view-btn"[\s\S]*?id="center-object-btn"/);
-  assert.match(action,/aria-pressed="true"/);
-  assert.match(action,/>Folgen<\/span>/);
-  assert.match(css,/\.object-center-btn\.active\{/);
-  assert.match(app,/\$\('center-object-btn'\)\.addEventListener\('click'/);
-  assert.match(app,/onFollowChange:\(\)=>updateDetail\(\)/);
+  assert.match(action,/id="planet-view-btn"/);
+  assert.doesNotMatch(action,/center-object-btn|>Folgen<\/span>/);
+  assert.doesNotMatch(css,/\.object-center-btn/);
+  assert.doesNotMatch(app,/\$\('center-object-btn'\)/);
+  assert.doesNotMatch(app,/onFollowChange:/);
 });
 
 test('v37: tracking centers the object and follows slow frame-by-frame motion',()=>{
@@ -54,10 +53,10 @@ test('v37: tracking centers the object and follows slow frame-by-frame motion',(
   r.positions.set('earth',[1.35,0,0]);
   r.updateFollowTarget(200);
   assert.deepEqual(r.camera.desiredTarget,[1.35,0,0]);
-  assert.deepEqual(changes,[true]);
-  assert.equal(r.follow('earth',250),false,'second click toggles tracking off');
-  assert.equal(r.followedBodyId,null);
-  assert.deepEqual(changes,[true,false]);
+  assert.deepEqual(changes,[]);
+  assert.equal(r.follow('earth',250),true,'repeated follow requests stay enabled');
+  assert.equal(r.followedBodyId,'earth');
+  assert.deepEqual(changes,[]);
 });
 
 test('v38: manual pan stops follow; rotation, zoom and presets retain global toggle',()=>{
@@ -99,12 +98,12 @@ test('v37: high projected movement speed stops following without moving camera t
   assert.equal(followMotionTooFast([1,0,0],[1.1,0,0],10,700,100),false);
   assert.equal(followMotionTooFast([1,0,0],[100,0,0],10,700,10),true);
   r.follow('earth',0);
-  const target=r.camera.desiredTarget.slice();
   r.positions.set('earth',[100,0,0]);
   r.updateFollowTarget(20);
   assert.equal(r.followedBodyId,null);
-  assert.deepEqual(r.camera.desiredTarget,target,'no violent jump to the fast target');
-  assert.deepEqual(changes,[true],'high velocity does not toggle off Folgen');
+  assert.deepEqual(r.camera.desiredTarget,[0,0,0],'return to scene overview, not the fast target');
+  assert.notDeepEqual(r.camera.desiredTarget,[100,0,0]);
+  assert.deepEqual(changes,[],'speed cutoff does not disable permanent following');
   assert.equal(r.followEnabled,true);
 });
 
@@ -119,7 +118,7 @@ test('v37: cannot follow unpositioned spacecraft or lost bodies',()=>{
   assert.equal(r.followedBodyId,null);
 });
 
-test('v37: object details reflect follow button for planet, moon, no object and probe',()=>{
+test('v128: object details show planet action but no empty follow row',()=>{
   const old=globalThis.document,nodes=new Map();
   const get=id=>{
     if(!nodes.has(id))nodes.set(id,{hidden:false,disabled:false,innerHTML:'',textContent:'',title:'',style:{setProperty(){}},
@@ -133,14 +132,10 @@ test('v37: object details reflect follow button for planet, moon, no object and 
     renderDetail(state,r,()=>{});
     assert.equal(get('detail-scene-actions').hidden,false);
     assert.equal(get('planet-view-actions').hidden,false);
-    assert.equal(get('center-object-btn').attr['aria-pressed'],'false');
-    r.follow('earth',0);
-    renderDetail(state,r,()=>{});
-    assert.equal(get('center-object-btn').attr['aria-pressed'],'true');
+    assert.equal(nodes.has('center-object-btn'),false);
     state.selected='sun';renderDetail(state,r,()=>{});
-    assert.equal(get('center-object-btn').attr['aria-pressed'],'true','toggle is independent of the selected body');
-    assert.equal(get('detail-scene-actions').hidden,false);
-    assert.equal(get('planet-view-actions').hidden,true,'Sun has no planet view but can be centered');
+    assert.equal(get('detail-scene-actions').hidden,true);
+    assert.equal(get('planet-view-actions').hidden,true,'Sun has no planet view');
     state.selected=null;renderDetail(state,r,()=>{});
     assert.equal(get('detail-scene-actions').hidden,true);
     const probe=INITIAL_BODIES.find(b=>b.type==='probe');

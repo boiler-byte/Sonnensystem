@@ -122,11 +122,12 @@ test('v87: camera action preserves planet scene, separate back button exits it a
     return buttons.get(id);
   };
   const renderer={planetId:'earth',cinema:null,reset(){events.push('reset');this.planetId=null;},
+    returnToStandardCamera(){events.push('oblique');},
     cycleCameraPerspective(options){events.push(['camera',options.keepPlanetScene]);}};
   const arMode={active:false,alignToPerspective(){events.push('align');}};
   const mobileSheets={close(){events.push('close');}};
   const context=vm.createContext({$,renderer,arMode,mobileSheets,S:{},
-    updateMode:()=>events.push('mode'),syncSceneMode:()=>events.push('sync'),updateDetail:()=>events.push('detail')});
+    clearSelection:()=>events.push('clear'),updateMode:()=>events.push('mode'),syncSceneMode:()=>events.push('sync'),updateDetail:()=>events.push('detail')});
   vm.runInContext(handlers,context);
   callbacks.get('reset-camera')();
   assert.equal(renderer.planetId,'earth');
@@ -139,7 +140,7 @@ test('v87: camera action preserves planet scene, separate back button exits it a
   events.length=0;
   callbacks.get('back-to-solar')();
   assert.equal(renderer.planetId,null);
-  assert.deepEqual(events,['reset','mode','align','close']);
+  assert.deepEqual(events,['clear','reset','mode','oblique','align','close']);
   events.length=0;
   callbacks.get('back-to-solar')();
   assert.deepEqual(events,[],'back action is disabled when solar overview is active');

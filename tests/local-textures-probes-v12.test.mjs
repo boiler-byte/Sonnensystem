@@ -59,8 +59,7 @@ test('v124: Layer holds the only time controls; no external texture fallback',as
   const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
   const layer=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
   for(const id of ['layer-speed','layer-play-btn','layer-today-btn','layer-sim-date'])assert.match(layer,new RegExp(`id="${id}"`));
-  assert.match(layer,/>Geschwindigkeit<\/span>/);
-  assert.match(layer,/>Datum<\/span>/);
+  assert.doesNotMatch(layer,/>Geschwindigkeit<\/span>|>Datum<\/span>/);
   assert.doesNotMatch(html,/id="time-panel"|id="speed-btn"|id="speed-popover"/);
   const script=await readFile(new URL('../src/renderer/textures.js',import.meta.url),'utf8');
   assert.doesNotMatch(script,/images\.unsplash\.com/);

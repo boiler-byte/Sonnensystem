@@ -21,14 +21,14 @@ test('v124: viewport controls keep camera reset separate and time controls in La
   const layer=area(html,'id="layer-popover"','id="canvas-error"');
   for(const id of ['layer-play-btn','layer-speed','layer-today-btn','layer-sim-date','orbit-visibility-btn','toggle-labels'])
     assert.match(layer,new RegExp(`id="${id}"`));
-  assert.match(layer,/>Geschwindigkeit<\/span>/);
-  assert.match(layer,/>Datum<\/span>/);
+  assert.doesNotMatch(layer,/>Geschwindigkeit<\/span>|>Datum<\/span>/);
+  assert.match(layer,/id="layer-speed-value"/);
   assert.match(css,/\.viewport>\.control-panel\{position:absolute/);
 });
 
 test('v13: detail name replaces section label, hero shows object type and origin, tabs separate knowledge/data',async()=>{
   const html=await read('index.html');
-  const header=area(html,'<aside class="detail"','<div class="detail-scroll">');
+  const header=area(html,'<aside class="detail"','<div class="detail-scroll"');
   assert.match(header,/<h2 id="detail-name"/);
   assert.doesNotMatch(header,/02 \/ OBJEKTDETAILS/);
   const hero=area(html,'<div class="detail-hero">','<div id="planet-view-actions"');

@@ -120,7 +120,7 @@ test('v115: v114 rendering pick, hero zoom, contrast toggle and row button place
  const [runtime,html,display,sw]=await Promise.all([
   read('src/app/runtime.js'),read('index.html'),read('src/ui/display-controls.js'),read('sw.js')
  ]);
- assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:false\}\)/);
+ assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:renderer\?\.settings\?\.row===true\}\)/);
  assert.match(html,/id="hero-body" class="hero-body" type="button"[^>]*disabled/); // v117: no startup selection
  assert.ok(html.indexOf('id="orbit-row-btn"')<html.indexOf('id="scale-objects-btn"'));
  assert.match(html,/id="orbit-contrast-btn"/);

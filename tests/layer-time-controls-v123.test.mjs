@@ -69,14 +69,15 @@ test('v123: Umschalter zeigt aktuelle Ansicht, Icon-Zustand und nächsten Klick 
   }
 });
 
-test('v124: Tempo view contains speed and date headings plus playback and today',async()=>{
+test('v125: Tempo has only values and icon actions; text headings are gone',async()=>{
   const [html,events,css]=await Promise.all([read('index.html'),read('src/ui/event-handlers.js'),read('css/styles.css')]);
   const layer=html.slice(html.indexOf('id="layer-speed-panel"'),html.indexOf('id="canvas-error"'));
   const pos=id=>layer.indexOf(`id="${id}"`);
   assert.ok(pos('layer-speed')<pos('layer-play-btn') && pos('layer-play-btn')<pos('layer-today-btn'));
   assert.ok(pos('layer-today-btn')<pos('layer-sim-date'));
-  assert.match(layer,/class="layer-speed-caption">Geschwindigkeit<\/span>/);
-  assert.match(layer,/class="layer-speed-caption">Datum<\/span>/);
+  assert.doesNotMatch(layer,/class="layer-speed-caption"|>Geschwindigkeit<\/span>|>Datum<\/span>/);
+  assert.doesNotMatch(layer,/id="layer-play-label"|>Pause<\/span>|>Heute<\/span>/);
+  assert.match(layer,/class="layer-speed-value-track"[\s\S]*?id="layer-speed-value"/);
   assert.match(layer,/<time class="layer-speed-date" id="layer-sim-date"/);
   assert.match(layer,/id="layer-play-btn"[^>]*aria-pressed="true"/);
   assert.match(layer,/id="layer-today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
@@ -92,14 +93,14 @@ test('v124: the only playback control and date display track state changes',()=>
     const state={timelineMode:'solar',playing:true,speed:5,time:new Date(2026,10,21,20,20).getTime()};
     syncControls(state);
     assert.equal(dom.get('layer-play-btn').attrs['aria-pressed'],'true');
-    assert.equal(dom.get('layer-play-label').textContent,'Pause');
+    assert.equal(dom.get('layer-play-btn').attrs['aria-label'],'Simulation pausieren');
     assert.match(dom.get('layer-play-icon-path').attrs.d,/M7 5h4/);
     assert.equal(dom.get('layer-sim-date').textContent,'21.11.2026 20:20');
     assert.equal(dom.get('layer-speed-value').textContent,'5 Tage / s');
     state.playing=false;state.time=new Date(2026,10,21,10,5).getTime();
     syncControls(state);
     assert.equal(dom.get('layer-play-btn').attrs['aria-pressed'],'false');
-    assert.equal(dom.get('layer-play-label').textContent,'Play');
+    assert.equal(dom.get('layer-play-btn').attrs['aria-label'],'Simulation starten');
     assert.match(dom.get('layer-play-icon-path').attrs.d,/M7 4v16/);
     assert.match(dom.get('layer-play-btn').attrs['aria-label'],/Simulation starten/);
     assert.equal(dom.get('layer-sim-date').textContent,'21.11.2026 10:05');

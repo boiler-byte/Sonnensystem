@@ -94,7 +94,7 @@ export function updateRow(){
       : renderer.planetId?renderer.planetFrameDistance():renderer.solarOverviewDistance();
   }else if(renderer.focusedBodyId)renderer.focus(renderer.focusedBodyId);
   // As in v113, changing the row must not restore a previously interrupted
-  // camera follow. The global Folgen toggle may still be on in v114+.
+  // camera follow. The permanent follow mode remains enabled.
   if(renderer.followEnabled && renderer.followedBodyId!=null)renderer.followSelectedBody();
 }
 /** Every row order offers Cinema, regardless of the separately saved scale toggles. */

@@ -73,7 +73,7 @@ test('v96: small viewports wrap the toolbar and the Layer switches form two pair
  assert.match(v55,/max-width:calc\(100% - var\(--control-right-inset\) - 8px\)!important/);
  assert.match(v55,/\.layer-display-toggles\{[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.doesNotMatch(v55,/\.layer-display-toggles \.scale-tool-toggle:nth-child\(4\)\{grid-column/);
- assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
+ assert.match(v55,/\.viewport>\.control-panel \.layer-popover\{width:140px/);
  assert.match(v55,/@media\(max-width:770px\)/);
 });
 

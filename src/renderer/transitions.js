@@ -116,6 +116,14 @@ export function rowCameraFrame(layout, width, height) {
   return {target:[targetX,0,0],distance,left,right};
 }
 
+/** Frame a clicked row body at about 46% of the viewport height.
+ * Use the normal sphere radius rather than its temporary hover enlargement.
+ */
+export function rowBodyFocusDistance(radius) {
+  const r=Number(radius);
+  return Number.isFinite(r) && r>0 ? r/(.46*Math.tan(CAMERA_FOV/2)) : null;
+}
+
 /** Distance-only compatibility helper for existing camera callers. */
 export function rowFrameDistance(layout,width,height){
   return rowCameraFrame(layout,width,height).distance;

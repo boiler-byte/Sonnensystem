@@ -28,20 +28,20 @@ test('v55: Layer dropdown owns orbit toggles; category palette remains enabled',
   assert.match(layer,/id="orbit-contrast-btn"/);
 });
 
-test('v124: single Layer tempo panel groups speed value, actions and date',async()=>{
+test('v125: single Layer tempo panel groups floating speed value, actions and date',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css');
   const panel=within(html,'id="layer-speed-panel"','id="canvas-error"');
-  const order=['>Geschwindigkeit</span>','id="layer-speed-value"','class="layer-speed-layout"','id="layer-speed"','class="layer-speed-actions"','id="layer-play-btn"','id="layer-today-btn"','>Datum</span>','id="layer-sim-date"'];
+  const order=['class="layer-speed-layout"','id="layer-speed"','class="layer-speed-value-track"','id="layer-speed-value"','class="layer-speed-actions"','id="layer-play-btn"','id="layer-today-btn"','id="layer-sim-date"'];
   let last=-1;
   for(const item of order){const at=panel.indexOf(item);assert.ok(at>last,`${item} must appear in order`);last=at;}
-  assert.match(css,/\.layer-speed-heading,\.layer-speed-date-group\{display:flex/);
-  assert.match(css,/\.layer-speed-date-group\{padding-top:9px;border-top:1px solid/);
+  assert.match(css,/\.layer-speed-value-track\{position:absolute/);
+  assert.match(css,/\.layer-speed-date\{[^}]*border-top:1px solid/);
 });
 
 test('v124: only the Layer menu sits beneath its toolbar button',async()=>{
   const [css,html]=await Promise.all([read('css/styles.css'),read('index.html')]);
   assert.match(css,/\.control-panel \.layer-popover\{top:calc\(100% \+ 7px\);right:0;left:auto;bottom:auto/);
-  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:155px/);
+  assert.match(css,/\.viewport>\.control-panel \.layer-popover\{width:140px/);
   assert.equal((html.match(/id="layer-btn"/g)||[]).length,1);
   assert.equal((html.match(/id="speed-btn"/g)||[]).length,0);
   assert.equal((html.match(/id="time-panel"/g)||[]).length,0);

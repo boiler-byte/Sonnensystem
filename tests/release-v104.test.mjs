@@ -71,12 +71,12 @@ test('v104: size-row entry conceals only the largest-to-smallest reorder',()=>{
  assert.equal(r.camera.target[0],(track.frames[0].x+track.frames[1].x)/2);
 });
 
-test('v104: Folgen defaults to enabled, follows the selected object, and remains manually toggleable',async()=>{
+test('v128: Folgen is permanently enabled and follows the selected object',async()=>{
  const [source,html]=await Promise.all([
   readFile(new URL('../src/renderer/renderer.js',import.meta.url),'utf8'),
   readFile(new URL('../index.html',import.meta.url),'utf8')]);
  assert.match(source,/this\.followEnabled=true;this\.followedBodyId=null/);
- assert.match(html,/id="center-object-btn"[^>]*aria-pressed="true"/);
+ assert.doesNotMatch(html,/id="center-object-btn"/);
  const r=Object.create(SolarRenderer.prototype);
  Object.assign(r,{followEnabled:true,followedBodyId:null,followLastPosition:null,followLastAtMs:null,
   selectedId:'earth',focusedBodyId:null,simTime:Date.UTC(2026,10,20),planetId:null,
@@ -92,8 +92,8 @@ test('v104: Folgen defaults to enabled, follows the selected object, and remains
  assert.equal(r.followEnabled,true);
  assert.equal(r.followedBodyId,'mars');
  assert.deepEqual(r.camera.desiredTarget,[7,0,0]);
- assert.equal(r.follow('mars'),false,'clicking active Folgen switches the toggle off');
- assert.equal(r.followEnabled,false);
+ assert.equal(r.follow('mars'),true,'following an active target remains enabled');
+ assert.equal(r.followEnabled,true);
  r.setBodies(bodies);
- assert.equal(r.followEnabled,false,'catalog refresh must not undo a manual switch-off');
+ assert.equal(r.followEnabled,true,'catalog refresh preserves permanent following');
 });
