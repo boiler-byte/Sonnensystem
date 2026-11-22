@@ -5,10 +5,10 @@ const KEYBOARD_PAN_PX_PER_SECOND = 390;
 const LOOK_SENSITIVITY_X = .0051;
 const LOOK_SENSITIVITY_Y = .005;
 
-/** Swap drag/swipe roles only while an object is actually being followed. */
-function trackingActive(renderer) {
-  return Boolean(renderer.followEnabled && renderer.followedBodyId != null &&
-    renderer.followedBodyId === renderer.selectedId);
+/** Keep the object-specific mouse/touch mapping for the entire selection,
+ *  even when a wide chart view or manual camera pan suspends following. */
+function selectedObjectControls(renderer) {
+  return renderer.selectedId != null;
 }
 
 /** Looking around changes the camera heading, never its ground-plane target. */
@@ -47,15 +47,15 @@ export function attachCameraControls(renderer) {
     c.setPointerCapture(e.pointerId);
     if(renderer.pointers.size===1){
       renderer.drag={id:e.pointerId,button:e.button,startX:e.clientX,startY:e.clientY,
-        moved:false,controlsSwapped:trackingActive(renderer)};
+        moved:false,controlsSwapped:selectedObjectControls(renderer)};
       renderer.gesture=null;
       renderer.gestureControlsSwapped=null;
     }else{
       // Two fingers swipe to look normally, or pan while tracking; pinch always zooms.
-      // Latch the mode for the whole gesture: panning suspends tracking, but must
-      // not switch the gesture back to looking around mid-swipe.
+      // Latch the mode for the whole gesture, including when the selection
+      // or follow target changes during a swipe.
       if(renderer.drag)renderer.drag.moved=true;
-      renderer.gestureControlsSwapped=renderer.drag?.controlsSwapped ?? trackingActive(renderer);
+      renderer.gestureControlsSwapped=renderer.drag?.controlsSwapped ?? selectedObjectControls(renderer);
       renderer.gesture=twoPointerGesture(renderer.pointers);
       renderer.gestureOrigin=renderer.gesture;
       renderer.gestureSwipeCenter=renderer.gesture;
@@ -117,9 +117,9 @@ export function attachCameraControls(renderer) {
     }
     if(!renderer.drag || renderer.drag.id!==e.pointerId)return;
     if(Math.hypot(e.clientX-renderer.drag.startX,e.clientY-renderer.drag.startY)>3)renderer.drag.moved=true;
-    // Normally left mouse / one finger pans and right mouse looks around.
-    // While following a body these roles reverse; Shift+left mirrors right
-    // mouse so a trackpad user can still move the camera.
+    // With no selection, left mouse / one finger pans and right mouse looks.
+    // With a selected body, these roles reverse regardless of tracking
+    // or the Schaubild zoom; Shift+left mirrors the right mouse button.
     const rightDrag=renderer.drag.button===2 || (e.pointerType==='mouse' && e.shiftKey);
     if(rightDrag !== renderer.drag.controlsSwapped)lookByPixels(renderer,dx,dy);
     else renderer.panByPixels(dx,dy);
@@ -145,7 +145,7 @@ export function attachCameraControls(renderer) {
       const [id,point]=renderer.pointers.entries().next().value;
       // A remaining finger may move again, but must never trigger a tap.
       renderer.drag={id,button:point.button,startX:point.x,startY:point.y,moved:true,
-        controlsSwapped:controlsSwapped ?? renderer.drag?.controlsSwapped ?? trackingActive(renderer)};
+        controlsSwapped:controlsSwapped ?? renderer.drag?.controlsSwapped ?? selectedObjectControls(renderer)};
     }else if(renderer.pointers.size===0)renderer.drag=null;
   };
   c.addEventListener('pointerleave',()=>{renderer.setRowPointer?.(null);renderer.clearPathHover?.();});

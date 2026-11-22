@@ -1,6 +1,13 @@
-# Sonnensystem – interaktiver 3D-Atlas (v160.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v161.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein JavaScript-Bundler und keine npm-Laufzeitabhängigkeiten. Die CSS-Ausgabedatei wird aus thematischen Quellen generiert.
+
+## Neu in v161: Feste Maus- und Touchbelegung bei Objektauswahl
+
+- Bei ausgewähltem Objekt steuern **linke Maustaste / ein Finger** weiterhin den Blick; **rechte Maustaste / zwei Finger** verschieben die Kamera. **Shift + linke Maustaste** bleibt die Alternative zum rechten Mausbutton.
+- Der Schaubild-Toggle **NAH ↔ FERN** ändert nur Zoom, Ausrichtung und ggf. die Nachführung, **nicht** die Maus- oder Touchbelegung. Auch nach einem manuellen Verschieben oder einem Follow-Abbruch bleibt die Belegung gleich, bis die Auswahl aufgehoben wird.
+- Ohne ausgewähltes Objekt gilt unverändert: **links / ein Finger** verschiebt, **rechts / zwei Finger** blickt umher. Pinch- und Mausradzoom, Auswahl per Klick und Pfeiltasten bleiben unverändert.
+- Regressionen: `tests/detail-zoom-controls-v161.test.mjs`; die älteren Steuerungstests berücksichtigen die geänderte Zuordnung.
 
 ## Neu in v160: API-Pfade relativ zum Installationsverzeichnis
 

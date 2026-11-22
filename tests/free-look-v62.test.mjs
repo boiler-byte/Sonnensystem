@@ -72,12 +72,12 @@ test('v62: without selection, synchronous two-finger swipe looks in place, pinch
  }finally{cleanup();}
 });
 
-test('v62: with selected object the previous target-orbit look remains intact',()=>{
+test('v161: with selected object target-orbit look remains intact via left mouse',()=>{
  const {r,emit,cleanup}=setup('saturn');
  try{
   const eye=cameraView(r.camera,r.width,r.height).eye;
-  emit('pointerdown',1,110,120,'mouse',2);emit('pointermove',1,175,145,'mouse',2);
-  emit('pointerup',1,175,145,'mouse',2);
+  emit('pointerdown',1,110,120);emit('pointermove',1,175,145);
+  emit('pointerup',1,175,145);
   assert.ok(r.camera.theta<.63 && r.camera.phi>.99);
   assert.equal(r.camera.freeLook,undefined);
   assert.ok(distance(eye,cameraView(r.camera,r.width,r.height).eye)>.1);

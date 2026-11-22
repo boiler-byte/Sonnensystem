@@ -73,11 +73,13 @@ test('v71: right-button free look retains its old vertical direction',()=>{
  }finally{cleanup();}
 });
 
-test('v71: selected-object two-finger look is not reversed',()=>{
- const {renderer,swipe,cleanup}=makeGesture('mars');
+test('v161: selected-object one-finger look keeps the original orbit direction',()=>{
+ const {renderer,emit,cleanup}=makeGesture('mars');
  try{
-  swipe(50);
-  near(renderer.camera.phi,.99+25*.005);
+  emit('pointerdown',1,100,100,'touch');
+  emit('pointermove',1,100,150,'touch');
+  emit('pointerup',1,100,150,'touch');
+  near(renderer.camera.phi,.99+50*.005);
   assert.equal(renderer.camera.freeLook,undefined);
  }finally{cleanup();}
 });

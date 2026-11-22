@@ -74,13 +74,14 @@ test('v64: free look inverts Y without changing camera eye, X direction or senso
  assert.equal(a.phi,.99);assert.equal(a.theta,.63);
 });
 
-test('v64: right mouse drag applies inverted vertical free look only if unselected',()=>{
+test('v161: right mouse free-look remains unselected; selected-object left drag keeps orbit direction',()=>{
  for(const selected of [null,'earth']){
   const {r,emit,cleanup}=setup(selected);
   try{
-   emit('pointerdown',1,100,100,'mouse',2);
-   emit('pointermove',1,100,155,'mouse',2);
-   emit('pointerup',1,100,155,'mouse',2);
+   const button=selected===null?2:0;
+   emit('pointerdown',1,100,100,'mouse',button);
+   emit('pointermove',1,100,155,'mouse',button);
+   emit('pointerup',1,100,155,'mouse',button);
    if(selected===null){
     assert.ok(r.camera.freeLook.phi<.99);
     approx(r.camera.phi,.99);

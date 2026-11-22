@@ -75,30 +75,32 @@ test('v145: following + right mouse pans continuously, suspends tracking, and do
     near(r.camera.phi,phi,'no accidental tilt on second movement');
     emit('pointerup',3,165,135,'mouse',2);
     assert.equal(picked.length,0,'right click cannot select');
-    // With following suspended a new gesture uses the ordinary mouse mapping.
-    const beforeNewDrag=r.camera.target.slice();
+    // v161: suspended follow does not undo selected-object controls.
+    const beforeNewDrag=r.camera.target.slice(),beforeNewAngle=r.camera.theta;
     emit('pointerdown',4,100,100);
     emit('pointermove',4,125,105);
     emit('pointerup',4,125,105);
-    assert.notDeepEqual(r.camera.target,beforeNewDrag,'new left drag pans after follow suspension');
+    assert.deepEqual(r.camera.target,beforeNewDrag,'new left drag does not pan with selection');
+    assert.ok(r.camera.theta<beforeNewAngle,'new left drag still looks after follow suspension');
   }finally{cleanup();}
 });
 
-test('v145: Shift + left mirrors right mouse in each mode',()=>{
-  for(const tracking of [true,false]){
-    const {r,emit,cleanup}=setup({tracking});
+test('v161: Shift + left mirrors right mouse depending on selection, not tracking',()=>{
+  for(const [selectedId,tracking] of [['earth',true],['earth',false],[null,false]]){
+    const {r,emit,cleanup}=setup({selectedId,tracking});
     try{
       const initialTheta=r.camera.theta,target=r.camera.target.slice();
       emit('pointerdown',5,100,100);
       emit('pointermove',5,145,110,'mouse',0,{shiftKey:true});
       emit('pointerup',5,145,110);
-      if(tracking){
-        assert.notDeepEqual(r.camera.target,target,'while following Shift+left pans');
-        near(r.camera.theta,initialTheta,'while following Shift+left does not look');
-        assert.equal(r.followedBodyId,null,'pan suspends active follow');
+      if(selectedId!=null){
+        assert.notDeepEqual(r.camera.target,target,'selected Shift+left pans');
+        near(r.camera.theta,initialTheta,'selected Shift+left does not look');
+        assert.equal(r.followedBodyId,null,'pan suspends active follow if present');
       }else{
-        assert.deepEqual(r.camera.target,target,'outside following Shift+left does not pan');
-        assert.ok(r.camera.theta<initialTheta,'outside following Shift+left looks');
+        assert.deepEqual(r.camera.target,target,'unselected Shift+left does not pan');
+        near(r.camera.theta,initialTheta,'unselected free-look preserves orbit heading');
+        assert.ok(r.camera.freeLook?.forward,'unselected Shift+left looks');
       }
     }finally{cleanup();}
   }
@@ -157,37 +159,38 @@ test('v145: following + two-finger swipe pans, stays a pan after follow suspensi
     emit('pointerup',20,160,140,'touch');
     assert.equal(r.pointers.size,0);
     assert.equal(picked.length,0,'multi-finger gesture never selects');
-    const nextTarget=r.camera.target.slice();
+    const nextTarget=r.camera.target.slice(),nextAngle=r.camera.theta;
     emit('pointerdown',22,100,100,'touch');
     emit('pointermove',22,140,100,'touch');
     emit('pointerup',22,140,100,'touch');
-    assert.notDeepEqual(r.camera.target,nextTarget,'new one-finger gesture reverts to normal pan');
+    assert.deepEqual(r.camera.target,nextTarget,'new one-finger gesture remains look with selection');
+    assert.ok(r.camera.theta<nextAngle,'new one-finger swipe keeps selected-object look');
   }finally{cleanup();}
 });
 
-test('v145: selected but no active tracking keeps normal gestures, including right-look and two-finger look',()=>{
+test('v161: selected but no active tracking keeps selected-object controls on every new gesture',()=>{
   const {r,emit,cleanup}=setup({tracking:false});
   try{
-    assert.equal(r.followEnabled,true,'global follow switch alone does not swap controls');
+    assert.equal(r.followEnabled,true,'permanent follow setting remains enabled');
     const initial=r.camera.target.slice(),theta=r.camera.theta;
     emit('pointerdown',30,100,100);
     emit('pointermove',30,150,105);
     emit('pointerup',30,150,105);
-    assert.notDeepEqual(r.camera.target,initial,'left button pans with tracking suspended');
-    near(r.camera.theta,theta,'left button does not look');
-    const target=r.camera.target.slice();
+    assert.deepEqual(r.camera.target,initial,'left button looks with tracking suspended');
+    assert.ok(r.camera.theta<theta,'left button keeps selected-object look');
+    const target=r.camera.target.slice(),afterLeft=r.camera.theta;
     emit('pointerdown',31,100,100,'mouse',2);
     emit('pointermove',31,135,110,'mouse',2);
     emit('pointerup',31,135,110,'mouse',2);
-    assert.ok(r.camera.theta<theta,'right button looks with tracking suspended');
-    assert.deepEqual(r.camera.target,target,'right button does not pan');
-    const afterRight=r.camera.theta;
+    near(r.camera.theta,afterLeft,'right button does not look with tracking suspended');
+    assert.notDeepEqual(r.camera.target,target,'right button pans with selected object');
+    const afterRight=r.camera.target.slice();
     emit('pointerdown',32,100,100,'touch');
     emit('pointerdown',33,200,100,'touch');
     emit('pointermove',32,135,110,'touch');
     emit('pointermove',33,235,110,'touch');
-    assert.ok(r.camera.theta<afterRight,'two fingers look with tracking suspended');
-    assert.deepEqual(r.camera.target,target,'two-finger look does not translate camera');
+    near(r.camera.theta,afterLeft,'two fingers do not look with selected object');
+    assert.notDeepEqual(r.camera.target,afterRight,'two-finger swipe pans with selected object');
   }finally{cleanup();}
 });
 
@@ -198,7 +201,7 @@ test('v145: documentation and packaging identify the new control modes',async()=
     readFile(new URL('../README.md',import.meta.url),'utf8')
   ]);
   assert.match(html,/<meta name="app-version" content="V(?:14[5-9]|1[5-9]\d|[2-9]\d{2})\.0"/);
-  assert.match(html,/Bei aktiver Objektverfolgung/);
+  assert.match(html,/Bei ausgewähltem Objekt/);
   assert.match(guide,/Objektverfolgung/);
   assert.match(guide,/ein Finger.*umsehen/i);
   assert.match(readme,/v145/);

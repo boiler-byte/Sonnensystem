@@ -1,3 +1,10 @@
+## v161 – Stabile Maus- und Touchbelegung beim Schaubild-Toggle (22.11.2026)
+
+- Die Maus-/Touchbelegung hängt jetzt an `renderer.selectedId` statt am vorübergehend gesetzten `followedBodyId`: **selektiertes Objekt** = links/ein Finger umsehen, rechts/zwei Finger verschieben; **keine Auswahl** = links/ein Finger verschieben, rechts/zwei Finger umsehen.
+- Die Schaubild-Umschaltung zwischen NAH und FERN unterbricht/reaktiviert ggf. die Nachführung, aber wechselt nicht mehr die Eingabemodi. Gleiches gilt nach einem manuellen Pan oder Follow-Abbruch; die Belegung wird erst mit Aufhebung der Auswahl neu bestimmt. Laufende Gesten behalten ihren zu Beginn gewählten Modus.
+- Pinch-Zoom, Mausrad-Zoom, Shift+linke Maustaste, Pfeiltasten, Klickauswahl und Kamera-Nachführung selbst bleiben funktional unverändert.
+- Neue Regressionen `tests/detail-zoom-controls-v161.test.mjs`; alte Tests an die v161-Auswahlregel angepasst. Paket `161.0.0`, HTML `V161.0`, PWA-Cache `sonnensystem-shell-v161`. Basis v160.
+
 ## v160 – API-Pfade relativ zur Projektinstallation (22.11.2026)
 
 - `fetchJSON()` ermittelt die Ziel-URL aus dem Verzeichnis von `src/services/api.js` (`../../`). Damit ist der Pfad unabhängig von `window.location` und funktioniert in Unterverzeichnissen.

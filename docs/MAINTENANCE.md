@@ -4,6 +4,10 @@ CSS-Quellen liegen in `css/base/`, `css/components/` und `css/responsive.css`. D
 
 `/* @chunk NNNN */` und `/* @endchunk NNNN */` sind Build-Metadaten. Die fortlaufenden IDs halten die ursprüngliche Reihenfolge der Selektoren und Media Queries stabil; ein pauschales Sortieren nach Dateien würde bestehende Überschreibungen verändern. Innerhalb eines Chunks steht jede ursprüngliche Top-Level-Regel auf einer eigenen Zeile. Bei Ergänzungen auf vollständige und eindeutig nummerierte Chunks achten. Die generierte Datei bleibt das einzige Stylesheet im PWA-Shell-Cache.
 
+## v161: Kamerasteuerung an die Auswahl koppeln
+
+`src/renderer/controls.js` bestimmt `controlsSwapped` aus dem Vorhandensein einer `selectedId`, nicht aus `followedBodyId`. Insbesondere der Schaubild-Toggle (`toggleDetailZoom`) suspendiert die Nachführung in der Fernansicht, soll aber die Tasten- oder Touchbelegung nicht verändern. `controlsSwapped` und `gestureControlsSwapped` bleiben während einer laufenden Geste gelatcht. Tests in `tests/detail-zoom-controls-v161.test.mjs` decken beide Zoomrichtungen, Mouse/Touch, Shift+links, Follow-Abbruch und Abwahl ab. Das historische v145-Verhalten „Normalmodus bei selektiertem, nicht mehr verfolgtem Körper“ ist durch v161 bewusst ersetzt.
+
 ## v160: App-relative Backend-URLs
 
 `src/services/api.js` erstellt URLs relativ zu `new URL('../../', import.meta.url)`, dem Installationsverzeichnis der App. API-Pfade in Browsermodulen stets als `api/status` bzw. `api/horizons` **ohne führenden Slash** über `fetchJSON()` übergeben. Lokale JSON-Dateien lassen sich auch mit `./data/...` laden. Damit funktionieren Proxy-Installationen unter Unterpfaden; die Node-Serverrouten selbst bleiben `/api/...`, falls ein vorgeschalteter Proxy den Installationspräfix entfernt. Auf rein statischem Hosting existiert die API weiterhin nicht, das Fehlerhandling ist optional. Test: `tests/api-relative-paths-v160.test.mjs`.
