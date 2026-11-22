@@ -1,3 +1,29 @@
+## Zeitsteuerung: Toasts und Slider (v155)
+
+Unter **Layer Control → Tempo** zeigt der **Play/Pause-Button** eine kurze Bestätigung unten rechts: **„Pause: Umlaufbahnen selektieren“** beim Anhalten bzw. **„Play: Geschwindigkeit …“** mit dem aktuellen Wert beim Fortsetzen. Während der Pause können die dargestellten Umlaufbahnen und galaktischen Schweife zur Objektauswahl angeklickt werden.
+
+Der **Heute-Button** setzt das Simulationsdatum samt Uhrzeit auf den aktuellen Zeitpunkt zurück und meldet **„Heute: Datum zurückgesetzt“**. Der Pausezustand und die Geschwindigkeit ändern sich dabei nicht. Eine Änderung des **Geschwindigkeitsreglers** startet eine pausierte Simulation automatisch; der Play-Button zeigt danach wieder Pause als nächste Aktion. Das Simulationsdatum wird durch die Reglerbewegung nicht zurückgesetzt.
+
+## Schaubild: Nah- und Fernansicht (v154)
+
+Das Schaubild im Bereich **Objektdetails** dient als Kamera-Zoomschalter. Ein Klick wechselt von **NAH** (das ausgewählte Objekt groß im 3D-Bild) zu **FERN** (die vollständig sichtbaren Umlaufbahnen der aktuellen Sonnensystem- oder Objektansicht passen in die 3D-Darstellung) und zurück. Der Nah-/Fern-Status wird im Tooltip und für Screenreader mitgeteilt; ein separates Label unten links gibt es nicht mehr. Bei **FERN** ist die Illustration halb so groß wie bei **NAH**; der Wechsel wird weich animiert (außer bei reduzierter Bewegung). Die Kamera wird bei jedem Umschalten zusätzlich auf die Standardperspektive der aktuellen Szene ausgerichtet. Auswahl und Planetensystem-Ebene bleiben unverändert; Größenvergleich und Referenzwechsel bleiben bedienbar.
+
+Bei **FERN** wird die automatische Objektverfolgung ausgesetzt, damit der Bildausschnitt um das ganze System zentriert bleiben kann. **NAH** aktiviert sie für das ausgewählte gerenderte Objekt wieder. Der Fernabstand berücksichtigt die aktiven Objektlayer, die äußersten Bahnpunkte und schmale Mobilbildschirme. Ohne Bahnen wird die normale Szenenübersicht verwendet. Der Name des ausgewählten Objekts bleibt auch dann oben im Schaubild sichtbar, wenn keine gültigen Vergleichsdaten vorliegen; dann entfällt lediglich der Button für die Vergleichsreferenz. Raumsonden ohne Positionsmodell erhalten keine erfundene Position oder Flugbahn.
+
+## Ansichtsumschalter in den Objektdetails (v152)
+
+Der frühere **Planetenansicht**-Button zeigt jetzt die **aktuelle** Szene an: beispielsweise **Sonnensystem-Ansicht**, **Erde-Ansicht** oder **Mond-Ansicht**. Jeder Klick wechselt zur nächsten Ansicht, in der das ausgewählte Objekt dargestellt werden kann. Beispiel: bei ausgewähltem **Mond** **Sonnensystem-Ansicht → Erde-Ansicht → Mond-Ansicht → Sonnensystem-Ansicht**; bei der **Erde** **Sonnensystem-Ansicht ↔ Erde-Ansicht**. Für Charon gilt **Sonnensystem → Pluto → Charon → Sonnensystem**. Ein Tooltip benennt die folgende Ansicht. Das aktuell ausgewählte Objekt und seine Details bleiben beim Durchschalten erhalten. Der Zurück-Button oben links und die Browser-History funktionieren weiterhin wie zuvor. Auf Mobilgeräten wird das geöffnete Sheet beim Szenenwechsel wie bisher eingeklappt.
+
+## Browser-Zurück in Planetenansichten (v151)
+
+Der **Zurück-Pfeil im Browser**, die **Zurück-Geste auf Mobilgeräten** und **Alt+Links** (Desktop) lösen in jeder Planetenansicht denselben Rücksprung wie der Button oben links aus: **Mond → Erde → Sonnensystem**, **Charon → Pluto → Sonnensystem**. Auch wenn der Mond direkt aus der Sonnensystemübersicht geöffnet wurde, können beide Schritte nacheinander zurückgegangen werden. Der Button oben links und Browser-Zurück teilen sich die Navigation; Browser-Vorwärts stellt aufgerufene Ansichten wieder her, ohne die Seite neu zu laden.
+
+Auf Mobilgeräten schließt Browser-Zurück zuerst das offene Objekt-/Detail-Sheet. Erst der nächste Zurück-Schritt wechselt zum Elternsystem. Außerhalb einer Planetenansicht bleibt die Browser-History unverändert benutzbar.
+
+## Katalogsuche und Tastenkürzel (v148)
+
+Mit **Shift+K** lässt sich der Objektkatalog öffnen und das Suchfeld fokussieren – auch wenn gerade die Objektdetails angezeigt werden. Der Shortcut greift nicht beim Schreiben in einem Eingabefeld oder einem editierbaren Bereich. Das frühere Kürzel `/` wird nicht mehr verwendet. Rechts im Suchfeld erscheint ein **X**, sobald Text eingegeben wurde. Ein Klick bzw. Tipp auf das X leert die Suche einschließlich der Ergebnisfilterung und lässt das Suchfeld aktiv. Bei leerem Suchfeld ist das X verborgen. Auch nach dem Aufruf eines verwandten Objekts aus den Details erscheint die Löschtaste automatisch.
+
 ## Sternenhintergrund bei Bahn-Maßstab (v133)
 
 Die Sternverteilung bleibt beim Zoomen und beim Einschalten des **Bahn-Maßstabs** in der Planetenansicht über den gesamten Bildschirm erhalten – auch bei Jupiter, Saturn, Uranus und Neptun mit großen Mondbahnen. Drehen der Kamera bzw. AR-Umsehen verändert weiterhin die Blickrichtung auf den Hintergrund; die Kameraposition und die Entfernung zum Planeten verändern seine Verteilung nicht.
@@ -18,6 +44,20 @@ Das Layer Control Panel ist **140 Pixel** breit. In der **Reihen-Darstellung** z
 
 Die Klick-Zone wächst jetzt bis an die sichtbare Kugel heran, auch wenn diese durch Hover vergrößert wurde oder am Bildrand abgeschnitten ist. Sehr kleine Kugeln behalten eine nutzbare Mindest-Klickfläche von 12 px Radius. Die Hoverzone einer bereits vergrößerten Kugel ist entsprechend erweitert.
 
+## Galaktische Bewegung: historischer Schweif und Bildrate (v147)
+
+In der **Galaktischen Bewegung** hängt die dargestellte Vergangenheitsdauer von der tatsächlich gerenderten Bildrate ab: **mehr als 59 FPS** erweitern das Zeitfenster auf die vorgegebenen Werte (Sonne/Sterne **300 statt 50 Jahre**, innere Objekte **100 statt 30 Jahre**, äußere Objekte **500 statt 100 Jahre**). Bei **59 FPS oder weniger** bleiben die bisherigen Zeitfenster bestehen. Die Obergrenze von **1.000 Punkten pro Schweif** bleibt in beiden Fällen gleich: Es erscheinen also *mehr Jahre*, nicht einfach dreimal so viele Linienpunkte.
+
+Die Anwendung erfasst die FPS auch dann, wenn das Debug-FPS-Overlay ausgeschaltet ist. Nach dem Start oder dem Zurückkehren aus einem Hintergrundtab gilt erst nach etwa einer Sekunde Messung das hohe Zeitfenster. Die Schweife enthalten ausschließlich Positionen, welche die laufende Simulation tatsächlich erreicht hat. Bereits aufgezeichnete lange Verläufe bleiben intern erhalten, wenn die FPS vorübergehend sinken; die normale Anzeige zeigt in dieser Zeit nur die jüngeren Jahre.
+
+## Debug-Steuerung im Layer Control Panel (v146)
+
+**Debug öffnen:** Über das Layer-Symbol die Objektlayer öffnen und im Umschalter **Kategorien → Tempo** wählen. Das **Simulationsdatum mit Uhrzeit dreimal rasch antippen bzw. anklicken** (jeweils höchstens 700 ms zwischen den Tipps). Anstelle des Geschwindigkeitsreglers, der Zeitaktionen und der Datumsanzeige erscheint **Debug**. Über **Zeit** in der Debug-Ansicht wird die normale Zeitsteuerung wiederhergestellt. Die Simulation läuft unabhängig davon unverändert weiter.
+
+**FPS:** Den Debug-Toggle **FPS** einschalten. Oben links in der 3D-Darstellung wird die Bildrate als **Aktuell** (Messfenster ca. eine Sekunde) und **Ø / Minute** (gleitender Durchschnitt der letzten 60 Sekunden) angezeigt. Beide Werte sind als gerenderte Bilder pro realer Sekunde berechnet, unabhängig von der eingestellten Simulationsgeschwindigkeit. Für die ersten Frames zeigt die Anzeige „–“, bis eine Messung möglich ist. In der ersten Minute entspricht der Durchschnitt dem Mittelwert über den bislang erfassten Zeitraum.
+
+**FPS abschalten:** Den Debug-Toggle erneut drücken. Das Overlay verschwindet und die Messung wird zurückgesetzt. Beim Wechsel zu **Kategorien** bleibt ein eingeschaltetes Overlay sichtbar. Hintergrundzeiten bei verdecktem Tab werden nicht in die Durchschnittswerte eingerechnet. Die Debug-Ansicht steht nur dort zur Verfügung, wo die reguläre Tempo-Ansicht verfügbar ist (nicht in der Reihenansicht).
+
 ## Tempo-Ansicht ohne Textbeschriftungen (v125)
 
 In der Tempo-Ansicht des Layer Control Panels folgt der aktuelle Geschwindigkeitswert dem vertikal bewegten Reglergriff auf dessen rechter Seite. Bei den Endstellungen kann die Wertanzeige die Min-/Max-Angaben überdecken. Die vier sichtbaren Schriftzüge „Geschwindigkeit“, „Pause“, „Heute“ und „Datum“ wurden entfernt. Die Schaltflächen für Play/Pause und Zeitreset werden nur mit Symbolen angezeigt; ihre Funktion ist über Tooltip und Screenreader-Text weiterhin erkennbar. Das Simulationsdatum mit Uhrzeit steht weiterhin unter diesen Buttons.
@@ -36,13 +76,19 @@ Unter dem Regler in der **Tempo-Ansicht** stehen **Play/Pause** (Simulation anha
 
 Ein Klick auf ein Objekt im **Objektkatalog** aktiviert dessen Kategorie im Layer Control Panel, wenn diese bisher ausgeblendet war. Der bisherige Filter bleibt ansonsten unverändert. Das Objekt kann dadurch sofort in der Szene angezeigt und ausgewählt werden.
 
-Im **Layer Control Panel** schaltet die Taste **Tempo** statt der Objektkategorien einen vertikalen Geschwindigkeitsregler ein. Die Taste heißt dann **Kategorien** und führt zur Kategorieliste zurück. Regler im Layer Control Panel und im bisherigen Zeitmenü sind synchron; Pause wird beim Verstellen nicht beendet. In der Reihenansicht ist der Toggle deaktiviert (feste Simulationsgeschwindigkeit: 30 simulierte Minuten pro Echtzeitsekunde).
+Im **Layer Control Panel** schaltet die Taste **Tempo** statt der Objektkategorien einen vertikalen Geschwindigkeitsregler ein. Die Taste heißt dann **Kategorien** und führt zur Kategorieliste zurück. Historisch (v122): Der Regler ließ eine bestehende Pause unverändert; seit v155 startet eine Änderung des Reglers die Simulation wieder. In der Reihenansicht ist der Toggle deaktiviert (feste Simulationsgeschwindigkeit: 30 simulierte Minuten pro Echtzeitsekunde).
 
 ## Layer Control Panel: Modusfarben und Monde (v121)
 
 Wird der Toggle **Monde** eingeschaltet (**Alle Monde**), aktiviert er auch die Objektkategorie **Monde**, wenn diese zuvor ausgeschaltet war. Beim erneuten Ausschalten wird wieder die Vierer-Begrenzung verwendet; die Objektkategorie bleibt aktiviert und kann bei Bedarf separat im Kategoriefilter ausgeschaltet werden. **Planetenpunkt** (Beschriftung) und **Galaktische Bewegung** (Umlaufbahn) sind zur Unterscheidung blau hervorgehoben. Die anderen Modi und Toggles behalten ihre Farben und Funktionen.
 
 # Hilfe – Sonnensystem (aktuelle Bedienung)
+
+## Pause-Modus: Bahnen und Schweife interaktiv auswählen (v149)
+
+Die Simulation über **Play/Pause** in der **Tempo-Ansicht** des Layer Control Panels anhalten. Jetzt kann man mit dem Mauszeiger auf eine **sichtbare Umlaufbahn** zeigen. Ein Tooltip neben der Linie zeigt den **Namen und die Objektkategorie** des zugehörigen Himmelskörpers. Ein **Klick auf die Bahn** öffnet dessen Objektdetails, genau wie ein Klick auf die Kugel. Auf Mobilgeräten können die Linien im Pause-Modus auch angetippt werden.
+
+In **Galaktischer Bewegung** gilt dieselbe Bedienung für die bereits aufgezeichneten **Schweife**, einschließlich des Sonnen-Schweifs. Nur tatsächlich gerenderte Linien können getroffen werden: Sind Bahnen oder Objektkategorien ausgeblendet, sind ihre Linien nicht anklickbar. Liegt die Kugel unter dem Zeiger, erhält ihre Auswahl Vorrang. Nach dem Fortsetzen der Simulation verschwindet der Tooltip und die gewöhnliche Navigation bleibt unverändert.
 
 ## Navigation
 
@@ -76,7 +122,7 @@ Links (mobil: im Bottom-Sheet) zwischen **Objekte** und **Details** umschalten. 
 
 Die Objektdetails öffnen bei der **ersten Nutzung** standardmäßig **Daten**. Der zuletzt angeklickte Tab **Daten** oder **Wissen** bleibt bei der Auswahl anderer Himmelskörper, beim Wechsel in die Planetenansicht und nach einem Neustart im selben Browser erhalten. Falls der Browser das Speichern verbietet, funktioniert der Tabwechsel trotzdem.
 
-Mit **Planetenansicht** kann eine isolierte Ansicht des Zentralobjekts geöffnet werden. Bei einem Mond bezieht sie sich auf seinen übergeordneten Planeten oder Zwergplaneten. **Der Objektkatalog filtert in einer neu geöffneten Planetenansicht standardmäßig auf das zentrale Objekt und seine zugehörigen Objekte.** Über den Filterbutton neben dem Suchfeld kann die gesamte Liste jederzeit wieder eingeblendet werden. **Folgen** ist dauerhaft eingeschaltet und hält das gewählte Objekt im Blick. Bei zu schneller Bewegung stoppt das aktuelle Tracking und die Kamera kehrt in die Schräg/oben-Standardperspektive der aktuellen Ansicht zurück; ein manuelles Kameraverschieben setzt die Nachführung aus. Eine erneute Objektauswahl nimmt das Tracking wieder auf. Ein Folgen-Toggle ist nicht mehr vorhanden. **Auswahl im Renderer:** zentrieren ohne Zoom. **Auswahl im Objektkatalog oder Klick auf das Objektbild oben in den Details:** zentrieren und heranzoomen.
+Mit dem **Ansichtsumschalter** kann zwischen Sonnensystem, den Parent-Systemen und der eigenen isolierten Ansicht des ausgewählten Objekts gewechselt werden. Bei einem Mond sind dies beispielsweise das Sonnensystem, die Erde und der Mond selbst. **Der Objektkatalog filtert in einer neu geöffneten Planetenansicht standardmäßig auf das zentrale Objekt und seine zugehörigen Objekte.** Über den Filterbutton neben dem Suchfeld kann die gesamte Liste jederzeit wieder eingeblendet werden. **Folgen** ist dauerhaft eingeschaltet und hält das gewählte Objekt im Blick. Bei zu schneller Bewegung stoppt das aktuelle Tracking und die Kamera kehrt in die Schräg/oben-Standardperspektive der aktuellen Ansicht zurück; ein manuelles Kameraverschieben setzt die Nachführung aus. Eine erneute Objektauswahl nimmt das Tracking wieder auf. Ein Folgen-Toggle ist nicht mehr vorhanden. **Auswahl im Renderer:** zentrieren ohne Zoom. **Auswahl im Objektkatalog oder Klick auf das Objektbild oben in den Details:** zentrieren und heranzoomen.
 
 ## Smart Labels (v92)
 
@@ -145,3 +191,12 @@ Wenn die App unter `https://<account>.github.io/Sonnensystem/` liegt, sucht sie 
 Die Texturdateien müssen tatsächlich im veröffentlichten GitHub-Pages-Verzeichnis unter `textures/mobile/`, `textures/standard/` oder `textures/high/` liegen. Prüfe den vollständigen URL-Pfad direkt im Browser. Gibt GitHub Pages **404** zurück, fehlt die Datei im Deployment (die Delta-ZIPs enthalten keine Texturbilder). Nachdem App-Dateien oder Texturen hochgeladen wurden, die PWA einmal online neu laden. Die optionale Textur-Manifest-API des Node-Servers gibt es auf GitHub Pages nicht; die App nutzt dort den direkten Dateiabruf.
 
 **Ab v109:** Die WebP-URLs auf GitHub Pages enthalten keine Zeitstempel mehr. Findet die App eine Bilddatei nicht, prüft sie ihre Alternativen einmal und speichert fehlgeschlagene Versuche bis zum Ende der Sitzung. Es erfolgen **keine automatischen Wiederholungen alle 30 Sekunden**. Nach dem Hochladen fehlender Texturen die App neu starten oder im Browser manuell neu laden. Die fehlende Node-Manifest-API wird ebenfalls nicht in Dauerschleife geprüft.
+
+
+### Planetenansicht und Zurücknavigation (v150)
+
+Wähle ein Objekt aus und klicke in den Details auf **Planetenansicht**. Diese Ansicht ist für alle Objekttypen verfügbar und zentriert das ausgewählte Objekt. Wenn es direkt umlaufende Objekte mit modellierten Bahnen gibt, erscheinen diese um den Mittelpunkt. Ein Objekt ohne bekannte Kinder wird einzeln gezeigt.
+
+Mit dem Zurück-Button oben links gelangst du zur **Ansicht des Elternobjekts**: Mond → Erde → Sonnensystem; Charon → Pluto → Sonnensystem. Für Objekte mit der Sonne als Parent gelangst du direkt zum Sonnensystem. Die Beschriftung des Buttons nennt das Ziel.
+
+Raumsonden ohne vollständige Ephemeriden erhalten nur eine symbolische Einzelansicht, **keine gemessene Position und keine erfundene Umlaufbahn**. Missionen mit bekanntem Endziel behalten in den Objektdetails den gesonderten Fokussieren-Button auf dieses Ziel.

@@ -124,7 +124,7 @@ test('v142: event handler and animation loop retain probe detail selection while
  const events=await readFile(new URL('../src/ui/event-handlers.js',import.meta.url),'utf8');
  const loop=await readFile(new URL('../src/app/animation-loop.js',import.meta.url),'utf8');
  const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
- assert.match(events,/if\(body && renderer && rendererSelectionId\(body,byId\)!==null\)selectBody\(body\.id,true\)/);
+ assert.match(events,/renderer\.toggleDetailZoom\(targetId\)/);
  assert.match(loop,/renderer\.draw\(S\.time,rendererSelectionId\(byId\(S\.selected\),byId\),S\.settings\)/);
  assert.match(loop,/refreshProbeDistance\(S\)/);
  assert.match(sw,/"\.\/src\/data\/probe-location\.js"/);

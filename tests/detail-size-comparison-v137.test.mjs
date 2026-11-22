@@ -53,7 +53,7 @@ test('v137: planets and dwarf planets compare with Earth, all other measured bod
   assert.equal(detailSizeComparison(null,byId),null);
 });
 
-test('v137: detail diagram uses textured Earth/Moon reference circles and falls back to the generic chart where required',async()=>{
+test('v137: detail diagram uses untextured Earth/Moon reference circles and falls back to the generic chart where required',async()=>{
   const bodies=await catalogPromise,oldDoc=globalThis.document;
   const doc=documentMock();globalThis.document=doc.document;
   const show=id=>renderDetail({bodies,selected:id},{planetId:null,followEnabled:false,overrides:new Map()},()=>{},()=>{});
@@ -64,7 +64,7 @@ test('v137: detail diagram uses textured Earth/Moon reference circles and falls 
     assert.match(doc.get('hero-size-reference-name').className,/is-earth/);
     assert.match(doc.get('hero-size-ratio').textContent,/9,14.*Erde/);
     assert.equal(doc.get('hero-size-plot').style.getPropertyValue('--size-selected'),'100.000000%');
-    assert.match(doc.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),/textures\/mobile\/earth\.webp/);
+    assert.equal(doc.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),'');
     assert.equal(doc.get('hero-size-plot').hidden,false);
     assert.equal(doc.get('hero-generic-plot').hidden,true);
     assert.equal(doc.get('hero-size-note').hidden,true);
@@ -74,7 +74,7 @@ test('v137: detail diagram uses textured Earth/Moon reference circles and falls 
     assert.equal(doc.get('hero-size-reference-name').textContent,'Erdmond');
     assert.match(doc.get('hero-size-reference-name').className,/is-moon/);
     assert.match(doc.get('hero-size-ratio').textContent,/Erdmond/);
-    assert.match(doc.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),/textures\/mobile\/moon\.webp/);
+    assert.equal(doc.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),'');
 
     show('earth');
     assert.equal(doc.get('hero-size-legend').hidden,false);
@@ -117,7 +117,10 @@ test('v137: compact hero keeps its size, exposes the generic fallback markup and
   assert.match(css,/\.hero-size-label-reference\.is-moon/);
   assert.match(css,/\.hero-size-plot\.is-moon \.hero-size-reference-circle\{background-color:#c9b395/);
   assert.match(css,/\.hero-generic-body\.saturn:after/);
-  assert.match(css,/background-image:var\(--hero-size-reference-image,none\)/);
+  assert.doesNotMatch(css,/--hero-size-reference-image/);
+  assert.match(css,/\.hero-size-reference-circle\{[^}]*background:#528ccf/);
+  assert.doesNotMatch(css,/\.hero-size-reference-circle\{[^}]*background-image:/);
+  assert.doesNotMatch(css,/\.hero-size-plot\.is-moon \.hero-size-reference-circle\{[^}]*background-image:/);
   assert.match(css,/\.detail \.detail-hero \.hero-ref\{display:none\}/);
   assert.match(css,/\.sheet-content>\.detail \.hero-ref\{display:flex\}/);
   assert.match(handler,/\$\('hero-body'\)\.addEventListener\('click'/);
@@ -144,7 +147,7 @@ test('v138: reference label is an accessible independent toggle and keeps the se
     assert.equal(toggleDetailSizeReference(state),true);
     assert.equal(mock.get('hero-size-reference-name').textContent,'Erde');
     assert.equal(state.sizeReferenceId,'earth');
-    assert.match(mock.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),/earth\.webp/);
+    assert.equal(mock.get('hero-size-plot').style.getPropertyValue('--hero-size-reference-image'),'');
     show(null);
     assert.equal(toggleDetailSizeReference(state),false);
     assert.equal(mock.get('hero-size-reference-name').disabled,true);

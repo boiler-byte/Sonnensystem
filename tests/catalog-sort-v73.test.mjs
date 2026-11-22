@@ -148,7 +148,10 @@ test('v73: entering a planet view enables the planet filter, but user can turn i
     assert.equal(openPlanetScene('mars'),true);
     assert.equal(S.catalogPlanetOnly,true,'switching planet systems should re-enable the default');
     S.catalogPlanetOnly=false;
-    assert.equal(openPlanetScene('moon'),false,'a moon is not a valid planet scene');
+    assert.equal(openPlanetScene('moon'),true,'a moon now has its own local view');
+    assert.equal(S.catalogPlanetOnly,true,'a new local view re-enables its catalog filter');
+    S.catalogPlanetOnly=false;
+    assert.equal(openPlanetScene('not-real'),false,'unknown IDs are invalid scenes');
     assert.equal(S.catalogPlanetOnly,false,'an invalid scene must not change the filter');
   }finally{S.bodies=originalBodies;S.catalogPlanetOnly=originalFilter;setRenderer(null);}
 });

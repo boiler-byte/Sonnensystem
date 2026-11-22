@@ -61,25 +61,27 @@ test('v26: layer trigger is icon-only and keeps an accessible, state-dependent n
   assert.ok((await read('docs/HILFE.md')).length>200,'Help stays in docs');
 });
 
-test('v26: dwarf planets and moons have the action, moon actions target the parent system',()=>{
+test('v150: every object has its own planet-view action, including moons and satellites',()=>{
   const pluto=withDetail('pluto');
   assert.equal(pluto.hidden,false);
-  assert.equal(pluto.label,'Planetenansicht');
+  assert.equal(pluto.label,'Sonnensystem-Ansicht');
   assert.match(pluto.aria,/Pluto/);
   const ceres=withDetail('ceres');
   assert.equal(ceres.hidden,false,'A dwarf without children still opens an isolated scene');
-  assert.equal(ceres.label,'Planetenansicht');
+  assert.equal(ceres.label,'Sonnensystem-Ansicht');
   const charon=withDetail('charon');
   assert.equal(charon.hidden,false);
-  assert.equal(charon.label,'Planetenansicht');
-  assert.match(charon.aria,/Pluto/);
+  assert.equal(charon.label,'Sonnensystem-Ansicht');
+  assert.match(charon.aria,/Charon/);
   const moon=withDetail('moon','earth');
   assert.equal(moon.hidden,false);
-  assert.equal(moon.label,'Planetenansicht');
-  assert.equal(moon.pressed,'true');
-  assert.match(moon.aria,/Erde/);
-  assert.equal(withDetail('sat-25544').hidden,true,'Satellites were not requested to have scene actions');
-  assert.equal(withDetail('sun').hidden,true);
+  assert.equal(moon.label,'Erde-Ansicht');
+  assert.equal(moon.pressed,'true','Earth scene is a local view containing Moon');
+  assert.match(moon.aria,/Mond/);
+  assert.equal(withDetail('moon','moon').pressed,'true');
+  assert.equal(withDetail('moon','moon').label,'Mond-Ansicht');
+  assert.equal(withDetail('sat-25544').hidden,false,'Artificial satellites have local views');
+  assert.equal(withDetail('sun').hidden,false,'The Sun has a local view');
 });
 
 test('v26: dwarf-centred isolated 3D scene positions and renders Pluto and its moons',()=>{
@@ -108,12 +110,13 @@ test('v26: dwarf-centred isolated 3D scene positions and renders Pluto and its m
   r.reset();
   assert.equal(r.planetId,null);
   assert.ok(r.positions.has('sun'),'Reset goes back to the full solar scene');
-  assert.equal(r.showPlanetSystem('charon'),false,'Moon itself does not become a scene center');
+  assert.equal(r.showPlanetSystem('charon'),true,'Charon becomes the local center');
+  assert.deepEqual([...r.positions.keys()],['charon']);
 });
 
-test('v26: opening a dwarf scene enables its central layer and moon opens its parent',async()=>{
+test('v150: opening arbitrary objects enables their central layer',async()=>{
   const source=await read('src/app.js');
-  const method=source.slice(source.indexOf('/** Planetary isolation also supports'),source.indexOf('function selectBody('));
+  const method=source.slice(source.indexOf('/** Open a local system around any catalogued object'),source.indexOf('function selectBody('));
   const settings={planet:createViewSettings('planet')};
   const opened=[];
   const ctx=vm.createContext({
@@ -122,16 +125,16 @@ test('v26: opening a dwarf scene enables its central layer and moon opens its pa
     layerEnabled,availableLayerTypes,updateLayerSelection
   });
   vm.runInContext(method+'\nthis.openPlanetScene=openPlanetScene;',ctx);
-  assert.equal(ctx.openPlanetScene('pluto'),true);
-  assert.equal(layerEnabled(settings.planet.layers,'dwarf'),true);
-  assert.deepEqual(opened,['pluto']);
-  assert.equal(ctx.openPlanetScene('charon'),false);
-  assert.equal(ctx.openPlanetScene('earth'),true);
-  assert.deepEqual(opened,['pluto','earth']);
-  const app=source;
-  assert.match(app,/const center=selected\?\.type==='moon'\?byId\(selected.parentId\):selected/);
-  assert.match(app,/if\(!openPlanetScene\(center\?\.id\)\)return/);
-  assert.match(app,/S\.selected=center.id/,'The details selection switches to the parent');
+  for(const id of ['pluto','charon','moon','sat-25544','sun','earth']){
+    assert.equal(ctx.openPlanetScene(id),true,id);
+    assert.equal(layerEnabled(settings.planet.layers,byId(id).type),true,id);
+  }
+  assert.deepEqual(opened,['pluto','charon','moon','sat-25544','sun','earth']);
+  assert.equal(ctx.openPlanetScene('not-real'),false);
+  assert.equal(ctx.S.catalogPlanetOnly,true);
+  assert.match(source,/nextDetailSceneId\(selected,S\.bodies,renderer\.planetId\)/);
+  assert.match(source,/else if\(!openPlanetScene\(nextId\)\)return/);
+  assert.match(source,/S\.selected=selected\.id/,'Scene action retains the selected object');
 });
 
 test('v26: scene accessibility updates the camera action for dwarf planet and solar views',()=>{

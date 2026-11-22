@@ -83,7 +83,7 @@ test('v125: Tempo has only values and icon actions; text headings are gone',asyn
   assert.match(layer,/id="layer-today-btn"[^>]*aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen"/);
   assert.match(events,/\$\('layer-play-btn'\)\.addEventListener\('click',togglePlayback\)/);
   assert.match(events,/\$\('layer-today-btn'\)\.addEventListener\('click',resetToToday\)/);
-  assert.match(events,/const resetToToday=\(\)=>\{S\.time=Date\.now\(\);renderer\?\.resetGalacticTrails\?\.\(\);updateTime\(\);updateDetail\(\);\}/);
+  assert.match(events,/const resetToToday=\(\)=>\{S\.time=Date\.now\(\);renderer\?\.resetGalacticTrails\?\.\(\);updateTime\(\);updateDetail\(\);notifyToggle\('Heute: Datum zurückgesetzt'\);\}/);
   assert.match(css,/\.layer-speed-actions\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
 });
 
@@ -111,7 +111,7 @@ test('v124: the only playback control and date display track state changes',()=>
   }
 });
 
-test('v123: Play/Pause und Heute steuern gemeinsam die Simulation und belassen Geschwindigkeit und Pause beim Zeitreset',async()=>{
+test('v155: Play/Pause und Heute behalten die Zeitsteuerung bei und zeigen neue Toasts',async()=>{
   const source=await read('src/ui/event-handlers.js');
   const playback=source.match(/const togglePlayback=\(\)=>\{[^\n]+\};/)?.[0];
   const today=source.match(/const resetToToday=\(\)=>\{[^\n]+\};/)?.[0];
@@ -121,16 +121,18 @@ test('v123: Play/Pause und Heute steuern gemeinsam die Simulation und belassen G
   const calls=[];
   const context=vm.createContext({
     S:state,updateTime:()=>calls.push('updateTime'),updateDetail:()=>calls.push('updateDetail'),
-    renderer:{resetGalacticTrails:()=>calls.push('resetGalacticTrails')},
+    renderer:{setSimulationPaused:paused=>calls.push(`setPaused:${paused}`),resetGalacticTrails:()=>calls.push('resetGalacticTrails')},
+    notifyToggle:message=>calls.push(`toast:${message}`),formatSpeed:()=> '5 Tage / s',
     Date:{now:()=>1700000000000}
   });
   vm.runInContext(`${playback}\n${today}\nthis.togglePlayback=togglePlayback;this.resetToToday=resetToToday;`,context);
   context.togglePlayback();
   assert.equal(state.playing,false);
-  assert.deepEqual(calls,['updateTime']);
+  assert.deepEqual(calls,['setPaused:true','updateTime','toast:Pause: Umlaufbahnen selektieren']);
   context.resetToToday();
   assert.equal(state.time,1700000000000);
   assert.equal(state.playing,false,'today leaves playback pause state unchanged');
   assert.equal(state.speed,5,'today does not alter speed');
-  assert.deepEqual(calls,['updateTime','resetGalacticTrails','updateTime','updateDetail']);
+  assert.deepEqual(calls,['setPaused:true','updateTime','toast:Pause: Umlaufbahnen selektieren',
+    'resetGalacticTrails','updateTime','updateDetail','toast:Heute: Datum zurückgesetzt']);
 });

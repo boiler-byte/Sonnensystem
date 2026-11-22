@@ -197,7 +197,7 @@ test('v145: documentation and packaging identify the new control modes',async()=
     readFile(new URL('../docs/HILFE.md',import.meta.url),'utf8'),
     readFile(new URL('../README.md',import.meta.url),'utf8')
   ]);
-  assert.match(html,/V145\.0/);
+  assert.match(html,/<meta name="app-version" content="V(?:14[5-9]|1[5-9]\d|[2-9]\d{2})\.0"/);
   assert.match(html,/Bei aktiver Objektverfolgung/);
   assert.match(guide,/Objektverfolgung/);
   assert.match(guide,/ein Finger.*umsehen/i);

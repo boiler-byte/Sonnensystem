@@ -82,7 +82,7 @@ test('v128: planet back action clears UI selection before reset and sets solar o
   const mobileSheets={close(){calls.push('close');}};
   const $=id=>({addEventListener:(_event,cb)=>listeners.set(id,cb)});
   const clearSelection=()=>{calls.push('clear');S.selected=null;renderer.setSelected(null);};
-  const context=vm.createContext({$,renderer,S,arMode,mobileSheets,clearSelection,updateMode(){calls.push('mode');}});
+  const context=vm.createContext({$,renderer,S,arMode,mobileSheets,clearSelection,byId:id=>({id,parentId:'sun'}),updateMode(){calls.push('mode');}});
   vm.runInContext(source.slice(start,end),context);
   listeners.get('back-to-solar')();
   assert.deepEqual(calls,['clear','reset','mode','oblique','align','close']);
@@ -101,5 +101,5 @@ test('v128: detail UI has no follow toggle, and only valid planet actions get an
   assert.doesNotMatch(handlers,/center-object-btn/);
   assert.doesNotMatch(detail,/center-object-btn|Folgen ausschalten/);
   assert.doesNotMatch(css,/\.object-center-btn/);
-  assert.match(detail,/\$\('detail-scene-actions'\)\.hidden=!canOpenSystem/);
+  assert.match(detail,/\$\('detail-scene-actions'\)\.hidden=!enabled/);
 });

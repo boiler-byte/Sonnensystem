@@ -3,12 +3,14 @@ import {SolarRenderer} from '../renderer/index.js';
 import {loadCatalog} from '../data/catalog.js';
 import {fetchJSON} from '../services/api.js';
 import {initMobileSheets} from '../ui/bottom-sheet.js';
+import {initSceneHistory} from '../ui/scene-history.js';
 import {initControls} from '../ui/event-handlers.js';
+import {updateOrbitTooltip} from '../ui/orbit-tooltip.js';
 import {syncLayers} from '../ui/layer-panel.js';
 import {renderStatus} from '../ui/status.js';
 import {updateCatalog,updateDetail,updateStatus,connectCatalogSelection} from '../ui/catalog-controller.js';
 import {updateMode,updateTime} from './view-mode.js';
-import {selectBody,clearSelection} from './camera-controller.js';
+import {selectBody,clearSelection,openPlanetScene} from './camera-controller.js';
 import {syncSceneMode} from '../ui/scene-mode.js';
 import {syncCinemaControl,updateCinemaTimeline} from './animation-controls.js';
 import {registerServiceWorker} from './service-worker-registration.js';
@@ -33,7 +35,28 @@ export function clearSceneSelection(){
 }
 export async function init(){
   connectCatalogSelection(selectBody);
-  setMobileSheets(initMobileSheets());initControls();registerServiceWorker();
+  setMobileSheets(initMobileSheets());initControls();
+  initSceneHistory({
+    browser:window,
+    sceneId:()=>renderer?.planetId??null,
+    parentId:id=>{const parent= S.bodies.find(body=>body.id===id)?.parentId;
+      return parent&&parent!=='sun'?parent:null;},
+    onParentBack:()=>$('back-to-solar').click(),
+    onShowScene:id=>{
+      if(id===null){
+        // Normally Back moves just one level. This also handles a larger
+        // history jump (e.g. from the browser's history menu).
+        let steps=0;
+        while(renderer?.planetId && steps++<32)$('back-to-solar').click();
+        return;
+      }
+      if(!openPlanetScene(id))return;
+      S.selected=id;renderer.setSelected(id);updateMode();
+      if(arMode?.active)arMode.alignToPerspective();
+      updateCatalog();updateDetail();mobileSheets?.close();
+    }
+  });
+  registerServiceWorker();
   syncLayers();renderStatus(S.status);updateTime();
   try{
     const catalog=await loadCatalog();
@@ -53,7 +76,7 @@ export async function init(){
   }
   try{
     setRenderer(new SolarRenderer($('space'),$('labels-canvas'),$('space-glow'),{onSelect:id=>selectBody(id,true,{zoom:renderer?.settings?.row===true}),onClearSelect:clearSceneSelection,onCinemaChange:updateCinemaTimeline,
-      onCameraChange:()=>syncSceneMode(S,renderer,arMode?.active)}));
+      onCameraChange:()=>syncSceneMode(S,renderer,arMode?.active),onPathHover:updateOrbitTooltip}));
     setARMode(connectARMode(renderer));
     renderer.setBodies(S.bodies);updateMode();updateDetail();requestAnimationFrame(loop);
   }catch(e){

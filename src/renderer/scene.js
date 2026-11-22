@@ -20,9 +20,11 @@ export function computePositions(renderer, timeMs) {
   const date=new Date(timeMs).toISOString().slice(0,10);
   if(renderer.planetId){
    const planet=renderer.byId.get(renderer.planetId);
-   if(['planet','dwarf'].includes(planet?.type)){
+   if(planet){
     renderer.positions.set(planet.id,[0,0,0]);
     for(const child of renderer.planetChildren()){
+     // Catalogued spacecraft have no continuous trajectories to animate.
+     if(child.type==='probe')continue;
      const r=displayOrbitRadius(child,planet,renderer.settings,planet),ov=renderer.overrides.get(child.id);
      let pos=keplerPosition(child,planet,(renderer.renderOrbitTime?.(child,timeMs)??timeMs),null,r);
      if(ov?.date===date){

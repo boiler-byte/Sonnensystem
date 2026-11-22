@@ -1,6 +1,6 @@
 import { TYPES, HORIZONS_IDS, CATEGORY_COLORS } from '../data/bodies.js';
 import { physicalStatIcon, thermometerIcon } from './physical-stat-icons.js';
-import {inheritedProbeLocation} from '../data/probe-location.js';
+import {inheritedProbeLocation,rendererSelectionId} from '../data/probe-location.js';
 import { esc, formatInt, formatDecimal, displayPeriod, displayA,
   displayTemperatureK, displayAtmosphericPressure, displaySurfaceGravity, displayMeanParentDistance } from './formatters.js';
 const $=id=>document.getElementById(id);
@@ -43,7 +43,6 @@ export function detailSizeComparison(body,byId,referenceOverride=null){
     referenceLarger:referenceRadius>selectedRadius,equal:selectedRadius===referenceRadius};
 }
 
-const sizeReferenceTexturePath=referenceId=>`url("textures/mobile/${referenceId==='moon'?'moon':'earth'}.webp")`;
 const sizeReferenceLabelClass=referenceId=>`hero-size-label hero-size-label-reference ${referenceId==='moon'?'is-moon':'is-earth'}`;
 const genericHeroBodyClasses=body=>{
   if(!body)return 'hero-generic-body rock';
@@ -57,8 +56,12 @@ const genericHeroBodyClasses=body=>{
 function renderGenericSizeFigure(body,{message='' }={}){
   const legend=$('hero-size-legend'),genericPlot=$('hero-generic-plot'),plot=$('hero-size-plot');
   const note=$('hero-size-note'),ratioLabel=$('hero-size-ratio');
-  legend.hidden=true;plot.hidden=true;ratioLabel.hidden=true;
-  $('hero-size-reference-name').disabled=true;
+  const referenceName=$('hero-size-reference-name');
+  // The selected-object label belongs to the diagram, not exclusively to
+  // the size comparison. Only the reference control needs a valid comparison.
+  $('hero-size-selected-name').textContent=body?.name||'';
+  legend.hidden=!body;plot.hidden=true;ratioLabel.hidden=true;
+  referenceName.hidden=true;referenceName.disabled=true;
   if(!body){
     genericPlot.hidden=true;note.hidden=false;note.textContent='Bitte ein Objekt auswählen.';
     return '';
@@ -80,7 +83,7 @@ function renderSizeComparison(body,byId,referenceOverride=null){
   referenceName.textContent=comparison.referenceName;
   referenceName.className=sizeReferenceLabelClass(comparison.referenceId);
   const nextReference=comparison.referenceId==='moon'?'Erde':'Erdmond';
-  referenceName.disabled=false;
+  referenceName.hidden=false;referenceName.disabled=false;
   referenceName.title=`Mit ${nextReference} vergleichen`;
   referenceName.setAttribute('aria-label',`Vergleichsreferenz: ${comparison.referenceName}. Zu ${nextReference} wechseln`);
   referenceName.setAttribute('aria-pressed',String(comparison.referenceId==='earth'));
@@ -88,7 +91,6 @@ function renderSizeComparison(body,byId,referenceOverride=null){
   plot.className='hero-size-plot is-'+comparison.referenceId+(comparison.referenceLarger?' reference-larger':'')+(comparison.equal?' same-size':'');
   plot.style.setProperty('--size-selected',`${comparison.selectedPercent.toFixed(6)}%`);
   plot.style.setProperty('--size-reference',`${comparison.referencePercent.toFixed(6)}%`);
-  plot.style.setProperty('--hero-size-reference-image',sizeReferenceTexturePath(comparison.referenceId));
   const ratio=comparison.ratio;
   const referenceGenitive=comparison.referenceId==='earth'?'der Erde':'des Erdmondes';
   const ratioText=comparison.equal?'Gleicher Durchmesser':ratio>=1?
@@ -99,6 +101,28 @@ function renderSizeComparison(body,byId,referenceOverride=null){
   ratioLabel.title=microscopic?'Sehr kleine Objekte sind als mindestens 2 Pixel großer Punkt markiert.':ratioText;
   return `Größenvergleich nach Durchmesser: ${body.name} gegen ${comparison.referenceName}. ${ratioText}.`+
     (microscopic?' Ein sehr kleines Objekt ist zur Sichtbarkeit als Punkt markiert.':'');
+}
+
+/** The chart is the near/far camera toggle. Expose its current mode to
+ * assistive technology and CSS without a duplicate visible status label. */
+export function syncDetailZoomAction(body,renderer,byId,description=''){
+  const button=$('hero-body');
+  const targetId=body ? (renderer?.planetId===body.id?body.id:rendererSelectionId(body,byId)) : null;
+  const valid=Boolean(body && renderer && targetId!=null &&
+    (!renderer.positions?.has || renderer.positions.has(targetId)));
+  button.disabled=!valid;
+  const mode=valid ? (renderer.detailZoomCurrentMode?.(targetId)||'far') : 'far';
+  button.setAttribute('aria-pressed',String(valid && mode==='near'));
+  button.setAttribute('data-detail-zoom',mode);
+  if(!body){button.title='Kein Objekt ausgewählt';button.setAttribute('aria-label',button.title);return;}
+  if(!valid){
+    button.title=body.type==='probe'?'Keine numerischen Positionsdaten vorhanden':'Objekt in dieser Ansicht nicht verfügbar';
+  }else{
+    const target=targetId===body.id?body:byId(targetId);
+    const next=mode==='near'?'Fernansicht – alle Umlaufbahnen':'Nahansicht – Objekt heranzoomen';
+    button.title=`${body.name}${target && target.id!==body.id?' – '+target.name:''}: ${next} zeigen`;
+  }
+  button.setAttribute('aria-label',`${button.title}. Aktuelle Ansicht: ${mode==='near'?'nah':'fern'}. ${description}`);
 }
 
 /** Keep the chosen reference for subsequent objects without changing the zoom target. */
@@ -129,21 +153,75 @@ export function detailNavigation(state){
   };
 }
 
+/** Views containing an object: solar overview, each existing parent system,
+ *  and finally the object's own view. Never invent missing parents or loop on
+ *  malformed parent relationships from an imported catalog. */
+export function detailSceneViews(body,bodies=[]){
+  if(!body)return [];
+  const byId=new Map(bodies.map(item=>[item.id,item]));
+  const parents=[],seen=new Set([body.id]);
+  for(let id=body.parentId;id && id!=='sun' && !seen.has(id);){
+    const parent=byId.get(id);
+    if(!parent)break;
+    parents.unshift(id);
+    seen.add(id);
+    id=parent.parentId;
+  }
+  return [null,...parents,body.id];
+}
+
+export function nextDetailSceneId(body,bodies,currentSceneId=null){
+  const views=detailSceneViews(body,bodies);
+  if(!views.length)return undefined;
+  const position=views.indexOf(currentSceneId??null);
+  // If another object was selected in an unrelated local view, move to the
+  // overview first instead of cycling through a system that cannot show it.
+  return views[position<0?0:(position+1)%views.length];
+}
+
+export function detailSceneLabel(sceneId,bodies=[]){
+  if(sceneId===null || sceneId===undefined)return 'Sonnensystem-Ansicht';
+  const body=bodies.find(item=>item.id===sceneId);
+  return `${body?.name||sceneId}-Ansicht`;
+}
+
+/** The details button indicates the CURRENT view; clicking cycles through all
+ *  views where the selected object is available, including its own scene. */
+export function syncDetailSceneAction(body,renderer,bodies=[]){
+  const action=$('planet-view-actions'),button=$('planet-view-btn');
+  const enabled=Boolean(body);
+  action.hidden=!enabled;
+  $('detail-scene-actions').hidden=!enabled;
+  if(!enabled)return;
+  const sceneId=renderer?.planetId??null;
+  const nextId=nextDetailSceneId(body,bodies,sceneId);
+  const currentLabel=detailSceneLabel(sceneId,bodies);
+  const nextLabel=detailSceneLabel(nextId,bodies);
+  const active=sceneId!==null;
+  $('planet-view-title').textContent=currentLabel;
+  button.setAttribute('aria-label',`${body.name}: aktuelle Ansicht ${currentLabel}. Weiter zu ${nextLabel}`);
+  button.title=`Weiter zu ${nextLabel}`;
+  button.setAttribute('data-current-scene',sceneId??'solar');
+  button.setAttribute('data-next-scene',nextId??'solar');
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',String(active));
+}
+
 export function renderDetail(state,renderer,selectBody,onShowRelated){const byId=id=>state.bodies.find(x=>x.id===id);const b=byId(state.selected);
   const navigation=detailNavigation(state);
   $('detail-index').textContent=navigation.label;
   $('detail-prev').disabled=!navigation.previousId;
   $('detail-next').disabled=!navigation.nextId;
+  syncDetailSceneAction(b,renderer,state.bodies);
   if(!b){
     $('detail-type').textContent='KEINE AUSWAHL';
     $('detail-origin').textContent='SONNENSYSTEM';
     $('type-dot').style.background='transparent';
     $('detail-description').textContent='Wähle einen Himmelskörper in der Szene oder im Katalog aus.';
     $('texture-credit').hidden=true;$('texture-credit').innerHTML='';
-    $('hero-body').className='hero-body';$('hero-body').disabled=true;renderSizeComparison(null,byId);
+    $('hero-body').className='hero-body';renderSizeComparison(null,byId);
+    syncDetailZoomAction(null,renderer,byId);
     $('editorial-content').innerHTML='';$('editorial-content').hidden=true;
-    $('planet-view-actions').hidden=true;
-    $('detail-scene-actions').hidden=true;
     $('stats-grid').innerHTML='';$('orbit-facts').innerHTML='';$('related').innerHTML='';
     $('horizons-btn').disabled=true;
     $('horizons-note').textContent='Wähle zunächst einen Himmelskörper aus.';
@@ -154,13 +232,10 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     $('detail-origin').textContent='NASA / MISSIONSDATEN';
     $('detail-description').textContent=b.description;
     $('texture-credit').hidden=true;$('texture-credit').textContent='';
-    $('planet-view-actions').hidden=true;
-    $('detail-scene-actions').hidden=true;
     const location=inheritedProbeLocation(b,byId,state.time);
-    const hero=$('hero-body');hero.className='hero-body';hero.disabled=!location||!renderer;
-    renderSizeComparison(b,byId);
-    hero.title=location?`${location.targetName} fokussieren und heranzoomen`:'Keine numerischen Positionsdaten vorhanden';
-    hero.setAttribute('aria-label',location?`${b.name}: ${location.targetName} fokussieren und heranzoomen`:`${b.name}: Keine Kameraposition verfügbar`);
+    const hero=$('hero-body');hero.className='hero-body';
+    const description=renderSizeComparison(b,byId);
+    syncDetailZoomAction(b,renderer,byId,description);
     const date=b.launchDate.split('-').reverse().join('.');
     $('stats-grid').innerHTML=[['START',date,'launch'],['STATUS',b.missionStatus,'status']].map(renderStat).join('');
     const distance=location?.distanceAu!=null?`${formatDecimal(location.distanceAu,3)} AE`:'—';
@@ -189,25 +264,9 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   extra.hidden=!sections.length&&!refs.length;
   extra.innerHTML=sections.map(s=>`<section class="editorial-section"><h3>${esc(s.heading)}</h3><p>${esc(s.text)}</p></section>`).join('')+
     (refs.length?`<div class="editorial-references"><strong>QUELLEN</strong>${refs.map(r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>`).join('')}</div>`:'');
-  const planetActions=$('planet-view-actions'),planetButton=$('planet-view-btn');
-  // An orbital moon opens its parent system; dwarfs can themselves be the
-  // center of the isolated scene (e.g. Pluto with Charon and smaller moons).
-  const systemCenter=b.type==='moon'?byId(b.parentId):b;
-  const canOpenSystem=['planet','dwarf'].includes(systemCenter?.type);
-  planetActions.hidden=!canOpenSystem;
-  // Without the former Folgen button, only the planet scene action needs this row.
-  $('detail-scene-actions').hidden=!canOpenSystem;
-  if(canOpenSystem){
-    const active=renderer?.planetId===systemCenter.id;
-    $('planet-view-title').textContent='Planetenansicht';
-    planetButton.setAttribute('aria-label',`Planetenansicht · ${systemCenter.name}${active?' zentrieren':''}`);
-    planetButton.classList.toggle('active',active);
-    planetButton.setAttribute('aria-pressed',String(active));
-  }
   const orb=$('hero-body');orb.className='hero-body';
   const sizeDescription=renderSizeComparison(b,byId,state.sizeReferenceId);
-  orb.disabled=!renderer;orb.title=`${b.name} zentrieren und heranzoomen`;
-  orb.setAttribute('aria-label',`${orb.title}. ${sizeDescription}`);
+  syncDetailZoomAction(b,renderer,byId,sizeDescription);
   const stats=[ ['RADIUS',b.radiusKm?(b.radiusKm<1?`${formatInt(b.radiusKm*1000)} m`:`${formatInt(b.radiusKm)} km`):'—','radius'],
     [b.type==='satellite'?'HÖHE (ca.)':'GR. HALBACHSE',b.type==='satellite'&&b.a?`${formatInt(Math.max(0,b.a-6371))} km`:displayA(b),'orbit'],
     ['UMLAUFZEIT',displayPeriod(b.periodDays),'period'],

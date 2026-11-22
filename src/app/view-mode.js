@@ -1,6 +1,7 @@
 import {S,renderer,arMode} from './state.js';
 import {availableLayerTypes,ensureAvailableSelection} from '../data/layers.js';
 import {syncSceneMode} from '../ui/scene-mode.js';
+import {syncSceneHistory} from '../ui/scene-history.js';
 import {syncSpeedMode,syncControls} from '../ui/timeline.js';
 import {activeView,updateCatalog,updateDetail} from '../ui/catalog-controller.js';
 import {syncLayers} from '../ui/layer-panel.js';
@@ -25,5 +26,6 @@ export const updateMode=()=>{
     renderer.setCameraAngles?.(0,1.5);
   }
   renderer?.calcPositions(S.time);updateCatalog();updateDetail();
+  syncSceneHistory();
 };
 export const updateTime=()=>syncControls(S);

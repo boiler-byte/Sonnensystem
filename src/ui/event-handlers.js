@@ -3,16 +3,32 @@ import {availableLayerTypes,layerEnabled,layerPreset,updateLayerSelection} from 
 import {syncScaleControls,updateScale,syncRowControl,updateRow,syncCinemaControl,refreshRowCameraFrame} from '../app/animation-controls.js';
 import {syncLayers,setLayerPopover,toggleLayerSpeedPanel} from './layer-panel.js';
 import {syncOrbitControls,advanceOrbitDisplayMode,orbitDisplayMode,nextOrbitDisplayMode,syncContrastControl,syncLabelControl,syncLightingControl,syncFourMoonsControl,changeLayers,applyDisplayPreset} from './display-controls.js';
-import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
+import {activeView,updateCatalog,updateDetail,clearCatalogSearch} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody,clearSelection} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
 import {alignHorizons} from '../app/horizons-controller.js';
-import {detailNavigation,setDetailTab,restoreDetailTab,toggleDetailSizeReference} from './object-details.js';
+import {detailNavigation,setDetailTab,restoreDetailTab,toggleDetailSizeReference,nextDetailSceneId} from './object-details.js';
 import {syncSceneMode} from './scene-mode.js';
-import {speedAtStep} from './timeline.js';
+import {speedAtStep,formatSpeed} from './timeline.js';
 import {notifyToggle} from './status.js';
+import {initDebugControls} from './debug-controls.js';
 import {rendererSelectionId} from '../data/probe-location.js';
+
+/** Search input, reset button and the derived catalog list stay in sync. */
+export function initSearchHandlers(){
+  $('search').addEventListener('input',e=>{S.search=e.target.value;updateCatalog();});
+  $('search-clear').addEventListener('click',clearCatalogSearch);
+}
+
+/** Shift+K focuses the catalog unless the user is typing into an editable control. */
+export function isSearchShortcut(event){
+  const target=event.target;
+  return event.shiftKey && event.key?.toLowerCase()==='k'
+    && !event.altKey && !event.ctrlKey && !event.metaKey && !event.repeat
+    && !target?.isContentEditable
+    && !target?.closest?.('input, textarea, select, [contenteditable], [role="textbox"]');
+}
 
 export function initControls(){
   $('layer-btn').addEventListener('click',()=>{
@@ -23,6 +39,7 @@ export function initControls(){
     $(id).addEventListener('click',()=>updateScale(setting));
   syncScaleControls();
   $('layer-speed-toggle').addEventListener('click',toggleLayerSpeedPanel);
+  initDebugControls();
   $('orbit-row-btn').addEventListener('click',updateRow);syncRowControl();syncCinemaControl();
   $('cinema-btn').addEventListener('click',()=>{
     if(!renderer)return;
@@ -49,7 +66,7 @@ export function initControls(){
       const next=updateLayerSelection(S.settings.layers,input.dataset.layerType,input.checked,activeView(),available);
       changeLayers(next);syncLayers(); // Restore the last checkbox if it was the only active layer.
     });
-  $('search').addEventListener('input',e=>{S.search=e.target.value;updateCatalog();});
+  initSearchHandlers();
   $('catalog-sort').addEventListener('click',()=>{
     S.catalogSort=nextCatalogSort(S.catalogSort);
     updateCatalog();$('object-list').scrollTop=0;
@@ -121,18 +138,31 @@ export function initControls(){
   $('hero-size-reference-name').addEventListener('click',()=>toggleDetailSizeReference(S));
   $('hero-body').addEventListener('click',()=>{
     const body=byId(S.selected);
-    if(body && renderer && rendererSelectionId(body,byId)!==null)selectBody(body.id,true);
+    if(!body || !renderer)return;
+    const targetId=renderer.planetId===body.id?body.id:rendererSelectionId(body,byId);
+    if(targetId===null || targetId===undefined)return;
+    if(!renderer.toggleDetailZoom(targetId))return;
+    if(arMode?.active)arMode.alignToPerspective();
+    updateDetail(); // Update NAH/FERN label without changing details, selection or history.
   });
   $('back-to-solar').addEventListener('click',()=>{
     if(!renderer?.planetId)return;
     if(renderer.cinema?.active)renderer.stopCinema();
-    // Clear both UI selection and camera follow before exiting the local scene.
-    // Otherwise reset() immediately centers the solar camera on the old body.
+    const center=byId(renderer.planetId);
+    const parent=center?.parentId && center.parentId!=='sun'?byId(center.parentId):null;
+    // Clear the old target first, so follow does not recenter the destination.
     clearSelection();
-    renderer.reset();
-    updateMode();
-    // Apply the oblique overview after restoring solar-specific layer/row settings.
-    renderer.returnToStandardCamera();
+    if(parent && openPlanetScene(parent.id)){
+      S.selected=parent.id;
+      renderer.setSelected(parent.id);
+      updateMode();
+      renderer.returnToStandardCamera();
+    }else{
+      renderer.reset();
+      updateMode();
+      // Apply the oblique overview after restoring solar-specific layer/row settings.
+      renderer.returnToStandardCamera();
+    }
     if(arMode?.active)arMode.alignToPerspective();
     mobileSheets?.close();
   });
@@ -147,25 +177,43 @@ export function initControls(){
   });
   $('planet-view-btn').addEventListener('click',()=>{
     const selected=byId(S.selected);
-    // Moons open the parent planet (or dwarf-planet) system, not a moon-only scene.
-    const center=selected?.type==='moon'?byId(selected.parentId):selected;
-    if(!openPlanetScene(center?.id))return;
-    S.selected=center.id;
-    renderer.setSelected(center.id);
+    if(!selected || !renderer)return;
+    // Solar -> parent systems -> own scene -> solar. Preserve the selected
+    // object throughout the cycle, including when visiting a parent system.
+    const nextId=nextDetailSceneId(selected,S.bodies,renderer.planetId);
+    if(nextId===undefined)return;
+    if(nextId===null){
+      if(renderer.cinema?.active)renderer.stopCinema();
+      renderer.reset();
+    }else if(!openPlanetScene(nextId))return;
+    // A child's category may be filtered out in a parent/solar view. Reveal
+    // only that category, retaining all other layer preferences.
+    const view=nextId===null?'solar':'planet';
+    const settings=S.viewSettings[view];
+    if(!layerEnabled(settings.layers,selected.type)){
+      const available=availableLayerTypes(S.bodies,view,nextId);
+      if(available.includes(selected.type))settings.layers=updateLayerSelection(
+        settings.layers,selected.type,true,view,available);
+    }
+    S.selected=selected.id;
+    renderer.setSelected(nextId===selected.id?selected.id:rendererSelectionId(selected,byId));
     updateMode();
     // Isolating a planet resets the orbit preset; in AR the sensor gaze must
     // adopt that view instead of retaining the previous scene's direction.
     if(arMode?.active)arMode.alignToPerspective();
-    updateCatalog();updateDetail();mobileSheets?.close();
+    // Keep the mobile details sheet at its current snap level while changing views.
+    updateCatalog();updateDetail();
   });
-  const togglePlayback=()=>{S.playing=!S.playing;updateTime();};
+  const togglePlayback=()=>{S.playing=!S.playing;renderer?.setSimulationPaused?.(!S.playing);updateTime();notifyToggle(S.playing?`Play: Geschwindigkeit ${formatSpeed(S.speed)}`:'Pause: Umlaufbahnen selektieren');};
   $('layer-play-btn').addEventListener('click',togglePlayback);
   $('layer-speed').addEventListener('input',e=>{
     S.speed=speedAtStep(S.timelineMode,Number(e.target.value));
     S.modeSpeeds[S.timelineMode]=S.speed;
-    updateTime(); // Changing speed preserves the pause state.
+    // Any manual speed adjustment resumes playback, including orbit hit testing.
+    if(!S.playing){S.playing=true;renderer?.setSimulationPaused?.(false);}
+    updateTime();
   });
-  const resetToToday=()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();};
+  const resetToToday=()=>{S.time=Date.now();renderer?.resetGalacticTrails?.();updateTime();updateDetail();notifyToggle('Heute: Datum zurückgesetzt');};
   $('layer-today-btn').addEventListener('click',resetToToday);
   document.addEventListener('pointerdown',e=>{
     if(!$('layer-popover').hidden && !$('layer-picker-wrap').contains(e.target))setLayerPopover(false);
@@ -177,8 +225,8 @@ export function initControls(){
       if(!$('layer-popover').hidden){setLayerPopover(false);$('layer-btn').focus({preventScroll:true});return;}
       setLayerPopover(false);mobileSheets?.close();
     }
-    if(e.key==='/'&&!(e.target instanceof HTMLInputElement)){
-      e.preventDefault();mobileSheets?.open('catalog');requestAnimationFrame(()=>$('search').focus());
+    if(isSearchShortcut(e)){
+      e.preventDefault();mobileSheets?.open('catalog');requestAnimationFrame(()=>$('search').focus({preventScroll:true}));
     }
   });
 }

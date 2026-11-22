@@ -91,6 +91,7 @@ export function drawSunTrail(renderer, vp, opacity=1, settings=renderer.settings
   if(!buffers.core || buffers.core.length<ribbonSize)buffers.core=new Float32Array(ribbonSize);
   drawPath(renderer,points,{rgb:hex(SUN_TRAIL_GLOW),widthPx:6.2,alpha:.12,contrast:true,ribbon:buffers.glow},vp,opacity);
   drawPath(renderer,points,{rgb:hex(SUN_TRAIL_CORE),widthPx:2.4,alpha:.45,contrast:true,ribbon:buffers.core},vp,opacity);
+  renderer.registerSelectablePath?.(sun,points);
 }
 
 export function drawOrbitLine(renderer, body, center, vp, alpha, selected, options = {}) {
@@ -106,10 +107,14 @@ export function drawOrbitLine(renderer, body, center, vp, alpha, selected, optio
   const appearance=orbitAppearance(body,settings,alpha,selected);
   if(settings?.galacticMotion && !renderer.planetId){
     const points=recordedGalacticTrail(renderer,body,vp);
-    if(points.length>=6)drawPath(renderer,points,appearance,vp,visibility);
+    if(points.length>=6){
+      drawPath(renderer,points,appearance,vp,visibility);
+      if(options.pickable!==false)renderer.registerSelectablePath?.(body,points);
+    }
     return;
   }
   // Outside the galactic mode these are ordinary closed Kepler ellipses.
   const entry=cache.get(body,parent,displayRadius,n,center);
   drawPath(renderer,entry.world,appearance,vp,visibility);
+  if(options.pickable!==false)renderer.registerSelectablePath?.(body,entry.world);
 }

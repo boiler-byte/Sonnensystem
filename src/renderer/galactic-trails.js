@@ -6,6 +6,11 @@ import {galacticOffsetAt,galacticHistoryDays} from './galactic-motion.js';
 // Preserve the newest fifth of the points when the budget fills up. Older
 // sections alone may be reduced against the visible, galactic flight path.
 export const MAX_GALACTIC_TRAIL_SAMPLES = 1000;
+export const GALACTIC_TRAIL_FPS_THRESHOLD = 59;
+/** Choose the visible *time window* from completed render-frame measurements. */
+export function galacticTrailUsesExtendedHistory(fps){
+  return Number.isFinite(fps) && fps>GALACTIC_TRAIL_FPS_THRESHOLD;
+}
 const EMPTY_TRAIL = new Float32Array(0);
 const WORLD_BEND_TOLERANCE = 0.012;
 const SCREEN_BEND_TOLERANCE_PX = 0.75;
@@ -55,11 +60,27 @@ const interpolate=(a,b,time)=>{
 export class GalacticTrailHistory {
   constructor(maxSamples=MAX_GALACTIC_TRAIL_SAMPLES){
     this.maxSamples=Math.max(2,Math.floor(maxSamples));
+    this.extendedHistory=false;
+    this.retainedExtendedHistory=false;
     this.trails=new Map();
     this.time=null;
     this.signature=null;
   }
-  clear(){this.trails.clear();this.time=null;this.signature=null;}
+  clear(){this.trails.clear();this.time=null;this.signature=null;
+    this.retainedExtendedHistory=this.extendedHistory;}
+  /**
+   * Low FPS clips the rendered trail. Once the extended window has been
+   * enabled, retain the recorded longer history across subsequent FPS drops
+   * so high-FPS mode can reveal it again. Before that, preserve the v146
+   * short retention window and keep the original 1,000-point limit.
+   */
+  setExtendedHistory(value){
+    const enabled=value===true;
+    if(enabled===this.extendedHistory)return;
+    this.extendedHistory=enabled;
+    this.retainedExtendedHistory ||= enabled;
+    for(const trail of this.trails.values())trail.output=null;
+  }
   /** Invisible bodies have neither a displayed trace nor retained history. */
   retainVisible(ids){
     for(const id of this.trails.keys())if(!ids.has(id))this.trails.delete(id);
@@ -135,11 +156,13 @@ export class GalacticTrailHistory {
     if(this.time!==null&&(time<this.time||signature!==this.signature))this.clear();
     this.time=time;this.signature=signature;
     let trail=this.trails.get(body.id);
-    if(trail&&time===trail.lastTime&&trail.lastSeen.position.every((v,i)=>v===position[i]))
+    if(trail&&trail.output!==null&&time===trail.lastTime&&
+      trail.lastSeen.position.every((v,i)=>v===position[i]))
       return trail.output??EMPTY_TRAIL; // Paused/unchanged frame: no CPU reconstruction.
     const current=makeSample(time,[position[0],position[1],position[2]]);
     if(!trail){
-      trail={historyDays:galacticHistoryDays(body),samples:[current],lastSeen:current,
+      trail={historyDays:galacticHistoryDays(body),extendedDays:galacticHistoryDays(body,true),
+        samples:[current],lastSeen:current,
         lastTime:time,buffer:EMPTY_TRAIL,output:EMPTY_TRAIL};
       this.trails.set(body.id,trail);
       return EMPTY_TRAIL;
@@ -163,31 +186,58 @@ export class GalacticTrailHistory {
         samples.push(previous);
       trail.lastSeen=current;
       trail.lastTime=time;
-      this.trimToWindow(samples,time,trail.historyDays,current);
+      this.trimToWindow(samples,time,
+        this.retainedExtendedHistory?trail.extendedDays:trail.historyDays,current);
       // Reserve one slot for the live end. Keep the latest fifth intact;
       // only older segments are candidates for geometry-based reduction.
       // The first endpoint is trimmed exclusively by the history duration.
-      while(samples.length>=this.maxSamples){
+      // Reserve a possible interpolated cutoff only while displaying the
+      // short window over a retained long recording. Otherwise keep the
+      // original full 1,000-vertex rendering budget unchanged.
+      const cutoffReserve=this.retainedExtendedHistory&&!this.extendedHistory?1:0;
+      while(samples.length>=Math.max(2,this.maxSamples-cutoffReserve)){
         if(samples.length===2)samples.pop();
         else this.simplify(samples,view,time,true);
       }
     }
     const includeCurrent=samples[samples.length-1].time<time;
-    const count=samples.length+(includeCurrent?1:0);
-    if(count<2)return EMPTY_TRAIL;
+    const visibleDays=this.extendedHistory?trail.extendedDays:trail.historyDays;
+    const visibleStart=time-visibleDays*DAY;
+    let first=0,clippedStart=null;
+    if(samples[0].time<visibleStart){
+      // Find the first stored point within the visible time window. The
+      // boundary is interpolated from *recorded* endpoints, not extrapolated.
+      let lo=0,hi=samples.length;
+      while(lo<hi){const mid=(lo+hi)>>1;if(samples[mid].time<visibleStart)lo=mid+1;else hi=mid;}
+      first=lo;
+      if(first===samples.length || samples[first].time!==visibleStart)
+        clippedStart=interpolate(samples[first-1],samples[first]??current,visibleStart);
+    }
+    let count=samples.length-first+(clippedStart?1:0)+(includeCurrent?1:0);
+    if(clippedStart && count>this.maxSamples){
+      // This can happen on the first paused frame after FPS falls: the full
+      // long trail was already recorded with 1,000 points. Keep the exact
+      // time boundary and the live endpoint, eliding only the first inner
+      // point rather than allocating an extra rendered vertex.
+      first+=count-this.maxSamples;
+      count=this.maxSamples;
+    }
+    if(count<2){trail.output=EMPTY_TRAIL;return EMPTY_TRAIL;}
     const size=count*3;
     if(trail.buffer.length<size)trail.buffer=new Float32Array(Math.max(size,trail.buffer.length*2));
-    for(let i=0;i<samples.length;i++){
-      const sample=samples[i],offset=galacticOffsetAt(sample.time,time),index=i*3;
-      trail.buffer[index]=sample.position[0]+offset[0];
-      trail.buffer[index+1]=sample.position[1]+offset[1];
-      trail.buffer[index+2]=sample.position[2]+offset[2];
-    }
+    let index=0;
+    const append=sample=>{
+      const offset=galacticOffsetAt(sample.time,time);
+      trail.buffer[index++]=sample.position[0]+offset[0];
+      trail.buffer[index++]=sample.position[1]+offset[1];
+      trail.buffer[index++]=sample.position[2]+offset[2];
+    };
+    if(clippedStart)append(clippedStart);
+    for(let i=first;i<samples.length;i++)append(samples[i]);
     if(includeCurrent){
-      const index=samples.length*3;
-      trail.buffer[index]=position[0];
-      trail.buffer[index+1]=position[1];
-      trail.buffer[index+2]=position[2];
+      trail.buffer[index++]=position[0];
+      trail.buffer[index++]=position[1];
+      trail.buffer[index++]=position[2];
     }
     trail.output=trail.buffer.subarray(0,size);
     return trail.output;
@@ -197,6 +247,7 @@ export class GalacticTrailHistory {
 /** Match recording eligibility to the objects that are actually drawn. */
 export function recordedGalacticTrail(renderer,body,vp=null){
   const history=renderer._galacticTrails??=new GalacticTrailHistory();
+  history.setExtendedHistory(renderer.galacticTrailExtendedHistory);
   if(!layerEnabled(renderer.settings?.layers,body.type) ||
      (typeof renderer.shouldDraw==='function'&&!renderer.shouldDraw(body))){
     history.remove(body.id);

@@ -1,3 +1,84 @@
+## v157 – Objektansicht lässt mobiles Detail-Sheet geöffnet (22.11.2026)
+
+- Der `{Objekt}-Ansicht`-Toggle wechselt weiterhin zwischen den Objektansichten, ohne dabei das Mobile-Sheet zu schließen oder dessen Snap-Stufe zu verändern.
+- Die übrigen Schließaktionen bleiben unverändert; Regressionstest für das Weiterbestehen des geöffneten Sheets aktualisiert.
+- Paket `157.0.0`, HTML `V157.0` und PWA-Shell `sonnensystem-shell-v157`.
+
+## v156 – Referenzkreise ohne Hintergrundbilder (22.11.2026)
+
+- Das CSS-`background-image` aus `.hero-size-reference-circle` entfernt; die Mond-Variante setzt ebenfalls kein Hintergrundbild mehr. Die Farbflächen für Erde (blau) und Mond (beige) bleiben unverändert.
+- Die überflüssige CSS-Variable `--hero-size-reference-image` im Detailrenderer entfernt, die zugehörigen Tests angepasst.
+- Paket `156.0.0`, HTML `V156.0` und PWA-Shell `sonnensystem-shell-v156`.
+
+## v155 – Toasts für Zeitaktionen und Slider-Fortsetzen (22.11.2026)
+
+- Der Play/Pause-Button meldet über den bereits vorhandenen Status-Toast **„Pause: Umlaufbahnen selektieren“** oder **„Play: Geschwindigkeit …“** samt aktueller Tempoanzeige. Die Auswahl sichtbarer Bahnen und Schweife bleibt auf den Pause-Modus beschränkt.
+- **Heute** meldet **„Heute: Datum zurückgesetzt“**, setzt nur die Simulationszeit zurück und verändert weder die Wiedergabe noch die gespeicherte Geschwindigkeit.
+- Jede Änderung des Range-Sliders speichert weiterhin die Geschwindigkeit pro Ansicht und setzt eine pausierte Simulation sofort wieder in Play. Der Renderer deaktiviert dabei die pausierte Bahninteraktion. Ohne vorherige Pause wird kein zweiter Start ausgelöst.
+- Regressionen: `tests/time-control-toasts-v155.test.mjs`. Paket `155.0.0`, HTML `V155.0`, PWA-Shell `sonnensystem-shell-v155`.
+
+## v154 – Schaubild-Label und Perspektive, Fernansicht halbiert (22.11.2026)
+
+- Der Name des ausgewählten Objekts bleibt im Schaubild auch ohne verfügbaren Größenvergleich sichtbar. Die Referenzschaltfläche erscheint ausschließlich bei einem gültigen Größenvergleich.
+- Ein Klick auf das Schaubild stellt zusätzlich die neutrale Perspektive der aktuellen Szene wieder her. Der Nah-/Fern-Kameraabstand und die aktive Auswahl bleiben erhalten, auch in lokalen Szenen und der Reihenansicht.
+- In der Fernansicht wird die eigentliche Illustration auf 50 % skaliert; beim Zurückschalten auf Nahansicht kehrt sie mit einer CSS-Transition auf 100 % zurück. Die Einstellung für reduzierte Bewegung wird berücksichtigt.
+- Das eingeblendete Nah/Fern-Label unten links wird entfernt. Der Zustand bleibt für Screenreader und CSS über die zugänglichen Button-Attribute erhalten.
+- Regressionen: `tests/detail-zoom-v154.test.mjs`; Paket `154.0.0`, HTML `V154.0`, PWA-Shell `sonnensystem-shell-v154`.
+
+## v153 – Schaubild-Zoom zwischen Nah- und Fernansicht (22.11.2026)
+
+- Das Objektschaubild schaltet die Kameraperspektive mit jedem Klick zwischen **NAH** (große Ansicht des ausgewählten Objekts) und **FERN** (Bildausschnitt mit allen aktuell angezeigten Umlaufbahnen) um. Der Zustand erscheint als Kennzeichnung im Schaubild sowie als zugänglicher Toggle-Status.
+- Fernaufnahme: Die Szene wird auf ihr Zentrum ausgerichtet. Der Bildausschnitt berücksichtigt die vollständigen elliptischen Bahnen einschließlich Aphel, die dargestellten Objektkategorien und das Bildseitenverhältnis samt mobilem Detail-Sheet; keine bloße feste Zoomstufe. Ohne angezeigte Bahnen gilt die reguläre Systemübersicht.
+- Die Nahaufnahme fokussiert das ausgewählte Objekt, die Fernaufnahme pausiert dessen Kameraverfolgung. Ausgewähltes Objekt, Vergleichsschaubild, Größenreferenz, Objektansichtswechsel und Browser-History bleiben unverändert. Kein Erfinden von Sondenbahnen.
+- Regressionen `tests/detail-zoom-v153.test.mjs`; Paket `153.0.0`, HTML `V153.0`, PWA-Shell `sonnensystem-shell-v153`.
+
+## v152 – Umschalter für alle Objektansichten (22.11.2026)
+
+- Der bisherige Button „Planetenansicht“ in den Objektdetails wird zum zyklischen **Ansichtsumschalter**. Er nennt stets die aktuelle Ansicht (`Sonnensystem-Ansicht`, `Erde-Ansicht`, `Mond-Ansicht` usw.); Tooltip und Screenreader-Beschriftung nennen auch das nächste Ziel.
+- Klicks führen durch die verfügbare Kataloghierarchie eines ausgewählten Objekts bis zu dessen eigener Ansicht und dann zur Sonnensystemübersicht zurück (Mond: Sonnensystem → Erde → Mond → Sonnensystem). Die Objektselektion geht dabei nicht verloren. Unvollständige oder zyklische Parent-Daten führen nicht zu Endlosschleifen.
+- In der Zielszene wird die Kategorie des ausgewählten Objekts bei Bedarf eingeblendet. Die bisherige Zurück-Navigation, Browser-History und vorhandenen Layer-Einstellungen bleiben erhalten. Regressionen in `tests/detail-scene-cycle-v152.test.mjs` und aktualisierte ältere UI-Tests.
+- Paket `152.0.0`, HTML `V152.0`, Offline-PWA-Cache `sonnensystem-shell-v152`.
+
+## v151 – Browser-History für die Rücknavigation in Planetenansichten (22.11.2026)
+
+- „Zurück“ des Browsers führt wie der linke Button vom lokalen Objekt zum Parent-System (Mond → Erde → Sonnensystem, Charon → Pluto → Sonnensystem). Der UI-Zurück-Button nutzt die gleiche History, ohne doppelte Navigation.
+- Beim Öffnen einer isolierten Ansicht werden für noch nicht besuchte Elternansichten eigene History-Einträge vorbereitet, so dass direkte Einstiege in Monde korrekt zurücknavigieren. Browser-Vorwärts stellt Objektansichten ohne Seiten-Reload wieder her.
+- Im mobilen Layout hat das bereits vorhandene Bottom-Sheet weiterhin Priorität: Erst schließt Back das Sheet, danach die Planetenszene. Neuer Modul `src/ui/scene-history.js`, Regressionen `tests/scene-history-v151.test.mjs`.
+- Paket `151.0.0`, HTML `V151.0`, PWA-Shell `sonnensystem-shell-v151`.
+
+## v150 – Planetenansicht für jedes Objekt und Rücksprung entlang der Elternhierarchie (22.11.2026)
+
+- Der Button „Planetenansicht“ steht für alle katalogisierten Objekte zur Verfügung und öffnet jeweils das aktuell ausgewählte Objekt als Mittelpunkt. Lokale Ansichten zeigen nur seine modellierten direkten Kinder.
+- Der Zurück-Button zeigt nun das Ziel an und führt vom Mond zur Erde, von der Erde zum Sonnensystem, von Charon zu Pluto und von Pluto zum Sonnensystem. Elternwechsel behält eine Auswahl des Parent-Objekts; die Sonnensystemübersicht setzt die Auswahl zurück.
+- Auch Sonne, Sterne, Asteroiden, Monde, Kometen, Satelliten und Raumsonden bekommen isolierte Ansichten. Raumsonden ohne fortlaufende Ephemeriden werden dort ausschließlich als schematische Objekte dargestellt und erhalten keine erfundenen Bahnen. Sonnenobjekte werden nach AU-Orbitalabständen skaliert.
+- Regressionen: `tests/parent-scene-navigation-v150.test.mjs`, bestehende Szenen- und UI-Tests aktualisiert. Paket 150.0.0, HTML V150.0, PWA-Shell `sonnensystem-shell-v150`.
+
+## v149 – Pausierte Umlaufbahnen und galaktische Schweife auswählen (22.11.2026)
+
+- Bei angehaltener Simulation dienen die tatsächlich sichtbaren Bahnen und in der galaktischen Ansicht aufgezeichneten Schweife als Trefferflächen für Hover und Klick/Touch-Tipp. Die Auswahl zeigt die bestehenden Objektdetails, die Kugelauswahl bleibt vorrangig.
+- Ein Tooltip nahe dem Mauszeiger zeigt beim Hover **Name** und **Objektkategorie**. Er blockiert keine Eingaben, wird am Bildrand positioniert und verschwindet bei Pointer-Leave, Mausklick oder erneutem Start der Simulation.
+- Nicht gerenderte oder ausgeblendete Linien werden nicht aufgenommen; ausblendende Geisterbahnen während Ansichtswechseln werden nicht auswählbar gemacht. Die Kamera-/Touch-Navigation und normale Auswahl bei laufender Wiedergabe bleiben unverändert.
+- Neu: `src/renderer/path-picking.js`, `src/ui/orbit-tooltip.js`; Regressionen in `tests/pause-orbit-interaction-v149.test.mjs`. Paket `149.0.0`, HTML `V149.0`, Offline-PWA-Cache `sonnensystem-shell-v149`.
+
+## v148 – Suche mit Shift+K und bedingter X-Löschtaste (22.11.2026)
+
+- `Shift+K` öffnet den Katalog bzw. das mobile Katalog-Sheet und fokussiert das Suchfeld; `/` als bisherige Such-Taste entfällt. Editierbare Eingabefelder, Textbereiche sowie Strg-/Alt-/Meta-Kombinationen bleiben unangetastet.
+- Das permanente Shortcut-Badge wurde durch einen barrierefrei beschrifteten X-Button ersetzt. Er erscheint nur bei Suchinhalt und löscht bei Aktivierung den Eingabewert sowie `S.search`, aktualisiert sofort die Ergebnisse und fokussiert das Suchfeld erneut.
+- Auch programmatisch aus den Objektdetails eingesetzte Suchbegriffe synchronisieren die X-Sichtbarkeit. Desktop und mobiles Sheet nutzen dasselbe Suchfeld.
+- Tests `tests/catalog-search-shortcut-v148.test.mjs`; Paket `148.0.0`, HTML `V148.0`, PWA-Cache `sonnensystem-shell-v148`.
+
+## v147 – Galaktische Bewegung: verlängerte historische Zeitfenster ab über 59 FPS (22.11.2026)
+
+- **Über 59 FPS** werden die Zeitfenster der galaktischen Objekt-Schweife auf die gewünschten Werte erweitert: Sterne/Sonne **50 → 300 Jahre**, innere Objekte **30 → 100 Jahre**, äußere Objekte **100 → 500 Jahre**. Bei **59 FPS oder weniger** gelten unverändert 50/30/100 Jahre. Die FPS-Schwelle verwendet tatsächlich gerenderte Frames und ist unabhängig vom optionalen Debug-Overlay; die erste Sekunde dient als Messphase.
+- Die Obergrenze von **1.000 Stützpunkten pro Schweif** bleibt unverändert; es wird nicht nur die Punktzahl erhöht. Ausschließlich durchlaufene Simulationspositionen werden aufgezeichnet. Bei einem Rückfall auf niedrige FPS wird die Darstellung auf das kurze Fenster beschnitten, während bereits aufgezeichnete längere Verläufe für einen späteren FPS-Anstieg erhalten bleiben.
+- Regressionen `tests/galactic-history-fps-v147.test.mjs`; Paketversion `147.0.0`, HTML `V147.0`, Offline-PWA-Cache `sonnensystem-shell-v147`.
+
+## v146 – Layer Control: Debug-Steuerung und FPS-Messung (22.11.2026)
+
+- Dreifach-Tipp bzw. -Klick auf Datum/Uhrzeit in **Layer Control → Tempo** ersetzt die Zeitsteuerung durch die Debug-Steuerung. **Zeit** stellt den ursprünglichen Zeitregler samt Play/Pause und Heute wieder her; Zustand und Zeitsteuerung bleiben unverändert. Der Triple-Tipp nutzt eine begrenzte Zeitspanne statt browserabhängiger `click.detail`-Zählung.
+- Erster Debug-Toggle **FPS** blendet oben links im Viewport aktuelle FPS (letzte Sekunde) und den rollenden Durchschnitt über 60 Sekunden ein. Gemessen werden erfolgreiche Renderer-Zeichnungen aus `requestAnimationFrame`, nicht die Simulationsgeschwindigkeit. Inaktive/verborgene Tabs setzen die Messfenster zurück. Beim Ausschalten entfällt die Datensammlung.
+- Ergänzte Module `src/ui/debug-controls.js` und `src/ui/fps-meter.js`, Offline-PWA-Shell um diese Dateien erweitert. Regressionen in `tests/debug-fps-v146.test.mjs`; Paket `146.0.0`, HTML `V146.0`, Cache `sonnensystem-shell-v146`.
+
 ## v145 – Kamerasteuerung bei aktiver Objektverfolgung (22.11.2026)
 
 - Bei aktiv verfolgtem Körper sind **ein Finger / linke Maustaste** jetzt für das Umschauen zuständig und **zwei Finger / rechte Maustaste** für das Verschieben der Kamera. `Shift` + linke Maustaste spiegelt weiterhin die rechte Maustaste (während Verfolgung also Verschieben).

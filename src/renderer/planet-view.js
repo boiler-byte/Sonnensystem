@@ -2,7 +2,7 @@ import { displayOrbitRadius } from '../data/orbital-math.js';
 import { CAMERA_FOV, clamp, projected } from './math.js';
 import {drawSceneBodies,planetOrbitIds} from './scene-objects.js';
 
-/** Isolated planet scene: planet and the direct children present in catalog data. */
+/** Isolated object scene: center and its directly orbiting catalogued children. */
 export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const selected=renderer.byId.get(selectedId);
@@ -20,6 +20,13 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
    }
    // The Sun's halo belongs to the outgoing solar scene: let it fade
    // along with the solar sphere instead of disappearing on the first frame.
+   const localSun=planet?.id==='sun' && renderer.shouldDraw(planet)
+     ? projected(renderer.positions.get('sun')||[0,0,0],vp,renderer.width,renderer.height) : null;
+   if(localSun?.visible){
+     renderer.glow.style.left=localSun.x+'px';renderer.glow.style.top=localSun.y+'px';
+     renderer.glow.style.opacity=clamp(.98-(renderer.camera.dist-15)/90,.25,.9).toFixed(2);
+     return;
+   }
    const previousSun=renderer.transition?.kind==='view'
      ? renderer.transition.fromVisualBodies.get('sun') : null;
    const leavingSun=previousSun && renderer.departingBodyState(previousSun);
@@ -31,7 +38,7 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
 }
 
 export function planetChildrenFor(bodies,id) {
-  return bodies.filter(b=>b.parentId===id && b.type!=='probe');
+  return bodies.filter(b=>b.parentId===id && b.type!=='probe'); // No invented probe orbits.
 }
 
 export function planetFrameDistance(width,height,planet,children,settings={}) {

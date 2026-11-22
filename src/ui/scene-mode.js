@@ -1,4 +1,5 @@
 import { CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex } from '../renderer/camera.js';
+import {TYPES} from '../data/bodies.js';
 
 const $=id=>document.getElementById(id);
 /** The icon depicts the CURRENT pose; accessible labels describe the NEXT action. */
@@ -6,9 +7,21 @@ export function syncSceneMode(state,renderer,arActive=false){
   const center=renderer?.planetId?state.bodies.find(body=>body.id===renderer.planetId):null;
   const panel=$('view-mode-status'),button=$('reset-camera'),back=$('back-to-solar');
   back.hidden=!center;
+  const parent=center?.parentId && center.parentId!=='sun'
+    ? state.bodies.find(body=>body.id===center.parentId):null;
+  const destination=parent?.name||'Sonnensystem';
+  const backLabel=!parent?'Zurück zum Sonnensystem'
+    :parent.id==='earth'?'Zurück zur Erde':`Zurück zu ${destination}`;
+  back.setAttribute('aria-label',backLabel);
+  back.title=backLabel;
+  const backText=back.querySelector?.('span');
+  if(backText)backText.textContent=destination;
+  // A spacecraft without an ephemeris is shown only as a symbolic illustration.
+  const note=$('schematic-scene-note');
+  if(note)note.hidden=center?.type!=='probe';
   panel.classList.toggle('planet-active',Boolean(center));
   panel.setAttribute('aria-label',center
-    ? `Control-Panel · ${center.type==='dwarf'?'Zwergplanet':'Planet'} ${center.name}`
+    ? `Control-Panel · ${TYPES[center.type]?.label||'Objekt'} ${center.name}${center.type==='probe'?' (schematisch; keine berechnete Flugbahn)':''}`
     : 'Control-Panel · Sonnensystem');
 
   // This button only cycles perspectives; the separate back button is the

@@ -127,6 +127,7 @@ test('v87: camera action preserves planet scene, separate back button exits it a
   const arMode={active:false,alignToPerspective(){events.push('align');}};
   const mobileSheets={close(){events.push('close');}};
   const context=vm.createContext({$,renderer,arMode,mobileSheets,S:{},
+    byId:id=>({id,parentId:'sun'}),openPlanetScene:()=>false,
     clearSelection:()=>events.push('clear'),updateMode:()=>events.push('mode'),syncSceneMode:()=>events.push('sync'),updateDetail:()=>events.push('detail')});
   vm.runInContext(handlers,context);
   callbacks.get('reset-camera')();

@@ -1,6 +1,6 @@
 /** Dependency-free static server with a NASA/JPL Horizons gateway. */
 import { createServer } from 'node:http';
-import { PORT,NASA_CONTACT_OK } from './config.mjs';
+import { PORT,NASA_CONTACT_OK,release } from './config.mjs';
 import { apiRoute } from './routes/api.mjs';
 import { staticAsset } from './static.mjs';
 import { describeError } from './providers/http.mjs';
@@ -28,7 +28,7 @@ export async function handler(req,res){
 // Importing the module for tests must not start a listener.
 if(process.argv[1]&&new URL(`file://${process.argv[1]}`).pathname===new URL(import.meta.url).pathname){
   createServer(handler).listen(PORT,'0.0.0.0',()=>{
-    console.log(`\n  Sonnensystem v142: http://localhost:${PORT}\n`);
+    console.log(`\n  Sonnensystem v${release}: http://localhost:${PORT}\n`);
     console.log(`  NASA/JPL Horizons: ${NASA_CONTACT_OK?'Kontakt konfiguriert':'Kontaktadresse fehlt'}\n`);
   });
 }

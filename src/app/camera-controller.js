@@ -5,26 +5,28 @@ import {updateMode} from './view-mode.js';
 import {changeLayers} from '../ui/display-controls.js';
 import {probeLocationBody,rendererSelectionId} from '../data/probe-location.js';
 
-/** Planetary isolation also supports dwarf planets that have catalogued moons. */
+/** Open a local system around any catalogued object, including moons and minor bodies. */
 export function openPlanetScene(id){
-  if(renderer?.cinema?.active)renderer.stopCinema();
   const center=byId(id);
-  if(!center || !['planet','dwarf'].includes(center.type) || !renderer?.showPlanetSystem(id))return false;
-  // Each newly opened planet system starts with its own objects isolated in the catalog.
-  // The user can switch the filter off afterwards without changing the scene.
+  if(!center || !renderer?.showPlanetSystem)return false;
+  if(renderer?.cinema?.active)renderer.stopCinema();
+  if(!renderer.showPlanetSystem(id))return false;
+  // Every local scene initially filters the catalog to its center and descendants.
   S.catalogPlanetOnly=true;
-  // When a dwarf system is opened, its central dwarf must be included in the
-  // renderer mask even though ordinary planet-view defaults only include planets.
-  if(center.type==='dwarf' && !layerEnabled(S.viewSettings.planet.layers,'dwarf')){
+  // Default planet layers omit stars, minor bodies and probes. Always unmask
+  // the chosen center without changing the solar-system layer preferences.
+  if(!layerEnabled(S.viewSettings.planet.layers,center.type)){
     const available=availableLayerTypes(S.bodies,'planet',id);
-    S.viewSettings.planet.layers=updateLayerSelection(S.viewSettings.planet.layers,'dwarf',true,'planet',available);
+    S.viewSettings.planet.layers=updateLayerSelection(S.viewSettings.planet.layers,center.type,true,'planet',available);
   }
   return true;
 }
 export function selectBody(id,focus=false,{zoom=focus}={}){
   if(renderer?.cinema?.active)renderer.stopCinema();
   const body=byId(id);if(!body)return;
-  const target=probeLocationBody(body,byId)||body;
+  // In a symbolic probe scene, selecting its center must not jump to the
+  // probe's terminal target (e.g. Cassini -> Saturn).
+  const target=renderer?.planetId===body.id?body:(probeLocationBody(body,byId)||body);
   const sceneId=target.id;
   if(renderer?.planetId && sceneId!==renderer.planetId && target.parentId!==renderer.planetId){
     if(target.type==='planet'||target.type==='dwarf')openPlanetScene(target.id);
@@ -40,7 +42,7 @@ export function selectBody(id,focus=false,{zoom=focus}={}){
       changeLayers(updateLayerSelection(S.settings.layers,target.type,true,view,available));
   }
   S.selected=id;
-  const renderId=rendererSelectionId(body,byId);
+  const renderId=renderer?.planetId===body.id?body.id:rendererSelectionId(body,byId);
   renderer?.setSelected(renderId,{focus:focus&&renderId!==null,zoom:zoom&&renderId!==null});
   // Selecting a catalog body moves the camera's orbit target. In AR the gaze
   // is sensor-relative and otherwise remains pointed at the previous object.

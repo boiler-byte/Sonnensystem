@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V145.0" />
+  <meta name="app-version" content="V157.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -27,7 +27,7 @@
       <aside class="catalog" id="catalog" role="tabpanel" aria-labelledby="sidebar-tab-catalog">
         
         <div class="catalog-search-row" id="catalog-search-row">
-          <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><span class="shortcut">/</span></div>
+          <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><button id="search-clear" class="search-clear" type="button" aria-label="Suche leeren" title="Suche leeren" aria-controls="object-list" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6L18 18M18 6L6 18"/></svg></button></div>
           <button class="catalog-planet-filter" id="catalog-planet-filter" type="button" aria-label="Nur Objekte des aktuellen Planeten anzeigen" aria-pressed="false" aria-controls="object-list" title="Nur Objekte des aktuellen Planeten anzeigen" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-24 12 12)"/></svg>
           </button>
@@ -38,7 +38,7 @@
       <aside class="detail" id="detail" role="tabpanel" aria-labelledby="sidebar-tab-detail" hidden>
         <div class="detail-scroll" id="detail-scroll">
           <div class="detail-hero" id="detail-hero" role="group" aria-label="Objektschaubild">
-            <button id="hero-body" class="hero-body" type="button" aria-label="Kein Objekt ausgewählt" title="Kein Objekt ausgewählt" disabled>
+            <button id="hero-body" class="hero-body" type="button" aria-label="Kein Objekt ausgewählt" aria-pressed="false" aria-controls="space" title="Kein Objekt ausgewählt" disabled>
               <span class="hero-size-art" aria-hidden="true">
                 <span class="hero-generic-plot" id="hero-generic-plot" hidden>
                   <span class="hero-generic-orbit hero-generic-orbit-1"></span>
@@ -60,12 +60,12 @@
             </nav>
             <span class="hero-size-legend" id="hero-size-legend" hidden>
               <span class="hero-size-label hero-size-label-selected" id="hero-size-selected-name" aria-hidden="true"></span>
-              <button class="hero-size-label hero-size-label-reference" id="hero-size-reference-name" type="button" aria-label="Vergleichsreferenz wechseln" aria-controls="hero-size-plot hero-size-ratio" aria-pressed="false" disabled></button>
+              <button class="hero-size-label hero-size-label-reference" id="hero-size-reference-name" type="button" aria-label="Vergleichsreferenz wechseln" aria-controls="hero-size-plot hero-size-ratio" aria-pressed="false" disabled hidden></button>
             </span>
             <div class="hero-ref"><span class="type-dot" id="type-dot"></span><span id="detail-type">KEINE AUSWAHL</span><span class="hero-ref-divider" aria-hidden="true">/</span><span id="detail-origin">SONNENSYSTEM</span></div>
           </div>
           <div class="detail-scene-actions" id="detail-scene-actions" hidden>
-            <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Planetenansicht</strong></span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+            <div id="planet-view-actions" class="planet-view-actions" hidden><button id="planet-view-btn" class="planet-view-btn" type="button" aria-pressed="false" aria-roledescription="Ansichtsumschalter"><span class="planet-view-symbol" aria-hidden="true">◎</span><span class="planet-view-copy"><strong id="planet-view-title">Sonnensystem-Ansicht</strong></span><span class="button-arrow" aria-hidden="true">↻</span></button></div>
           </div>
           <div class="detail-tabs" role="tablist" aria-label="Objektinformationen">
             <button class="detail-tab active" id="detail-tab-daten" type="button" role="tab" data-detail-tab="daten" aria-controls="detail-daten" aria-selected="true" tabindex="0">Daten</button>
@@ -92,6 +92,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14.5 5-7 7 7 7"/><path d="M8 12h12"/></svg>
           <span>Sonnensystem</span>
         </button>
+        <div class="schematic-scene-note" id="schematic-scene-note" hidden>Symbolische Darstellung · keine berechnete Flugbahn</div>
         <div class="viewport-actions" role="group" aria-label="Kamerasteuerung">
           <button class="ar-mode-button" id="ar-mode-btn" type="button" aria-label="AR-Modus: Durch Bewegen des Smartphones umsehen" aria-pressed="false" aria-busy="false" title="AR-Modus" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/><path d="M12 6v2m0 8v2M6 12h2m8 0h2"/><circle cx="12" cy="12" r="3.5"/></svg>
@@ -110,6 +111,7 @@
         <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: Normalerweise links ziehen oder ein Finger bewegt, rechts ziehen oder zwei Finger schauen um. Bei aktiver Objektverfolgung ist es umgekehrt: links oder ein Finger schauen um, rechts oder zwei Finger bewegen. Mausrad und Zwei-Finger-Spreizgeste zoomen."></canvas>
         <div class="space-glow" id="space-glow"></div>
         <canvas id="labels-canvas" aria-hidden="true"></canvas>
+        <div class="orbit-hover-tooltip" id="orbit-hover-tooltip" role="tooltip" hidden><strong class="orbit-hover-name"></strong><span class="orbit-hover-category"></span></div>
         <div class="row-inspection" id="row-inspection" aria-hidden="true" hidden>
           <svg id="row-inspection-vector-svg" class="row-inspection-vector-svg" aria-hidden="true" preserveAspectRatio="none" hidden>
             <path id="row-inspection-vector-line" class="row-inspection-vector-line"/>
@@ -142,6 +144,11 @@
         </div>
         <div class="cinema-scene-fade" id="cinema-scene-fade" aria-hidden="true" hidden></div>
         <h1 class="sr-only">Sonnensystem</h1>
+        <output class="debug-fps-hud" id="debug-fps-hud" aria-label="Bildrate in Bildern pro Sekunde" hidden>
+          <span class="debug-fps-hud-title">FPS</span>
+          <span class="debug-fps-hud-row"><span>Aktuell</span><strong id="debug-fps-current">–</strong></span>
+          <span class="debug-fps-hud-row"><span>Ø / Minute</span><strong id="debug-fps-minute">–</strong></span>
+        </output>
         <section class="control-panel viewport-topright" id="view-mode-status" aria-label="Control-Panel">
           <button class="cinema-button" id="cinema-btn" type="button" aria-label="Cinema-Kamerafahrt starten" aria-pressed="false" title="Cinema-Modus starten" hidden>
             <svg class="cinema-icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z"/></svg>
@@ -210,28 +217,39 @@
                 <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
               </div>
-              <div class="layer-speed-panel" id="layer-speed-panel" role="group" aria-label="Simulationsgeschwindigkeit" hidden>
-                <div class="layer-speed-layout">
-                  <div class="layer-speed-rail">
-                    <input id="layer-speed" type="range" min="0" max="240" step="1" value="101" aria-label="Simulationsgeschwindigkeit in logarithmischen Stufen" aria-describedby="layer-speed-min-label layer-speed-max-label" aria-orientation="vertical" />
-                    <div class="layer-speed-value-track">
-                      <output id="layer-speed-value" for="layer-speed">5 Tage / s</output>
+              <div class="layer-speed-panel" id="layer-speed-panel" role="group" aria-label="Simulation und Debug" hidden>
+                <div class="layer-time-controls" id="layer-time-controls" role="group" aria-label="Zeitsteuerung">
+                  <div class="layer-speed-layout">
+                    <div class="layer-speed-rail">
+                      <input id="layer-speed" type="range" min="0" max="240" step="1" value="101" aria-label="Simulationsgeschwindigkeit in logarithmischen Stufen" aria-describedby="layer-speed-min-label layer-speed-max-label" aria-orientation="vertical" />
+                      <div class="layer-speed-value-track">
+                        <output id="layer-speed-value" for="layer-speed">5 Tage / s</output>
+                      </div>
+                    </div>
+                    <div class="layer-speed-bounds">
+                      <span id="layer-speed-max-label">10 Jahre / s</span>
+                      <span id="layer-speed-min-label">1 Std. / s</span>
                     </div>
                   </div>
-                  <div class="layer-speed-bounds">
-                    <span id="layer-speed-max-label">10 Jahre / s</span>
-                    <span id="layer-speed-min-label">1 Std. / s</span>
+                  <div class="layer-speed-actions" role="group" aria-label="Wiedergabe und aktuelles Datum">
+                    <button class="layer-speed-action" id="layer-play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true" title="Simulation pausieren">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path id="layer-play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z"/></svg>
+                    </button>
+                    <button class="layer-speed-action" id="layer-today-btn" type="button" aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.34-5.66M4 4v5h5"/></svg>
+                    </button>
                   </div>
-                </div>
-                <div class="layer-speed-actions" role="group" aria-label="Wiedergabe und aktuelles Datum">
-                  <button class="layer-speed-action" id="layer-play-btn" type="button" aria-label="Simulation pausieren" aria-pressed="true" title="Simulation pausieren">
-                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path id="layer-play-icon-path" d="M7 5h4v14H7z M14 5h4v14h-4z"/></svg>
-                  </button>
-                  <button class="layer-speed-action" id="layer-today-btn" type="button" aria-label="Simulation auf aktuelle lokale Zeit zurücksetzen" title="Aktuelles Datum und lokale Uhrzeit">
-                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 1 0 2.34-5.66M4 4v5h5"/></svg>
+                  <button class="layer-debug-entry" id="layer-debug-entry" type="button" aria-label="Simulationsdatum und Uhrzeit. Dreimal tippen, um Debug zu öffnen" title="Simulationsdatum und Uhrzeit (dreimal tippen für Debug)">
+                    <time class="layer-speed-date" id="layer-sim-date" aria-live="off" title="Simulationsdatum und Uhrzeit"></time>
                   </button>
                 </div>
-                <time class="layer-speed-date" id="layer-sim-date" aria-live="off" title="Simulationsdatum und Uhrzeit"></time>
+                <div class="layer-debug-panel" id="layer-debug-panel" role="group" aria-label="Debug-Steuerung" hidden>
+                  <div class="layer-debug-header">
+                    <strong>Debug</strong>
+                    <button class="layer-debug-back" id="layer-debug-back" type="button" title="Zurück zur Zeitsteuerung">Zeit</button>
+                  </div>
+                  <button class="layer-debug-toggle" id="layer-debug-fps" type="button" aria-pressed="false" aria-controls="debug-fps-hud" title="Bildrate oben links einblenden">FPS</button>
+                </div>
               </div>
             </div>
           </div>

@@ -40,7 +40,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     const select=(id)=>{state.selected=id;renderDetail(state,renderer,select);};
     renderCatalog(state,select);renderDetail(state,renderer,select);syncSceneMode(state,renderer);syncControls(state);
     assert.equal(get('planet-view-actions').hidden,false);
-    assert.equal(get('planet-view-title').textContent,'Planetenansicht');
+    assert.equal(get('planet-view-title').textContent,'Sonnensystem-Ansicht');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'false');
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.match(get('hero-body').getAttribute('aria-label'),/Erde/);
@@ -49,7 +49,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Planet Erde');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'true');
     select('moon');assert.equal(get('planet-view-actions').hidden,false);
-    assert.equal(get('planet-view-title').textContent,'Planetenansicht');
+    assert.equal(get('planet-view-title').textContent,'Erde-Ansicht');
     renderer.reset();syncSceneMode(state,renderer);
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('reset-camera').title,'Nächste Perspektive: Topdown');
@@ -62,8 +62,9 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
 test('App event wiring still exposes planet-view and overview actions',async()=>{
   const app=await readAppSource();
   assert.ok(app.includes("$('planet-view-btn').addEventListener('click'"));
-  assert.ok(app.includes('openPlanetScene(center?.id)'));
-  assert.ok(app.includes("selected?.type==='moon'?byId(selected.parentId):selected"));
+  assert.ok(app.includes('nextDetailSceneId(selected,S.bodies,renderer.planetId)'));
+  assert.ok(app.includes('openPlanetScene(parent.id)'));
+  assert.ok(app.includes('const parent=center?.parentId'));
   assert.ok(app.includes("$('reset-camera').addEventListener('click'"));
   assert.ok(app.includes('renderer?.cycleCameraPerspective({keepPlanetScene:true});'));
   assert.ok(app.includes("$('back-to-solar').addEventListener('click'")); 

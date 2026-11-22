@@ -49,7 +49,8 @@ for(const planet of bodies.filter(b=>b.type==='planet')){
  assert.equal(r.camera.dist,47,'Overview restores solar-system distance immediately');
  assert.deepEqual(r.camera.target,[0,0,0],'Overview centers sun immediately');
  assert.ok(r.positions.has('sun')&&r.positions.has('jupiter'),'Overview recalculates full solar system');
- assert.equal(r.showPlanetSystem('moon'),false,'No planet scene for a moon');
+ assert.equal(r.showPlanetSystem('moon'),true,'Moon can have its own local view');
+ assert.deepEqual([...r.positions.keys()],['moon'],'Moon without children has a single centered object');
  assert.equal(r.showPlanetSystem('no-id'),false,'No scene for invalid object');
 }
 {

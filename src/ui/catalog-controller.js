@@ -13,16 +13,26 @@ export function connectCatalogSelection(callback){
 }
 
 export const updateCatalog=()=>{
+  // The same search field is shared by desktop and the mobile sheet.
+  $('search-clear').hidden=!$('search').value;
   const planetId=renderer?.planetId||null;
   const toggle=$('catalog-planet-filter');
   toggle.hidden=!planetId;
   const pressed=Boolean(planetId && S.catalogPlanetOnly);
   syncToggleState(toggle,pressed);
-  const name=planetId?byId(planetId)?.name||'aktuellen Planeten':'aktuellen Planeten';
+  const name=planetId?byId(planetId)?.name||'aktuellen Objekts':'aktuellen Objekts';
   toggle.setAttribute('aria-label',`Nur ${name} und zugehörige Objekte anzeigen`);
   toggle.title=pressed?`Filter für ${name} ausschalten`:`Nur ${name} und zugehörige Objekte anzeigen`;
   renderCatalog(S,selectBody,{planetId});
 };
+/** Clear the input and its active filter, then keep the field ready for another query. */
+export function clearCatalogSearch(){
+  const input=$('search');
+  input.value='';
+  S.search='';
+  updateCatalog();
+  input.focus({preventScroll:true});
+}
 /** Show a parent's descendants by using the existing parent-aware catalog search. */
 export function showRelatedInCatalog(parentName){
   S.search=parentName;

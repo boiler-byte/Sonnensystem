@@ -66,14 +66,15 @@ export function layerPreset(name = 'standard', view = 'solar') {
   return {mode, types: new Set(mode === 'all' ? LAYER_TYPES : defaultTypes(view))};
 }
 
-/** Only show types present in this isolated planet or dwarf-planet scene. */
+/** Only the center and categories of directly orbiting, modelled children are available. */
 export function availableLayerTypes(bodies, view = 'solar', planetId = null) {
   if (view !== 'planet') return LAYER_TYPES;
-  const center = bodies.find(body => body.id === planetId && (body.type === 'planet' || body.type === 'dwarf'));
+  const center = bodies.find(body => body.id === planetId && LAYER_TYPES.includes(body.type));
   if (!center) return ['planet'];
   const present = new Set([center.type]);
   for (const body of bodies) {
-    if (body.parentId === planetId && LAYER_TYPES.includes(body.type)) present.add(body.type);
+    // Probes without orbital ephemerides may be centers, never fictitious orbiters.
+    if (body.parentId === planetId && body.type !== 'probe' && LAYER_TYPES.includes(body.type)) present.add(body.type);
   }
   return LAYER_TYPES.filter(type => present.has(type));
 }

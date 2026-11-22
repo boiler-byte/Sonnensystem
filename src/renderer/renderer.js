@@ -7,6 +7,7 @@ import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
 import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex, CAMERA_FLIGHT_MS, cameraFlightPose, cameraFlightLook, orbitCameraLook } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
 import { drawOrbitLine } from './orbits.js';
+import { detailNearDistance, detailFarDistance } from './detail-zoom.js';
 
 import { drawSceneLabels } from './labels.js';
 import { computePositions } from './scene.js';
@@ -21,6 +22,7 @@ import { rowLayout, rowFrameDistance, rowCameraFrame, rowBodyFocusDistance, rubb
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaSceneAt, cinemaEntryOpacity, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
 import { rowHoveredBody, rowInspectionRadius, ROW_INSPECTION_ANIMATION_MS } from './row-inspection.js';
 import { projectedHitArea } from './picking.js';
+import { pickVisiblePath } from './path-picking.js';
 import { OBJECT_LOD, MARKER_FLOATS, projectedSphereDiameter, objectLOD, LODMarkerBatch } from './lod.js';
 
 export class SolarRenderer {
@@ -46,6 +48,7 @@ export class SolarRenderer {
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
   this.cameraPresetIndex=0;this.cameraManuallyMoved=false;
   this.focusedBodyId=null;this.focusOffsetY=0;
+  this.detailZoomKey=null;this.detailZoomMode=null;this.detailZoomFarLimit=null;
   this.followEnabled=true;this.followedBodyId=null;this.followLastPosition=null;this.followLastAtMs=null;
   this.visualAngularClocks=new VisualAngularClocks();
   this._galacticStarReferenceTime=null;this._galacticStarOffset=[0,0,0];this._galacticStarFrameAt=null;
@@ -55,12 +58,47 @@ export class SolarRenderer {
   this.dpr=1;this.width=0;this.height=0;this.viewportWidth=0;this.viewportHeight=0;this._labelState=null;
   this.drag=null;this.pointers=new Map();this.gesture=null;this.gestureOrigin=null;this.heldArrows=new Set();this.lastKeyboardFrameMs=null;
   this.rowPointer=null;this.rowHoveredId=null;this.rowHoverStartedAt=0;this.rowHoverLevels=new Map();this.rowHoverFrameAt=null;
+  this.simulationPaused=false;this.selectablePaths=[];this.pathPointer=null;this.hoveredPathId=null;
   this.attachEvents();this.resize();
   this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
  }
  attachEvents(){attachCameraControls(this);}
  /** Track hover without interfering with drag/pinch, selection or camera controls. */
  setRowPointer(point){this.rowPointer=point;}
+ /** Register the world-space orbit/trail vertices actually drawn in the last frame. */
+ registerSelectablePath(body,points){
+  if(this.simulationPaused===true && body?.id && points?.length>=6)
+    (this.selectablePaths??=[]).push({body,points});
+ }
+ /** Enable line interaction only when simulation playback is paused. */
+ setSimulationPaused(paused){
+  const next=paused===true;
+  if(this.simulationPaused===next)return;
+  this.simulationPaused=next;
+  this.selectablePaths=[];
+  this.clearPathHover();
+ }
+ clearPathHover(){
+  const hadHover=this.hoveredPathId!=null;
+  this.hoveredPathId=null;this.pathPointer=null;this._pathHoverVisible=false;
+  this.canvas?.classList?.remove?.('path-hover');
+  if(hadHover)this.callbacks?.onPathHover?.(null);
+ }
+ /** Sphere picking retains priority over orbit lines drawn behind bodies. */
+ pathAt(x,y){
+  if(!this.simulationPaused || !this.vp || this.bodyAt(x,y))return null;
+  return pickVisiblePath(this.selectablePaths,this.vp,this.width,this.height,x,y);
+ }
+ hoverOrbitPath(x,y){
+  if(!this.simulationPaused){this.clearPathHover();return null;}
+  this.pathPointer={x,y};
+  const hit=this.pathAt(x,y),body=hit?.body??null;
+  this.hoveredPathId=body?.id??null;
+  this.canvas?.classList?.toggle?.('path-hover',!!body);
+  if(body || this._pathHoverVisible)this.callbacks?.onPathHover?.(body?{body,x,y}:null);
+  this._pathHoverVisible=!!body;
+  return body?.id??null;
+ }
  /** Animate the inspected sphere instead of altering the sorted layout's positions. */
  advanceRowInspection(vp,now=performance.now()){
   this.vp=vp;
@@ -457,7 +495,7 @@ export class SolarRenderer {
     const ghost=this.departingOrbitState(source,t);
     if(ghost.opacity<=.001)continue;
     this.orbitLine(ghost.body,ghost.center,vp,ghost.alpha,ghost.selected,
-      {radius:ghost.radius,opacity:ghost.opacity,settings:ghost.settings});
+      {radius:ghost.radius,opacity:ghost.opacity,settings:ghost.settings,pickable:false});
    }
    gl.depthMask(true);
   }
@@ -657,7 +695,7 @@ export class SolarRenderer {
     this._childrenByParent.get(body.parentId).push(body);
   }
   this.fourMoonIds=largestMoonIds(list);
-  if(this.planetId && !['planet','dwarf'].includes(this.byId.get(this.planetId)?.type))this.reset();
+  if(this.planetId && !this.byId.has(this.planetId))this.reset();
   // Following is permanently enabled, but the initial catalog has no selected body.
   // Follow only an existing selection: never choose a catalog body implicitly.
   // Later catalog updates must not resume suspended tracking (v115).
@@ -670,7 +708,7 @@ export class SolarRenderer {
     : planetChildrenFor(this.bodies,id); // Support embedders that set bodies directly.
  }
  planetFrameDistance(id=this.planetId){return planetFrameDistance(this.width,this.height,this.byId.get(id),this.planetChildren(id),this.settings);}
-  showPlanetSystem(id){if(!['planet','dwarf'].includes(this.byId.get(id)?.type))return false;
+  showPlanetSystem(id){if(!this.byId.get(id))return false;
   const animated=this.canAnimateLayout();
   if(animated)this.beginTransition('view');
   this.planetId=id;this.markCameraMoved();
@@ -685,6 +723,12 @@ export class SolarRenderer {
   return true;
  }
  setSelected(id,{focus=false,zoom=focus}={}){
+  // A new selection or a catalog focus starts a new chart zoom cycle.
+  if(id!==this.selectedId || focus){
+    this.detailZoomKey=focus && zoom ? `${this.planetId||'solar'}|${id}` : null;
+    this.detailZoomMode=focus && zoom ? 'near' : null;
+    this.detailZoomFarLimit=null;
+  }
   // Canvas picks center at the current zoom; catalog and hero also zoom in.
   if(id!=null && this.camera.freeLook)restoreOrbitFromLook(this.camera);
   const changed=id!==this.selectedId;
@@ -725,6 +769,74 @@ export class SolarRenderer {
   const dist=b.type==='star'?24:b.type==='planet'?10.5:b.type==='moon'?3.8:b.type==='satellite'?3.6:b.type==='dwarf'?8.7:7.5;
   const radius=this.settings?.scaleObjects?this.bodyRadius(b):0;
   this.camera.desiredDist=radius>0?Math.max(this.minCameraDistance()*2,radius*10):dist;
+ }
+ /** Current detail-chart zoom mode, scoped to one object and one scene. */
+ detailZoomCurrentMode(id){
+  return this.detailZoomKey===`${this.planetId||'solar'}|${id}` && this.detailZoomMode==='near'?'near':'far';
+ }
+ /** Reorient the chart's camera toggle to the neutral scene perspective.
+  * Preserve the just-computed near/far framing and the selected object; the
+  * general perspective preset action would overwrite both camera distances. */
+ realignDetailZoomPerspective(){
+  const row=this.settings?.row===true;
+  this.cameraPresetIndex=row?2:0;
+  this.cameraManuallyMoved=false;
+  const theta=row?0:.63;
+  const phi=row?1.5:this.planetId?CAMERA_PERSPECTIVES[0].planetPhi:CAMERA_PERSPECTIVES[0].phi;
+  if(this.camera.arView){
+   // AR alignment is calibrated by the caller against these new angles.
+   this.cancelCameraFlight();
+   if(this.transition)this.transition.cameraTo=null;
+   this.camera.theta=theta;this.camera.phi=phi;
+   this.camera.freeLook=null;
+  }else this.setCameraAngles(theta,phi);
+ }
+ /** Two zoom levels for the selected detail object. Far frames all orbit
+  * ellipses actually drawn in the active scene (or the normal overview if
+  * orbit strokes are off). Never adds fictitious satellite/probe paths. */
+ toggleDetailZoom(id){
+  const body=this.byId?.get(id),position=this.positions?.get(id);
+  if(!body || !position || position.some(value=>!Number.isFinite(value)))return null;
+  if(this.cinema?.active)this.stopCinema();
+  const next=this.detailZoomCurrentMode(id)==='near'?'far':'near';
+  if(next==='near'){
+   this.detailZoomFarLimit=null;
+   // A close-up re-engages object tracking when possible; the wide shot
+   // intentionally suspends it so it can remain centered on the whole system.
+   if(this.followEnabled && this.selectedId===id && body.type!=='probe')
+     this.followSelectedBody(performance.now(),{zoom:false});
+   else this.focus(id,{zoom:false});
+   if(this.settings?.row){
+     this.focus(id,{zoom:true});
+   }else{
+     const near=detailNearDistance(this.bodyRadius(body),this.minCameraDistance(),
+       this.width,this.height,this.visibleFocusOffset??this.focusOffsetY??0);
+     this.camera.desiredTarget=(this.positions.get(id)||position).slice();
+     this.camera.desiredDist=near;
+   }
+  }else{
+   this.markCameraMoved({positionChanged:true});
+   this.focusedBodyId=null;
+   const row=Boolean(this.settings?.row);
+   const center=this.byId.get(this.planetId||'sun');
+   const fallback=row?this.rowDistance():this.planetId?this.planetFrameDistance():this.solarOverviewDistance();
+   const distance=row?fallback:detailFarDistance(
+     this.visibleSceneOrbits(),b=>{
+       const parent=this.byId.get(b.parentId);
+       const target=displayOrbitRadius(b,parent,this.settings,this.planetId?this.byId.get(this.planetId):null);
+       return Math.max(this.orbitRadius(b,parent),target);
+     },
+     this.width,this.height,{focusOffset:this.visibleFocusOffset??this.focusOffsetY??0,
+       fallback,centerRadius:center?this.bodyRadius(center):0});
+   this.camera.desiredTarget=row?this.rowFrame().target.slice():[0,0,0];
+   this.camera.desiredDist=distance;
+   this.detailZoomFarLimit=distance;
+  }
+  this.detailZoomKey=`${this.planetId||'solar'}|${id}`;
+  this.detailZoomMode=next;
+  this.realignDetailZoomPerspective();
+  this.callbacks?.onCameraChange?.();
+  return next;
  }
  /** Overview always exits the isolated planet view and returns to the solar system. */
  reset(){const wasPlanet=Boolean(this.planetId);
@@ -777,13 +889,13 @@ export class SolarRenderer {
     const centerId=this.planetId||'sun';
     if(b.id!==centerId && b.parentId!==centerId)return false;
     // Unknown / placeholder sizes must not create tiny visual dots or movie stops.
-    if(!Number.isFinite(b.radiusKm)||b.radiusKm<=0)return false;
+    if(b.id!==centerId && (!Number.isFinite(b.radiusKm)||b.radiusKm<=0))return false;
   }
   if(!layerEnabled(this.settings?.layers,b.type))return false;
   // Categories are actual scene layers, not only catalog filters.
   // The four-moons cap affects actual spheres, labels, picking and orbit strokes.
-  if(b.type==='moon' && this.settings?.fourMoons===true && !this.fourMoonIds?.has(b.id))return false;
-  return b.type!=='probe'; // Missions without ephemerides remain catalog-only.
+  if(b.type==='moon' && b.id!==this.planetId && this.settings?.fourMoons===true && !this.fourMoonIds?.has(b.id))return false;
+  return b.type!=='probe' || (this.planetId===b.id); // Probe scene: symbolic center, never a fabricated orbit.
  }
  start(time,selected,settings){
   this.simTime=time;this.selectedId=selected;this.settings=settings;
@@ -810,10 +922,14 @@ export class SolarRenderer {
  }
   minCameraDistance(){return this.settings?.scaleObjects || this.settings?.row ? 0.000005 : 2.2;}
   maxCameraDistance(){
-    if(this.settings?.row)return Math.max(100,this.rowDistance()*2.8);
-    return this.planetId && this.settings?.scaleOrbits
+    // A computed orbit-fitting wide shot may exceed the legacy free-camera
+    // limit. Keep the wheel/pinch range continuous instead of snapping back.
+    const detailLimit=this.detailZoomMode==='far'?Math.max(0,this.detailZoomFarLimit||0)*1.4:0;
+    if(this.settings?.row)return Math.max(100,this.rowDistance()*2.8,detailLimit);
+    const normal=this.planetId && this.settings?.scaleOrbits
       ? Math.max(100,this.planetFrameDistance()*1.5)
       : this.settings?.scaleOrbits ? 350 : !this.planetId && optimizedSolarMode(this.settings) ? 100*OPTIMIZED_ORBIT_FACTOR : 100;
+    return Math.max(normal,detailLimit);
   }
   bodyRadius(body){
    const target=this.targetBodyRadius(body),previous=this.transition?.fromRadii?.get(body.id);
@@ -994,14 +1110,19 @@ export class SolarRenderer {
   const {vp,starVp}=this.makeVP();this.vp=vp;
   this.advanceRowInspection(vp);
   this._lodMarkers?.reset();
+  this.selectablePaths=[];
+  if(!this.simulationPaused && this.hoveredPathId!=null)this.clearPathHover();
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   this.drawStars(starVp);
   this.drawDepartingScene(vp,'bodies');
   if(this.planetId)drawPlanetSystemScene(this,selectedId,settings,vp);
   else drawSolarSystemScene(this,selectedId,settings,vp);
   this.drawDepartingScene(vp,'orbits');
+  // Revalidate an existing hover after camera motion or a path redraw.
+  if(this.simulationPaused && this.hoveredPathId!=null && this.pathPointer)
+    this.hoverOrbitPath(this.pathPointer.x,this.pathPointer.y);
  }
-  pick(x,y){if(!this.vp)return;let best=null,dist=Infinity;
+  bodyAt(x,y){if(!this.vp)return null;let best=null,dist=Infinity;
   for(const b of this.rendered){
    const pos=this.positions.get(b.id);if(!pos)continue;
    const original=this.bodyRadius(b);
@@ -1013,8 +1134,14 @@ export class SolarRenderer {
    const d=Math.hypot(x-hit.x,y-hit.y);
    if(d<=hit.hitRadiusPx && d<dist){best=b;dist=d;}
   }
-  if(best){this.callbacks.onSelect?.(best.id);}
-  else{this.callbacks.onClearSelect?.();}
-  return best?.id ?? null;
+  return best;
+ }
+ pick(x,y){
+  if(!this.vp)return null;
+  const body=this.bodyAt(x,y)??this.pathAt(x,y)?.body??null;
+  this.clearPathHover();
+  if(body)this.callbacks.onSelect?.(body.id);
+  else this.callbacks.onClearSelect?.();
+  return body?.id??null;
  }
 }

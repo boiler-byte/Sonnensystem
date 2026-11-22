@@ -49,7 +49,7 @@ test('CSS variables in the global theme are actually referenced',async()=>{
 
 test('balanced CSS structure and compact output',async()=>{
   const css=await read('css/styles.css');
-  assert.ok(Buffer.byteLength(css)<76000,'the stylesheet remains compact after the Layer speed-control addition');
+  assert.ok(Buffer.byteLength(css)<80000,'the stylesheet stays within the 80 KB budget including debug controls and FPS HUD');
   // Basic structural check without needing a runtime CSS parsing dependency.
   let braces=0,comment=false,quote=null;
   for(let i=0;i<css.length;i++){

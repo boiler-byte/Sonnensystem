@@ -134,11 +134,11 @@ test('v128: object details show planet action but no empty follow row',()=>{
     assert.equal(get('planet-view-actions').hidden,false);
     assert.equal(nodes.has('center-object-btn'),false);
     state.selected='sun';renderDetail(state,r,()=>{});
-    assert.equal(get('detail-scene-actions').hidden,true);
-    assert.equal(get('planet-view-actions').hidden,true,'Sun has no planet view');
+    assert.equal(get('detail-scene-actions').hidden,false);
+    assert.equal(get('planet-view-actions').hidden,false,'Sun has a local view');
     state.selected=null;renderDetail(state,r,()=>{});
     assert.equal(get('detail-scene-actions').hidden,true);
     const probe=INITIAL_BODIES.find(b=>b.type==='probe');
-    if(probe){state.selected=probe.id;renderDetail(state,r,()=>{});assert.equal(get('detail-scene-actions').hidden,true);}
+    if(probe){state.selected=probe.id;renderDetail(state,r,()=>{});assert.equal(get('detail-scene-actions').hidden,false);}
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });

@@ -15,5 +15,5 @@ export const PORT=Number(process.env.PORT)||4173;
 export const NASA_CONTACT=(process.env.NASA_CONTACT_EMAIL||'').trim();
 export const NASA_CONTACT_OK=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(NASA_CONTACT);
 // Keep the server-side API user agent in sync with the released package.
-const release=JSON.parse(await readFile(join(ROOT,'package.json'),'utf8')).version;
+export const release=JSON.parse(await readFile(join(ROOT,'package.json'),'utf8')).version;
 export const userAgent=`Sonnensystem/${release} (contact: ${NASA_CONTACT||'not-configured'})`;

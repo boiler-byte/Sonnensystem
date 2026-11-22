@@ -25,11 +25,11 @@ const makeRenderer=()=>{
 test('v128: planet button stays available but permanent following has no button',async()=>{
   const html=await read('index.html'),detail=await read('src/ui/object-details.js');
   const action=html.split('id="detail-scene-actions"')[1].split('class="detail-tabs"')[0];
-  assert.match(action,/<strong id="planet-view-title">Planetenansicht<\/strong>/);
+  assert.match(action,/<strong id="planet-view-title">Sonnensystem-Ansicht<\/strong>/);
   assert.doesNotMatch(action,/planet-view-subtitle|Mond[e]? und Satelliten|Planetenansicht öffnen/);
   assert.doesNotMatch(action,/center-object-btn|<span>Folgen<\/span>/);
   assert.doesNotMatch(detail,/planet-view-subtitle|moons} Monde|satellites} Satelliten/);
-  assert.match(detail,/\$\('planet-view-title'\)\.textContent='Planetenansicht'/);
+  assert.match(detail,/\$\('planet-view-title'\)\.textContent=currentLabel/);
 });
 
 test('v38: global toggle follows each selected body without switching off',()=>{
@@ -140,11 +140,11 @@ test('v128: detail actions only show a planet-view button, never a tracking togg
   try{
     renderDetail(state,r,()=>{});
     assert.equal(el('detail-scene-actions').hidden,false);
-    assert.equal(el('planet-view-title').textContent,'Planetenansicht');
+    assert.equal(el('planet-view-title').textContent,'Sonnensystem-Ansicht');
     state.selected='mars';renderDetail(state,r,()=>{});
     assert.equal(el('detail-scene-actions').hidden,false);
     state.selected='sun';renderDetail(state,r,()=>{});
-    assert.equal(el('detail-scene-actions').hidden,true,'no empty action row for Sun');
+    assert.equal(el('detail-scene-actions').hidden,false,'the Sun now has a local view');
     assert.equal(nodes.has('center-object-btn'),false);
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });

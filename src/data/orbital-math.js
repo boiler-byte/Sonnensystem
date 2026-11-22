@@ -70,10 +70,17 @@ export function displayBodyRadius(body, settings = {}, center = null) {
     // Solar overview only: for Objekt aus / Bahn an, shrink the Sun to one
     // third of its schematic radius without changing any planetary bodies.
     if (!center && orbitScaleActive(settings) && body?.id === 'sun') return renderRadius(body) / 3;
-    return center ? planetBodyRadius(body) : renderRadius(body);
+    // Any object can be the local system center, not just planets/dwarfs.
+    return center && body?.id===center.id ? PLANET_RADIUS_UNITS
+      : center?.id==='sun' ? renderRadius(body)
+      : center ? planetBodyRadius(body) : renderRadius(body);
   }
   const radiusKm = Math.max(0, Number(body?.radiusKm) || 0);
-  if (center) return radiusKm * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  if (center) {
+    // A probe has no known physical radius: its isolated illustration is symbolic.
+    if (body?.id===center.id) return PLANET_RADIUS_UNITS;
+    return radiusKm * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  }
   if (optimizedSolarMode(settings)) {
     // Row/Cinema compare radii in their own layout; keep their v81 proportions.
     if (body?.id === 'sun' || body?.type === 'star')
@@ -86,14 +93,20 @@ export function displayBodyRadius(body, settings = {}, center = null) {
 /** Orbits remain Keplerian; only the semi-major axis mapping changes. */
 export function displayOrbitRadius(body, parent, settings = {}, center = null) {
   if (!orbitScaleActive(settings)) {
-    const schematic = center ? planetOrbitRadius(body, center) : orbitalRadius(body, parent);
+    // Sun-centered children use AU-based solar spacings, not km-based moon spacings.
+    const schematic = center?.id==='sun' ? sceneRadius(Number(body?.a)||0)
+      : center ? planetOrbitRadius(body, center) : orbitalRadius(body, parent);
     if (!center && optimizedSolarMode(settings)) {
       return parent?.id==='sun' ? optimizedSolarOrbitRadius(body.a) : schematic * OPTIMIZED_ORBIT_FACTOR;
     }
     return schematic;
   }
   const a = Math.max(0, Number(body?.a) || 0);
-  if (center) return a * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  if (center) {
+    const unit=body?.meanDistanceUnit||(center.id==='sun'?'AU':'km');
+    const km=unit==='AU'?a*AU_KM:a;
+    return km * PLANET_RADIUS_UNITS / Math.max(1, Number(center.radiusKm) || 0);
+  }
   return body?.type === 'moon' || body?.type === 'satellite' || (body?.type === 'binary' && body?.parentId !== 'sun')
     ? a * SOLAR_UNITS_PER_KM : a * SOLAR_UNITS_PER_AU;
 }

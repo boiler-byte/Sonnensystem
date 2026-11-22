@@ -98,7 +98,7 @@ test('v114: picking, catalog selection and hero invoke the distinct focus/zoom p
   const camera=await read('src/app/camera-controller.js');
   assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:renderer\?\.settings\?\.row===true\}\)/);
   assert.match(catalog,/onSelect\(b\.dataset\.id,true\)/);
-  assert.match(handlers,/\$\('hero-body'\)\.addEventListener\('click',\(\)=>\{[\s\S]*?selectBody\(body\.id,true\)/);
+  assert.match(handlers,/\$\('hero-body'\)\.addEventListener\('click',\(\)=>\{[\s\S]*?renderer\.toggleDetailZoom\(targetId\)/);
   assert.match(camera,/setSelected\(renderId,\{focus:focus&&renderId!==null,zoom:zoom&&renderId!==null\}\)/);
 });
 
