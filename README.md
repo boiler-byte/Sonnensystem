@@ -1,6 +1,12 @@
-# Sonnensystem – interaktiver 3D-Atlas (v159.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v160.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein JavaScript-Bundler und keine npm-Laufzeitabhängigkeiten. Die CSS-Ausgabedatei wird aus thematischen Quellen generiert.
+
+## Neu in v160: API-Pfade relativ zum Installationsverzeichnis
+
+- `api/status` und `api/horizons` werden ohne führenden Slash angesprochen. `src/services/api.js` löst alle `fetchJSON`-Pfade ausgehend vom Installationsordner der App auf, unabhängig von der aktuellen Dokument-URL.
+- Unter einem Unterpfad wie `https://example.org/Sonnensystem/` führen API-Anfragen daher nach `https://example.org/Sonnensystem/api/...` statt zur Domainwurzel. Die lokalen JSON-Katalogdateien nutzen dieselbe Basis.
+- **Wichtig für statisches Hosting:** Auf GitHub Pages ohne Node-Server existieren `/api/...`-Endpunkte nicht. Ein relativer Pfad allein stellt keinen API-Server bereit; der lokale Katalog bleibt auch ohne API benutzbar.
 
 ## Neu in v159: Sticky-Tabs in den Objektdetails
 

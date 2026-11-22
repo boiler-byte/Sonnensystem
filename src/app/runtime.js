@@ -18,7 +18,7 @@ import {connectARMode} from './ar-controller.js';
 import {loop} from './animation-loop.js';
 
 export async function loadServerStatus(){
-  try{const status=await fetchJSON('/api/status');
+  try{const status=await fetchJSON('api/status');
     if(!status.nasaContactConfigured)updateStatus('horizons','offline','Kontakt fehlt');
   }catch{/* Server optional für reinen Offline-Katalog */}
 }

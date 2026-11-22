@@ -4,6 +4,10 @@ CSS-Quellen liegen in `css/base/`, `css/components/` und `css/responsive.css`. D
 
 `/* @chunk NNNN */` und `/* @endchunk NNNN */` sind Build-Metadaten. Die fortlaufenden IDs halten die ursprüngliche Reihenfolge der Selektoren und Media Queries stabil; ein pauschales Sortieren nach Dateien würde bestehende Überschreibungen verändern. Innerhalb eines Chunks steht jede ursprüngliche Top-Level-Regel auf einer eigenen Zeile. Bei Ergänzungen auf vollständige und eindeutig nummerierte Chunks achten. Die generierte Datei bleibt das einzige Stylesheet im PWA-Shell-Cache.
 
+## v160: App-relative Backend-URLs
+
+`src/services/api.js` erstellt URLs relativ zu `new URL('../../', import.meta.url)`, dem Installationsverzeichnis der App. API-Pfade in Browsermodulen stets als `api/status` bzw. `api/horizons` **ohne führenden Slash** über `fetchJSON()` übergeben. Lokale JSON-Dateien lassen sich auch mit `./data/...` laden. Damit funktionieren Proxy-Installationen unter Unterpfaden; die Node-Serverrouten selbst bleiben `/api/...`, falls ein vorgeschalteter Proxy den Installationspräfix entfernt. Auf rein statischem Hosting existiert die API weiterhin nicht, das Fehlerhandling ist optional. Test: `tests/api-relative-paths-v160.test.mjs`.
+
 ## v159: Sticky-Reiter in den Objektdetails
 
 `.detail-tabs` liegt weiterhin direkt in `.detail-scroll` und nutzt `position: sticky; top: 0; z-index: 5`. Die deckende Fläche verhindert Textdurchscheinen. Der Scrollcontainer bleibt auf Desktop und im mobilen Bottom-Sheet derselbe; die Reiter werden nicht aus dem normalen Dokumentfluss genommen. Änderungen an `css/components/details.css` per `npm run build:css` in die generierte `css/styles.css` übertragen. Regressionen in `tests/detail-sticky-tabs-v159.test.mjs`.

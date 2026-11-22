@@ -1,3 +1,11 @@
+## v160 – API-Pfade relativ zur Projektinstallation (22.11.2026)
+
+- `fetchJSON()` ermittelt die Ziel-URL aus dem Verzeichnis von `src/services/api.js` (`../../`). Damit ist der Pfad unabhängig von `window.location` und funktioniert in Unterverzeichnissen.
+- Die Aufrufe für `api/status` und `api/horizons` verwenden keinen führenden Slash mehr; der lokale Missionskatalog bleibt über den zentralen Helfer erreichbar. Serverrouten selbst bleiben unverändert.
+- Regressionstest `tests/api-relative-paths-v160.test.mjs` prüft Root-, einfache und verschachtelte Projektverzeichnisse sowie die tatsächlichen Client-Aufrufe.
+- Ein statischer Host ohne Backend liefert bei optionalen API-Anfragen weiterhin 404: relative Pfade ersetzen den Server nicht.
+- Paket `160.0.0`, HTML `V160.0`, PWA-Shell `sonnensystem-shell-v160`. Basis v159.
+
 ## v159 – Daten/Wissen-Reiter bleiben beim Scrollen oben (22.11.2026)
 
 - `.detail-tabs` bleibt im nativen Scrollcontainer `.detail-scroll`, haftet beim Scrollen mit `position: sticky; top: 0` am oberen Rand und überlagert Inhalte mit deckendem Hintergrund sowie `z-index`. Gilt auf Desktop und im mobilen Bottom-Sheet.
