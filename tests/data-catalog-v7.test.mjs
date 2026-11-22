@@ -12,7 +12,7 @@ const clone=x=>structuredClone(x);
 
 test('v52 catalog extends split category/editorial files and retains all 37 legacy bodies',async()=>{
   const {bodies,articles,version}=await loadCatalog(readJSON);
-  assert.equal(version,'10.1.0');
+  assert.equal(version,'10.2.0');
   assert.equal(bodies.length,192);
   assert.equal(articles.size,192);
   assert.equal(bodies.filter(b=>b.type==='planet').length,8);

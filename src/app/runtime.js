@@ -14,11 +14,10 @@ import {syncCinemaControl,updateCinemaTimeline} from './animation-controls.js';
 import {registerServiceWorker} from './service-worker-registration.js';
 import {connectARMode} from './ar-controller.js';
 import {loop} from './animation-loop.js';
-import {loadSolar,loadSatellites} from './object-catalog.js';
 
 export async function loadServerStatus(){
   try{const status=await fetchJSON('/api/status');
-    if(!status.nasaContactConfigured){updateStatus('sbdb','offline','Kontakt fehlt');updateStatus('horizons','offline','Kontakt fehlt');}
+    if(!status.nasaContactConfigured)updateStatus('horizons','offline','Kontakt fehlt');
   }catch{/* Server optional für reinen Offline-Katalog */}
 }
 /** Keep an intentional empty selection after loading the catalog. */
@@ -62,5 +61,5 @@ export async function init(){
     $('canvas-error').textContent='WebGL-Initialisierung fehlgeschlagen: '+e.message;
     updateDetail();
   }
-  loadServerStatus();loadSolar();loadSatellites();
+  loadServerStatus();
 }

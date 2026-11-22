@@ -38,7 +38,7 @@ test('v90: first Layer-Dropdown category remains Sterne; scientific types stay s
 
 test('v52: fourteen specifically named bodies are added to three catalog groups',async()=>{
   const {bodies,articles,version}=await catalogPromise;
-  assert.equal(version,'10.1.0');
+  assert.equal(version,'10.2.0');
   assert.equal(bodies.length,192);
   assert.equal(articles.size,192);
   const byId=new Map(bodies.map(b=>[b.id,b]));
@@ -114,7 +114,7 @@ test('v52: search matches German catalog categories and international comet alia
 
 test('v52: new data paths, source provenance and editorial files are fully manifest-driven',async()=>{
   const manifest=await readJson('data/catalog/manifest.json');
-  assert.equal(manifest.catalogVersion,'10.1.0');
+  assert.equal(manifest.catalogVersion,'10.2.0');
   assert.equal(manifest.categories.length,23);
   assert.equal(manifest.editorial.length,5);
   for(const [type,file] of [ ['asteroid','asteroids-v52'], ['comet','comets-v52'], ['tno','transneptunian-v52'] ]){

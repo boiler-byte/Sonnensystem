@@ -1,6 +1,10 @@
-## Mobiles Sheet bedienen (v130)
+## Sternenhintergrund bei Bahn-Maßstab (v133)
 
-Die Leiste am unteren Bildschirmrand lässt sich durch Ziehen nach oben erweitern und nach unten verkleinern bzw. schließen. Auch die **Titelleiste** in den Objektdetails unterstützt dieses Ziehen; ein kurzer Tipp auf die Navigationspfeile wechselt weiterhin zwischen Objekten.
+Die Sternverteilung bleibt beim Zoomen und beim Einschalten des **Bahn-Maßstabs** in der Planetenansicht über den gesamten Bildschirm erhalten – auch bei Jupiter, Saturn, Uranus und Neptun mit großen Mondbahnen. Drehen der Kamera bzw. AR-Umsehen verändert weiterhin die Blickrichtung auf den Hintergrund; die Kameraposition und die Entfernung zum Planeten verändern seine Verteilung nicht.
+
+## Mobiles Sheet bedienen (v132)
+
+Die Leiste am unteren Bildschirmrand lässt sich durch Ziehen nach oben erweitern und nach unten verkleinern bzw. schließen. Auch die **Titelleiste** in den Objektdetails sowie die **Suchzeile** und die **Listenüberschrift** im Objektkatalog unterstützen dieses Ziehen. Kurze Tipps auf freie Flächen der Katalogzeilen wechseln die Öffnungsstufe; Suchfeld, Planetenfilter, Sortierung und Objektnavigation bleiben nutzbar.
 
 Beim Scrollen durch die **Objektliste** oder durch die **Objektdetails** bleibt die gewöhnliche Scrollbewegung erhalten. Sobald der Inhalt ganz oben steht, kann mit einer weiteren Abwärtswischbewegung das Sheet heruntergezogen werden: ganz geöffnet → halb geöffnet → geschlossen. Ein Tipp auf freien Weltraum schließt das Sheet, wenn kein Objekt ausgewählt ist; mit aktiver Auswahl hebt der erste Tipp zunächst nur die Auswahl auf.
 
@@ -44,7 +48,7 @@ Wird der Toggle **Monde** eingeschaltet (**Alle Monde**), aktiviert er auch die 
 
 **Desktop:** Linke Maustaste ziehen oder Pfeiltasten: Kamera parallel zur Szenenebene bewegen, **unabhängig vom Neigungswinkel**. Rechte Maustaste ziehen bzw. `Shift` + linke Taste ziehen: Blickrichtung ändern. Mausrad: zoomen. Ohne ausgewähltes Objekt bleibt die Kamera beim freien Umsehen am festen Standort; Ziehen nach unten blickt nach unten, Ziehen nach oben nach oben. Bei ausgewähltem Objekt ist die Blicksteuerung weiterhin objektbezogen.
 
-**Mobil:** Mit einem Finger verschieben, mit zwei gemeinsam bewegten Fingern umsehen und mit zwei Fingern per Spreizgeste zoomen. **Beim freien Umsehen ohne ausgewähltes Objekt** gilt für das vertikale Zwei-Finger-Wischen: beide Finger nach **unten → Blick nach unten**, beide Finger nach **oben → Blick nach oben**. Horizontal bleibt die Richtung unverändert. In der objektbezogenen Ansicht bleibt die bisherige Gestenrichtung erhalten. Das mobile Detail-Sheet lässt sich über seine Kopfleiste öffnen und schließen. Die mittlere Öffnungsstufe nimmt etwa **39 %** der Bildschirmhöhe ein; die Kamera richtet den aktuellen Blickmittelpunkt beim Öffnen und Ziehen auf die **frei sichtbare Fläche oberhalb des Sheets** aus, auch in freier Perspektive.
+**Mobil:** Mit einem Finger verschieben, mit zwei gemeinsam bewegten Fingern umsehen und mit zwei Fingern per Spreizgeste zoomen. Ein Doppeltipp aktiviert keinen browserseitigen Seitenzoom und keine Zoom-Steuerung mehr (v131). **Beim freien Umsehen ohne ausgewähltes Objekt** gilt für das vertikale Zwei-Finger-Wischen: beide Finger nach **unten → Blick nach unten**, beide Finger nach **oben → Blick nach oben**. Horizontal bleibt die Richtung unverändert. In der objektbezogenen Ansicht bleibt die bisherige Gestenrichtung erhalten. Das mobile Detail-Sheet lässt sich über seine Kopfleiste öffnen und schließen. Die mittlere Öffnungsstufe nimmt etwa **39 %** der Bildschirmhöhe ein; die Kamera richtet den aktuellen Blickmittelpunkt beim Öffnen und Ziehen auf die **frei sichtbare Fläche oberhalb des Sheets** aus, auch in freier Perspektive.
 
 ## Kamera und AR
 

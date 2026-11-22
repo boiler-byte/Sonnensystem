@@ -41,6 +41,8 @@ export function textureRequestUrl(path,appRoot=APP_ROOT){
   if(typeof path!=='string'||!TEXTURE_FILE_PATH.test(path))return null;
   return new URL(path.slice(1),appRoot).href;
 }
-export function textureTier({isMobile=false,planetId=null}={}){
-  return isMobile?'mobile':planetId?'high':'standard';
+export function textureTier({isMobile=false}={}){
+  // Canonical catalog paths: mobile/<id>.webp and standard/<id>.webp.
+  // The legacy high/ tier is still available as a fallback for older installs.
+  return isMobile?'mobile':'standard';
 }

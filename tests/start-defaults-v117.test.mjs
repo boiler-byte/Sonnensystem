@@ -55,7 +55,8 @@ test('v117: catalog tab is the default on desktop and mobile; empty details are 
   assert.match(html,/id="sheet-tab-detail"[^>]*aria-selected="false"/);
   assert.match(sheets,/let panel='catalog', snap='closed'/);
   assert.match(sheets,/showPanel\(panel\)/);
-  assert.match(html,/id="detail-name"[^>]*>Kein Objekt ausgewählt</);
+  assert.doesNotMatch(html,/id="detail-name"|id="detail-top"/);
+  assert.match(html,/id="hero-size-note">Bitte ein Objekt auswählen\.</);
   assert.match(html,/id="hero-body"[^>]*disabled>/);
   assert.match(html,/id="detail-type">KEINE AUSWAHL</);
 });

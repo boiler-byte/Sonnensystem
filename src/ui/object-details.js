@@ -23,6 +23,96 @@ function renderTemperature(body){
     </div></div>`;
 }
 
+/** Compare diameters against either Earth or the Moon, with a type-specific initial default. */
+export function detailSizeComparison(body,byId,referenceOverride=null){
+  if(!body||body.type==='probe')return null;
+  const defaultId=body.id==='earth'?'moon':body.id==='moon'?'earth':
+    body.type==='planet'||body.type==='dwarf'?'earth':'moon';
+  const referenceId=['earth','moon'].includes(referenceOverride)?referenceOverride:defaultId;
+  const reference=byId(referenceId);
+  const selectedRadius=body.radiusKm,referenceRadius=reference?.radiusKm;
+  const common={referenceId,referenceName:referenceId==='moon'?'Erdmond':(reference?.name||'Erde')};
+  // Unknown and placeholder radii must not produce fictitious comparison circles.
+  if(typeof selectedRadius!=='number'||!Number.isFinite(selectedRadius)||selectedRadius<=0||
+    typeof referenceRadius!=='number'||!Number.isFinite(referenceRadius)||referenceRadius<=0)
+    return {...common,valid:false};
+  const maxRadius=Math.max(selectedRadius,referenceRadius);
+  return {...common,valid:true,ratio:selectedRadius/referenceRadius,
+    selectedPercent:100*selectedRadius/maxRadius,referencePercent:100*referenceRadius/maxRadius,
+    referenceLarger:referenceRadius>selectedRadius,equal:selectedRadius===referenceRadius};
+}
+
+const sizeReferenceTexturePath=referenceId=>`url("textures/mobile/${referenceId==='moon'?'moon':'earth'}.webp")`;
+const sizeReferenceLabelClass=referenceId=>`hero-size-label hero-size-label-reference ${referenceId==='moon'?'is-moon':'is-earth'}`;
+const genericHeroBodyClasses=body=>{
+  if(!body)return 'hero-generic-body rock';
+  const classes=['hero-generic-body'];
+  if(body.id)classes.push(body.id);
+  if(body.style&&body.style!==body.id)classes.push(body.style);
+  else if(!body.style)classes.push('rock');
+  return classes.join(' ');
+};
+
+function renderGenericSizeFigure(body,{message='' }={}){
+  const legend=$('hero-size-legend'),genericPlot=$('hero-generic-plot'),plot=$('hero-size-plot');
+  const note=$('hero-size-note'),ratioLabel=$('hero-size-ratio');
+  legend.hidden=true;plot.hidden=true;ratioLabel.hidden=true;
+  $('hero-size-reference-name').disabled=true;
+  if(!body){
+    genericPlot.hidden=true;note.hidden=false;note.textContent='Bitte ein Objekt auswählen.';
+    return '';
+  }
+  $('hero-generic-body').className=genericHeroBodyClasses(body);
+  genericPlot.hidden=false;note.hidden=true;note.textContent='';
+  return message||`Generisches Schaubild für ${body.name}.`;
+}
+
+function renderSizeComparison(body,byId,referenceOverride=null){
+  const legend=$('hero-size-legend'),genericPlot=$('hero-generic-plot'),plot=$('hero-size-plot');
+  const note=$('hero-size-note'),ratioLabel=$('hero-size-ratio');
+  const comparison=detailSizeComparison(body,byId,referenceOverride);
+  if(!body)return renderGenericSizeFigure(null);
+  if(!comparison)return renderGenericSizeFigure(body,{message:`Für ${body.name} ist kein Größenvergleich verfügbar.`});
+  if(!comparison.valid)return renderGenericSizeFigure(body,{message:`Für ${body.name} ist kein Größenvergleich verfügbar, daher wird das generische Schaubild angezeigt.`});
+  $('hero-size-selected-name').textContent=body.name;
+  const referenceName=$('hero-size-reference-name');
+  referenceName.textContent=comparison.referenceName;
+  referenceName.className=sizeReferenceLabelClass(comparison.referenceId);
+  const nextReference=comparison.referenceId==='moon'?'Erde':'Erdmond';
+  referenceName.disabled=false;
+  referenceName.title=`Mit ${nextReference} vergleichen`;
+  referenceName.setAttribute('aria-label',`Vergleichsreferenz: ${comparison.referenceName}. Zu ${nextReference} wechseln`);
+  referenceName.setAttribute('aria-pressed',String(comparison.referenceId==='earth'));
+  legend.hidden=false;genericPlot.hidden=true;note.hidden=true;ratioLabel.hidden=false;plot.hidden=false;
+  plot.className='hero-size-plot is-'+comparison.referenceId+(comparison.referenceLarger?' reference-larger':'')+(comparison.equal?' same-size':'');
+  plot.style.setProperty('--size-selected',`${comparison.selectedPercent.toFixed(6)}%`);
+  plot.style.setProperty('--size-reference',`${comparison.referencePercent.toFixed(6)}%`);
+  plot.style.setProperty('--hero-size-reference-image',sizeReferenceTexturePath(comparison.referenceId));
+  const ratio=comparison.ratio;
+  const referenceGenitive=comparison.referenceId==='earth'?'der Erde':'des Erdmondes';
+  const ratioText=comparison.equal?'Gleicher Durchmesser':ratio>=1?
+    `Ø ${formatDecimal(ratio,ratio>=100?0:2)} × ${comparison.referenceName}`:
+    `Ø ${formatDecimal(ratio*100,ratio<0.01?4:2)} % ${referenceGenitive}`;
+  ratioLabel.textContent=ratioText;
+  const microscopic=Math.min(comparison.selectedPercent,comparison.referencePercent)<2;
+  ratioLabel.title=microscopic?'Sehr kleine Objekte sind als mindestens 2 Pixel großer Punkt markiert.':ratioText;
+  return `Größenvergleich nach Durchmesser: ${body.name} gegen ${comparison.referenceName}. ${ratioText}.`+
+    (microscopic?' Ein sehr kleines Objekt ist zur Sichtbarkeit als Punkt markiert.':'');
+}
+
+/** Keep the chosen reference for subsequent objects without changing the zoom target. */
+export function toggleDetailSizeReference(state){
+  const byId=id=>state.bodies.find(body=>body.id===id);
+  const body=byId(state.selected);
+  const comparison=detailSizeComparison(body,byId,state.sizeReferenceId);
+  if(!comparison?.valid)return false;
+  state.sizeReferenceId=comparison.referenceId==='earth'?'moon':'earth';
+  const description=renderSizeComparison(body,byId,state.sizeReferenceId);
+  const hero=$('hero-body');
+  hero.setAttribute('aria-label',`${hero.title}. ${description}`);
+  return true;
+}
+
 /** Sequence used by the visible detail index and its previous/next buttons. */
 export function detailNavigation(state){
   const current=state.bodies.find(body=>body.id===state.selected);
@@ -47,10 +137,9 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     $('detail-type').textContent='KEINE AUSWAHL';
     $('detail-origin').textContent='SONNENSYSTEM';
     $('type-dot').style.background='transparent';
-    $('detail-name').textContent='Kein Objekt ausgewählt';
     $('detail-description').textContent='Wähle einen Himmelskörper in der Szene oder im Katalog aus.';
     $('texture-credit').hidden=true;$('texture-credit').innerHTML='';
-    $('hero-body').className='hero-body';$('hero-body').disabled=true;
+    $('hero-body').className='hero-body';$('hero-body').disabled=true;renderSizeComparison(null,byId);
     $('editorial-content').innerHTML='';$('editorial-content').hidden=true;
     $('planet-view-actions').hidden=true;
     $('detail-scene-actions').hidden=true;
@@ -62,12 +151,11 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   if(b.type==='probe'){
     $('detail-type').textContent='RAUMSONDE';$('type-dot').style.background=CATEGORY_COLORS[b.type]||b.color;
     $('detail-origin').textContent='NASA / MISSIONSDATEN';
-    $('detail-name').textContent=b.name;
     $('detail-description').textContent=b.description;
     $('texture-credit').hidden=true;$('texture-credit').textContent='';
     $('planet-view-actions').hidden=true;
     $('detail-scene-actions').hidden=true;
-    $('hero-body').className='hero-body rock';$('hero-body').disabled=true;
+    $('hero-body').className='hero-body';$('hero-body').disabled=true;renderSizeComparison(b,byId);
     const date=b.launchDate.split('-').reverse().join('.');
     $('stats-grid').innerHTML=[['START',date,'launch'],['STATUS',b.missionStatus,'status']].map(renderStat).join('');
     $('orbit-facts').innerHTML=`<div><span>Ziele</span><b>${esc(b.targets)}</b></div><div><span>Position</span><b>Nicht dargestellt – keine Ephemeriden</b></div>`;
@@ -81,7 +169,6 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   $('detail-type').textContent=(TYPES[b.type]?.label||'Himmelskörper').toUpperCase();
   $('type-dot').style.background=CATEGORY_COLORS[b.type]||b.color;
   $('detail-origin').textContent=b.parentId===null?'ZENTRALGESTIRN':b.type==='satellite'?'KÜNSTLICHES OBJEKT':'SONNENSYSTEM';
-  $('detail-name').textContent=b.name;
   $('detail-description').textContent=b.description||'Astronomischer Himmelskörper.';
   const credit=$('texture-credit');
   credit.hidden=b.type==='probe';
@@ -108,8 +195,10 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     planetButton.classList.toggle('active',active);
     planetButton.setAttribute('aria-pressed',String(active));
   }
-  const orb=$('hero-body');orb.className='hero-body '+(b.style||'rock');orb.style.setProperty('--planet-color',b.color);
-  orb.disabled=!renderer;orb.title=`${b.name} zentrieren und heranzoomen`;orb.setAttribute('aria-label',orb.title);
+  const orb=$('hero-body');orb.className='hero-body';
+  const sizeDescription=renderSizeComparison(b,byId,state.sizeReferenceId);
+  orb.disabled=!renderer;orb.title=`${b.name} zentrieren und heranzoomen`;
+  orb.setAttribute('aria-label',`${orb.title}. ${sizeDescription}`);
   const stats=[ ['RADIUS',b.radiusKm?(b.radiusKm<1?`${formatInt(b.radiusKm*1000)} m`:`${formatInt(b.radiusKm)} km`):'—','radius'],
     [b.type==='satellite'?'HÖHE (ca.)':'GR. HALBACHSE',b.type==='satellite'&&b.a?`${formatInt(Math.max(0,b.a-6371))} km`:displayA(b),'orbit'],
     ['UMLAUFZEIT',displayPeriod(b.periodDays),'period'],
@@ -147,7 +236,7 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
   const button=$('horizons-btn');button.disabled=!supported||!renderer;button.innerHTML='<span>✦</span> JPL Horizons abgleichen <span class="button-arrow">↗</span>';
   if(!supported)$('horizons-note').textContent=b.orbitModel==='osculating-snapshot' || b.type==='tno'?
     'Schematische Keplerbahn aus katalogisierten Elementen; kein genauer Ephemeriden-Abgleich.':
-    b.type==='asteroid'?'Für Asteroiden werden JPL-SBDB-Bahnelemente verwendet.':
+    b.type==='asteroid'?'Asteroiden verwenden lokal katalogisierte Bahnelemente; kein Horizons-Abgleich verfügbar.':
     'Horizons-Abgleich für Planeten, Pluto und den Mond verfügbar.';
   else if(!renderer?.overrides?.has(b.id))$('horizons-note').textContent='NASA/JPL-Position für das gewählte Datum (00:00 UTC) abrufen.';
 }

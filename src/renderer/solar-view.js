@@ -28,7 +28,13 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
     if(settings.orbits&&sun&&visible(sun)&&renderer.shouldDraw?.(sun)!==false)ids.add('sun');
     renderer._galacticTrails.retainVisible(ids);
   }
+  // Opaque spheres must populate the depth buffer before orbit strokes.
+  // Otherwise a nearer orbit gets painted over by a farther sphere.
+  const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,binary:4,comet:4,moon:5,satellite:6};
+  drawSceneBodies(renderer,renderer.bodies,vp,(a,b)=>order[a.type]-order[b.type]);
   if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
+    // Keep depth testing enabled: hide only the parts behind an opaque body.
+    // Orbits themselves are translucent and must not write depth.
     gl.depthMask(false);
     const animatedCenter=renderer.positions.get('sun')||[0,0,0];
     drawSunTrail(renderer,vp,.92,settings);
@@ -43,8 +49,6 @@ export function drawSolarSystemScene(renderer, selectedId, settings, vp) {
     }
     gl.depthMask(true);
   }
-  const order={star:0,planet:1,dwarf:2,tno:3,asteroid:4,binary:4,comet:4,moon:5,satellite:6};
-  drawSceneBodies(renderer,renderer.bodies,vp,(a,b)=>order[a.type]-order[b.type]);
   const sun=projected(renderer.positions.get('sun')||[0,0,0],vp,renderer.width,renderer.height);
   if(!layerEnabled(settings.layers,'star'))renderer.glow.style.opacity='0';
   else if(sun){renderer.glow.style.left=sun.x+'px';renderer.glow.style.top=sun.y+'px';renderer.glow.style.opacity=(clamp(.98-(renderer.camera.dist-15)/90,.25,.9)*(renderer.sceneBodyOpacity?.(renderer.byId.get('sun'))??1)).toFixed(2);}

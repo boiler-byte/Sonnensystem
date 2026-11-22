@@ -45,6 +45,20 @@ export function parseCategory(doc, expectedType, path='') {
     ensure(isObj(item) && idPattern.test(item.id||'') && validString(item.name),`${where}: id oder name ungültig`);
     ensure(item.parentId === null || idPattern.test(item.parentId||''),`${where}: parentId ungültig`);
     if(item.aliases!==undefined)ensure(Array.isArray(item.aliases) && item.aliases.every(validString),`${where}: aliases müssen eine Liste von Namen sein`);
+    if(item.images!==undefined){
+      ensure(Array.isArray(item.images),`${where}: images muss ein Array sein`);
+      for(const [imageIndex,image] of item.images.entries()){
+        const at=`${where} / images[${imageIndex}]`;
+        ensure(isObj(image) && validString(image.type) && validString(image.author) &&
+          validString(image.license) && validString(image.sourceUrl) && /^https:\/\/[^\s]+$/i.test(image.sourceUrl),
+          `${at}: type, author, sourceUrl (HTTPS) oder license ungültig`);
+        ensure(image.licenseUrl===null ||
+          (typeof image.licenseUrl==='string' && /^https:\/\/[^\s]+$/i.test(image.licenseUrl)),
+          `${at}: licenseUrl muss HTTPS oder null sein`);
+        ensure(typeof image.modifications==='string' || image.modifications===null,
+          `${at}: modifications muss ein Text oder null sein`);
+      }
+    }
     ensure(isObj(item.physical) && okNumber(item.physical.radiusKm) && item.physical.radiusKm>=0,`${where}: radiusKm ungültig`);
     if (item.physical.temperatureK !== undefined) ensure(okNumber(item.physical.temperatureK) && item.physical.temperatureK>0,`${where}: temperatureK ungültig`);
     if(item.physical.rotationPeriodHours !== undefined)
@@ -88,6 +102,7 @@ export function parseCategory(doc, expectedType, path='') {
     if(item.externalIds?.norad!==undefined)ensure(Number.isInteger(item.externalIds.norad) && item.externalIds.norad>0,`${where}: NORAD-ID ungültig`);
     return {
       id:item.id,name:item.name,type:expectedType,parentId:item.parentId,
+      images:(item.images||[]).map(image=>({...image})),
       ...(item.aliases===undefined?{}:{aliases:item.aliases}),
       a:o.semiMajorAxis,periodDays:o.periodDays,radiusKm:item.physical.radiusKm,
       // By convention the semimajor axis is the catalog's characteristic mean
@@ -193,6 +208,8 @@ export function mergeLiveBodies(current, updates) {
     const previous=result[index],merged={...previous,...fresh};
     if(previous.meanDistanceEstimated && typeof fresh.a==='number' && Number.isFinite(fresh.a))
       merged.meanDistanceToParent=fresh.a;
+    // Curated local image inventory and its licenses are authoritative over live API data.
+    if(Array.isArray(previous.images))merged.images=previous.images;
     if(previous.editorial){merged.editorial=previous.editorial;merged.description=previous.editorial.summary;}
     result[index]=merged;
   }

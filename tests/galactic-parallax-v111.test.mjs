@@ -74,7 +74,7 @@ test('v111: WebGL offsets existing star geometry in the vertex shader only',asyn
   assert.match(shaders,/uniform vec3 uGalacticStarOffset/);
   assert.match(shaders,/aPosition\+uGalacticStarOffset\*depthWeight/);
   assert.match(renderer,/gl\.uniform3f\(this\.uniform\(p,'uGalacticStarOffset'\)/);
-  assert.match(renderer,/this\.drawStars\(vp\)/);
+  assert.match(renderer,/this\.drawStars\(starVp\)/);
   assert.match(geometry,/R=100\+rnd\(\)\*125/);
   assert.match(worker,/\.\/src\/renderer\/galactic-parallax\.js/);
 });

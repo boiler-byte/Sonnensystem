@@ -11,6 +11,16 @@
     {
       "id": "sun",
       "name": "Sonne",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": null,
       "physical": {
         "radiusKm": 696340,

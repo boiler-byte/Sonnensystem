@@ -1,6 +1,32 @@
-# Lokale Texturen und Cache (Stand v109)
+# Lokale Texturen und Cache (Stand v134)
 
-Die Anwendung verwendet ausschließlich selbst bereitgestellte, gleichursprüngliche Bilddateien. Es gibt weder automatische Downloads noch externe Texturdienste. Im gelieferten Quellarchiv waren **keine Bilddateien enthalten**. Die neuen Ordner sind vorbereitet, bleiben aber bis zum Hinzufügen eigener Bilder leer.
+Die Anwendung verwendet ausschließlich selbst bereitgestellte Bilddateien aus dem lokalen Projekt. Es gibt weder automatische Downloads noch externe Texturdienste. **Auch im Quellarchiv v133/v134 sind keine WebP-Dateien enthalten**. Die Bilddateien müssen in der bestehenden Installation bzw. beim Hosting unter den beschriebenen Pfaden vorhanden sein.
+
+## Katalogbasierte Bild-Metadaten (v134)
+
+Für Objekte mit vorhandenen WebP-Texturen wird direkt am jeweiligen Objekt in `data/catalog/*.json` ein optionales `images`-Array geführt. Es gibt aktuell **29 `type: "texture"`-Einträge**; ein zukünftiger Eintrag mit einem anderen `type` (z. B. `image`) kann weitere Objektbilder dokumentieren. Jede Abbildung enthält `author`, `sourceUrl` (HTTPS), `license`, `licenseUrl` (HTTPS oder null) und `modifications` (Text oder null). Diese Werte werden beim Katalogladen validiert und an die Laufzeit weitergereicht.
+
+```json
+"images": [
+  {
+    "type": "texture",
+    "author": "Solar System Scope",
+    "sourceUrl": "https://www.solarsystemscope.com/textures/",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "modifications": "Konvertierung nach WebP"
+  }
+]
+```
+
+Der Dateipfad ist **nicht** separat gespeichert, sondern wird aus der Objekt-ID gebildet: Desktop `textures/standard/{id}.webp`, Mobil `textures/mobile/{id}.webp`. Der Renderer lädt nur noch als `texture` deklarierte Katalogobjekte; bisherige Ausweichstufen (`high`, `standard`, `mobile` sowie alte Standard-Basisnamen) bleiben für die Abwärtskompatibilität bestehen. Der Webserver prüft weiterhin, ob die Dateien wirklich existieren.
+
+**Quellzuordnung (Katalogdaten):**
+
+- **Solar System Scope**, 14 Einträge: Sonne, acht Planeten, Erdmond sowie Ceres, Haumea, Makemake und Eris. Urheber `Solar System Scope`, Quellen-URL [Solar System Scope / Textures](https://www.solarsystemscope.com/textures/), Lizenz **CC BY 4.0** ([Lizenz](https://creativecommons.org/licenses/by/4.0/)). Die vier Kleinkörper-Texturen sind auf der Quellseite als *fictional* gekennzeichnet.
+- **NASA/JPL-Kartensammlung**, 15 Einträge: Io, Europa, Ganymed, Kallisto, Phobos, Deimos, Mimas, Enceladus, Rhea, Titan, Iapetus, Titania, Oberon, Triton, Pluto. Quellseiten in [JPL Texture Maps](https://space.jpl.nasa.gov/tmaps/), gruppiert nach Muttersystem. Als Lizenzhinweis sind die [NASA Media Usage Guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/) verlinkt; sie sind **keine pauschale Public-Domain-Freigabe für sämtliche Caltech-/USGS-/künstlerischen Bearbeitungen**.
+
+**Prüfstatus:** Die ursprünglichen WebP-Dateien sind nicht Teil des bereitgestellten ZIP. Die Zuordnung zu Sammlungen und die angegebene WebP-Konvertierung folgen der Nutzerangabe und den veröffentlichten Quellseiten; eine Dateifür-Datei-Verifikation von Bild, Ursprung, Autor, spezifischer Bearbeitung und Rechten ist erst anhand der konkreten lokalen Dateien möglich. Insbesondere fiktive JPL-Karten (z. B. eine historische Pluto-Darstellung) können andere Rechteinhaber haben. Die `sourceUrl` bezeichnet daher derzeit die **Sammlung**, nicht nachweislich die exakte Quelldatei. Vor einer externen Veröffentlichung sollte die Herkunft jedes Assets bestätigt werden.
 
 ## Orientierung auf der WebGL-Kugel (v98)
 
@@ -25,7 +51,7 @@ Die gewünschte Qualitätsstufe wird so ermittelt:
 |---|---|---|
 | Mobil | `mobile/` – 512 px | `standard/`, dann `high/` |
 | Desktop-Sonnensystem | `standard/` – 2048 px | `high/`, dann `mobile/` |
-| Desktop-Planetenansicht | `high/` – 4096 px | `standard/`, dann `mobile/` |
+| Desktop-Planetenansicht | `standard/` – 2048 px | `high/`, dann `mobile/` |
 
 Die genannten Pixelzahlen begrenzen die vom WebGL-Renderer hochgeladene **Bildbreite**. Ein größeres Ersatzbild wird beim Laden verkleinert, niemals automatisch hochskaliert. Damit sind die derzeit ausschließlich unter `standard/` abgelegten Texturen auch auf Mobilgeräten sichtbar. Für geringeren mobilen Datentransfer empfiehlt sich, echte 512-px-WebP-Dateien in `mobile/` bereitzustellen.
 
@@ -45,7 +71,7 @@ Auf **GitHub Pages ohne `/api/textures/manifest`** fragt die App jedes WebP-Bild
 4. Optional `npm run textures:list` ausführen. Das Kommando listet die gefundenen lokalen Bilder und ihre SHA-256-Versionen. Mit `/api/textures/manifest` kann derselbe Stand im Browser geprüft werden.
 5. Test: Beim Node-Server eine **bereits erfolgreich geladene** Bilddatei ersetzen und bei aktiver 3D-Ansicht höchstens 30 Sekunden warten oder die Seite online neu laden. Bei **zuvor fehlenden** Bildern ist ein App-Neustart oder manuelles Neuladen erforderlich. Auf GitHub Pages die Textur-URL direkt prüfen und nach einem Upload die App manuell neu laden.
 
-**Bildrechte:** Bildrechte und korrekte Urhebernennung hängen von den selbst bereitgestellten Texturen ab. Der Betreiber muss Herkunft und Lizenz separat dokumentieren; die App kann diese aus lokalen Bildern nicht ableiten.
+**Bildrechte:** Das Katalogfeld `images` dokumentiert die angegebenen Quellen und Lizenzen. Es beweist nicht die Herkunft einer konkret installierten Datei. Solar System Scope erfordert Namensnennung, Lizenzlink und Kennzeichnung von Änderungen (CC BY 4.0). Für NASA/JPL-/USGS- und künstlerische Werke ist die spezifische Nutzungsberechtigung zu prüfen.
 
 ## GitHub Pages: Projekt-Unterverzeichnis (v107)
 

@@ -9,7 +9,8 @@ export function visibleCanvasFocusOffset(sceneRect,sheetTop){
 export function initMobileSheets() {
   const mq = window.matchMedia('(max-width: 770px)');
   const sheet = $('mobile-sheet'), header = $('sheet-header'), content = $('sheet-content');
-  const detailTop = $('detail-top');
+  const detailHero = $('detail-hero');
+  const catalogSearchRow = $('catalog-search-row'), listHeader = $('list-header');
   const scrim = $('mobile-sheet-scrim');
   const cameraActions = $('reset-camera').parentElement;
   const cinemaTimeline = $('cinema-timeline');
@@ -170,10 +171,20 @@ export function initMobileSheets() {
     if(!mobile()||event.target!==header||!['Enter',' '].includes(event.key))return;
     event.preventDefault();toggleSnap();
   });
+  // Die freien Flächen der Katalogzeilen funktionieren wie die Kopfleiste.
+  // Eingabefeld, Planetenfilter und Sortiertaste behalten ihre eigene Klickaktion.
+  for(const handle of [catalogSearchRow,listHeader].filter(Boolean)){
+    handle.addEventListener('click',event=>{
+      if(!mobile()||performance.now()<suppressClickUntil)return;
+      if(event.target.closest?.('.search, input, button, select, textarea, a, label, [contenteditable], [role="button"]'))return;
+      toggleSnap();
+    });
+  }
   scrim.addEventListener('click',close);
 
-  // Header und Objekttitel verwenden dieselbe Snap-Geste und dieselben
-  // animierten Abstände der Szene. Capture erst nach 7px: Buttons bleiben klickbar.
+  // Kopfleiste, Detailschaubild und beide Katalogzeilen verwenden dieselbe Snap-Geste
+  // und dieselben animierten Abstände der Szene. Capture erst nach 7px:
+  // Sucheingabe und Buttons bleiben bei kurzen Tipps normal bedienbar.
   function startDrag(id,y,captureTarget=null){
     if(!mobile()||drag)return false;
     drag={id,startY:y,startVisible:levels()[snap],startSnap:snap,delta:0,captureTarget};
@@ -221,7 +232,7 @@ export function initMobileSheets() {
     if(!drag||drag.id!==id)return;
     clearDrag();snapTo(snap);
   }
-  for(const handle of [header,detailTop].filter(Boolean)){
+  for(const handle of [header,detailHero,catalogSearchRow,listHeader].filter(Boolean)){
     handle.addEventListener('pointerdown',e=>{
       if(!mobile()||e.button!==0 || !e.isPrimary && e.isPrimary!==undefined)return;
       startDrag(e.pointerId,e.clientY,handle);

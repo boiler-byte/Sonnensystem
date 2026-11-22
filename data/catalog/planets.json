@@ -11,6 +11,16 @@
     {
       "id": "mercury",
       "name": "Merkur",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 2439.7,
@@ -42,6 +52,16 @@
     {
       "id": "venus",
       "name": "Venus",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 6051.8,
@@ -71,6 +91,16 @@
     {
       "id": "earth",
       "name": "Erde",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 6371,
@@ -101,6 +131,16 @@
     {
       "id": "mars",
       "name": "Mars",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 3389.5,
@@ -130,6 +170,16 @@
     {
       "id": "jupiter",
       "name": "Jupiter",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 69911,
@@ -158,6 +208,16 @@
     {
       "id": "saturn",
       "name": "Saturn",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 58232,
@@ -186,6 +246,16 @@
     {
       "id": "uranus",
       "name": "Uranus",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 25362,
@@ -214,6 +284,16 @@
     {
       "id": "neptune",
       "name": "Neptun",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 24622,

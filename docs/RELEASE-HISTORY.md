@@ -1,3 +1,71 @@
+## v140 – Leistungsoptimierung durch vier Objekt-LOD-Stufen (22.11.2026)
+
+- **LOD 0 ab 32 px:** Bestehende texturierte 30×42-Segment-Kugel und ursprünglicher Oberflächenshader.
+- **LOD 1 von 8 bis unter 32 px:** 12×16-Segment-Kugel mit vereinfachter Beleuchtung ohne Texturabrufe; Saturn-Ringe mit 40 statt 200 Segmenten.
+- **LOD 2 von 2 bis unter 8 px:** GPU-seitiger runder Point-Sprite in Objektfarbe; **LOD 3 unter 2 px:** ein CSS-Pixel großer Punkt. Die Stufengrenzen verwenden den projizierten Durchmesser in CSS-Pixeln, unabhängig von DPR.
+- **Performance und Bildreihenfolge:** Die kleinen Objekte werden als opaque/transparent getrennte GPU-Batches gerendert; fester Körper, Punktmarker, Umlaufbahnen bleiben tiefenkorrekt. Sichtbarkeit, Label-/Picking-Listen, Positionsberechnung und Szenenwechsel bleiben bestehen.
+- Paketversion `140.0.0`, Meta `V140.0`, Offline-Cache `sonnensystem-shell-v140` einschließlich `src/renderer/lod.js`. Regressionen in `tests/object-lod-v140.test.mjs`. NASA/JPL Horizons unverändert.
+
+## v139 – Objektnavigation oben rechts im Schaubild
+
+- `detail-index-nav` mit Vor/Zurück-Pfeilen und Kategorieindex befindet sich direkt in `detail-hero` oben rechts; die Titelleiste `detail-top` einschließlich sichtbarem Objekttitel entfällt vollständig.
+- Die Legende lässt auf Desktop und Mobil Platz für die Pfeile; die Objektnavigation bleibt unabhängig von der Schaubild-Zoomtaste, dem Erdmond/Erde-Toggle und den Daten-/Wissen-Tabs.
+- Mobiles Bottom-Sheet: `detail-hero` übernimmt von `detail-top` die vertikale Drag-Geste einschließlich Klickunterdrückung nach dem Ziehen. Normale Navigationstastendrücke und Schaubild-Klicks bleiben erhalten.
+- Version `139.0.0`, PWA-Shell `sonnensystem-shell-v139`, Regression `tests/detail-hero-nav-v139.test.mjs` und aktualisierte Alt-Tests.
+
+## v138 – Erdmondfarbe, Referenz-Toggle und Abschaltung entbehrlicher APIs
+
+- Das Referenz-Label in den Objektdetails ist jetzt ein eigenständiger, fokussierbarer Toggle-Button (Erdmond/Erde). Es aktualisiert Beschriftung, Größenkreise, Texturbild und Verhältnis und löst kein Objektzoom aus. Die manuelle Wahl gilt auch beim Wechsel auf ein anderes Objekt. Erde und Mond können mit der jeweils anderen Referenz angezeigt werden. Der Erdmond-Referenzkreis wird beige getönt.
+- Solar System OpenData, CelesTrak und NASA/JPL SBDB wurden vollständig aus Frontend-Services, Laufzeit-Initialisierung, Statusanzeige, Server-Routen und Providern entfernt. Der lokale Katalog bleibt erhalten.
+- NASA/JPL Horizons, Kontaktkonfiguration, Validierung, Position-Override und der Textur-Manifest-Endpunkt bleiben wie gehabt. PWA-Shell und Anwendungsmetadaten auf v138 aktualisiert.
+- Tests: aktualisierte Altsuiten sowie `tests/api-removal-v138.test.mjs` und erweiterte Größenvergleichs-Regressionen.
+
+## v137 – Größenvergleich mit Textur-Referenzen und generischem Fallback
+
+- Objektdetails: Das Schaubild zeigt für Planeten und Zwergplaneten weiterhin den Vergleich mit der Erde sowie für Monde und sonstige Körper den Vergleich mit dem Erdmond.
+- Fallback: Wenn kein belastbarer Größenvergleich möglich ist oder das ausgewählte Objekt selbst Erde bzw. Mond ist, erscheint wieder das generische Schaubild statt eines Vergleichsdiagramms.
+- Referenzdarstellung: Der Vergleichskörper nutzt die zentrierte Mobile-Textur `textures/mobile/earth.webp` bzw. `textures/mobile/moon.webp`.
+- Beschriftungen: `hero-size-reference-name` ist farblich an die Referenz gekoppelt – blau für die Erde und beige für den Erdmond.
+- Tests: `tests/detail-size-comparison-v137.test.mjs`; App `137.0.0`, HTML `V137.0`, PWA `sonnensystem-shell-v137`.
+
+## v136 – Kreisbasierter Größenvergleich in Objektdetails
+
+- Ersetzt die dekorative Objektkugel **nur** im Schaubild der Objektdetails durch konzentrische Kreise im gleichen kompakten Bereich. Größenverhältnisse nach Katalogradius (gleiche Einheit), lesbare Objekt-/Referenznamen sowie prozentuale bzw. vielfache Durchmesserangabe.
+- Planeten/Zwergplaneten: Vergleich mit der Erde; Monde/sonstige Himmelskörper: Vergleich mit dem Erdmond. Ohne verwertbaren Radius bleibt die Grafik leer mit Hinweis. Gleiche Radien werden als zwei Halbkreise dargestellt; sehr kleine Punkte (unter 2 px) werden sichtbar markiert, während die Zahl das exakte Verhältnis nennt.
+- Hero-Button bleibt für Kamera-Zentrierung und Tastatur bedienbar; Desktop, responsive Overlay und Mobile Sheet behalten ihre bisherigen Höhen. Keine Änderung an Rendering, Katalog, Suche oder Szene.
+- Tests: `tests/detail-size-comparison-v136.test.mjs`; App `136.0.0`, HTML `V136.0`, PWA `sonnensystem-shell-v136`.
+
+## v135 – Tiefenkorrekte Render-Reihenfolge der Bahnlinien
+
+- WebGL zeichnet in Planeten- und Sonnensystemansicht die sichtbaren Himmelskörper vor den Orbit-Linien. Der Tiefentest (`LEQUAL`) bleibt für die Bahnen aktiv, während `depthMask(false)` verhindert, dass transparente Linien den Tiefenpuffer verändern. Vordergrund-Orbits bleiben sichtbar; verdeckte Bahnabschnitte werden korrekt von Körpern überdeckt.
+- Ausblendende Szenenobjekte werden beim Ansichtswechsel ebenfalls vor den (normalen und ausblendenden) Bahnlinien gerendert. Die Beschriftungsüberlagerung bleibt unangetastet.
+- Regressionstest: `tests/orbit-depth-order-v135.test.mjs`; App `135.0.0`, HTML `V135.0`, PWA-Shell `sonnensystem-shell-v135`. Katalogversion weiterhin `10.2.0`.
+
+## v134 – Textur- und Bildquellen im Objektkatalog
+
+- **29** vorhandene Textur-IDs als `images: [{type, author, sourceUrl, license, licenseUrl, modifications}]` direkt in `stars.json`, `planets.json`, `moons.json` und `dwarf-planets.json` ergänzt. Texturpfade werden aus der Objekt-ID abgeleitet (`textures/standard/{id}.webp` Desktop, `textures/mobile/{id}.webp` Mobil); Bilddateien selbst nicht verändert.
+- Solar System Scope: **CC BY 4.0** und Quellenlink. NASA/JPL/USGS: offizielle JPL-Kartensammlungen und NASA-Nutzungsrichtlinien verlinkt. **Achtung:** Im ausgelieferten v133-Archiv waren keine WebP-Dateien vorhanden; die Zuordnung konnte nicht mit den konkreten Bilddateien abgeglichen werden.
+- `parseCategory()` validiert Metadaten und gibt sie an die Runtime weiter; Live-Updates erhalten das lokale `images`-Inventar. Ohne Katalog-Deklaration kein Texturprobeversuch. Desktop priorisiert auch in der Planetenansicht `standard/`; vorhandene Qualitäts-Fallbacks bleiben erhalten.
+- App `134.0.0`, Katalog `10.2.0` (Schema `1`), HTML `V134.0`, PWA-Shell `sonnensystem-shell-v134`. Regressionstests in `tests/catalog-images-v134.test.mjs`.
+
+## v133 – Sternenhintergrund unabhängig vom Bahn-Maßstab
+
+- **Fehler behoben:** In isolierten Planetenansichten (u. a. Jupiter, Saturn, Uranus und Neptun) schrumpfte der an den Szenenursprung gebundene Sternenhintergrund bei aktiviertem **Bahn-Maßstab** zur Planetenmitte.
+- Sterne werden jetzt mit eigener, von Kameraposition und -abstand unabhängiger Projektionsmatrix gezeichnet. Kameradrehung/AR, der mobile Bildausschnitt und die galaktische Parallaxenanimation bleiben wirksam; Planeten, Monde und Orbits behalten ihre bestehende Kamera.
+- Regressionstest: `tests/starfield-camera-v133.test.mjs`; Paketversion `133.0.0`, HTML `V133.0`, PWA-Shell `sonnensystem-shell-v133`.
+
+## v132 – Erweiterte Drag-Flächen für das Mobile-Sheet
+
+- Die Katalog-Suchzeile (`catalog-search-row`) und die Kopfzeile der Objektliste (`list-header`) dienen mobil ebenfalls als Ziehflächen: nach oben von halb auf vollständig geöffnet, nach unten wieder auf halb bzw. geschlossen. Die Größe des Sheets und der Abstand der Kamera-Bedienelemente folgen der Fingerbewegung.
+- Ein Tipp auf freie Bereiche dieser Zeilen schaltet die Öffnungsstufe weiter. Suchfeld, Planetenfilter und Sortierbutton behalten ihre bisherige Bedienung; ein Wisch unterdrückt den anschließenden unbeabsichtigten Klick.
+- Regressionen: `tests/mobile-sheet-catalog-handles-v132.test.mjs`; Paketversion `132.0.0`, HTML `V132.0`, PWA-Shell `sonnensystem-shell-v132`. Desktop-Layout und scrollbare Objektliste unverändert.
+
+## v131 – Browser-Zoom per Doppeltipp entfernen
+
+- Die gesamte Touchoberfläche verwendet `touch-action: manipulation`, sodass der Browser nach einem Doppeltipp keinen Seitenzoom und keine zugehörige Zoom-Steuerung öffnet.
+- Gezielte Touchgesten behalten ihre spezifischen Regeln: `#space` verwendet weiter `touch-action: none` für Ein-Finger-Bewegung, Zwei-Finger-Blicksteuerung und die anwendungsinterne Spreizgeste. Scrollflächen und native Pinch-Vergrößerung bleiben verwendbar.
+- Regressionen: `tests/touch-double-tap-v131.test.mjs`; Paketversion `131.0.0`, HTML `V131.0`, PWA-Shell `sonnensystem-shell-v131`. Katalog und 3D-Kameralogik unverändert.
+
 ## v130 – Intelligentes Schließen und Ziehen des Mobile-Sheets
 
 - Der Katalog- und Detail-Scrollbereich übergibt nach Erreichen von `scrollTop = 0` eine weitere Abwärtswischgeste an den bestehenden dreistufigen Bottom-Sheet-Snap (geschlossen/halb/voll), ohne die normale Scrollfunktion zu ersetzen.

@@ -172,6 +172,6 @@ swEvents.fetch({request:{method:'GET',url:'http://localhost:4173/data/catalog/pl
   respondWith:p=>offlineData=p,waitUntil(){}});
 assert.equal(await offlineData,offlineResponse,'Offline catalog JSON is served from precache');
 let wasIntercepted=false;
-swEvents.fetch({request:{method:'GET',url:'http://localhost:4173/api/bodies',mode:'cors'},respondWith:()=>wasIntercepted=true});
+swEvents.fetch({request:{method:'GET',url:'http://localhost:4173/api/horizons',mode:'cors'},respondWith:()=>wasIntercepted=true});
 assert.equal(wasIntercepted,false,'Live APIs are not cached');
 console.log('✓ PWA offline shell, two-tab mobile sheet gestures, and viewport control panel validated');

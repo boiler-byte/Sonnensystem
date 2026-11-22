@@ -11,6 +11,16 @@
     {
       "id": "ceres",
       "name": "Ceres",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 473,
@@ -36,6 +46,16 @@
     {
       "id": "pluto",
       "name": "Pluto",
+      "images": [
+        {
+          "type": "texture",
+          "author": "JPL/Caltech (David Seal / Pat Rawlings)",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/pluto.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 1188.3,
@@ -65,6 +85,16 @@
     {
       "id": "eris",
       "name": "Eris",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 1163
@@ -88,6 +118,16 @@
     {
       "id": "haumea",
       "name": "Haumea",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 816
@@ -111,6 +151,16 @@
     {
       "id": "makemake",
       "name": "Makemake",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "sun",
       "physical": {
         "radiusKm": 715

@@ -82,7 +82,7 @@ test('v27: mobile header replaces the handle and half-snap sizes its scrollport'
   const html=await read('index.html'),css=await read('css/styles.css'),sheet=await read('src/ui/bottom-sheet.js');
   assert.doesNotMatch(html,/class="sheet-handle"|id="sheet-handle"|class="sheet-grabber"/);
   assert.match(html,/class="sheet-header" id="sheet-header" role="group" tabindex="0"/);
-  assert.match(sheet,/for\(const handle of \[header,detailTop\]\.filter\(Boolean\)\)/);
+  assert.match(sheet,/for\(const handle of \[header,detailHero(?:,\w+)*\]\.filter\(Boolean\)\)/);
   assert.match(sheet,/handle\.addEventListener\('pointerdown'/);
   assert.match(sheet,/handle\.addEventListener\('pointermove'/);
   assert.match(sheet,/header\.addEventListener\('click'/);

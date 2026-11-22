@@ -25,7 +25,7 @@ const gl=()=>({MAX_TEXTURE_SIZE:1,getParameter:()=>8192,deleteTexture(){}});
 
 test('v97/v108: three folders, WebP-only candidates, tier fallback and safe IDs',()=>{
   assert.deepEqual(TEXTURE_TIERS,{mobile:512,standard:2048,high:4096});
-  assert.equal(textureTier({planetId:'earth'}),'high');
+  assert.equal(textureTier({planetId:'earth'}),'standard');
   assert.equal(textureTier({isMobile:true,planetId:'earth'}),'mobile');
   assert.equal(textureSource('earth','detail'),null,'the old detail folder is not a valid tier');
   assert.equal(textureSource('../private'),null);

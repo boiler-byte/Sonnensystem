@@ -79,7 +79,7 @@ test('v12: texture sources are local and reject unsafe object IDs',()=>{
   assert.equal(textureSource('__proto__'),null);
   assert.equal(textureSource('earth','invalid'),null);
   assert.equal(textureTier({},'earth'),'standard');
-  assert.equal(textureTier({planetId:'earth'},'moon'),'high');
+  assert.equal(textureTier({planetId:'earth'},'moon'),'standard');
   assert.equal(textureTier({isMobile:true,planetId:'earth'},'earth'),'mobile');
   assert.equal(preferredMobileQuality({window:{innerWidth:900,matchMedia:()=>({matches:true})},navigator:{}}),true);
 });
@@ -139,7 +139,7 @@ test('v11: object detail attribution is visible for mapped bodies and cleared on
     renderDetail(state,null,()=>{});
     assert.equal(get('texture-credit').hidden,true);
     assert.equal(get('texture-credit').innerHTML,'');
-    assert.equal(get('detail-name').textContent,'Kein Objekt ausgewählt');
+    assert.equal(get('hero-size-note').textContent,'Bitte ein Objekt auswählen.');
     assert.equal(get('horizons-btn').disabled,true);
   }finally{if(saved===undefined)delete globalThis.document;else globalThis.document=saved;}
 });

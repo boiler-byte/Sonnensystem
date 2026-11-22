@@ -85,6 +85,9 @@ export class TextureManager {
   }
   get(body,planetId,selectedId){
     if(this.disposed)return null;
+    // Catalog-loaded bodies declare available textures. No undeclared image probes.
+    // Bare legacy/test bodies without an images array keep their existing behavior.
+    if(Array.isArray(body?.images) && !body.images.some(image=>image?.type==='texture'))return null;
     // Check while rendering instead of keeping a background timer alive.
     if(Date.now()>=this.nextManifestCheck)void this.refreshManifest();
     const tier=textureTier({isMobile:this.mobile,planetId,selectedId},body.id);

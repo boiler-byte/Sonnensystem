@@ -157,7 +157,7 @@ test('v73: markup and event handlers expose the same sort control on desktop and
   const [html,css,handlers,state]=await Promise.all([
     read('index.html'),read('css/styles.css'),read('src/ui/event-handlers.js'),read('src/app/state.js')]);
   assert.equal((html.match(/id="catalog-sort"/g)||[]).length,1);
-  assert.match(html,/<div class="list-header"><button id="catalog-sort"/);
+  assert.match(html,/<div class="list-header"(?:\s+[^>]*)?><button id="catalog-sort"/);
   assert.match(html,/id="catalog-sort"[^>]*aria-controls="object-list"/);
   assert.match(css,/\.list-sort-button\{display:inline-flex/);
   assert.match(css,/\.object-metric\{[^}]+text-align:right/);

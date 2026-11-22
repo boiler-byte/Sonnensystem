@@ -75,6 +75,8 @@ test('Server only serves allowlisted root files, browser modules and same-origin
   }
   const status=await apiRoute(new URL('http://localhost/api/status'));
   assert.equal(status.status,200);assert.equal(status.body.online,true);
+  assert.deepEqual(status.body.providers,['NASA/JPL Horizons']);
+  assert.equal('solarKeyConfigured' in status.body,false);
   const notfound=await apiRoute(new URL('http://localhost/api/missing'));
   assert.equal(notfound.status,404);
 
@@ -106,7 +108,10 @@ test('Server only serves allowlisted root files, browser modules and same-origin
     assert.equal((await fetch(base+'/.env')).status,404);
     assert.equal((await fetch(base+'/data/catalog/../../.env')).status,404);
     assert.equal((await fetch(base+'/',{method:'POST'})).status,405);
-    assert.equal((await fetch(base+'/api/bodies')).status,503,'Missing key falls back to start catalog');
+    for(const retired of ['/api/bodies','/api/satellites','/api/sbdb?sstr=Ceres'])
+      assert.equal((await fetch(base+retired)).status,404,retired+' was removed');
+    assert.ok([400,503].includes((await fetch(base+'/api/horizons?target=invalid&date=2026-11-22')).status),
+      'Horizons remains available, but requires the existing contact configuration');
     assert.equal((await fetch(base+'/sw.js')).headers.get('cache-control'),'no-store');
   }finally{await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));}
 });

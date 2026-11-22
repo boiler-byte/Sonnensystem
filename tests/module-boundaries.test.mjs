@@ -7,7 +7,7 @@ import {updateScale,updateRow} from '../src/app/animation-controls.js';
 import {syncLayers} from '../src/ui/layer-panel.js';
 import {connectARMode} from '../src/app/ar-controller.js';
 import {loadCatalog} from '../src/data/catalog.js';
-import {loadSolar,loadAsteroid,mergeBodies} from '../src/app/object-catalog.js';
+import {alignHorizons} from '../src/app/horizons-controller.js';
 import {selectBody,openPlanetScene} from '../src/app/camera-controller.js';
 import {loop} from '../src/app/animation-loop.js';
 
@@ -43,14 +43,14 @@ test('app entry is minimal, and each concern has a dedicated importable module',
   ['Animation','src/app/animation-controls.js','updateRow'],
   ['Rendering loop','src/app/animation-loop.js','loop'],
   ['UI','src/ui/event-handlers.js','initControls'],
-  ['Catalog','src/app/object-catalog.js','mergeBodies'],
+  ['Horizons','src/app/horizons-controller.js','alignHorizons'],
  ];
  for(const [concern,path,name] of modules){
   const source=await read(path);
   assert.match(source,new RegExp(`export (?:async )?function ${name}\\(`),concern);
  }
  for(const exported of [initControls,updateScale,updateRow,syncLayers,connectARMode,
-   loadCatalog,loadSolar,loadAsteroid,mergeBodies,selectBody,openPlanetScene,loop])
+   loadCatalog,alignHorizons,selectBody,openPlanetScene,loop])
    assert.equal(typeof exported,'function');
 });
 
@@ -106,7 +106,7 @@ test('service worker precaches every ES module and is versioned',async()=>{
  for(const path of [
   './src/app.js','./src/app/runtime.js','./src/app/ar-controller.js',
   './src/app/camera-controller.js','./src/app/animation-loop.js',
-  './src/app/animation-controls.js','./src/app/object-catalog.js',
+  './src/app/animation-controls.js','./src/app/horizons-controller.js',
   './src/ui/event-handlers.js','./src/ui/layer-panel.js',
  ])assert.ok(shell.includes(path),path);
 });

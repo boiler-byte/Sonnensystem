@@ -1,6 +1,6 @@
 import { esc } from './formatters.js';
 const $=id=>document.getElementById(id);
-const statusLabels = { catalog:'Lokaler Katalog',solar:'Solar OpenData',sbdb:'NASA / SBDB',celestrak:'CelesTrak',horizons:'JPL Horizons' };
+const statusLabels = { catalog:'Lokaler Katalog',horizons:'JPL Horizons' };
 function showTimedNotice(element,message,duration,previousTimer){
   element.textContent=message;
   element.classList.add('show');

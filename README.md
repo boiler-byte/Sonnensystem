@@ -1,11 +1,79 @@
-# Sonnensystem – interaktiver 3D-Atlas (v130.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v140.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+
+## Neu in v140: Vierstufiges LOD für 3D-Objekte
+
+Der Renderer wählt in jedem Bild anhand des **projizierten Durchmessers in CSS-Pixeln** (nicht Radius, unabhängig von der Geräte-Pixeldichte) eine von vier Qualitätsstufen. Zoomen, mobile Bildausschnitte, Reihen-Hover und skalierte Objekte werden direkt berücksichtigt; eine separate manuelle Einstellung ist nicht nötig.
+
+| LOD | Sichtbarer Durchmesser | Darstellung |
+| --- | --- | --- |
+| 0 | ab 32 px | Bisherige hochaufgelöste Kugel (30 × 42 Segmente), volle Oberflächenshader und Texturen |
+| 1 | 8 bis unter 32 px | Reduzierte Kugel (12 × 16 Segmente) mit einfacher Beleuchtung, ohne Texturabruf; Saturn-Ring mit 40 statt 200 Segmenten |
+| 2 | 2 bis unter 8 px | Runder, tiefengeprüfter WebGL-Point-Sprite mit projizierter Pixelgröße |
+| 3 | unter 2 px | Ein CSS-Pixel großer WebGL-Punkt |
+
+- **Draw-Calls:** LOD 2/3 werden gemeinsam in GPU-Punkt-Batches gerendert; für ausblendende Objekte gibt es einen separaten transparenten Batch. Opaque Marker schreiben Tiefenwerte, transparente nicht. Marker werden vor Orbitlinien gezeichnet, damit die vorhandene Tiefenreihenfolge erhalten bleibt.
+- **Unverändert:** Objektkoordinaten, auswählbare Ziele, Beschriftungen, Kategorien, Sonnensystem-/Planetenansichten, Reihen-Hover und NASA/JPL Horizons. Beim Hineinzoomen werden volle Kugeln/Texturen automatisch wieder verwendet.
+- **Betrieb:** `npm run check` führt zusätzlich `tests/object-lod-v140.test.mjs` aus. Das neue Modul `src/renderer/lod.js` ist im Offline-Shell-Cache `sonnensystem-shell-v140` enthalten. Die LOD-Stufen sind eine Renderoptimierung; eine konkrete FPS-Steigerung hängt von GPU und Szene ab.
+
+## Neu in v139: Objektnavigation im Schaubild
+
+- Die Objektnavigation mit Pfeilen und Kategorieindex (`detail-index-nav`) liegt jetzt **oben rechts im Schaubild** der Objektdetails. Die Titelleiste `detail-top` samt Objekttitel entfällt; das Schaubild beginnt direkt unter dem Details-Tab.
+- Die Navigation und der Erdmond/Erde-Toggle bleiben eigenständige, per Tastatur bedienbare Buttons; die Legende reserviert Raum für die Navigation, damit sich die Bedienelemente nicht überlappen.
+- Mobil lässt sich das Bottom-Sheet nun **am Schaubild** statt an der entfernten Titelleiste nach oben bzw. unten ziehen. Kurze Tipps auf das Schaubild, die Navigationspfeile und den Referenz-Toggle funktionieren weiterhin.
+- Tests: `tests/detail-hero-nav-v139.test.mjs` sowie aktualisierte Mobile-Sheet-/Details-Regressionen. Version und Offline-Cache auf v139 aktualisiert.
+
+## Neu in v138: umschaltbare Referenz und aufgeräumte APIs
+
+- **Größenvergleich:** Ein Klick auf das farbige Referenz-Label wechselt zwischen **Erdmond** und **Erde**; Durchmesser, Texturbild und Verhältnisangabe aktualisieren sich unmittelbar. Die gewählte Referenz bleibt beim Navigieren im Atlas erhalten. Für Erde und Mond startet der Vergleich mit dem jeweils anderen Himmelskörper.
+- **Mondfarbe:** Der Erdmond-Vergleichskreis bekommt eine beige Einfärbung passend zum Erdmond-Label; die vorhandene Mondtextur bleibt sichtbar.
+- **APIs:** Solar System OpenData, CelesTrak und NASA/JPL SBDB wurden aus der App und dem Server entfernt. Der lokale Katalog bleibt die einzige Datenbasis für die regulären Objekte. **NASA/JPL Horizons** bleibt einschließlich `NASA_CONTACT_EMAIL`, `/api/horizons` und des Abgleichbuttons bestehen. Auch `/api/textures/manifest` und `/api/status` bleiben erhalten.
+- **Betrieb:** `npm start` startet den Webserver; `npm run check` prüft Daten und Regressionen. Beim Aktualisieren einer installierten PWA online neu laden, damit der `sonnensystem-shell-v138` aktiv wird.
+
+## Neu in v137: Größenvergleich mit generischem Fallback und Textur-Referenzen
+
+- Die bisherige dekorative Objektkugel im Detail-Schaubild wurde durch zwei übereinanderliegende Kreisflächen ersetzt. Ihre Durchmesser werden aus den tatsächlichen Katalogradien abgeleitet; eine kompakte Legende und das numerische Verhältnis bleiben sichtbar.
+- Planeten und Zwergplaneten werden ausschließlich mit der **Erde** verglichen. Monde, Asteroiden, Kometen, TNOs, Sterne und sonstige Körper mit dem **Erdmond**. Bei unbekanntem Durchmesser erscheint statt eines erfundenen Vergleichs eine Meldung.
+- Der Detailbereich behält seine bisherige Höhe in Desktop-, Overlay- und Mobile-Sheet-Layouts. Das Klicken auf das Schaubild zentriert weiterhin das Objekt; andere Ansichten und Daten bleiben unverändert.
+- Regressionen: `tests/detail-size-comparison-v137.test.mjs`; Erde/Mond verwenden im Vergleich ihre Mobile-Texturen, Referenzobjekte und Objekte ohne belastbaren Durchmesser fallen auf das generische Schaubild zurück; App-Version und Offline-Shellcache auf v137 aktualisiert.
+
+## Neu in v135: Tiefenkorrekte Bahnlinien
+
+- In Sonnen- und Planetenansichten werden die Himmelskörper jetzt **vor** den Umlaufbahnen gezeichnet. Die Linien verwenden weiter den WebGL-Tiefentest, schreiben aber selbst keine Tiefenwerte. Dadurch bleiben vordere Bahnabschnitte sichtbar; verdeckte Abschnitte verschwinden hinter Planeten und Monden.
+- Dasselbe Prinzip gilt für ausblendende Objekte und Bahnen beim Szenenwechsel. Sterne, Beschriftungen, Auswahl und Orbit-Kontrast bleiben unverändert.
+- Regressionen: `tests/orbit-depth-order-v135.test.mjs`; App-Version und PWA-Shell-Cache auf v135 aktualisiert. Katalogdaten und Texturen unverändert.
+
+## Neu in v134: Objekttexturen im Katalog dokumentiert
+
+- `images` wird direkt an den Himmelskörpern in `data/catalog/*.json` gespeichert. Für **29 Objekte** ist jeweils `type: "texture"` mit `author`, `sourceUrl`, `license`, `licenseUrl` und `modifications` erfasst. Katalogversion `10.2.0` bei unverändertem `schemaVersion: 1`.
+- Kanonische Dateipfade: Desktop `textures/standard/{id}.webp`, Mobil `textures/mobile/{id}.webp`. Die vorhandene WebP-Fallbacksuche zu anderen Qualitätsstufen bleibt bestehen; Desktop-Planetenansichten priorisieren jetzt ebenfalls `standard/`.
+- Der Renderer versucht für Katalogobjekte nur deklarierte Texturen zu laden. Nicht vorhandene Texturen bleiben durch die prozedurale Darstellung ersetzt. Bild-Metadaten bleiben bei Live-Bahnupdates erhalten.
+- **Quellen:** Solar System Scope (CC BY 4.0) und NASA/JPL-Kartenverzeichnisse (NASA-Bildnutzungsrichtlinien); die konkreten WebP-Dateien lagen dem Quellarchiv nicht bei und ihre Einzelherkunft konnte deshalb nicht verifiziert werden. Einzelheiten unter `docs/TEXTURE-SOURCES.md`.
+- Regressionen: `tests/catalog-images-v134.test.mjs`; App-Version, Katalogversion und Offline-Shell-Cache aktualisiert.
+
+## Neu in v133: Sternenhintergrund unabhängig vom Kamerazoom
+
+- Die WebGL-Sterne verwenden nun eine rotationsabhängige, **kamerazentrierte** View-Projektionsmatrix mit separaten festen Near-/Far-Ebenen. Zoom, Pan, Fokus und der physikalische Bahn-Maßstab verschieben die Sterne nicht mehr in die Mond-Orbits der Planetenansicht.
+- Die reguläre Kamera für Planeten, Monde und Orbitlinien bleibt unverändert; Blickrichtungswechsel, AR, Mobile-Sheet-Bildausschnitt und galaktische Sternparallaxe wirken weiterhin.
+- Regressionstest: `tests/starfield-camera-v133.test.mjs`. App-Version und Offline-Cache sind auf v133 aktualisiert.
+
+## Neu in v132: Katalogzeilen als mobile Sheet-Griffe
+
+- **Suchzeile und Listenüberschrift** können mobil nach oben und unten gezogen werden, um das Sheet zwischen halb, vollständig geöffnet und geschlossen zu wechseln. Die bisherigen Zieh- und Scrollgesten bleiben verfügbar.
+- Ein Tipp auf freie Bereiche der beiden Zeilen schaltet die nächste Öffnungsstufe. Suchfeld, Planetenfilter und Sortiertaste bleiben unverändert nutzbar; nach einem Ziehen wird ein versehentlicher Klick unterdrückt.
+- Regressionstest: `tests/mobile-sheet-catalog-handles-v132.test.mjs`. App-Version und Offline-Cache sind auf v132 aktualisiert.
+
+## Neu in v131: Kein Browser-Zoom per Doppeltipp
+
+- Der browserseitige **Seitenzoom per Doppeltipp** ist in der gesamten Touchoberfläche unterbunden. Dadurch erscheint nach einem Doppeltipp keine browserseitige Zoom-Bedienung mehr.
+- Das **Zwei-Finger-Zoomen in der 3D-Szene** und die übrigen Touchgesten bleiben unverändert. Natives Scrollen und die Vergrößerung per Spreizgeste zur Barrierefreiheit bleiben möglich.
+- Regressionstest: `tests/touch-double-tap-v131.test.mjs`. Version und PWA-Shellcache sind auf v131 aktualisiert.
 
 ## Neu in v130: Intelligentes Schließen des mobilen Sheets
 
 - In der Objektliste und in den Objektdetails bleibt normales vertikales Scrollen erhalten. Wird der obere Rand des Inhalts erreicht und weiter **nach unten gewischt**, übernimmt das Sheet die Geste und wechselt zur nächstniedrigeren Stufe (voll → halb → geschlossen), genauso wie beim Ziehen am Header.
-- Die **Objekt-Titelleiste (`detail-top`)** lässt sich wie der Sheet-Header nach oben bzw. unten ziehen, um das Sheet zu vergrößern oder zu verkleinern. Die Pfeile zur Objektnavigation funktionieren bei einem normalen Tippen weiterhin.
+- Die Objektdetails lassen sich wie der Sheet-Header nach oben bzw. unten ziehen; **seit v139 ist das Schaubild der Ziehbereich** (die frühere Titelleiste `detail-top` wurde entfernt). Die Pfeile zur Objektnavigation funktionieren bei einem normalen Tippen weiterhin.
 - Ein Tap auf eine freie Stelle der 3D-Szene schließt das mobile Sheet, **wenn bereits kein Objekt ausgewählt ist**. Eine bestehende Auswahl wird beim ersten leeren Tap weiterhin nur aufgehoben und der Tab **Objekte** angezeigt. Das Desktop-Verhalten bleibt unverändert.
 - Neue Regressionstests in `tests/mobile-sheet-smart-close-v130.test.mjs`; App-Version und Offline-Cache aktualisiert.
 

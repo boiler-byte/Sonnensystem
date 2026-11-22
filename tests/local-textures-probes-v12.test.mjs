@@ -17,7 +17,7 @@ test('v12: only safe same-origin local texture paths, with 2K filename aliases',
   assert.ok(!earthPaths.some(path=>/\.(?:jpg|jpeg|png)$/.test(path)));
   assert.equal(textureSource('../../secret'),null);
   assert.equal(textureSource('earth').url,undefined);
-  assert.equal(textureTier({planetId:'earth'},'earth'),'high');
+  assert.equal(textureTier({planetId:'earth'},'earth'),'standard');
   assert.equal(textureTier({isMobile:true,planetId:'earth'},'earth'),'mobile');
 });
 

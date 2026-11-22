@@ -39,7 +39,7 @@ class Node {
 }
 function setup(){
   const originals={window:globalThis.window,document:globalThis.document};
-  const ids=['mobile-sheet','sheet-header','detail-top','sheet-content','mobile-sheet-scrim','catalog','detail',
+  const ids=['mobile-sheet','sheet-header','detail-hero','sheet-content','mobile-sheet-scrim','catalog','detail',
     'object-list','detail-scroll','reset-camera','cinema-timeline','layer-popover','layer-btn','sidebar','sidebar-content'];
   const els=Object.fromEntries(ids.map(id=>[id,new Node(id)]));
   els['sheet-header'].height=45;
@@ -51,7 +51,7 @@ function setup(){
   });
   els.sidebar.append(els['sidebar-content']);
   els['sidebar-content'].append(els.catalog);els['sidebar-content'].append(els.detail);
-  els.catalog.append(els['object-list']);els.detail.append(els['detail-top']);els.detail.append(els['detail-scroll']);
+  els.catalog.append(els['object-list']);els.detail.append(els['detail-scroll']);els['detail-scroll'].append(els['detail-hero']);
   const viewportActions=new Node('viewport-actions');viewportActions.append(els['reset-camera']);
   const mq={matches:true,addEventListener(){}};
   globalThis.window={innerHeight:800,matchMedia:()=>mq,addEventListener(){}};
@@ -72,27 +72,27 @@ function sendTouch(el,type,id,y,count=1){
   el.emit(type,evt);return evt;
 }
 
-test('v130: detail-top is a swipe handle in both directions; normal buttons remain clickable',()=>{
+test('v139: detail-hero is a swipe handle in both directions; normal buttons remain clickable',()=>{
   const app=setup();
   try{
     const {els,control,snap,visible}=app;
     control.open('detail');assert.equal(snap(),'half');
-    pointer(els['detail-top'],'pointerdown',11,600);
-    pointer(els['detail-top'],'pointermove',11,530);
+    pointer(els['detail-hero'],'pointerdown',11,600);
+    pointer(els['detail-hero'],'pointermove',11,530);
     assert.ok(visible()>312,'Upward swipe increases sheet height');
     assert.equal(els['mobile-sheet'].classes.has('dragging'),true);
     assert.equal(els['cinema-timeline'].classes.has('sheet-dragging'),true);
-    pointer(els['detail-top'],'pointerup',11,530);
+    pointer(els['detail-hero'],'pointerup',11,530);
     assert.equal(snap(),'full');
     assert.equal(els['mobile-sheet'].classes.has('dragging'),false);
     assert.equal(els['cinema-timeline'].classes.has('sheet-dragging'),false);
-    pointer(els['detail-top'],'pointerdown',12,250);
-    pointer(els['detail-top'],'pointermove',12,330);
-    pointer(els['detail-top'],'pointerup',12,330);
+    pointer(els['detail-hero'],'pointerdown',12,250);
+    pointer(els['detail-hero'],'pointermove',12,330);
+    pointer(els['detail-hero'],'pointerup',12,330);
     assert.equal(snap(),'half');
     // A new tap with no swipe must not change the snap level.
-    pointer(els['detail-top'],'pointerdown',13,220);
-    pointer(els['detail-top'],'pointerup',13,220);
+    pointer(els['detail-hero'],'pointerdown',13,220);
+    pointer(els['detail-hero'],'pointerup',13,220);
     assert.equal(snap(),'half');
   }finally{app.restore();}
 });
@@ -182,8 +182,8 @@ test('v130: empty scene selection closes only when there was no selection before
 
 test('v130: HTML/CSS expose drag handles without disabling scrolling or desktop layout',async()=>{
   const [html,css]=await Promise.all(['index.html','css/styles.css'].map(f=>readFile(new URL('../'+f,import.meta.url),'utf8')));
-  assert.match(html,/class="detail-top" id="detail-top"/);
+  assert.match(html,/class="detail-hero" id="detail-hero"/);
   assert.match(html,/class="detail-scroll" id="detail-scroll"/);
-  assert.match(css,/\.sheet-content>\.detail \.detail-top\{touch-action:none/);
+  assert.match(css,/\.sheet-content>\.detail \.detail-hero\{touch-action:none/);
   assert.match(css,/\.sheet-content>\.catalog \.object-list, \.sheet-content>\.detail \.detail-scroll\{min-height:0;overflow-y:auto/);
 });

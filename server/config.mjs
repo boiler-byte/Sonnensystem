@@ -12,7 +12,6 @@ try{
 }catch{/* .env is optional */}
 
 export const PORT=Number(process.env.PORT)||4173;
-export const KEY=process.env.SOLAR_SYSTEM_API_KEY||'';
 export const NASA_CONTACT=(process.env.NASA_CONTACT_EMAIL||'').trim();
 export const NASA_CONTACT_OK=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(NASA_CONTACT);
 // Keep the server-side API user agent in sync with the released package.

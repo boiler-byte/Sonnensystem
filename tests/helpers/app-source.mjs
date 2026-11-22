@@ -11,7 +11,7 @@ const appParts = [
   'src/ui/layer-panel.js',
   'src/app/animation-controls.js',
   'src/ui/display-controls.js',
-  'src/app/object-catalog.js',
+  'src/app/horizons-controller.js',
   'src/app/camera-controller.js',
   'src/ui/event-handlers.js',
   'src/app/service-worker-registration.js',

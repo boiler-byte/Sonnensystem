@@ -2,7 +2,7 @@ import { DAY, CAMERA_FOV, TAU, clamp, lerp, vnorm, vsub, matMul, hex, projected 
 import { displayBodyRadius, displayOrbitRadius, optimizedSolarMode, orbitScaleActive, OPTIMIZED_ORBIT_FACTOR } from '../data/orbital-math.js';
 import { J2000 } from '../data/bodies.js';
 import { largestMoonIds, layerEnabled } from '../data/layers.js';
-import { program, BODY_VS, BODY_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
+import { program, BODY_VS, BODY_FS, BODY_SIMPLE_FS, LOD_MARKER_VS, LOD_MARKER_FS, LINE_VS, LINE_FS, STARS_VS, STARS_FS, RING_VS, RING_FS, STYLES } from './shaders.js';
 import { sphereGeometry, ringGeometry, starGeometry } from './geometry.js';
 import { panCameraByPixels, cameraView, restoreOrbitFromLook, followMotionTooFast, CAMERA_PERSPECTIVES, nextCameraPerspectiveIndex, CAMERA_FLIGHT_MS, cameraFlightPose, cameraFlightLook, orbitCameraLook } from './camera.js';
 import { attachCameraControls, moveCameraWithKeyboard } from './controls.js';
@@ -21,6 +21,7 @@ import { rowLayout, rowFrameDistance, rowCameraFrame, rowBodyFocusDistance, rubb
 import { cinemaEligible, cinemaTrack, cinemaPoseAt, cinemaSceneAt, cinemaEntryOpacity, cinemaObjectAt, cinemaRestingObject, CINEMA_ENTRY_MS, CINEMA_END_HOLD_MS } from './cinema.js';
 import { rowHoveredBody, rowInspectionRadius, ROW_INSPECTION_ANIMATION_MS } from './row-inspection.js';
 import { projectedHitArea } from './picking.js';
+import { OBJECT_LOD, MARKER_FLOATS, projectedSphereDiameter, objectLOD, LODMarkerBatch } from './lod.js';
 
 export class SolarRenderer {
  constructor(canvas, labelCanvas, glow, callbacks={}) {
@@ -29,10 +30,17 @@ export class SolarRenderer {
   if(!gl)throw Error('WebGL nicht verfügbar');this.gl=gl;
   this.bodyProgram=program(gl,BODY_VS,BODY_FS);this.lineProgram=program(gl,LINE_VS,LINE_FS);
   this.starsProgram=program(gl,STARS_VS,STARS_FS);this.ringProgram=program(gl,RING_VS,RING_FS);
+  this.simpleBodyProgram=program(gl,BODY_VS,BODY_SIMPLE_FS);
+  this.markerProgram=program(gl,LOD_MARKER_VS,LOD_MARKER_FS);this.markerVB=gl.createBuffer();
+  this._lodMarkers=new LODMarkerBatch();
   const geom=sphereGeometry();this.sphereVB=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.sphereVB);gl.bufferData(gl.ARRAY_BUFFER,geom.vertices,gl.STATIC_DRAW);
   this.sphereIB=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.sphereIB);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,geom.indices,gl.STATIC_DRAW);this.sphereCount=geom.indices.length;
+  const simple=sphereGeometry(12,16);
+  this.simpleSphereVB=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.simpleSphereVB);gl.bufferData(gl.ARRAY_BUFFER,simple.vertices,gl.STATIC_DRAW);
+  this.simpleSphereIB=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.simpleSphereIB);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,simple.indices,gl.STATIC_DRAW);this.simpleSphereCount=simple.indices.length;
   this.textures=new TextureManager(gl);
   this.ringVB=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);gl.bufferData(gl.ARRAY_BUFFER,ringGeometry(),gl.STATIC_DRAW);
+  this.simpleRingVB=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.simpleRingVB);gl.bufferData(gl.ARRAY_BUFFER,ringGeometry(40),gl.STATIC_DRAW);
   this.lineVB=gl.createBuffer();this.starVB=gl.createBuffer();this.starCount=2200;gl.bindBuffer(gl.ARRAY_BUFFER,this.starVB);gl.bufferData(gl.ARRAY_BUFFER,starGeometry(this.starCount),gl.STATIC_DRAW);
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(.013,.025,.058,1);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   this.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
@@ -422,29 +430,36 @@ export class SolarRenderer {
   return {...snapshot,center:blendPosition(snapshot.center,destination,t.amount),
     radius:Math.max(0,snapshot.radius*(1-.18*alpha)),opacity:snapshot.opacity*(1-alpha)};
  }
- /** Render disappearing bodies and their former paths while the new view fades in. */
- drawDepartingScene(vp){
+ /** Render fading bodies before orbits, including when switching scene modes.
+  * The optional phase preserves the standalone snapshot renderer for callers. */
+ drawDepartingScene(vp,phase='both'){
   const t=this.transition;
   if(!t || t.kind!=='view')return;
-  const visible=new Set(this.visibleSceneBodies().map(body=>body.id));
-  const orbits=new Set(this.visibleSceneOrbits().map(body=>body.id));
-  const gl=this.gl;
-  gl.depthMask(false);
-  for(const source of t.fromVisualOrbits.values()){
-   if(orbits.has(source.body.id))continue;
-   const ghost=this.departingOrbitState(source,t);
-   if(ghost.opacity<=.001)continue;
-   this.orbitLine(ghost.body,ghost.center,vp,ghost.alpha,ghost.selected,
-     {radius:ghost.radius,opacity:ghost.opacity,settings:ghost.settings});
+  if(phase!=='orbits'){
+   const visible=new Set(this.visibleSceneBodies().map(body=>body.id));
+   for(const source of t.fromVisualBodies.values()){
+    if(visible.has(source.body.id))continue;
+    const ghost=this.departingBodyState(source,t);
+    if(ghost.opacity<=.001)continue;
+    const lod=this.objectLOD(ghost.body,ghost.position,vp,{radiusWorld:ghost.radius*(!this.settings?.scaleObjects&&ghost.body.id===this.selectedId?1.045:1)});
+    if(ghost.body.id==='saturn' && lod<=OBJECT_LOD.SIMPLE)this.drawRings(ghost.position,vp,
+      {opacity:ghost.opacity,scale:source.ringScale,lod});
+    this.drawSphere(ghost.body,ghost.position,vp,{opacity:ghost.opacity,radius:ghost.radius,lod});
+   }
   }
-  gl.depthMask(true);
-  for(const source of t.fromVisualBodies.values()){
-   if(visible.has(source.body.id))continue;
-   const ghost=this.departingBodyState(source,t);
-   if(ghost.opacity<=.001)continue;
-   if(ghost.body.id==='saturn')this.drawRings(ghost.position,vp,
-     {opacity:ghost.opacity,scale:source.ringScale});
-   this.drawSphere(ghost.body,ghost.position,vp,{opacity:ghost.opacity,radius:ghost.radius});
+  if(phase!=='bodies'){
+   const orbits=new Set(this.visibleSceneOrbits().map(body=>body.id));
+   const gl=this.gl;
+   // Ghost orbits share the depth buffer populated by real scene bodies.
+   gl.depthMask(false);
+   for(const source of t.fromVisualOrbits.values()){
+    if(orbits.has(source.body.id))continue;
+    const ghost=this.departingOrbitState(source,t);
+    if(ghost.opacity<=.001)continue;
+    this.orbitLine(ghost.body,ghost.center,vp,ghost.alpha,ghost.selected,
+      {radius:ghost.radius,opacity:ghost.opacity,settings:ghost.settings});
+   }
+   gl.depthMask(true);
   }
  }
  /** Respect reduced-motion preferences while retaining testable pure transition math. */
@@ -851,34 +866,94 @@ export class SolarRenderer {
   gl.vertexAttribPointer(pos,3,gl.FLOAT,false,16,0);gl.vertexAttribPointer(size,1,gl.FLOAT,false,16,12);
   gl.depthMask(false);gl.drawArrays(gl.POINTS,0,this.starCount);gl.depthMask(true);
  }
- drawSphere(body,p,vp,options={}){const gl=this.gl,program=this.bodyProgram;gl.useProgram(program);
-  gl.bindBuffer(gl.ARRAY_BUFFER,this.sphereVB);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,this.sphereIB);
-  const a=this.attribute(program,'aPosition'),n=this.attribute(program,'aNormal'),uv=this.attribute(program,'aUV');
-  gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(n);gl.enableVertexAttribArray(uv);
-  gl.vertexAttribPointer(a,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(n,3,gl.FLOAT,false,32,12);
-  gl.vertexAttribPointer(uv,2,gl.FLOAT,false,32,24);
+ /** Select LOD using the sphere's displayed CSS-pixel diameter (not world size). */
+ objectLOD(body,p,vp,{radiusWorld}={}){
+  if(!(this.height>0) || !vp)return OBJECT_LOD.FULL;
+  let radius=radiusWorld;
+  if(radius===undefined){
+   radius=this.bodyRadius(body);
+   radius=this.rowInspectedRadius(body,radius);
+   if(!this.settings?.scaleObjects && this.selectedId===body.id)radius*=1.045;
+  }
+  return objectLOD(projectedSphereDiameter(p,vp,this.height,radius));
+ }
+ /** Defer distant points so hundreds of objects share one or two GPU draws. */
+ queueLODMarker(body,p,vp,lod,diameterPx,opacity){
+  if(!this._lodMarkers || !this.markerProgram)return;
+  const projection=projected(p,vp,this.width,this.height);
+  if(!projection)return;
+  const extent=lod===OBJECT_LOD.PIXEL?1:diameterPx;
+  if(projection.x+extent<0 || projection.x-extent>this.width ||
+     projection.y+extent<0 || projection.y-extent>this.height)return;
+  const color=hex(body.color);
+  this._lodMarkers.push(p,color,opacity,diameterPx,lod);
+ }
+ /** Render points after full/low-poly bodies but before orbital lines. */
+ flushLODMarkers(vp){
+  const batch=this._lodMarkers,gl=this.gl,program=this.markerProgram;
+  if(!batch || !program || !(batch.opaqueCount+batch.translucentCount))return;
+  gl.useProgram(program);
+  gl.uniformMatrix4fv(this.uniform(program,'uVP'),false,vp);
+  gl.uniform1f(this.uniform(program,'uPixelRatio'),this.dpr);
+  gl.bindBuffer(gl.ARRAY_BUFFER,this.markerVB);
+  const stride=MARKER_FLOATS*4;
+  for(const [name,components,offset] of [['aPosition',3,0],['aColor',4,12],['aSize',1,28],['aPixel',1,32]]){
+   const location=this.attribute(program,name);
+   if(location<0)continue;
+   gl.enableVertexAttribArray(location);
+   gl.vertexAttribPointer(location,components,gl.FLOAT,false,stride,offset);
+  }
+  for(const [key,writeDepth] of [['opaque',true],['translucent',false]]){
+   const count=batch[key+'Count'];if(!count)continue;
+   gl.depthMask(writeDepth);
+   gl.bufferData(gl.ARRAY_BUFFER,batch.vertices(key),gl.DYNAMIC_DRAW);
+   gl.drawArrays(gl.POINTS,0,count);
+  }
+  gl.depthMask(true);
+  batch.reset();
+ }
+ drawSphere(body,p,vp,options={}){
+  const gl=this.gl;
   const ordinaryRadius=options.radius ?? this.bodyRadius(body);
-  const r=options.radius===undefined?this.rowInspectedRadius(body,ordinaryRadius):ordinaryRadius; // HUD hover never changes the row layout.
+  const r=options.radius===undefined?this.rowInspectedRadius(body,ordinaryRadius):ordinaryRadius;
+  const visualRadius=this.settings?.scaleObjects?r:r*(this.selectedId===body.id?1.045:1);
   const opacity=clamp(options.opacity ?? this.sceneBodyOpacity(body),0,1);
   if(opacity<=.001)return;
+  const lod=options.lod ?? this.objectLOD?.(body,p,vp,{radiusWorld:visualRadius}) ?? OBJECT_LOD.FULL;
+  if(lod>=OBJECT_LOD.MARKER && this.markerProgram && this._lodMarkers){
+   const diameter=projectedSphereDiameter(p,vp,this.height,visualRadius);
+   this.queueLODMarker(body,p,vp,lod,diameter,opacity);
+   return;
+  }
+  const simple=lod===OBJECT_LOD.SIMPLE && this.simpleBodyProgram && this.simpleSphereVB && this.simpleSphereIB;
+  const program=simple?this.simpleBodyProgram:this.bodyProgram;
+  gl.useProgram(program);
+  gl.bindBuffer(gl.ARRAY_BUFFER,simple?this.simpleSphereVB:this.sphereVB);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,simple?this.simpleSphereIB:this.sphereIB);
+  const a=this.attribute(program,'aPosition'),n=this.attribute(program,'aNormal'),uv=this.attribute(program,'aUV');
+  gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(n);
+  gl.vertexAttribPointer(a,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(n,3,gl.FLOAT,false,32,12);
+  if(uv>=0){gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,32,24);}
   gl.uniform1f(this.uniform(program,'uOpacity'),opacity);
   if(opacity<.999)gl.depthMask(false);
-  const modelMatrix=bodyModel(body,p,this.settings?.scaleObjects ? r : r*(this.selectedId===body.id?1.045:1),(this.renderSpinTime?.(body,this.simTime)??this.simTime));
+  const modelMatrix=bodyModel(body,p,visualRadius,(this.renderSpinTime?.(body,this.simTime)??this.simTime));
   gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,modelMatrix));
   const color=hex(body.color);gl.uniform3f(this.uniform(program,'uBase'),...color);
   const light=this.planetId?vnorm([.8,.65,1]):vnorm(vsub([0,0,0],p));
   gl.uniform3f(this.uniform(program,'uLight'),...localLightDirection(light,modelMatrix));
   gl.uniform1f(this.uniform(program,'uStyle'),STYLES[body.style]??1);
   gl.uniform1f(this.uniform(program,'uOptimizedLighting'),this.settings?.lighting==='realistic'?0:1);
-  let seed=0;for(let i=0;i<body.id.length;i++)seed+=body.id.charCodeAt(i)*.11;
-  gl.uniform1f(this.uniform(program,'uSeed'),seed);
-  gl.uniform1f(this.uniform(program,'uTime'),this.simTime/DAY);
-  const texture=this.textures?.get(body,this.planetId,this.selectedId);
-  gl.uniform1f(this.uniform(program,'uHasTexture'),texture?1:0);
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D,texture||null);
-  gl.uniform1i(this.uniform(program,'uDiffuse'),0);
-  gl.drawElements(gl.TRIANGLES,this.sphereCount,gl.UNSIGNED_SHORT,0);
+  if(!simple){
+   let seed=0;for(let i=0;i<body.id.length;i++)seed+=body.id.charCodeAt(i)*.11;
+   gl.uniform1f(this.uniform(program,'uSeed'),seed);
+   gl.uniform1f(this.uniform(program,'uTime'),this.simTime/DAY);
+   const texture=this.textures?.get(body,this.planetId,this.selectedId);
+   gl.uniform1f(this.uniform(program,'uHasTexture'),texture?1:0);
+   gl.activeTexture(gl.TEXTURE0);
+   gl.bindTexture(gl.TEXTURE_2D,texture||null);
+   gl.uniform1i(this.uniform(program,'uDiffuse'),0);
+  }
+  gl.drawElements(gl.TRIANGLES,simple?this.simpleSphereCount:this.sphereCount,gl.UNSIGNED_SHORT,0);
   if(opacity<.999)gl.depthMask(true);
  }
  targetRingScale(){
@@ -889,8 +964,11 @@ export class SolarRenderer {
   const previous=this.transition?.fromRingScale;
   return previous===undefined?target:Math.max(0,previous+(target-previous)*this.transition.amount);
  }
- drawRings(p,vp,options={}){const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
-  gl.bindBuffer(gl.ARRAY_BUFFER,this.ringVB);const a=this.attribute(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
+ drawRings(p,vp,options={}){if(options.lod>=OBJECT_LOD.MARKER)return;
+  const gl=this.gl,program=this.ringProgram;gl.useProgram(program);
+  const simple=options.lod===OBJECT_LOD.SIMPLE && this.simpleRingVB;
+  gl.bindBuffer(gl.ARRAY_BUFFER,simple?this.simpleRingVB:this.ringVB);
+  const a=this.attribute(program,'aPosition');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
   const ordinaryRingScale=options.scale ?? this.ringScale();
   const saturn=this.byId.get('saturn');
   const ordinarySphere=saturn?this.bodyRadius(saturn):0;
@@ -898,7 +976,7 @@ export class SolarRenderer {
     ?ordinaryRingScale*this.rowInspectedRadius(saturn,ordinarySphere)/ordinarySphere:ordinaryRingScale;
   gl.uniform1f(this.uniform(program,'uOpacity'),clamp(options.opacity ?? this.sceneBodyOpacity(this.byId.get('saturn')),0,1));
   gl.uniformMatrix4fv(this.uniform(program,'uMVP'),false,matMul(vp,ringModel(saturn,p,ringScale)));
-  gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,200*6);gl.depthMask(true);
+  gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,0,simple?40*6:200*6);gl.depthMask(true);
  }
  drawLabels(vp){drawSceneLabels(this,vp);}
   draw(timeMs,selectedId,settings){const gl=this.gl;if(this.width<2||this.height<2)return;
@@ -913,13 +991,15 @@ export class SolarRenderer {
     if(focused)this.camera.desiredTarget=focused.slice();
   }
   if(!this.cinema?.active)this.updateFollowTarget();
-  const {vp}=this.makeVP();this.vp=vp;
+  const {vp,starVp}=this.makeVP();this.vp=vp;
   this.advanceRowInspection(vp);
+  this._lodMarkers?.reset();
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-  this.drawStars(vp);
-  this.drawDepartingScene(vp);
+  this.drawStars(starVp);
+  this.drawDepartingScene(vp,'bodies');
   if(this.planetId)drawPlanetSystemScene(this,selectedId,settings,vp);
   else drawSolarSystemScene(this,selectedId,settings,vp);
+  this.drawDepartingScene(vp,'orbits');
  }
   pick(x,y){if(!this.vp)return;let best=null,dist=Infinity;
   for(const b of this.rendered){

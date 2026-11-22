@@ -1,6 +1,6 @@
 import { TYPES, FEATURED_IDS, CATEGORY_COLORS, AU_KM } from '../data/bodies.js';
-import { clean } from '../data/normalization.js';
 import { esc, formatInt, formatDecimal } from './formatters.js';
+const clean=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 const $=id=>document.getElementById(id);
 const MAIN_TYPES=['star','planet','moon','dwarf','tno','asteroid','binary','comet','satellite','probe'];
 const TYPE_ORDER = new Map(['planet','dwarf','moon','star','tno','asteroid','binary','comet','satellite','probe'].map((type,index)=>[type,index]));

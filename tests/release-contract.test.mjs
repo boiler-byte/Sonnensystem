@@ -58,7 +58,7 @@ test('release contract: legacy behavior suites, app modules and manifest stay av
  assert.ok(shell.includes('./css/styles.css'));
  assert.match(html,/href="css\/styles\.css"/);
  const manifest=JSON.parse(await read('data/catalog/manifest.json'));
- assert.equal(manifest.catalogVersion,'10.1.0');
+ assert.equal(manifest.catalogVersion,'10.2.0');
  assert.equal(manifest.categories.length,23);
  assert.equal(manifest.editorial.length,5);
 });

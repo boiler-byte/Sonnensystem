@@ -7,6 +7,9 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
   const gl=renderer.gl;
   const selected=renderer.byId.get(selectedId);
    const planet=renderer.byId.get(renderer.planetId),children=renderer.planetChildren().filter(b=>renderer.shouldDraw(b));
+   // Render opaque planets and moons first so their depth hides rear orbit
+   // segments while lines nearer to the camera remain visible.
+   drawSceneBodies(renderer,[planet,...children],vp);
    if(settings.orbits && (renderer.orbitOpacity?.() ?? 1)>.001){
     gl.depthMask(false);
     // All bodies remain visible. Limit the number of orbit strokes for dense live catalogs.
@@ -15,7 +18,6 @@ export function drawPlanetSystemScene(renderer, selectedId, settings, vp) {
     for(const b of children)if(orbitIds.has(b.id))renderer.orbitLine(b,animatedCenter,vp,b.id===selectedId?.70:.22,b.id===selectedId);
     gl.depthMask(true);
    }
-   drawSceneBodies(renderer,[planet,...children],vp);
    // The Sun's halo belongs to the outgoing solar scene: let it fade
    // along with the solar sphere instead of disappearing on the first frame.
    const previousSun=renderer.transition?.kind==='view'

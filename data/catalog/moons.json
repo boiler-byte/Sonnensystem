@@ -11,6 +11,16 @@
     {
       "id": "moon",
       "name": "Mond",
+      "images": [
+        {
+          "type": "texture",
+          "author": "Solar System Scope",
+          "sourceUrl": "https://www.solarsystemscope.com/textures/",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "earth",
       "physical": {
         "radiusKm": 1737.4,
@@ -43,6 +53,16 @@
     {
       "id": "phobos",
       "name": "Phobos",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/mars.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "mars",
       "physical": {
         "radiusKm": 11.3,
@@ -67,6 +87,16 @@
     {
       "id": "deimos",
       "name": "Deimos",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/mars.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "mars",
       "physical": {
         "radiusKm": 6.2,
@@ -91,6 +121,16 @@
     {
       "id": "io",
       "name": "Io",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/jupiter.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "jupiter",
       "physical": {
         "radiusKm": 1821.6,
@@ -115,6 +155,16 @@
     {
       "id": "europa",
       "name": "Europa",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/jupiter.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "jupiter",
       "physical": {
         "radiusKm": 1560.8,
@@ -139,6 +189,16 @@
     {
       "id": "ganymede",
       "name": "Ganymed",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/jupiter.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "jupiter",
       "physical": {
         "radiusKm": 2634.1,
@@ -163,6 +223,16 @@
     {
       "id": "callisto",
       "name": "Kallisto",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/jupiter.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "jupiter",
       "physical": {
         "radiusKm": 2410.3,
@@ -187,6 +257,16 @@
     {
       "id": "mimas",
       "name": "Mimas",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/saturn.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "saturn",
       "physical": {
         "radiusKm": 198.2,
@@ -211,6 +291,16 @@
     {
       "id": "enceladus",
       "name": "Enceladus",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/saturn.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "saturn",
       "physical": {
         "radiusKm": 252.1,
@@ -235,6 +325,16 @@
     {
       "id": "rhea",
       "name": "Rhea",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/saturn.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "saturn",
       "physical": {
         "radiusKm": 763.8,
@@ -259,6 +359,16 @@
     {
       "id": "titan",
       "name": "Titan",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/saturn.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "saturn",
       "physical": {
         "radiusKm": 2574.7,
@@ -283,6 +393,16 @@
     {
       "id": "iapetus",
       "name": "Iapetus",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/saturn.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "saturn",
       "physical": {
         "radiusKm": 734.5,
@@ -307,6 +427,16 @@
     {
       "id": "titania",
       "name": "Titania",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/uranus.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "uranus",
       "physical": {
         "radiusKm": 788.9,
@@ -331,6 +461,16 @@
     {
       "id": "oberon",
       "name": "Oberon",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/uranus.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "uranus",
       "physical": {
         "radiusKm": 761.4,
@@ -355,6 +495,16 @@
     {
       "id": "triton",
       "name": "Triton",
+      "images": [
+        {
+          "type": "texture",
+          "author": "NASA/JPL-Caltech/USGS",
+          "sourceUrl": "https://space.jpl.nasa.gov/tmaps/neptune.html",
+          "license": "NASA Media Usage Guidelines",
+          "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+          "modifications": "Konvertierung nach WebP"
+        }
+      ],
       "parentId": "neptune",
       "physical": {
         "radiusKm": 1353.4,

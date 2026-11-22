@@ -26,12 +26,12 @@ test('v124: viewport controls keep camera reset separate and time controls in La
   assert.match(css,/\.viewport>\.control-panel\{position:absolute/);
 });
 
-test('v13: detail name replaces section label, hero shows object type and origin, tabs separate knowledge/data',async()=>{
+test('v139: no detail title header; hero shows object type and origin, tabs separate knowledge/data',async()=>{
   const html=await read('index.html');
   const header=area(html,'<aside class="detail"','<div class="detail-scroll"');
-  assert.match(header,/<h2 id="detail-name"/);
+  assert.doesNotMatch(header,/id="detail-top"|id="detail-name"/);
   assert.doesNotMatch(header,/02 \/ OBJEKTDETAILS/);
-  const hero=area(html,'<div class="detail-hero">','<div id="planet-view-actions"');
+  const hero=area(html,'<div class="detail-hero" id="detail-hero"','<div id="planet-view-actions"');
   for(const id of ['detail-type','detail-origin','type-dot']) assert.match(hero,new RegExp(`id="${id}"`));
   assert.doesNotMatch(html,/class="object-type"/);
   const knowledge=area(html,'id="detail-wissen"','id="detail-daten"');

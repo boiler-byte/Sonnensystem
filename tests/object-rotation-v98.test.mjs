@@ -7,7 +7,6 @@ import {sphereGeometry} from '../src/renderer/geometry.js';
 import {bodyModel,ringModel,rotationPhase,localLightDirection} from '../src/renderer/object-orientation.js';
 import {SolarRenderer} from '../src/renderer/renderer.js';
 import {parseCategory} from '../src/data/catalog.js';
-import {normalizeSolar} from '../src/data/normalization.js';
 
 const HOUR=3600000, eps=1e-5;
 const approx=(actual,expected,tolerance=eps)=>assert.ok(Math.abs(actual-expected)<tolerance,`${actual} != ${expected}`);
@@ -126,15 +125,11 @@ test('catalog rejects impossible or malformed rotational properties but accepts 
  assert.equal(parseCategory(noData,'planet')[0].rotationPeriodHours,undefined);
 });
 
-test('live Solar OpenData updates sidereal rotation without dropping curated values on null',()=>{
- const old={id:'earth',name:'Erde',rotationPeriodHours:23.9345,axialTiltDeg:23.4};
- const body={id:'earth',bodyType:'Planet',isPlanet:true,englishName:'Earth',aroundPlanet:{planet:'sun'},
-  sideralRotation:23.93,axialTilt:23.43,meanRadius:6371};
- const fresh=normalizeSolar(body,id=>id==='earth'?old:null);
- approx(fresh.rotationPeriodHours,23.93);approx(fresh.axialTiltDeg,23.43);
- const preserved=normalizeSolar({...body,sideralRotation:null,axialTilt:null},()=>old);
- approx(preserved.rotationPeriodHours,old.rotationPeriodHours);
- approx(preserved.axialTiltDeg,old.axialTiltDeg);
+test('local rotation data remains available without live updates',async()=>{
+ const planets=await catalog('planets.json','planet');
+ const earth=planets.find(body=>body.id==='earth');
+ assert.ok(Number.isFinite(earth.rotationPeriodHours)&&earth.rotationPeriodHours>0);
+ assert.ok(Number.isFinite(earth.axialTiltDeg));
 });
 
 test('real WebGL drawing path uploads animated model, object-space light and aligned rings',()=>{

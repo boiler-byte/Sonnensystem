@@ -11,8 +11,8 @@ test('v30: Objekt hinzufügen is removed from both desktop catalog and mobile sh
     assert.equal(html.includes(removed),false,`${removed} should be absent`);
   assert.doesNotMatch(app,/\$\('asteroid-form'\)|\$\('asteroid-name'\)/);
   assert.doesNotMatch(css,/\.catalog-bottom\{|\.add-form\{/);
-  assert.match(app,/if\(body\.type==='asteroid'&&!body\.sbdbLoaded\)loadAsteroid\(body\.name,body\)/,
-    'catalog asteroid auto-enrichment still works');
+  assert.doesNotMatch(app,/loadAsteroid|fetchAsteroid|sbdbLoaded/,
+    'asteroid details must no longer call the removed SBDB service');
   assert.match(html,/id="detail-index"/);
   assert.match(html,/id="object-list"/);
 });

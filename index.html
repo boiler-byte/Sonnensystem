@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V130.0" />
+  <meta name="app-version" content="V140.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -26,28 +26,42 @@
         <div class="sidebar-content" id="sidebar-content">
       <aside class="catalog" id="catalog" role="tabpanel" aria-labelledby="sidebar-tab-catalog">
         
-        <div class="catalog-search-row">
+        <div class="catalog-search-row" id="catalog-search-row">
           <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="Name, Kategorie, Planet ..." autocomplete="off" aria-label="Objekte nach Name, Kategorie oder übergeordnetem Himmelskörper suchen" /><span class="shortcut">/</span></div>
           <button class="catalog-planet-filter" id="catalog-planet-filter" type="button" aria-label="Nur Objekte des aktuellen Planeten anzeigen" aria-pressed="false" aria-controls="object-list" title="Nur Objekte des aktuellen Planeten anzeigen" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-24 12 12)"/></svg>
           </button>
         </div>
-        <div class="list-header"><button id="catalog-sort" class="list-sort-button" type="button" data-sort="default" aria-controls="object-list" aria-label="Sortierung: Standard. Nächste Sortierung: Entfernung" title="Sortieren: Standard → Entfernung → Größe → Standard"><span id="list-label">OBJEKTE IM ATLAS</span><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6 3v14m-3-3 3 3 3-3M14 17V3m-3 3 3-3 3 3"/></svg></button><span id="object-count">—</span></div>
+        <div class="list-header" id="list-header"><button id="catalog-sort" class="list-sort-button" type="button" data-sort="default" aria-controls="object-list" aria-label="Sortierung: Standard. Nächste Sortierung: Entfernung" title="Sortieren: Standard → Entfernung → Größe → Standard"><span id="list-label">OBJEKTE IM ATLAS</span><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6 3v14m-3-3 3 3 3-3M14 17V3m-3 3 3-3 3 3"/></svg></button><span id="object-count">—</span></div>
         <div id="object-list" class="object-list" role="listbox" aria-label="Himmelskörper"></div>
       </aside>
       <aside class="detail" id="detail" role="tabpanel" aria-labelledby="sidebar-tab-detail" hidden>
-        <div class="detail-top" id="detail-top">
-          <h2 id="detail-name" class="detail-title">Kein Objekt ausgewählt</h2>
-          <nav class="detail-index-nav" aria-label="Objekte derselben Kategorie durchschalten">
-            <button class="detail-index-button" id="detail-prev" type="button" aria-label="Vorheriges Objekt derselben Kategorie" title="Vorheriges Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 5-7 7 7 7"/></svg></button>
-            <span class="detail-index" id="detail-index" aria-live="polite">— / —</span>
-            <button class="detail-index-button" id="detail-next" type="button" aria-label="Nächstes Objekt derselben Kategorie" title="Nächstes Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 5 7 7-7 7"/></svg></button>
-          </nav>
-        </div>
         <div class="detail-scroll" id="detail-scroll">
-          <div class="detail-hero">
-            <div class="hero-orbit ring1"></div><div class="hero-orbit ring2"></div>
-            <button id="hero-body" class="hero-body" type="button" aria-label="Kein Objekt ausgewählt" title="Kein Objekt ausgewählt" disabled><span class="hero-shade" aria-hidden="true"></span></button>
+          <div class="detail-hero" id="detail-hero" role="group" aria-label="Objektschaubild">
+            <button id="hero-body" class="hero-body" type="button" aria-label="Kein Objekt ausgewählt" title="Kein Objekt ausgewählt" disabled>
+              <span class="hero-size-art" aria-hidden="true">
+                <span class="hero-generic-plot" id="hero-generic-plot" hidden>
+                  <span class="hero-generic-orbit hero-generic-orbit-1"></span>
+                  <span class="hero-generic-orbit hero-generic-orbit-2"></span>
+                  <span class="hero-generic-body rock" id="hero-generic-body"><span class="hero-generic-shade"></span></span>
+                </span>
+                <span class="hero-size-plot" id="hero-size-plot" hidden>
+                  <span class="hero-size-circle hero-size-selected-circle"></span>
+                  <span class="hero-size-circle hero-size-reference-circle"></span>
+                </span>
+              </span>
+              <span class="hero-size-ratio" id="hero-size-ratio" aria-hidden="true" hidden></span>
+              <span class="hero-size-note" id="hero-size-note">Bitte ein Objekt auswählen.</span>
+            </button>
+            <nav class="detail-index-nav" aria-label="Objekte derselben Kategorie durchschalten">
+              <button class="detail-index-button" id="detail-prev" type="button" aria-label="Vorheriges Objekt derselben Kategorie" title="Vorheriges Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 5-7 7 7 7"/></svg></button>
+              <span class="detail-index" id="detail-index" aria-live="polite">— / —</span>
+              <button class="detail-index-button" id="detail-next" type="button" aria-label="Nächstes Objekt derselben Kategorie" title="Nächstes Objekt"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 5 7 7-7 7"/></svg></button>
+            </nav>
+            <span class="hero-size-legend" id="hero-size-legend" hidden>
+              <span class="hero-size-label hero-size-label-selected" id="hero-size-selected-name" aria-hidden="true"></span>
+              <button class="hero-size-label hero-size-label-reference" id="hero-size-reference-name" type="button" aria-label="Vergleichsreferenz wechseln" aria-controls="hero-size-plot hero-size-ratio" aria-pressed="false" disabled></button>
+            </span>
             <div class="hero-ref"><span class="type-dot" id="type-dot"></span><span id="detail-type">KEINE AUSWAHL</span><span class="hero-ref-divider" aria-hidden="true">/</span><span id="detail-origin">SONNENSYSTEM</span></div>
           </div>
           <div class="detail-scene-actions" id="detail-scene-actions" hidden>

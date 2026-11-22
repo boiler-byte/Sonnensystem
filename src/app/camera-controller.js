@@ -2,7 +2,6 @@ import {S,renderer,mobileSheets,arMode,byId} from './state.js';
 import {layerEnabled,availableLayerTypes,updateLayerSelection} from '../data/layers.js';
 import {updateCatalog,updateDetail} from '../ui/catalog-controller.js';
 import {updateMode} from './view-mode.js';
-import {loadAsteroid} from './object-catalog.js';
 import {changeLayers} from '../ui/display-controls.js';
 
 /** Planetary isolation also supports dwarf planets that have catalogued moons. */
@@ -45,7 +44,6 @@ export function selectBody(id,focus=false,{zoom=focus}={}){
   if(focus && body.type!=='probe' && arMode?.active)arMode.alignToPerspective();
   updateCatalog();updateDetail();
   if(focus)mobileSheets?.open('detail');
-  if(body.type==='asteroid'&&!body.sbdbLoaded)loadAsteroid(body.name,body);
 }
 export function clearSelection(){
   if(renderer?.cinema?.active)renderer.stopCinema();

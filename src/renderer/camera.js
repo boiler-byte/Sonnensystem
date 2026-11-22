@@ -168,6 +168,16 @@ export function cameraView(camera, width, height, focusOffsetY=0, far=350) {cons
   // the gaze independently; the flight also animates the eye itself.
   const look=cam.arView || cam.freeLook || cam.flightLook;
   const gaze=look?.forward?eye.map((v,i)=>v+look.forward[i]):cam.target;
-  const vp=matMul(projection,lookAt(eye,gaze,look?.up||[0,1,0]));
-  return {vp,eye};
+  const view=lookAt(eye,gaze,look?.up||[0,1,0]);
+  const vp=matMul(projection,view);
+  // Stars are a directional backdrop, not objects at the planet's origin.
+  // Ignore camera translation (zoom, pan, focus) for the sky, and use a fixed
+  // near/far range so the 100..225-unit star shell never clips at large orbit
+  // scales or tiny close-up camera distances. Keep gaze and mobile sheet offset.
+  const starView=view.slice();
+  starView[12]=starView[13]=starView[14]=0;
+  const starProjection=perspective(CAMERA_FOV,width/height,.1,300);
+  starProjection[9]=projection[9];
+  const starVp=matMul(starProjection,starView);
+  return {vp,starVp,eye};
  }

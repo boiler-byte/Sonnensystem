@@ -92,7 +92,7 @@ test('v24: icon-only planet filter is visible only in planet mode and shares the
   assert.match(button,/aria-label="[^"]+"/);
   assert.match(button,/<svg[^>]+viewBox="0 0 24 24"/);
   assert.doesNotMatch(button,/<span|<label|<b>|Planetenfilter<\/button>/);
-  assert.match(html,/<div class="catalog-search-row">/);
+  assert.match(html,/<div class="catalog-search-row"(?:\s+[^>]*)?>/);
   assert.match(css,/\.catalog-search-row\{display:flex/);
   assert.match(css,/\.catalog-planet-filter\[hidden\]\{display:none!important\}/);
   assert.match(app,/catalogPlanetOnly:true/);

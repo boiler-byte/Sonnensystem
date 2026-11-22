@@ -7,8 +7,8 @@ import {activeView,updateCatalog,updateDetail} from './catalog-controller.js';
 import {nextCatalogSort} from './object-list.js';
 import {openPlanetScene,selectBody,clearSelection} from '../app/camera-controller.js';
 import {updateMode,updateTime} from '../app/view-mode.js';
-import {alignHorizons} from '../app/object-catalog.js';
-import {detailNavigation,setDetailTab,restoreDetailTab} from './object-details.js';
+import {alignHorizons} from '../app/horizons-controller.js';
+import {detailNavigation,setDetailTab,restoreDetailTab,toggleDetailSizeReference} from './object-details.js';
 import {syncSceneMode} from './scene-mode.js';
 import {speedAtStep} from './timeline.js';
 import {notifyToggle} from './status.js';
@@ -117,6 +117,7 @@ export function initControls(){
     notifyToggle(`Alle Monde: ${S.settings.fourMoons?'Aus (max. 4)':'An (alle)'}`);
   });
   syncFourMoonsControl();
+  $('hero-size-reference-name').addEventListener('click',()=>toggleDetailSizeReference(S));
   $('hero-body').addEventListener('click',()=>{
     const body=byId(S.selected);
     if(body?.type!=='probe' && body && renderer)selectBody(body.id,true);

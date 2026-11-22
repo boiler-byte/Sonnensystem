@@ -1,9 +1,9 @@
 {
   "name": "sonnensystem",
-  "version": "130.0.0",
+  "version": "140.0.0",
   "private": true,
   "type": "module",
-  "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und serverseitigen API-Proxies",
+  "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und NASA/JPL-Horizons-Proxy",
   "scripts": {
     "start": "node server/server.mjs",
     "dev": "node --watch server/server.mjs",

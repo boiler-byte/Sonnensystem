@@ -83,6 +83,39 @@ void main() {
  col=col*light + (uStyle<.5 ? vec3(.12,.035,.0) : uBase*.05*rim);
  gl_FragColor=vec4(pow(max(col,0.0),vec3(.92)),clamp(uOpacity,0.0,1.0));
 }`;
+/** Lightweight, texture-free lighting for 8-32 CSS-pixel spheres. */
+export const BODY_SIMPLE_FS = `
+precision mediump float;
+varying vec3 vN;
+uniform vec3 uBase; uniform vec3 uLight;
+uniform float uStyle; uniform float uOpacity; uniform float uOptimizedLighting;
+void main(){
+ float diffuse=max(dot(normalize(vN),normalize(uLight)),0.0);
+ float light=clamp(.13+.89*diffuse,.08,1.0);
+ light=mix(light,.50+.50*diffuse,step(.5,uOptimizedLighting));
+ if(uStyle<.5)light=1.0;
+ gl_FragColor=vec4(pow(max(uBase*light,vec3(0.0)),vec3(.92)),clamp(uOpacity,0.0,1.0));
+}`;
+/** A single point-sprite draw handles all 2-8 px discs and <2 px pixels. */
+export const LOD_MARKER_VS = `
+attribute vec3 aPosition; attribute vec4 aColor; attribute float aSize; attribute float aPixel;
+uniform mat4 uVP;uniform float uPixelRatio;
+varying vec4 vColor;varying float vPixel;
+void main(){
+ gl_Position=uVP*vec4(aPosition,1.0);
+ gl_PointSize=max(1.0,aSize*uPixelRatio);
+ vColor=aColor;vPixel=aPixel;
+}`;
+export const LOD_MARKER_FS = `
+precision mediump float;
+varying vec4 vColor;varying float vPixel;
+void main(){
+ if(vPixel>.5){gl_FragColor=vColor;return;}
+ float r=length(gl_PointCoord-vec2(.5));
+ if(r>.5)discard;
+ float edge=1.0-smoothstep(.40,.50,r);
+ gl_FragColor=vec4(vColor.rgb*(1.04-.30*r),vColor.a*edge);
+}`;
 export const LINE_VS=`attribute vec3 aPosition;uniform mat4 uVP;void main(){gl_Position=uVP*vec4(aPosition,1.0);}`;
 export const LINE_FS=`precision mediump float; uniform vec4 uColor;void main(){gl_FragColor=uColor;}`;
 export const STARS_VS=`attribute vec3 aPosition;attribute float aSize;uniform mat4 uVP;uniform float uPixelRatio;uniform vec3 uGalacticStarOffset;varying float vAlpha;void main(){float near=clamp((225.0-length(aPosition))/125.0,0.0,1.0);float depthWeight=.02+.98*near*near;vec3 position=aPosition+uGalacticStarOffset*depthWeight;gl_Position=uVP*vec4(position,1.0);gl_PointSize=aSize*uPixelRatio;vAlpha=clamp(aSize/2.8,.25,1.0);}`;

@@ -16,9 +16,11 @@ export function drawSceneBodies(renderer, candidates, vp, compare) {
   renderer.rendered=rendered;
   for(const body of rendered) {
     const position=renderer.positions.get(body.id);
-    if(body.id==='saturn')renderer.drawRings(position,vp);
-    renderer.drawSphere(body,position,vp);
+    const lod=renderer.objectLOD?.(body,position,vp) ?? 0;
+    if(body.id==='saturn' && lod<2)renderer.drawRings(position,vp,{lod});
+    renderer.drawSphere(body,position,vp,{lod});
   }
+  renderer.flushLODMarkers?.(vp); // Pixel sprites must precede translucent orbit strokes.
   renderer.drawLabels(vp);
   return rendered;
 }

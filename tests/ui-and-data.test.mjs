@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { INITIAL_BODIES } from './helpers/catalog-fixture.mjs';
-import { clean, normalizeSolar, normalizeStation, formatAsteroid } from '../src/data/normalization.js';
 import { renderDetail } from '../src/ui/object-details.js';
 import { renderCatalog } from '../src/ui/object-list.js';
 import { syncSceneMode } from '../src/ui/scene-mode.js';
@@ -19,18 +18,12 @@ class MockEl {
   getAttribute(n){return this.attrs[n];}
   querySelectorAll(){return [];}
 }
-test('Data normalization is isolated from the DOM and preserves existing metadata',()=>{
-  assert.equal(clean('Érde'),'erde');
-  const old=INITIAL_BODIES.find(b=>b.id==='earth');
-  const fresh=normalizeSolar({bodyType:'Planet',isPlanet:true,id:'terre',englishName:'Earth',
-    semimajorAxis:149597870.7,meanRadius:6371,sideralOrbit:365.25},id=>id==='earth'?old:null);
-  assert.equal(fresh.id,'earth');assert.equal(fresh.name,'Erde');assert.equal(fresh.description,old.description);
-  assert.equal(fresh.a,1);assert.equal(fresh.style,'earth');
-  const satellite=normalizeStation({MEAN_MOTION:15.5,ECCENTRICITY:.0002,NORAD_CAT_ID:25544,EPOCH:'2026-11-16T12:00:00',OBJECT_NAME:'ISS'});
-  assert.equal(satellite.type,'satellite');assert.equal(satellite.parentId,'earth');
-  assert.ok(satellite.a>6371);
-  const rock=formatAsteroid({orbit:{elements:[{name:'a',value:'1.5'},{name:'e',value:'.21'}]},phys_par:[]},'sbdb-rock','Rock',null);
-  assert.equal(rock.a,1.5);assert.equal(rock.e,.21);assert.equal(rock.type,'asteroid');
+test('local catalog retains curated planets, satellites and asteroid entries',()=>{
+  const earth=INITIAL_BODIES.find(body=>body.id==='earth');
+  assert.equal(earth.name,'Erde');
+  assert.ok(earth.radiusKm>6000);
+  assert.ok(INITIAL_BODIES.some(body=>body.type==='satellite'&&body.parentId==='earth'));
+  assert.ok(INITIAL_BODIES.some(body=>body.type==='asteroid'&&body.a>0));
 });
 
 test('Planet details, overview and timeline retain v5 view semantics',()=>{
@@ -39,7 +32,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
   globalThis.document={getElementById:get,querySelectorAll:()=>[]};
   try{
     const bodies=INITIAL_BODIES.map(b=>({...b}));
-    const state={bodies,selected:'earth',filter:'all',search:'',playing:true,time:Date.UTC(2026,10,16),speed:10,status:{solar:['ok','37 Objekte'],sbdb:['idle','Auf Abruf'],celestrak:['idle','Auf Abruf'],horizons:['idle','Auf Abruf']}};
+    const state={bodies,selected:'earth',filter:'all',search:'',playing:true,time:Date.UTC(2026,10,16),speed:10,status:{catalog:['ok','192 Objekte'],horizons:['idle','Auf Abruf']}};
     const renderer=Object.create(SolarRenderer.prototype);
     renderer.camera={theta:.63,phi:.99,dist:47,target:[0,0,0],desiredTarget:[0,0,0],desiredDist:47};
     renderer.width=1000;renderer.height=680;renderer.positions=new Map();renderer.overrides=new Map();
@@ -50,7 +43,7 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     assert.equal(get('planet-view-title').textContent,'Planetenansicht');
     assert.equal(get('planet-view-btn').getAttribute('aria-pressed'),'false');
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
-    assert.equal(get('detail-name').textContent,'Erde');
+    assert.match(get('hero-body').getAttribute('aria-label'),/Erde/);
     assert.ok(renderer.showPlanetSystem('earth'));
     syncSceneMode(state,renderer);renderDetail(state,renderer,select);
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Planet Erde');
@@ -60,8 +53,8 @@ test('Planet details, overview and timeline retain v5 view semantics',()=>{
     renderer.reset();syncSceneMode(state,renderer);
     assert.equal(get('view-mode-status').getAttribute('aria-label'),'Control-Panel · Sonnensystem');
     assert.equal(get('reset-camera').title,'Nächste Perspektive: Topdown');
-    changeStatus(state.status,'solar','offline','Startdaten');
-    assert.match(get('source-status').innerHTML,/Startdaten/);
+    changeStatus(state.status,'horizons','offline','Kontakt fehlt');
+    assert.match(get('source-status').innerHTML,/Kontakt fehlt/);
     assert.match(get('layer-sim-date').textContent,/^\d{2}\.\d{2}\.2026 \d{2}:\d{2}$/);
   }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });

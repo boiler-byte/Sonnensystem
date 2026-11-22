@@ -1,9 +1,6 @@
 import { cached,enqueueNASA } from '../cache/memory.mjs';
 import { upstream } from './http.mjs';
 
-export function validAsteroid(s){
-  return typeof s==='string'&&s.length>=1&&s.length<=56&&/^[\p{L}\p{N} .()\-+\/]+$/u.test(s);
-}
 export const ALLOWED_HORIZONS_TARGETS=new Set(['199','299','399','499','599','699','799','899','999','301']);
 export function validHorizonsDate(date){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return false;
@@ -18,11 +15,6 @@ export function parseVector(text){
   const numbers=match.slice(1,4).map(Number);
   if(!numbers.every(Number.isFinite))throw Error('Ungültige Horizons-Koordinaten');
   return numbers;
-}
-export async function asteroid(name){
-  const url=new URL('https://ssd-api.jpl.nasa.gov/sbdb.api');
-  url.search=new URLSearchParams({sstr:name,'full-prec':'1','phys-par':'1'}).toString();
-  return cached('sbdb:'+name.toLowerCase(),7*24*60*60_000,()=>enqueueNASA(()=>upstream(url)));
 }
 export async function horizons(target,date){
   const dt=new Date(date+'T00:00:00Z');

@@ -1,6 +1,22 @@
+## 3D-Objekt-LOD (v140)
+
+`src/renderer/lod.js` bestimmt `projectedSphereDiameter()` aus der aktiven WebGL-View-Projektionsmatrix, dem tatsächlich dargestellten Kugelradius und der **CSS-Viewporthöhe**. Die projizierte Kugelsilhouette verwendet die Tangententiefe analog zum bestehenden Picking. Die vier festen Grenzwerte beziehen sich auf **Durchmesser**: LOD 0 ≥ 32 px, LOD 1 ≥ 8 px, LOD 2 ≥ 2 px, LOD 3 unter 2 px. Ungültige Projektionen fallen konservativ auf LOD 0 zurück.
+
+`SolarRenderer.objectLOD()` wählt pro Körper und Bild den Pfad. In `drawSceneBodies()` bleibt die `rendered`-Liste für Beschriftung und Picking erhalten; nur die GPU-Darstellung ändert sich. `drawSphere()` verwendet ab 32 px die ursprüngliche Kugel mit Texturen und prozeduraler Oberfläche, von 8 bis 32 px die einmal angelegte `sphereGeometry(12,16)` mit `BODY_SIMPLE_FS` ohne Texturabfragen, darunter `LOD_MARKER_VS`/`LOD_MARKER_FS` über `gl.POINTS`. LOD 2 bildet den projizierten Durchmesser als kreisförmiges Point-Sprite ab, LOD 3 zeigt einen 1-CSS-Pixel-Punkt. `uPixelRatio` rechnet für Retina-/HiDPI-Displays erst auf GPU-Pixel um. Für Saturns Ringe wird in LOD 1 ein 40-Segment-Puffer genutzt; ab LOD 2 entfallen Ringe.
+
+`LODMarkerBatch` hält zwei wiederverwendbare, bei Bedarf wachsende `Float32Array`-Puffer (opaque und transparent). `flushLODMarkers()` führt pro Frame bis zu zwei gebündelte GPU-Draw-Calls **nach den festen Kugeln, vor den Orbitlinien** aus. Normale Marker schreiben Tiefe, ausgeblendete Ghost-Marker nicht. Bei Szenenwechseln nutzen die Ghost-Körper denselben LOD-Pfad; `this.rendered`, `pick()` und Label-Layouts werden nicht reduziert. Neue Dateien stehen auch im Offline-Service-Worker.
+
+## Detail-Header im Schaubild (v139)
+
+Die Detailansicht beginnt ohne zusätzliche Kopfzeile direkt mit `#detail-scroll`. Die Schaubildregion `#detail-hero` enthält die vorhandenen Pfeilbuttons `#detail-prev`/`#detail-next` und `#detail-index` in einer absolut rechts oben positionierten `detail-index-nav`. Der Referenz-Toggle und die Vergleichslegende reservieren Platz links davon. `#detail-name` und `#detail-top` existieren nicht mehr; Objektnamen stehen weiter in den beschrifteten Buttons und der Legende. Auf kleinen Geräten übernimmt `#detail-hero` die bisherige mobile Pointer-Drag-Handhabung der entfernten Titelleiste. Header und Katalog-Griffe bleiben unverändert.
+
+## Stern-Projektion unabhängig von der Szenenkamera (v133)
+
+`cameraView()` erzeugt neben der regulären Szenenmatrix `vp` auch `starVp`: dieselbe Blickrotation und mobile optische Verschiebung, aber ohne Translation (Sterne sind am Kamerastandpunkt zentriert) und mit festen Near-/Far-Ebenen für die Sternkugel im Radiusbereich 100–225. `SolarRenderer.draw()` zeichnet nur die Sterne mit `starVp`, während Orbits, Planeten, Labels und Picking bei `vp` bleiben. Der vorhandene Shader-Offset für die galaktische Sternparallaxe bleibt erhalten.
+
 ## Touch-Drag-Übergabe am oberen Scrollrand (v130)
 
-`initMobileSheets()` hält alle mobilen Snap-Zustände (`closed`, `half`, `full`) in einer zentralen `snapTo()`-Funktion. `sheet-header` und `detail-top` verwenden dieselben Pointer-Drag-Funktionen für Höhenvorschau, Capture und Drag-Ende. Die Scrollflächen `#object-list` und `#detail-scroll` behalten natives Scrollen, bis `scrollTop <= 1` und eine positive Y-Geste erkannt wird. Erst dann behandeln `touchmove`-Listener mit `{passive:false}` die weitere Bewegung als Sheet-Drag; normale Wischgesten und Multitouch werden nicht übernommen. Nach Drag-Ende verhindert eine kurze Klicksperre unbeabsichtigte Objektwechsel. Im Szenen-Callback trennt `clearSceneSelection()` die bereits leere Auswahl von einer neu aufgehobenen: nur eine vorher bereits leere Auswahl schließt das Sheet.
+`initMobileSheets()` hält alle mobilen Snap-Zustände (`closed`, `half`, `full`) in einer zentralen `snapTo()`-Funktion. `sheet-header` und (seit v139) `detail-hero` verwenden dieselben Pointer-Drag-Funktionen für Höhenvorschau, Capture und Drag-Ende. Die Scrollflächen `#object-list` und `#detail-scroll` behalten natives Scrollen, bis `scrollTop <= 1` und eine positive Y-Geste erkannt wird. Erst dann behandeln `touchmove`-Listener mit `{passive:false}` die weitere Bewegung als Sheet-Drag; normale Wischgesten und Multitouch werden nicht übernommen. Nach Drag-Ende verhindert eine kurze Klicksperre unbeabsichtigte Objektwechsel. Im Szenen-Callback trennt `clearSceneSelection()` die bereits leere Auswahl von einer neu aufgehobenen: nur eine vorher bereits leere Auswahl schließt das Sheet.
 
 ## Tabwechsel bei aufgehobener Objektauswahl (v129)
 
@@ -22,11 +38,11 @@ In `index.html` hat die zweispaltige `.layer-display-toggles`-Zeile weiterhin **
 
 Der App-Zustand `S.selected` und der Renderer-Zustand `selectedId` sind beim Start `null`; der Katalog-Fallback ersetzt nur eine ungültige, *nicht-leere* Objektauswahl. `setBodies()` lässt `followEnabled` eingeschaltet, hat aber ohne ausgewähltes Objekt kein Follow-Ziel. Erst eine manuelle Auswahl setzt `S.selected`, `selectedId` und gegebenenfalls `followedBodyId`. Das gemeinsame Desktop-/Mobile-Tab-Modul startet mit `panel='catalog'`, und das erste Kamerapreset bleibt „Schräg/oben“ (Preset 0, `theta=.63`, `phi=.99`). Sonstige Standardwerte unverändert.
 
-# Architektur – Sonnensystem v120
+# Architektur – Sonnensystem v139
 
 ## Prinzipien
 
-Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framework oder Frontend-Buildschritt. Der Node-Server stellt nur die erlaubten statischen Dateien und optionale API-Proxies bereit. Die Datensätze liegen lokal in JSON-Dateien; astronomische und redaktionelle Quellen sind über stabile IDs verknüpft.
+Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framework oder Frontend-Buildschritt. Der Node-Server stellt erlaubte statische Dateien, den Textur-Manifest-Endpunkt und den NASA/JPL-Horizons-Proxy bereit. Die Datensätze liegen lokal in JSON-Dateien; astronomische und redaktionelle Quellen sind über stabile IDs verknüpft.
 
 ## Modulverantwortung
 
@@ -37,9 +53,9 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 | `src/app/camera-controller.js`, `view-mode.js` | Kameraaktionen, Perspektiven und Ansichtstransitionen |
 | `src/app/ar-controller.js` | AR-Sensorsteuerung, Berechtigung und UI-Verknüpfung |
 | `src/app/animation-loop.js`, `animation-controls.js` | Zeitfortschritt, Bildschleife, Wiedergabe und Steuerung |
-| `src/app/object-catalog.js` | Kataloginitialisierung und optionaler Live-Datenabgleich |
+| `src/app/horizons-controller.js` | Manuell ausgelöster Positionsabgleich über NASA/JPL Horizons |
 | `src/ui/*.js` | Katalogsuche, Details, Layer, Popovers, Buttons, Mobile-Sheet und Status |
-| `src/data/*.js` | Katalogvalidierung, Normalisierung, Typen und Bahnberechnung |
+| `src/data/*.js` | Validierung des lokalen Katalogs, Typen und Bahnberechnung |
 | `src/renderer/renderer.js` | Szenenkoordination und WebGL-Lebenszyklus |
 | `src/renderer/object-orientation.js` | Deterministische Eigenrotation, Achsneigung, gebundene Monde, Saturnringachse, Beleuchtung im lokalen Objektraum |
 | `src/renderer/solar-view.js`, `planet-view.js`, `scene.js` | Sonnen- und Planetenansichten |
@@ -47,7 +63,7 @@ Die Browseranwendung nutzt native ES-Module, WebGL und Canvas-Labels ohne Framew
 | `src/renderer/controls.js`, `camera.js`, `ar-mode.js`, `cinema.js` | Kamera- und Eingabemodelle, Sensor-AR, Cinema |
 | `src/renderer/row-inspection.js`, `src/ui/row-inspection.js` | Bildschirmprojektion, Hover-Auswahl, 160px-Vergrößerung, HUD-Werte und animierter Parent-Pfeil |
 | `src/renderer/textures.js`, `texture-sources.js`, `shaders.js`, `geometry.js`, `labels.js` | Textur- und GPU-Ressourcen, Modelle, Label-Canvas |
-| `src/services/*.js`, `server/` | Optionale NASA-, Solar-OpenData- und CelesTrak-Abfragen über den Server |
+| `src/services/nasa-api.js`, `server/` | NASA/JPL-Horizons-Proxy sowie statische Dateien und Textur-Manifest |
 
 ## Start und Datenfluss
 

@@ -10,8 +10,8 @@ export function sphereGeometry(lat=30,lon=42) {
  for(let a=0;a<lat;a++)for(let b=0;b<lon;b++){const p=a*(lon+1)+b,q=p+lon+1;inds.push(p,q,p+1,q,q+1,p+1);}
  return {vertices:new Float32Array(vertices),indices:new Uint16Array(inds)};
 }
-export function ringGeometry() {
- const p=[];const count=200;
+export function ringGeometry(count=200) {
+ const p=[];
  for(let i=0;i<count;i++){const a=i*TAU/count,b=(i+1)*TAU/count;
   for(const [r,t] of [[.68,a],[1.20,a],[.68,b],[1.20,a],[1.20,b],[.68,b]])p.push(r*Math.cos(t),0,r*Math.sin(t));}
  return new Float32Array(p);

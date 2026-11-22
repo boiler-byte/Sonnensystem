@@ -1,3 +1,13 @@
+## v140: LOD-Wartung und Prüfung
+
+Der LOD-Mechanismus ist im Modul `src/renderer/lod.js` zusammengefasst. Die Schwellen **32/8/2 CSS-Pixel (Durchmesser)** liegen in `LOD_DIAMETERS`; nach Änderungen an FOV, Projektion oder Body-Scale `npm run check` ausführen und `tests/object-lod-v140.test.mjs` beachten. Für LOD 0 bleiben Oberflächentexturen und das originale Shaderprogramm erhalten, LOD 1 verwendet reduzierte Geometrie und einen einfachen farbigen Lichtshader, LOD 2/3 verwenden GPU-Point-Sprites. Punkte werden nach Kugeln und vor Umlaufbahnen gezeichnet, und der dynamische Marker-Puffer wird nach jedem Bild zurückgesetzt. Bei neuem Frontend-Modul den PWA-`SHELL` in `sw.js` aktualisieren. Der Cache-Name lautet `sonnensystem-shell-v140`.
+
+Eine messbare FPS-Steigerung ist abhängig von Szene, Hardware und Sichtbarkeit; für Vergleichsmessungen gleiche Kameraposition und dieselben Objekt-/Bahn-Layer verwenden. Für visuelle QA im Browser besonders Mondansichten, Satelliten, Saturn-Ringe, Szenenübergänge und Reihen-Hover prüfen.
+
+## Änderung in v139
+
+**Delta v138 → v139:** Das bisherige `detail-top` einschließlich Titel entfernt; die zugängliche `detail-index-nav` ist stattdessen als eigenständige Bediengruppe rechts oben in `detail-hero` platziert. Die Vergleichslegende nutzt den freien Bereich links davon. `src/ui/bottom-sheet.js` hängt den mobilen Pointer-Drag-Handle an `detail-hero`; bei Swipe-Klicks werden Navigation, Zoom und der Referenz-Toggle weiter geschützt. Verwaiste CSS-Regeln und Detailschreibzugriffe wurden entfernt. Tests inklusive `detail-hero-nav-v139.test.mjs`. Version `139.0.0`, Cache `sonnensystem-shell-v139`, Basis v138.
+
 ## Änderung in v130
 
 **Delta v129 → v130:** `src/ui/bottom-sheet.js` verwendet gemeinsam genutzte Dragfunktionen für `sheet-header`, `detail-top` sowie für Abwärts-Wischgesten in `object-list` und `detail-scroll` am Scrollanfang. Bei normalem Scrollen wird nicht in die Sheet-Höhe eingegriffen; erst nach Erreichen des oberen Scrollrands wird der Touch-Drag mit `passive:false` übernommen. Die Drag-Klassen, History-Interaktion und der Kamerabedienelementabstand werden wie beim Header aktualisiert. Die beiden Scroll-Container und `detail-top` sind per ID adressierbar. `clearSceneSelection()` in `src/app/runtime.js` unterscheidet zwischen einem ersten leeren Szenenklick, der die Selektion aufhebt, und einem zweiten leeren Klick, der das bereits unselektierte mobile Sheet schließt. Version `130.0.0`, Offline-Cache `sonnensystem-shell-v130`, Basis v129.
