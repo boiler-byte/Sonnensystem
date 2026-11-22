@@ -2,6 +2,9 @@ import {$,S,renderer,mobileSheets} from './state.js';
 import {updateTime} from './view-mode.js';
 import {effectiveSimulationSpeed} from '../ui/timeline.js';
 import {updateRowInspectionHUD} from '../ui/row-inspection.js';
+import {rendererSelectionId} from '../data/probe-location.js';
+import {byId} from './state.js';
+import {refreshProbeDistance} from '../ui/object-details.js';
 
 let lastTimeReadoutAt=0;
 export function loop(now){
@@ -16,7 +19,7 @@ export function loop(now){
   if(S.playing&&simulationSpeed>0)S.time+=d*simulationSpeed*86400000;
   try{
     renderer.visibleFocusOffset=mobileSheets?.focusOffsetFor(renderer.canvas)??0;
-    renderer.draw(S.time,S.selected,S.settings);
+    renderer.draw(S.time,rendererSelectionId(byId(S.selected),byId),S.settings);
     const fade=$('cinema-scene-fade');
     if(fade){
       const visible=renderer.cinema?.active===true;
@@ -26,6 +29,6 @@ export function loop(now){
     updateRowInspectionHUD(renderer,now);
   }
   catch(e){console.error('Renderfehler:',e);$('canvas-error').hidden=false;return;}
-  if(now-lastTimeReadoutAt>=250){lastTimeReadoutAt=now;updateTime();}
+  if(now-lastTimeReadoutAt>=250){lastTimeReadoutAt=now;updateTime();refreshProbeDistance(S);}
   requestAnimationFrame(loop);
 }

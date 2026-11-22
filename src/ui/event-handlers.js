@@ -12,6 +12,7 @@ import {detailNavigation,setDetailTab,restoreDetailTab,toggleDetailSizeReference
 import {syncSceneMode} from './scene-mode.js';
 import {speedAtStep} from './timeline.js';
 import {notifyToggle} from './status.js';
+import {rendererSelectionId} from '../data/probe-location.js';
 
 export function initControls(){
   $('layer-btn').addEventListener('click',()=>{
@@ -120,7 +121,7 @@ export function initControls(){
   $('hero-size-reference-name').addEventListener('click',()=>toggleDetailSizeReference(S));
   $('hero-body').addEventListener('click',()=>{
     const body=byId(S.selected);
-    if(body?.type!=='probe' && body && renderer)selectBody(body.id,true);
+    if(body && renderer && rendererSelectionId(body,byId)!==null)selectBody(body.id,true);
   });
   $('back-to-solar').addEventListener('click',()=>{
     if(!renderer?.planetId)return;

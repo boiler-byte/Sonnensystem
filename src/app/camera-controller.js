@@ -3,6 +3,7 @@ import {layerEnabled,availableLayerTypes,updateLayerSelection} from '../data/lay
 import {updateCatalog,updateDetail} from '../ui/catalog-controller.js';
 import {updateMode} from './view-mode.js';
 import {changeLayers} from '../ui/display-controls.js';
+import {probeLocationBody,rendererSelectionId} from '../data/probe-location.js';
 
 /** Planetary isolation also supports dwarf planets that have catalogued moons. */
 export function openPlanetScene(id){
@@ -23,25 +24,28 @@ export function openPlanetScene(id){
 export function selectBody(id,focus=false,{zoom=focus}={}){
   if(renderer?.cinema?.active)renderer.stopCinema();
   const body=byId(id);if(!body)return;
-  if(renderer?.planetId && id!==renderer.planetId && body.parentId!==renderer.planetId){
-    if(body.type==='planet'||body.type==='dwarf')openPlanetScene(body.id);
+  const target=probeLocationBody(body,byId)||body;
+  const sceneId=target.id;
+  if(renderer?.planetId && sceneId!==renderer.planetId && target.parentId!==renderer.planetId){
+    if(target.type==='planet'||target.type==='dwarf')openPlanetScene(target.id);
     else{renderer.reset();renderer.calcPositions(S.time);}
     updateMode();
   }
   // A catalog selection must be visible even if its category was filtered out.
   // Preserve every other active layer and the independent settings of each view.
-  if(!layerEnabled(S.settings.layers,body.type)){
+  if(!layerEnabled(S.settings.layers,target.type)){
     const view=renderer?.planetId?'planet':'solar';
     const available=availableLayerTypes(S.bodies,view,renderer?.planetId);
-    if(available.includes(body.type))
-      changeLayers(updateLayerSelection(S.settings.layers,body.type,true,view,available));
+    if(available.includes(target.type))
+      changeLayers(updateLayerSelection(S.settings.layers,target.type,true,view,available));
   }
   S.selected=id;
-  renderer?.setSelected(body.type==='probe'?null:id,{focus:focus&&body.type!=='probe',zoom:zoom&&body.type!=='probe'});
+  const renderId=rendererSelectionId(body,byId);
+  renderer?.setSelected(renderId,{focus:focus&&renderId!==null,zoom:zoom&&renderId!==null});
   // Selecting a catalog body moves the camera's orbit target. In AR the gaze
   // is sensor-relative and otherwise remains pointed at the previous object.
   // Adopt the new perspective as the neutral phone posture, with no new prompt.
-  if(focus && body.type!=='probe' && arMode?.active)arMode.alignToPerspective();
+  if(focus && rendererSelectionId(body,byId)!==null && arMode?.active)arMode.alignToPerspective();
   updateCatalog();updateDetail();
   if(focus)mobileSheets?.open('detail');
 }

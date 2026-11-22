@@ -149,7 +149,7 @@ test('v128: detail actions only show a planet-view button, never a tracking togg
   }finally{if(old===undefined)delete globalThis.document;else globalThis.document=old;}
 });
 
-test('v38: mouse wheel, right drag and two-finger look keep following; left drag cancels it',()=>{
+test('v145: wheel, left drag, one-finger look and pinch keep follow; right and two-finger pan suspend it',()=>{
   const oldDocument=globalThis.document,oldWindow=globalThis.window;
   const {renderer:r}=makeRenderer(),handlers={};
   const canvas={addEventListener(name,fn){handlers[name]=fn;},setPointerCapture(){},getBoundingClientRect(){return {left:0,top:0}}};
@@ -161,28 +161,36 @@ test('v38: mouse wheel, right drag and two-finger look keep following; left drag
     attachCameraControls(r);
     r.follow('earth',0);
     handlers.wheel({deltaY:150,preventDefault(){}});
-    assert.equal(r.followEnabled,true,'mouse wheel zoom');
-    handlers.pointerdown(pointer(1,100,100,'mouse',2));
-    handlers.pointermove(pointer(1,120,108,'mouse',2));
-    assert.equal(r.followEnabled,true,'right-drag look');
-    handlers.pointerup(pointer(1,120,108,'mouse',2));
+    assert.equal(r.followedBodyId,'earth','wheel zoom retains the followed target');
+    handlers.pointerdown(pointer(1,100,100,'mouse',0));
+    handlers.pointermove(pointer(1,120,108,'mouse',0));
+    assert.equal(r.followedBodyId,'earth','left-drag look retains following');
+    handlers.pointerup(pointer(1,120,108,'mouse',0));
     handlers.pointerdown(pointer(10,100,100,'touch'));
     handlers.pointerdown(pointer(11,200,100,'touch'));
+    handlers.pointermove(pointer(10,80,100,'touch'));
     handlers.pointermove(pointer(11,220,100,'touch'));
-    assert.equal(r.followEnabled,true,'pinch zoom despite moving midpoint');
-    handlers.pointerup(pointer(10,100,100,'touch'));
+    assert.equal(r.followedBodyId,'earth','symmetric pinch retains following');
+    handlers.pointerup(pointer(10,80,100,'touch'));
     handlers.pointerup(pointer(11,220,100,'touch'));
+    handlers.pointerdown(pointer(30,100,100,'touch'));
+    handlers.pointermove(pointer(30,125,116,'touch'));
+    assert.equal(r.followedBodyId,'earth','one-finger look retains tracking');
+    handlers.pointerup(pointer(30,125,116,'touch'));
+    handlers.pointerdown(pointer(2,100,100,'mouse',2));
+    handlers.pointermove(pointer(2,125,116,'mouse',2));
+    assert.equal(r.followEnabled,true,'right mouse pan keeps permanent follow mode');
+    assert.equal(r.followedBodyId,null,'right mouse pan suspends tracking');
+    handlers.pointerup(pointer(2,125,116,'mouse',2));
+    r.follow('earth',1000);
     handlers.pointerdown(pointer(20,100,100,'touch'));
     handlers.pointerdown(pointer(21,200,100,'touch'));
     handlers.pointermove(pointer(20,112,100,'touch'));
     handlers.pointermove(pointer(21,212,100,'touch'));
-    assert.equal(r.followEnabled,true,'two-finger look does not cancel follow');
+    assert.equal(r.followEnabled,true,'two-finger pan keeps permanent follow mode');
+    assert.equal(r.followedBodyId,null,'two-finger pan suspends tracking');
     handlers.pointerup(pointer(20,112,100,'touch'));
     handlers.pointerup(pointer(21,212,100,'touch'));
-    handlers.pointerdown(pointer(30,100,100,'touch'));
-    handlers.pointermove(pointer(30,125,116,'touch'));
-    assert.equal(r.followEnabled,true,'one-finger pan keeps Folgen enabled');
-    assert.equal(r.followedBodyId,null,'one-finger pan suspends tracking');
   }finally{
     if(oldDocument===undefined)delete globalThis.document;else globalThis.document=oldDocument;
     if(oldWindow===undefined)delete globalThis.window;else globalThis.window=oldWindow;

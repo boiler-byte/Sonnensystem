@@ -17,16 +17,20 @@ export function syncLayers(){
     ? 'Aktive Objektlayer: '+LAYER_FILTER_TYPES.filter(filter => layerFilterMembers(filter).some(type => layerEnabled(selected,type))).join(', ')
     : (selected.mode==='all'?'Alle Objektkategorien':`Standardfilter (${view==='planet'?'Planetenansicht':'Sonnensystem'})`);
   $('layer-popover').setAttribute('aria-label',view==='planet'?'Objektlayer der Planetenansicht':'Objektlayer des Sonnensystems');
+  let secondaryCategoryVisible=false;
   for(const check of document.querySelectorAll('[data-layer-type]')){
     const type=check.dataset.layerType;
     const members=layerFilterMembers(type).filter(member => available.has(member));
-    check.parentElement.hidden=!members.length || (row && (type==='moon' || type==='satellite'));
+    check.parentElement.hidden=!members.length || (row && (type==='moon' || type==='satellite'))
+      || type==='star' || type==='probe';
+    if(!check.parentElement.hidden && (type==='moon' || type==='satellite'))secondaryCategoryVisible=true;
     check.disabled=!members.length;
     check.checked=members.length>0 && members.every(member => layerEnabled(selected,member));
     // Legacy split selections can still be represented without losing data.
     check.indeterminate=!check.checked && members.some(member => layerEnabled(selected,member));
     check.parentElement?.style.setProperty('--category-color',CATEGORY_COLORS[type]||'#E6EDF5');
   }
+  $('layer-category-separator').hidden=!secondaryCategoryVisible;
   syncLayerPanelMode();
   for(const preset of document.querySelectorAll('[data-layer-preset]')){
     const active=preset.dataset.layerPreset===selected.mode

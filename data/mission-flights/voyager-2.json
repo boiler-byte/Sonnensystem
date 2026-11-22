@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "type": "mission-flight",
+  "probeId": "voyager-2",
+  "probeName": "Voyager 2",
+  "naifId": -32,
+  "flightStatus": "in-flight",
+  "history": {
+    "eventType": "mission-milestones",
+    "events": [
+      {
+        "dateUtc": "1977-08-20",
+        "eventType": "launch",
+        "label": "Start",
+        "bodyId": "earth",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      },
+      {
+        "dateUtc": "1979-07-09",
+        "eventType": "flyby",
+        "label": "Jupiter-Vorbeiflug",
+        "bodyId": "jupiter",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      },
+      {
+        "dateUtc": "1981-08-26",
+        "eventType": "flyby",
+        "label": "Saturn-Vorbeiflug",
+        "bodyId": "saturn",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      },
+      {
+        "dateUtc": "1986-01-24",
+        "eventType": "flyby",
+        "label": "Uranus-Vorbeiflug",
+        "bodyId": "uranus",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      },
+      {
+        "dateUtc": "1989-08-25",
+        "eventType": "flyby",
+        "label": "Neptun-Vorbeiflug",
+        "bodyId": "neptune",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      },
+      {
+        "dateUtc": "2018-11-05",
+        "eventType": "boundary-crossing",
+        "label": "Übertritt in den interstellaren Raum",
+        "bodyId": null,
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/"
+      }
+    ],
+    "note": "Ereignisse beschreiben die Chronologie. Körperbezüge sind KEINE numerischen Flugwegpunkte."
+  },
+  "trajectory": {
+    "status": "sparse-archival-samples",
+    "referenceBody": "sun",
+    "coordinateSystem": "solar-ecliptic-of-date",
+    "timeScale": "UTC",
+    "units": {
+      "radius": "AU",
+      "angles": "degrees"
+    },
+    "samples": [
+      {
+        "epochUtc": "1977-08-25T00:00:00Z",
+        "radiusAu": 1.01,
+        "latitudeDeg": 0.1,
+        "longitudeDeg": 333.0
+      },
+      {
+        "epochUtc": "1979-01-22T00:00:00Z",
+        "radiusAu": 4.59,
+        "latitudeDeg": 0.3,
+        "longitudeDeg": 128.6
+      },
+      {
+        "epochUtc": "1979-09-24T00:00:00Z",
+        "radiusAu": 5.62,
+        "latitudeDeg": 1.1,
+        "longitudeDeg": 146.0
+      },
+      {
+        "epochUtc": "1981-08-14T00:00:00Z",
+        "radiusAu": 9.52,
+        "latitudeDeg": 2.4,
+        "longitudeDeg": 191.0
+      },
+      {
+        "epochUtc": "1985-11-11T00:00:00Z",
+        "radiusAu": 18.49,
+        "latitudeDeg": 0.0,
+        "longitudeDeg": 257.4
+      },
+      {
+        "epochUtc": "1989-01-01T00:00:00Z",
+        "radiusAu": 28.03,
+        "latitudeDeg": 0.8,
+        "longitudeDeg": 279.1
+      },
+      {
+        "epochUtc": "1996-10-24T00:00:00Z",
+        "radiusAu": 50.11,
+        "latitudeDeg": -20.2,
+        "longitudeDeg": 285.8
+      },
+      {
+        "epochUtc": "2005-01-09T00:00:00Z",
+        "radiusAu": 75.37,
+        "latitudeDeg": -29.8,
+        "longitudeDeg": 288.2
+      }
+    ],
+    "sampleCount": 8,
+    "isComplete": false,
+    "sourceUrl": "https://pds-ppi.igpp.ucla.edu/data/VG2-SS-POS-6-1DAY-V1.0/DATA/VG2TRAJ_1DAY_1977_2005.TAB",
+    "note": "Ausgewählte, nicht lückenlose NASA-PDS-Stützpunkte. Winkel beziehen sich auf die Ekliptik des Datums, nicht auf J2000. Nicht linear interpolieren, um die exakte historische Raumsondenroute vorzutäuschen."
+  },
+  "ephemerisImport": {
+    "provider": "NASA/JPL Horizons",
+    "naifId": -32,
+    "desiredOrigin": "SUN (500@10)",
+    "desiredReferencePlane": "ECLIPTIC J2000",
+    "desiredFormat": "VECTORS; AU-D; CSV; position x/y/z in AU",
+    "requiredBeforeRendering": false,
+    "sourceUrl": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "note": "Historische Lücken mit nachprüfbaren Horizons-/SPICE-Ephemeriden decken. Für Pioneer nach Funkende sind Trajektorien nur Berechnungen; für zerstörte Sonden nicht über Missionsende extrapolieren."
+  },
+  "sources": [
+    {
+      "kind": "mission-history",
+      "url": "https://science.nasa.gov/mission/voyager/voyager-2/"
+    },
+    {
+      "kind": "archival-heliocentric-trajectory",
+      "url": "https://pds-ppi.igpp.ucla.edu/data/VG2-SS-POS-6-1DAY-V1.0/DATA/VG2TRAJ_1DAY_1977_2005.TAB"
+    }
+  ]
+}

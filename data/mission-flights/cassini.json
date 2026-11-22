@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "type": "mission-flight",
+  "probeId": "cassini",
+  "probeName": "Cassini",
+  "naifId": -82,
+  "flightStatus": "ended",
+  "history": {
+    "eventType": "mission-milestones",
+    "events": [
+      {
+        "dateUtc": "1997-10-15",
+        "eventType": "launch",
+        "label": "Start",
+        "bodyId": "earth",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "1998-04-26",
+        "eventType": "gravity-assist",
+        "label": "Erster Venus-Vorbeiflug",
+        "bodyId": "venus",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "1999-06-24",
+        "eventType": "gravity-assist",
+        "label": "Zweiter Venus-Vorbeiflug",
+        "bodyId": "venus",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "1999-08-18",
+        "eventType": "gravity-assist",
+        "label": "Erd-Vorbeiflug",
+        "bodyId": "earth",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "2000-12-30",
+        "eventType": "gravity-assist",
+        "label": "Jupiter-Vorbeiflug",
+        "bodyId": "jupiter",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "2004-07-01",
+        "eventType": "orbit-insertion",
+        "label": "Ankunft im Saturn-System",
+        "bodyId": "saturn",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "2004-12-25",
+        "eventType": "probe-separation",
+        "label": "Abtrennung der Huygens-Sonde",
+        "bodyId": null,
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      },
+      {
+        "dateUtc": "2017-09-15",
+        "eventType": "atmospheric-entry",
+        "label": "Kontrollierter Eintritt in die Saturnatmosphäre",
+        "bodyId": "saturn",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/"
+      }
+    ],
+    "note": "Ereignisse beschreiben die Chronologie. Körperbezüge sind KEINE numerischen Flugwegpunkte."
+  },
+  "trajectory": {
+    "status": "awaiting-ephemeris",
+    "referenceBody": "sun",
+    "coordinateSystem": null,
+    "timeScale": null,
+    "units": null,
+    "samples": [],
+    "sampleCount": 0,
+    "isComplete": false,
+    "sourceUrl": null,
+    "note": "Eine geometrische Flugroute ist noch nicht vorhanden. Die Missionsereignisse enthalten keine Koordinaten; keine künstlichen Verbindungen zwischen Planeten zeichnen."
+  },
+  "ephemerisImport": {
+    "provider": "NASA/JPL Horizons",
+    "naifId": -82,
+    "desiredOrigin": "SUN (500@10)",
+    "desiredReferencePlane": "ECLIPTIC J2000",
+    "desiredFormat": "VECTORS; AU-D; CSV; position x/y/z in AU",
+    "requiredBeforeRendering": true,
+    "sourceUrl": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "note": "Historische Lücken mit nachprüfbaren Horizons-/SPICE-Ephemeriden decken. Für Pioneer nach Funkende sind Trajektorien nur Berechnungen; für zerstörte Sonden nicht über Missionsende extrapolieren.",
+    "missionEndDate": "2017-09-15"
+  },
+  "sources": [
+    {
+      "kind": "mission-history",
+      "url": "https://science.nasa.gov/mission/cassini/"
+    }
+  ],
+  "terminalLocation": {
+    "bodyId": "saturn",
+    "eventType": "atmospheric-entry",
+    "dateUtc": "2017-09-15",
+    "displayPositionPolicy": "inherit-target-body-at-selected-simulation-time",
+    "note": "Fuer die Kartenanzeige: Zielkoerper statt historische Flugposition; die unter history erfassten Missionsereignisse bleiben unveraendert."
+  }
+}

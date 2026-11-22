@@ -25,6 +25,17 @@ export function catalogDistanceAu(body){
  * Probes and primary Sun-orbiters continue using their own distance.
  */
 export function catalogListingDistance(body,{byId=null,useParentForMoons=false}={}){
+  // Terminal probes inherit the Sun distance of their target's planetary system.
+  // This is a mean catalog distance, not a measured spacecraft ephemeris.
+  if(body?.type==='probe' && body.focusBodyId && byId?.has(body.focusBodyId)){
+    const target=byId.get(body.focusBodyId);
+    let reference=target;
+    const seen=new Set([body.id]);
+    while(reference?.parentId && reference.parentId!=='sun' && !seen.has(reference.id)){
+      seen.add(reference.id);reference=byId.get(reference.parentId);
+    }
+    return {au:reference?catalogDistanceAu(reference):null,fromParent:target.name};
+  }
   const companion=body?.parentId && body.parentId!=='sun'
     && ['moon','binary','satellite'].includes(body.type);
   const parent=useParentForMoons && companion ? byId?.get(body.parentId) : null;
@@ -156,7 +167,7 @@ export function renderCatalog(state,onSelect,{planetId=null}={}){
  const mode=CATALOG_SORT_MODES.includes(state.catalogSort)?state.catalogSort:'default';
  const useParentForMoons=!clean(state.search)&&!(planetId&&state.catalogPlanetOnly);
  host.innerHTML=list.map(b=>{
-  const active=b.id===state.selected,desc=b.type==='probe'?(b.targets||'Mission'):b.parentId?byId(b.parentId)?.name||b.parentId:'Zentrum des Systems';
+  const active=b.id===state.selected,desc=b.type==='probe'?(b.focusBodyId?`Auf ${byId(b.focusBodyId)?.name||b.focusBodyId}`:(b.targets||'Mission')):b.parentId?byId(b.parentId)?.name||b.parentId:'Zentrum des Systems';
   // The large preview shows the object's own appearance; only the small dot encodes its category.
   const objectColor=/^#[0-9a-f]{6}$/i.test(b.color||'')?b.color:'#9ba9bc';
   const categoryColor=CATEGORY_COLORS[b.type]||'#E6EDF5';

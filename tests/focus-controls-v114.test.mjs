@@ -99,7 +99,7 @@ test('v114: picking, catalog selection and hero invoke the distinct focus/zoom p
   assert.match(runtime,/onSelect:id=>selectBody\(id,true,\{zoom:renderer\?\.settings\?\.row===true\}\)/);
   assert.match(catalog,/onSelect\(b\.dataset\.id,true\)/);
   assert.match(handlers,/\$\('hero-body'\)\.addEventListener\('click',\(\)=>\{[\s\S]*?selectBody\(body\.id,true\)/);
-  assert.match(camera,/setSelected\(body\.type==='probe'\?null:id,\{focus:focus&&body\.type!=='probe',zoom:zoom&&body\.type!=='probe'\}\)/);
+  assert.match(camera,/setSelected\(renderId,\{focus:focus&&renderId!==null,zoom:zoom&&renderId!==null\}\)/);
 });
 
 test('v114: contrast impacts both circular orbits and galactic trails without modifying mode flags',()=>{

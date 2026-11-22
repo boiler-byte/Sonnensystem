@@ -5,6 +5,12 @@ const KEYBOARD_PAN_PX_PER_SECOND = 390;
 const LOOK_SENSITIVITY_X = .0051;
 const LOOK_SENSITIVITY_Y = .005;
 
+/** Swap drag/swipe roles only while an object is actually being followed. */
+function trackingActive(renderer) {
+  return Boolean(renderer.followEnabled && renderer.followedBodyId != null &&
+    renderer.followedBodyId === renderer.selectedId);
+}
+
 /** Looking around changes the camera heading, never its ground-plane target. */
 function lookByPixels(renderer, dx, dy) {
   if(!dx && !dy)return;
@@ -39,16 +45,21 @@ export function attachCameraControls(renderer) {
     renderer.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,button:e.button});
     c.setPointerCapture(e.pointerId);
     if(renderer.pointers.size===1){
-      renderer.drag={id:e.pointerId,button:e.button,startX:e.clientX,startY:e.clientY,moved:false};
+      renderer.drag={id:e.pointerId,button:e.button,startX:e.clientX,startY:e.clientY,
+        moved:false,controlsSwapped:trackingActive(renderer)};
       renderer.gesture=null;
+      renderer.gestureControlsSwapped=null;
     }else{
-      // Second finger switches to look-around + pinch zoom; never select a body.
+      // Two fingers swipe to look normally, or pan while tracking; pinch always zooms.
+      // Latch the mode for the whole gesture: panning suspends tracking, but must
+      // not switch the gesture back to looking around mid-swipe.
       if(renderer.drag)renderer.drag.moved=true;
+      renderer.gestureControlsSwapped=renderer.drag?.controlsSwapped ?? trackingActive(renderer);
       renderer.gesture=twoPointerGesture(renderer.pointers);
       renderer.gestureOrigin=renderer.gesture;
-      renderer.gestureLookCenter=renderer.gesture;
+      renderer.gestureSwipeCenter=renderer.gesture;
       renderer.gestureStartPoints=new Map([...renderer.pointers].map(([id,p])=>[id,{x:p.x,y:p.y}]));
-      renderer.gestureLookActive=false;
+      renderer.gestureSwipeActive=false;
     }
   });
   c.addEventListener('pointermove',e=>{
@@ -82,20 +93,19 @@ export function attachCameraControls(renderer) {
           const bdx=b[1].x-sb.x,bdy=b[1].y-sb.y;
           const al=Math.hypot(adx,ady),bl=Math.hypot(bdx,bdy);
           const alignment=al*bl>0?(adx*bdx+ady*bdy)/(al*bl):0;
-          if(al>2 && bl>2 && alignment>.7)renderer.gestureLookActive=true;
-          if(al>2 && bl>2 && alignment<-.7)renderer.gestureLookActive=false;
+          if(al>2 && bl>2 && alignment>.7)renderer.gestureSwipeActive=true;
+          if(al>2 && bl>2 && alignment<-.7)renderer.gestureSwipeActive=false;
         }
-        if(renderer.gestureLookActive){
-          const last=renderer.gestureLookCenter||renderer.gestureOrigin||prev;
-          // In free look, both fingers down now tilt the gaze down, just
-          // as in selected-object mode. Mouse look and pinch are unchanged.
-          const swipeY=next.y-last.y;
-          lookByPixels(renderer,next.x-last.x,swipeY);
-          renderer.gestureLookCenter=next;
-        }else if(renderer.gestureLookCenter && next.distance!==prev.distance){
+        if(renderer.gestureSwipeActive){
+          const last=renderer.gestureSwipeCenter||renderer.gestureOrigin||prev;
+          const swipeX=next.x-last.x,swipeY=next.y-last.y;
+          if(renderer.gestureControlsSwapped)renderer.panByPixels(swipeX,swipeY);
+          else lookByPixels(renderer,swipeX,swipeY);
+          renderer.gestureSwipeCenter=next;
+        }else if(renderer.gestureSwipeCenter && next.distance!==prev.distance){
           // Maintain the baseline during pinch-only gestures, avoiding a jump
           // when a later two-finger swipe begins.
-          renderer.gestureLookCenter=next;
+          renderer.gestureSwipeCenter=next;
         }
       }
       renderer.gesture=next;
@@ -103,9 +113,11 @@ export function attachCameraControls(renderer) {
     }
     if(!renderer.drag || renderer.drag.id!==e.pointerId)return;
     if(Math.hypot(e.clientX-renderer.drag.startX,e.clientY-renderer.drag.startY)>3)renderer.drag.moved=true;
-    // Left mouse / one finger move across space. Right mouse looks around;
-    // Shift+left is an alternative for devices without a right mouse button.
-    if(renderer.drag.button===2 || (e.pointerType==='mouse' && e.shiftKey))lookByPixels(renderer,dx,dy);
+    // Normally left mouse / one finger pans and right mouse looks around.
+    // While following a body these roles reverse; Shift+left mirrors right
+    // mouse so a trackpad user can still move the camera.
+    const rightDrag=renderer.drag.button===2 || (e.pointerType==='mouse' && e.shiftKey);
+    if(rightDrag !== renderer.drag.controlsSwapped)lookByPixels(renderer,dx,dy);
     else renderer.panByPixels(dx,dy);
   });
   const finishPointer=(e,cancelled)=>{
@@ -115,18 +127,21 @@ export function attachCameraControls(renderer) {
       const rect=c.getBoundingClientRect();
       renderer.pick(e.clientX-rect.left,e.clientY-rect.top);
     }
+    const controlsSwapped=renderer.gestureControlsSwapped;
     renderer.pointers.delete(e.pointerId);
     renderer.gesture=twoPointerGesture(renderer.pointers);
     if(renderer.pointers.size<2){
       renderer.gestureOrigin=null;
       renderer.gestureStartPoints=null;
-      renderer.gestureLookCenter=null;
-      renderer.gestureLookActive=false;
+      renderer.gestureSwipeCenter=null;
+      renderer.gestureSwipeActive=false;
+      renderer.gestureControlsSwapped=null;
     }
     if(renderer.pointers.size===1){
       const [id,point]=renderer.pointers.entries().next().value;
       // A remaining finger may move again, but must never trigger a tap.
-      renderer.drag={id,button:point.button,startX:point.x,startY:point.y,moved:true};
+      renderer.drag={id,button:point.button,startX:point.x,startY:point.y,moved:true,
+        controlsSwapped:controlsSwapped ?? renderer.drag?.controlsSwapped ?? trackingActive(renderer)};
     }else if(renderer.pointers.size===0)renderer.drag=null;
   };
   c.addEventListener('pointerleave',()=>renderer.setRowPointer?.(null));

@@ -1,6 +1,33 @@
-# Sonnensystem – interaktiver 3D-Atlas (v140.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v145.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+
+## Neu in v145: Umgekehrte Kamera-Gesten während aktiver Objektverfolgung
+
+- **Während aktiver Objektverfolgung:** Ein-Finger-Wischen und Ziehen mit der **linken** Maustaste ändern die Blickrichtung; Zwei-Finger-Wischen und Ziehen mit der **rechten** Maustaste verschieben die Kamera. `Shift` + linke Maustaste bietet beim Folgen ebenfalls das Verschieben an.
+- **Ohne aktive Nachführung:** Unverändert ein Finger / linke Maustaste zum Verschieben und zwei Finger / rechte Maustaste zum Umschauen. Ausschlaggebend ist das tatsächlich verfolgte Objekt, nicht allein eine bestehende Auswahl oder der dauerhaft aktivierte Folgen-Modus.
+- **Verfolgungslogik:** Umschauen und Zoomen behalten die Verfolgung bei; manuelles Verschieben unterbricht nur die aktive Nachführung. Die Bedienart wird beim Beginn einer Geste festgehalten, damit sie während des Ziehens nach der Unterbrechung nicht plötzlich umspringt. Klickauswahl, Mausrad, Pinch-Zoom und Pfeiltasten bleiben erhalten.
+- Regressionen in `tests/follow-controls-v145.test.mjs` und aktualisiertem `tests/follow-global-v38.test.mjs`; Version/PWA-Cache auf v145 erhöht.
+
+## Neu in v144: Objektkategorien im Layer Control Panel neu angeordnet
+
+- Die Einträge **Sterne** und **Raumsonden** erscheinen im Kategorienmenü nicht mehr. Die internen Layer und ihre bisherigen Voreinstellungen bleiben erhalten.
+- **Monde** und **Satelliten** stehen jetzt unter **Kometen** in einer separat abgetrennten Gruppe. Der Trennstrich verschwindet, wenn keine der beiden Kategorien in der aktuellen Ansicht auswählbar ist (beispielsweise in der Reihenansicht).
+- Ein Regressionstest überprüft die neue Reihenfolge, das versteckte Menüverhalten, den Separator und die beibehaltenen Layer-Einstellungen.
+- Versionsmetadaten und PWA-Cache auf v144 aktualisiert.
+
+## Neu in v143: Mobiles Bottom-Sheet zuverlässig schließen
+
+- Behebt `Uncaught ReferenceError: mobileSheets is not defined` beim erneuten Tippen auf eine leere Stelle der Szene: `src/app/runtime.js` importiert den gemeinsamen `mobileSheets`-Zustand nun explizit aus `src/app/state.js`.
+- Ein Regressionstest prüft direkt den Aufruf `clearSceneSelection()` bei leerer Auswahl und die Reihenfolge der Panel-/Schließen-Aktionen.
+- Versionsmetadaten auf `143.0.0`, HTML auf `V143.0` und PWA-Shell auf `sonnensystem-shell-v143` aktualisiert; die übrigen Funktionen bleiben unverändert.
+
+## Neu in v142: Raumsonden an ihrem Endziel fokussieren
+
+- **Cassini → Saturn**, **Galileo → Jupiter**, **Huygens → Titan**: `data/catalog/probes.json` verweist mit `focusBodyId`, `parentId` und `terminalLocation` auf den Himmelskörper des Atmosphäreneintritts bzw. der Landung.
+- **Position und Sonnenabstand** werden beim Anzeigen aus der jeweiligen Modellposition des Zielkörpers abgeleitet. Die Sonde besitzt keine separate aktuelle Flugbahn. JSON enthält einen als Modell gekennzeichneten Positions-/Abstandssnapshot vom 22.11.2026 sowie einen Zielkörperverweis für alle anderen Simulationszeitpunkte; keine echte Raumsonden-Ephemeride.
+- Ein Klick im **Katalog** oder auf das **Schaubild** der Sonde fokussiert den Zielkörper und zoomt heran, während im Detailbereich die Sonde ausgewählt bleibt. Andere Sonden ohne vollständige Flugbahnen bleiben unverändert nur im Katalog.
+- Die drei historischen Missionsflugdateien enthalten zusätzlich das Ziel des Missionsendes. `src/data/probe-location.js` berechnet den Sonnenabstand anhand der Katalogbahnen, die Anwendung nutzt den Verweis in der Kamera-/Detailsteuerung. Der PWA-Offline-Cache ist auf `sonnensystem-shell-v142` erhöht.
 
 ## Neu in v140: Vierstufiges LOD für 3D-Objekte
 

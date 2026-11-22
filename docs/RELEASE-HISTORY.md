@@ -1,3 +1,28 @@
+## v145 – Kamerasteuerung bei aktiver Objektverfolgung (22.11.2026)
+
+- Bei aktiv verfolgtem Körper sind **ein Finger / linke Maustaste** jetzt für das Umschauen zuständig und **zwei Finger / rechte Maustaste** für das Verschieben der Kamera. `Shift` + linke Maustaste spiegelt weiterhin die rechte Maustaste (während Verfolgung also Verschieben).
+- Das gilt nur für das wirklich aktive Nachführungsziel (`followedBodyId`); eine bloße Objektselektion oder die dauerhaft aktivierte Folgen-Funktion bewirken noch keine Umkehrung. Normaler Maus-/Touchmodus ohne Nachführung bleibt unverändert.
+- Manuelles Verschieben setzt weiterhin nur die laufende Nachführung aus, während Umschauen und Zoom sie nicht aussetzen. Die bei Beginn einer Geste gewählte Belegung bleibt bis zum Loslassen erhalten (auch bei Follow-Abbruch mitten im Drag/Swipe). Die Pinch-Gestenerkennung, Mausradzoom, Klickauswahl und Pfeiltasten ändern sich nicht.
+- Regression `tests/follow-controls-v145.test.mjs` sowie aktualisierte bestehende Follow-Tests; Versionsangaben `145.0.0` / `V145.0`, PWA-Cache `sonnensystem-shell-v145`.
+
+## v144 – Layer Control: Kategorien und Trennlinie (22.11.2026)
+
+- Die Kategorien **Sterne** und **Raumsonden** werden nur im Objektkategorien-Menü ausgeblendet; der tatsächliche Layerzustand, die Voreinstellungen und die zugrunde liegenden Objekte bleiben unverändert.
+- Die Einträge **Monde** und **Satelliten** stehen direkt unter **Kometen**, optisch durch eine schmale Linie getrennt. Die Trennlinie wird bei nicht verfügbaren Kategorien verborgen.
+- Regression `tests/layer-categories-v144.test.mjs`; Paketversion `144.0.0`, HTML `V144.0`, PWA-Shell `sonnensystem-shell-v144`.
+
+## v143 – Fehlerbehebung: mobileSheets beim Schließen der Szene (22.11.2026)
+
+- `clearSceneSelection()` in `src/app/runtime.js` importiert nun `mobileSheets` aus dem zentralen Modul `src/app/state.js`, statt eine undefinierte Variable zu lesen. Damit wird das mobile Bottom-Sheet nach erneutem Tippen auf eine leere Szenenstelle ohne `ReferenceError` geschlossen.
+- Regressionstest `tests/mobile-sheets-runtime-v143.test.mjs` prüft das tatsächliche Laufzeitverhalten bei bereits leerer Auswahl.
+- Paketversion `143.0.0`, HTML-Metadaten `V143.0`, Offline-Cache `sonnensystem-shell-v143`.
+
+## v142 – Endpositionen von Cassini, Galileo und Huygens (22.11.2026)
+
+- Cassini verweist auf Saturn, Galileo auf Jupiter, Huygens auf Titan. JSON-Felder `focusBodyId`, `terminalLocation`, `lastKnownPosition.sourceBodyId` und `distanceToSun.sourceBodyId` definieren die Zielkörperreferenz.
+- Auswahl im Katalog und Klick im Details-Schaubild fokussieren den Zielkörper; die Sonde bleibt als ausgewähltes Katalogobjekt sichtbar. Die Zeichenpipeline verwendet weiterhin nur tatsächliche Himmelskörper. Sonnenabstände in den Details werden aus den Zielkörper-Katalogbahnen berechnet, nicht als gemessene aktuelle Sondenkoordinaten ausgegeben.
+- Neue Tests, Offline-Shell `sonnensystem-shell-v142`, Versionsmetadaten auf v142 aktualisiert.
+
 ## v140 – Leistungsoptimierung durch vier Objekt-LOD-Stufen (22.11.2026)
 
 - **LOD 0 ab 32 px:** Bestehende texturierte 30×42-Segment-Kugel und ursprünglicher Oberflächenshader.

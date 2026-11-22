@@ -109,7 +109,7 @@ test('v80: AR can re-anchor to the new selected perspective without a permission
 test('v80: catalog focus and details planet-view click both invoke active AR realignment',async()=>{
  const [selection,handlers]=await Promise.all(['src/app/camera-controller.js','src/ui/event-handlers.js'].map(read));
  assert.match(selection,/arMode\?\.active\)arMode\.alignToPerspective\(\)/);
- assert.match(selection,/if\(focus && body\.type!==['"]probe['"] && arMode\?\.active\)/);
+ assert.match(selection,/if\(focus && rendererSelectionId\(body,byId\)!==null && arMode\?\.active\)/);
  assert.match(handlers,/\$\('planet-view-btn'\)\.addEventListener\('click',[\s\S]*?updateMode\(\);[\s\S]*?if\(arMode\?\.active\)arMode\.alignToPerspective\(\)/);
  assert.match(handlers,/\$\('reset-camera'\)\.addEventListener\('click',[\s\S]*?arMode\.alignToPerspective\(\)/);
 });

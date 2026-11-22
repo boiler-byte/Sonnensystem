@@ -18,10 +18,10 @@ const grouped=[
   ['dwarf','tno','Zwergplaneten und transneptunische Objekte']
 ];
 
-test('v90: 8 visible checkboxes represent 10 unchanged scientific categories',async()=>{
+test('v144: 8 underlying filter controls represent 10 unchanged scientific categories',async()=>{
   const html=await read('index.html');
   const uiTypes=[...html.matchAll(/data-layer-type="([a-z]+)"/g)].map(m=>m[1]);
-  assert.deepEqual(uiTypes,LAYER_FILTER_TYPES);
+  assert.deepEqual(uiTypes,['star','planet','dwarf','asteroid','comet','moon','satellite','probe']);
   assert.equal(uiTypes.length,8);
   assert.equal(LAYER_TYPES.length,10);
   for(const [filter,partner,description] of grouped){

@@ -112,7 +112,7 @@ test('v23: application binds the scene-specific settings to render, catalog and 
   assert.match(app,/check\.parentElement\.hidden=!members\.length/);
   assert.match(app,/check\.disabled=!members\.length/);
   assert.match(app,/S\.settings\.layers=next/);
-  assert.match(app,/renderer\.draw\(S\.time,S\.selected,S\.settings\)/);
+  assert.match(app,/renderer\.draw\(S\.time,rendererSelectionId\(byId\(S\.selected\),byId\),S\.settings\)/);
   assert.match(app,/syncLayers\(\);syncOrbitControls\(\);syncContrastControl\(\);syncLabelControl\(\);syncScaleControls\(\);syncRowControl\(\)/);
   assert.match(css,/\.layer-option\[hidden\]\{display:none!important\}/);
   for(const type of ['planet','star'])

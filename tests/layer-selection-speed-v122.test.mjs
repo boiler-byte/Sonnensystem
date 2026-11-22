@@ -6,6 +6,7 @@ import {createViewSettings,layerEnabled,layerPreset,availableLayerTypes,updateLa
 import {syncControls,stepForSpeed,SPEED_MODES} from '../src/ui/timeline.js';
 import {S} from '../src/app/state.js';
 import {syncLayers,toggleLayerSpeedPanel} from '../src/ui/layer-panel.js';
+import {probeLocationBody,rendererSelectionId} from '../src/data/probe-location.js';
 
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 
@@ -21,7 +22,7 @@ async function catalogSelection(body,{view='solar',bodies=[body],settings=create
     setSelected(...args){operations.push(['render',args]);}};
   const context=vm.createContext({
     S:state,renderer,byId:id=>bodies.find(item=>item.id===id),
-    layerEnabled,availableLayerTypes,updateLayerSelection,
+    layerEnabled,availableLayerTypes,updateLayerSelection,probeLocationBody,rendererSelectionId,
     changeLayers:next=>{operations.push(['layers',next]);state.settings.layers=next;},
     updateCatalog(){},updateDetail(){},loadAsteroid(){},updateMode(){},
     mobileSheets:{open(){}},arMode:null

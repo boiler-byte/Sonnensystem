@@ -163,8 +163,9 @@ test('v140: zooming back in restores detailed sphere without changing selection/
 test('v140: new LOD module is available in the offline shell and app version is updated',async()=>{
  const root=new URL('../',import.meta.url);
  const [sw,html,pkg]=await Promise.all(['sw.js','index.html','package.json'].map(p=>readFile(new URL(p,root),'utf8')));
- assert.match(sw,/sonnensystem-shell-v140/);
+ const {version}=JSON.parse(pkg);
+ const [major,minor]=version.split('.');
+ assert.match(sw,new RegExp(`sonnensystem-shell-v${major}(?!\\d)`));
  assert.match(sw,/"\.\/src\/renderer\/lod\.js"/);
- assert.match(html,/name="app-version" content="V140\.0"/);
- assert.equal(JSON.parse(pkg).version,'140.0.0');
+ assert.match(html,new RegExp(`name="app-version" content="V${major}\\.${minor}"`));
 });

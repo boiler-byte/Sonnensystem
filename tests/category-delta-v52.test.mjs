@@ -21,12 +21,12 @@ const newGroups={
 const requiredIds=Object.values(newGroups).flatMap(group=>Object.keys(group));
 
 // A new visible category must not affect the solar or isolated-planet presets.
-test('v90: first Layer-Dropdown category remains Sterne; scientific types stay separate',async()=>{
+test('v144: category controls retain the full scientific types while the visual order changes',async()=>{
   const html=await read('index.html');
   const layer=html.split('id="layer-popover"')[1].split('id="canvas-error"')[0];
   const entries=[...layer.matchAll(/<label class="layer-option"><input type="checkbox" data-layer-type="([a-z]+)"( checked)?(?: aria-label="[^"]*")?\/><span>([^<]+)<\/span><\/label>/g)];
   assert.equal(entries.length,LAYER_FILTER_TYPES.length);
-  assert.deepEqual(entries.map(m=>m[1]),LAYER_FILTER_TYPES);
+  assert.deepEqual(entries.map(m=>m[1]),['star','planet','dwarf','asteroid','comet','moon','satellite','probe']);
   assert.equal(entries[0][1],'star');
   assert.equal(entries[0][3],'Sterne');
   assert.deepEqual(entries.filter(m=>m[2]).map(m=>m[1]),['star','planet']);

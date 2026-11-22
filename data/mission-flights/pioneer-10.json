@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "type": "mission-flight",
+  "probeId": "pioneer-10",
+  "probeName": "Pioneer 10",
+  "naifId": -23,
+  "flightStatus": "no-communication",
+  "history": {
+    "eventType": "mission-milestones",
+    "events": [
+      {
+        "dateUtc": "1972-03-02",
+        "eventType": "launch",
+        "label": "Start",
+        "bodyId": "earth",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/"
+      },
+      {
+        "dateUtc": "1973-12-04",
+        "eventType": "flyby",
+        "label": "Jupiter-Vorbeiflug",
+        "bodyId": "jupiter",
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/"
+      },
+      {
+        "dateUtc": "2003-01-23",
+        "eventType": "last-contact",
+        "label": "Letzter Funkkontakt",
+        "bodyId": null,
+        "positionAuJ2000": null,
+        "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/"
+      }
+    ],
+    "note": "Ereignisse beschreiben die Chronologie. Körperbezüge sind KEINE numerischen Flugwegpunkte."
+  },
+  "trajectory": {
+    "status": "awaiting-ephemeris",
+    "referenceBody": "sun",
+    "coordinateSystem": null,
+    "timeScale": null,
+    "units": null,
+    "samples": [],
+    "sampleCount": 0,
+    "isComplete": false,
+    "sourceUrl": null,
+    "note": "Eine geometrische Flugroute ist noch nicht vorhanden. Die Missionsereignisse enthalten keine Koordinaten; keine künstlichen Verbindungen zwischen Planeten zeichnen."
+  },
+  "ephemerisImport": {
+    "provider": "NASA/JPL Horizons",
+    "naifId": -23,
+    "desiredOrigin": "SUN (500@10)",
+    "desiredReferencePlane": "ECLIPTIC J2000",
+    "desiredFormat": "VECTORS; AU-D; CSV; position x/y/z in AU",
+    "requiredBeforeRendering": true,
+    "sourceUrl": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "note": "Historische Lücken mit nachprüfbaren Horizons-/SPICE-Ephemeriden decken. Für Pioneer nach Funkende sind Trajektorien nur Berechnungen; für zerstörte Sonden nicht über Missionsende extrapolieren."
+  },
+  "sources": [
+    {
+      "kind": "mission-history",
+      "url": "https://science.nasa.gov/mission/pioneer-10/"
+    }
+  ]
+}

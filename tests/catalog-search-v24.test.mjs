@@ -101,7 +101,7 @@ test('v24: icon-only planet filter is visible only in planet mode and shares the
   assert.match(app,/\$\('catalog-planet-filter'\)\.addEventListener\('click'/);
   assert.match(app,/S\.catalogPlanetOnly=!S\.catalogPlanetOnly/);
   assert.doesNotMatch(app,/if\(S\.selected && !layerEnabled\(next/);
-  assert.match(app,/renderer\.draw\(S\.time,S\.selected,S\.settings\)/);
+  assert.match(app,/renderer\.draw\(S\.time,rendererSelectionId\(byId\(S\.selected\),byId\),S\.settings\)/);
   const sheet=await read('src/ui/bottom-sheet.js');
   assert.match(sheet,/panels = \{catalog:\$\('catalog'\),detail:\$\('detail'\)\}/);
 });

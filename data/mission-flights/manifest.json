@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "type": "mission-flight-index",
+  "catalogVersion": "v142-terminal-target-inheritance-1",
+  "updatedOn": "2026-11-22",
+  "probeCatalogPath": "./data/catalog/probes.json",
+  "coordinateConventions": {
+    "heliocentricOrigin": "Sun center",
+    "legacyPdsSamples": "solar-ecliptic-of-date, spherical coordinates, UTC",
+    "futureHorizonsVectors": "heliocentric ecliptic J2000, AU, UTC input with Horizons dynamical time internally",
+    "noMixedFrameInterpolation": true,
+    "noFakeCoordinatesForHistoricalEvents": true,
+    "latestDistanceMayDifferFromPositionEpoch": true,
+    "terminatedMissions": "Do not extrapolate beyond end dates; post-contact Pioneer extrapolation is prediction not measured track",
+    "units": {
+      "distance": "AU",
+      "angle": "deg"
+    },
+    "astronomicalUnitKm": 149597870.7,
+    "terminalProbeDisplay": "Fuer Cassini/Galileo/Huygens wird im Atlas die modellierte Position des terminalen Himmelskoerpers zum Simulationszeitpunkt verwendet; kein echter Sondenvektor."
+  },
+  "completeness": {
+    "missions": 8,
+    "withSparseArchivedHeliocentricSamples": 2,
+    "withTimelineOnly": 6,
+    "readyForAccurate3dTrajectory": 0,
+    "withInheritedTerminalBodyPositions": 3
+  },
+  "notes": [
+    "data/catalog/probes.json wird von der Runtime separat geladen. Terminale Raumsonden nutzen den Zielkoerper-Verweis; das Missionsflug-Manifest ist bewusst nicht Teil des aktiven Himmelskoerperkatalogs.",
+    "Ereignisse sind keine Flugbahnkoordinaten. Keine Geraden zwischen Vorbeiflugplaneten als reale Raumsondenbahn anzeigen.",
+    "Als echte historische 3D-Bahnen sind zeitgestempelte heliocentrische J2000-Vektoren aus Horizons oder NAIF/SPICE zu importieren.",
+    "Positionsdaten der Voyager-Sonden stammen aus einem archivierten PDS-Datensatz von 1977 bis 2005. Die circa-2026 Sonnenabstände stammen unabhängig aus einer Drittanbieter-Anzeige.",
+    "Positionsdaten für sechs Missionen sind noch unvollständig; Null ist absichtlich kein Schätzwert.",
+    "Die Modell-Snapshots von Cassini, Galileo und Huygens vom 2026-11-22 sind referenzierte Zielkoerperpositionen und keine Missions- oder NASA/JPL-Vektordaten."
+  ],
+  "sources": [
+    {
+      "name": "NASA/PDS Voyager 1",
+      "url": "https://pds-ppi.igpp.ucla.edu/data/VG1-SS-POS-6-1DAY-V1.0/DATA/VG1TRAJ_1DAY_1977_2005.TAB"
+    },
+    {
+      "name": "NASA/PDS Voyager 2",
+      "url": "https://pds-ppi.igpp.ucla.edu/data/VG2-SS-POS-6-1DAY-V1.0/DATA/VG2TRAJ_1DAY_1977_2005.TAB"
+    },
+    {
+      "name": "NASA/JPL Horizons documentation",
+      "url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html"
+    },
+    {
+      "name": "NAIF Spacecraft identifiers",
+      "url": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/naif_ids.html"
+    }
+  ],
+  "missions": [
+    {
+      "probeId": "voyager-1",
+      "path": "./data/mission-flights/voyager-1.json",
+      "naifId": -31,
+      "geometryStatus": "sparse-archival-samples",
+      "positionSampleCount": 9,
+      "missionEventCount": 5
+    },
+    {
+      "probeId": "voyager-2",
+      "path": "./data/mission-flights/voyager-2.json",
+      "naifId": -32,
+      "geometryStatus": "sparse-archival-samples",
+      "positionSampleCount": 8,
+      "missionEventCount": 6
+    },
+    {
+      "probeId": "pioneer-10",
+      "path": "./data/mission-flights/pioneer-10.json",
+      "naifId": -23,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 3
+    },
+    {
+      "probeId": "pioneer-11",
+      "path": "./data/mission-flights/pioneer-11.json",
+      "naifId": -24,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 4
+    },
+    {
+      "probeId": "new-horizons",
+      "path": "./data/mission-flights/new-horizons.json",
+      "naifId": -98,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 4
+    },
+    {
+      "probeId": "cassini",
+      "path": "./data/mission-flights/cassini.json",
+      "naifId": -82,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 8,
+      "terminalLocationBodyId": "saturn",
+      "terminalLocationStatus": "inherited-body-model"
+    },
+    {
+      "probeId": "galileo",
+      "path": "./data/mission-flights/galileo.json",
+      "naifId": -77,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 8,
+      "terminalLocationBodyId": "jupiter",
+      "terminalLocationStatus": "inherited-body-model"
+    },
+    {
+      "probeId": "huygens",
+      "path": "./data/mission-flights/huygens.json",
+      "naifId": -150,
+      "geometryStatus": "awaiting-ephemeris",
+      "positionSampleCount": 0,
+      "missionEventCount": 4,
+      "terminalLocationBodyId": "titan",
+      "terminalLocationStatus": "inherited-body-model"
+    }
+  ]
+}

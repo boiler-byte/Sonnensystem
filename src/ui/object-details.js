@@ -1,5 +1,6 @@
 import { TYPES, HORIZONS_IDS, CATEGORY_COLORS } from '../data/bodies.js';
 import { physicalStatIcon, thermometerIcon } from './physical-stat-icons.js';
+import {inheritedProbeLocation} from '../data/probe-location.js';
 import { esc, formatInt, formatDecimal, displayPeriod, displayA,
   displayTemperatureK, displayAtmosphericPressure, displaySurfaceGravity, displayMeanParentDistance } from './formatters.js';
 const $=id=>document.getElementById(id);
@@ -155,15 +156,23 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     $('texture-credit').hidden=true;$('texture-credit').textContent='';
     $('planet-view-actions').hidden=true;
     $('detail-scene-actions').hidden=true;
-    $('hero-body').className='hero-body';$('hero-body').disabled=true;renderSizeComparison(b,byId);
+    const location=inheritedProbeLocation(b,byId,state.time);
+    const hero=$('hero-body');hero.className='hero-body';hero.disabled=!location||!renderer;
+    renderSizeComparison(b,byId);
+    hero.title=location?`${location.targetName} fokussieren und heranzoomen`:'Keine numerischen Positionsdaten vorhanden';
+    hero.setAttribute('aria-label',location?`${b.name}: ${location.targetName} fokussieren und heranzoomen`:`${b.name}: Keine Kameraposition verfügbar`);
     const date=b.launchDate.split('-').reverse().join('.');
     $('stats-grid').innerHTML=[['START',date,'launch'],['STATUS',b.missionStatus,'status']].map(renderStat).join('');
-    $('orbit-facts').innerHTML=`<div><span>Ziele</span><b>${esc(b.targets)}</b></div><div><span>Position</span><b>Nicht dargestellt – keine Ephemeriden</b></div>`;
+    const distance=location?.distanceAu!=null?`${formatDecimal(location.distanceAu,3)} AE`:'—';
+    $('orbit-facts').innerHTML=`<div><span>Ziele</span><b>${esc(b.targets)}</b></div>`+
+      (location?`<div><span>Position</span><b>Wie ${esc(location.targetName)} (Katalogmodell)</b></div>`+
+        `<div><span>Sonnenabstand</span><b id="probe-sun-distance">${esc(distance)} · wie ${esc(location.targetName)}</b></div>`:
+        '<div><span>Position</span><b>Nicht dargestellt – keine Ephemeriden</b></div>');
     $('related').innerHTML='';
     $('editorial-content').hidden=false;
     $('editorial-content').innerHTML=`<div class="editorial-references"><strong>MISSION / NASA</strong><a href="${esc(b.sourceUrl)}" target="_blank" rel="noopener noreferrer">Offizielle Missionsdaten ↗</a></div>`;
     $('horizons-btn').disabled=true;
-    $('horizons-note').textContent='Kein Positionsmodell vorhanden. Historische und laufende Flugbahnen werden nicht erfunden.';
+    $('horizons-note').textContent=location?`Die Kamera folgt ${location.targetName}. Die Sondenposition entspricht der Modellposition des Himmelskörpers; keine historische Ephemeride.`:'Kein Positionsmodell vorhanden. Historische und laufende Flugbahnen werden nicht erfunden.';
     return;
   }
   $('detail-type').textContent=(TYPES[b.type]?.label||'Himmelskörper').toUpperCase();
@@ -239,6 +248,15 @@ export function renderDetail(state,renderer,selectBody,onShowRelated){const byId
     b.type==='asteroid'?'Asteroiden verwenden lokal katalogisierte Bahnelemente; kein Horizons-Abgleich verfügbar.':
     'Horizons-Abgleich für Planeten, Pluto und den Mond verfügbar.';
   else if(!renderer?.overrides?.has(b.id))$('horizons-note').textContent='NASA/JPL-Position für das gewählte Datum (00:00 UTC) abrufen.';
+}
+
+/** Refresh only the time-dependent spacecraft distance, not the entire detail panel. */
+export function refreshProbeDistance(state){
+  const selected=state.bodies.find(body=>body.id===state.selected);
+  if(selected?.type!=='probe')return;
+  const el=$('probe-sun-distance');if(!el)return;
+  const location=inheritedProbeLocation(selected,id=>state.bodies.find(body=>body.id===id),state.time);
+  if(location)el.textContent=`${location.distanceAu==null?'—':formatDecimal(location.distanceAu,3)+' AE'} · wie ${location.targetName}`;
 }
 
 /** Persist the user's detail-tab preference across objects, scenes and reloads. */

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="app-version" content="V140.0" />
+  <meta name="app-version" content="V145.0" />
   <meta name="description" content="Interaktiver WebGL-Sonnensystematlas mit Planetendaten, Monden, Asteroiden und Satelliten." />
   <title>Sonnensystem — Interaktiver 3D-Atlas</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -107,7 +107,7 @@
             <svg class="camera-perspective-icon" data-perspective="side" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><g transform="rotate(180 12 12)"><rect x="3.2" y="7.4" width="12.4" height="9.2" rx="2"/><path d="m15.6 10.2 5-2.6v8.8l-5-2.6z"/></g></svg>
           </button>
         </div>
-        <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: links ziehen oder ein Finger verschiebt, rechts ziehen oder zwei Finger schauen um (ohne Auswahl am festen Kamerastandort), Mausrad und Zwei-Finger-Geste zoomen"></canvas>
+        <canvas id="space" tabindex="0" aria-label="Interaktives 3D-Sonnensystem: Normalerweise links ziehen oder ein Finger bewegt, rechts ziehen oder zwei Finger schauen um. Bei aktiver Objektverfolgung ist es umgekehrt: links oder ein Finger schauen um, rechts oder zwei Finger bewegen. Mausrad und Zwei-Finger-Spreizgeste zoomen."></canvas>
         <div class="space-glow" id="space-glow"></div>
         <canvas id="labels-canvas" aria-hidden="true"></canvas>
         <div class="row-inspection" id="row-inspection" aria-hidden="true" hidden>
@@ -202,11 +202,12 @@
               <div class="layer-options" id="layer-categories" role="group" aria-label="Einzelne Objektkategorien">
                 <label class="layer-option"><input type="checkbox" data-layer-type="star" checked/><span>Sterne</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="planet" checked/><span>Planeten</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="moon"/><span>Monde</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="dwarf" aria-label="Zwergplaneten und transneptunische Objekte"/><span>Zwergplaneten</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="asteroid" aria-label="Asteroiden und Doppelasteroiden"/><span>Asteroiden</span></label>
-                <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="comet"/><span>Kometen</span></label>
+                <div class="layer-category-separator" id="layer-category-separator" role="separator" aria-hidden="true"></div>
+                <label class="layer-option"><input type="checkbox" data-layer-type="moon"/><span>Monde</span></label>
+                <label class="layer-option"><input type="checkbox" data-layer-type="satellite"/><span>Satelliten</span></label>
                 <label class="layer-option"><input type="checkbox" data-layer-type="probe"/><span>Raumsonden</span></label>
               </div>
               <div class="layer-speed-panel" id="layer-speed-panel" role="group" aria-label="Simulationsgeschwindigkeit" hidden>

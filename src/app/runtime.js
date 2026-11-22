@@ -1,4 +1,4 @@
-import {$,S,renderer,arMode,setRenderer,setMobileSheets,setARMode} from './state.js';
+import {$,S,renderer,mobileSheets,arMode,setRenderer,setMobileSheets,setARMode} from './state.js';
 import {SolarRenderer} from '../renderer/index.js';
 import {loadCatalog} from '../data/catalog.js';
 import {fetchJSON} from '../services/api.js';

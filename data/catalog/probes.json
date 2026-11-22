@@ -1,10 +1,12 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "type": "probe",
   "provenance": {
     "source": "NASA Science Missionsübersichten",
-    "reviewStatus": "source-linked",
-    "note": "Missionsdaten ohne Positions-Ephemeriden; keine schematischen Flugbahnen."
+    "reviewStatus": "mission-history-source-linked; position-partial",
+    "note": "Datenvorbereitung für Raumsonden: Missionsereignisse, vereinzelte archivierte heliozentrische Positionsstützpunkte (Voyager 1/2) und klar gekennzeichnete, teils modellbasierte 2026-Sonnendistanzen. Kein vollständiger J2000-Flugpfad; keine Laufzeitintegration. Bei Cassini, Galileo und Huygens werden die Terminalpositionen ausschliesslich ueber die referenzierten Zielkoerper zur gewaehlten Simulationszeit abgeleitet.",
+    "collectedOn": "2026-11-22",
+    "coordinatePolicy": "Positionsepochen und Sonnenentfernungsepochen dürfen auseinanderliegen. SE-of-date nicht als J2000 interpretieren; fremd berechnete Sonnenentfernung ist kein gemessener Positionsvektor."
   },
   "objects": [
     {
@@ -18,7 +20,31 @@
       "description": "1979 Jupiter; 1980 Saturn; 2012 Eintritt in den interstellaren Raum.",
       "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-1/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/voyager-1.json",
+      "naifId": -31,
+      "lastKnownPosition": {
+        "epochUtc": "2005-01-24T00:00:00Z",
+        "referenceBody": "sun",
+        "coordinateSystem": "solar-ecliptic-of-date",
+        "spherical": {
+          "radiusAu": 94.39,
+          "latitudeDeg": 34.7,
+          "longitudeDeg": 253.1
+        },
+        "cartesianJ2000Au": null,
+        "status": "last-imported-archive-sample",
+        "sourceUrl": "https://pds-ppi.igpp.ucla.edu/data/VG1-SS-POS-6-1DAY-V1.0/DATA/VG1TRAJ_1DAY_1977_2005.TAB",
+        "note": "Letzter übernommener archivierter Positionsstützpunkt, KEINE aktuelle Position. Zeitbezogene Ekliptikkoordinaten nicht ohne Umrechnung als J2000 verwenden."
+      },
+      "distanceToSun": {
+        "au": 172.4,
+        "sourceEpochUtc": null,
+        "retrievedOn": "2026-11-22",
+        "status": "approximate-third-party-display",
+        "sourceUrl": "https://openearth.live/mission-tracker/voyager-1",
+        "note": "Gerundete Schätzung einer externen dynamischen Website; dort kein eindeutiger Mess-Epochentimestamp. Keine aktuelle NASA-Telemetrie."
+      }
     },
     {
       "id": "voyager-2",
@@ -31,7 +57,31 @@
       "description": "Einzige Sonde mit Vorbeiflügen an allen vier Gas- und Eisriesen; seit 2018 interstellar.",
       "sourceUrl": "https://science.nasa.gov/mission/voyager/voyager-2/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/voyager-2.json",
+      "naifId": -32,
+      "lastKnownPosition": {
+        "epochUtc": "2005-01-09T00:00:00Z",
+        "referenceBody": "sun",
+        "coordinateSystem": "solar-ecliptic-of-date",
+        "spherical": {
+          "radiusAu": 75.37,
+          "latitudeDeg": -29.8,
+          "longitudeDeg": 288.2
+        },
+        "cartesianJ2000Au": null,
+        "status": "last-imported-archive-sample",
+        "sourceUrl": "https://pds-ppi.igpp.ucla.edu/data/VG2-SS-POS-6-1DAY-V1.0/DATA/VG2TRAJ_1DAY_1977_2005.TAB",
+        "note": "Letzter übernommener archivierter Positionsstützpunkt, KEINE aktuelle Position. Zeitbezogene Ekliptikkoordinaten nicht ohne Umrechnung als J2000 verwenden."
+      },
+      "distanceToSun": {
+        "au": 144.4,
+        "sourceEpochUtc": null,
+        "retrievedOn": "2026-11-22",
+        "status": "approximate-third-party-display",
+        "sourceUrl": "https://openearth.live/mission-tracker/voyager-2",
+        "note": "Gerundete Schätzung einer externen dynamischen Website; dort kein eindeutiger Mess-Epochentimestamp. Keine aktuelle NASA-Telemetrie."
+      }
     },
     {
       "id": "pioneer-10",
@@ -44,7 +94,28 @@
       "description": "Erster Jupiter-Vorbeiflug 1973; letztes empfangenes Signal im Januar 2003.",
       "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/pioneer-10.json",
+      "naifId": -23,
+      "lastKnownPosition": {
+        "epochUtc": null,
+        "referenceBody": "sun",
+        "coordinateSystem": null,
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "status": "coordinates-not-yet-available",
+        "lastDocumentedEventDate": "2003-01-23",
+        "sourceUrl": "https://science.nasa.gov/mission/pioneer-10/",
+        "note": "Funkkontakt beendet; Flugdaten danach nur modelliert; ein exakter heliozentrischer Positionsvektor muss aus NASA/JPL Horizons oder SPICE nachgetragen werden."
+      },
+      "distanceToSun": {
+        "au": 142.2,
+        "sourceEpochUtc": null,
+        "retrievedOn": "2026-11-22",
+        "status": "approximate-third-party-display",
+        "sourceUrl": "https://openearth.live/mission-tracker/pioneer-10",
+        "note": "Gerundete Schätzung der Sonnendistanz einer externen dynamischen Website; dort kein eindeutiger Mess-Epochentimestamp. Bei Pioneer-Sonden nach Funkabbruch modellbasiert, keine aktuelle Messung."
+      }
     },
     {
       "id": "pioneer-11",
@@ -57,7 +128,28 @@
       "description": "Jupiter-Vorbeiflug 1974; erster Saturn-Vorbeiflug 1979; letzter Kontakt 1995.",
       "sourceUrl": "https://science.nasa.gov/mission/pioneer-11/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/pioneer-11.json",
+      "naifId": -24,
+      "lastKnownPosition": {
+        "epochUtc": null,
+        "referenceBody": "sun",
+        "coordinateSystem": null,
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "status": "coordinates-not-yet-available",
+        "lastDocumentedEventDate": "1995-09-30",
+        "sourceUrl": "https://science.nasa.gov/mission/pioneer-11/",
+        "note": "Funkkontakt beendet; Flugdaten danach nur modelliert; ein exakter heliozentrischer Positionsvektor muss aus NASA/JPL Horizons oder SPICE nachgetragen werden."
+      },
+      "distanceToSun": {
+        "au": 118.2,
+        "sourceEpochUtc": null,
+        "retrievedOn": "2026-11-22",
+        "status": "approximate-third-party-display",
+        "sourceUrl": "https://openearth.live/mission-tracker/pioneer-11",
+        "note": "Gerundete Schätzung der Sonnendistanz einer externen dynamischen Website; dort kein eindeutiger Mess-Epochentimestamp. Bei Pioneer-Sonden nach Funkabbruch modellbasiert, keine aktuelle Messung."
+      }
     },
     {
       "id": "new-horizons",
@@ -70,46 +162,178 @@
       "description": "Pluto-Vorbeiflug 2015; Arrokoth-Vorbeiflug 2019.",
       "sourceUrl": "https://science.nasa.gov/mission/new-horizons/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/new-horizons.json",
+      "naifId": -98,
+      "lastKnownPosition": {
+        "epochUtc": null,
+        "referenceBody": "sun",
+        "coordinateSystem": null,
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "status": "coordinates-not-yet-available",
+        "lastDocumentedEventDate": "2019-01-01",
+        "sourceUrl": "https://science.nasa.gov/mission/new-horizons/",
+        "note": "Letzter in diesem Datensatz erfasster historischer Vorbeiflug; ein exakter heliozentrischer Positionsvektor muss aus NASA/JPL Horizons oder SPICE nachgetragen werden."
+      },
+      "distanceToSun": {
+        "au": 66.117,
+        "sourceEpochUtc": "2026-11-21T18:55:00Z",
+        "retrievedOn": "2026-11-22",
+        "status": "third-party-cached-horizons-sample",
+        "sourceUrl": "https://spacetracker.live/deep-space/new-horizons/",
+        "note": "Geprüfter Zeitstempel des fremden Cache-Werts. Nicht mit den historischen Positionsdaten zeitgleich."
+      }
     },
     {
       "id": "cassini",
       "name": "Cassini",
       "type": "probe",
-      "parentId": null,
+      "parentId": "saturn",
       "launchDate": "1997-10-15",
       "targets": "Saturn, Titan, Enceladus",
       "missionStatus": "Beendet 2017",
-      "description": "Saturn-Orbiter ab 2004; Missionsende durch kontrollierten Eintritt in Saturn 2017.",
+      "description": "Saturn-Orbiter ab 2004; Missionsende durch kontrollierten Eintritt in Saturn 2017. Position im Atlas: in der Saturnatmosphäre (entsprechend der Modellposition des Himmelskoerpers).",
       "sourceUrl": "https://science.nasa.gov/mission/cassini/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/cassini.json",
+      "naifId": -82,
+      "lastKnownPosition": {
+        "epochUtc": "2026-11-22T00:00:00Z",
+        "referenceBody": "sun",
+        "coordinateSystem": "catalog-model-heliocentric-ecliptic-approximate",
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "sourceBodyId": "saturn",
+        "status": "inherited-body-model",
+        "lastDocumentedEventDate": "2017-09-15",
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/",
+        "note": "Katalogmodell-Koordinaten von Saturn fuer das Datenstandsdatum; KEINE real gemessene Sondenposition, KEINE J2000-Ephemeride. Fuer andere Simulationszeitpunkte werden die Koordinaten dynamisch vom Zielkoerper uebernommen.",
+        "modelCartesianAu": [
+          9.2380933397,
+          -0.4024396234,
+          2.0230036173
+        ]
+      },
+      "distanceToSun": {
+        "au": 9.4655623097,
+        "sourceEpochUtc": "2026-11-22T00:00:00Z",
+        "retrievedOn": "2026-11-22",
+        "sourceBodyId": "saturn",
+        "status": "inherited-body-model-snapshot",
+        "sourceUrl": "https://science.nasa.gov/mission/cassini/",
+        "note": "Sonnenabstand des Zielkoerpers Saturn aus dem Katalogmodell am angegebenen Datum. Die UI berechnet den Abstand fuer die jeweils gewaehlte Simulationszeit neu; keine NASA-Telemetrie."
+      },
+      "focusBodyId": "saturn",
+      "terminalLocation": {
+        "bodyId": "saturn",
+        "eventType": "atmospheric-entry",
+        "dateUtc": "2017-09-15",
+        "status": "mission-ended",
+        "displayPositionPolicy": "inherit-target-body-at-selected-simulation-time",
+        "note": "Nur die Modellposition des Zielkoerpers wird uebernommen; keine rekonstruierte historische Sondenposition."
+      }
     },
     {
       "id": "galileo",
       "name": "Galileo",
       "type": "probe",
-      "parentId": null,
+      "parentId": "jupiter",
       "launchDate": "1989-10-18",
       "targets": "Jupiter und Monde",
       "missionStatus": "Beendet 2003",
-      "description": "Jupiter-Orbiter ab 1995; Untersuchung von Jupiter, Europa, Io und Ganymed.",
+      "description": "Jupiter-Orbiter ab 1995; Untersuchung von Jupiter, Europa, Io und Ganymed. Position im Atlas: in der Jupiteratmosphäre (entsprechend der Modellposition des Himmelskoerpers).",
       "sourceUrl": "https://science.nasa.gov/mission/galileo/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/galileo.json",
+      "naifId": -77,
+      "lastKnownPosition": {
+        "epochUtc": "2026-11-22T00:00:00Z",
+        "referenceBody": "sun",
+        "coordinateSystem": "catalog-model-heliocentric-ecliptic-approximate",
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "sourceBodyId": "jupiter",
+        "status": "inherited-body-model",
+        "lastDocumentedEventDate": "2003-09-21",
+        "sourceUrl": "https://science.nasa.gov/mission/galileo/",
+        "note": "Katalogmodell-Koordinaten von Jupiter fuer das Datenstandsdatum; KEINE real gemessene Sondenposition, KEINE J2000-Ephemeride. Fuer andere Simulationszeitpunkte werden die Koordinaten dynamisch vom Zielkoerper uebernommen.",
+        "modelCartesianAu": [
+          -3.7865799416,
+          0.0692855579,
+          3.7448703043
+        ]
+      },
+      "distanceToSun": {
+        "au": 5.3260718863,
+        "sourceEpochUtc": "2026-11-22T00:00:00Z",
+        "retrievedOn": "2026-11-22",
+        "sourceBodyId": "jupiter",
+        "status": "inherited-body-model-snapshot",
+        "sourceUrl": "https://science.nasa.gov/mission/galileo/",
+        "note": "Sonnenabstand des Zielkoerpers Jupiter aus dem Katalogmodell am angegebenen Datum. Die UI berechnet den Abstand fuer die jeweils gewaehlte Simulationszeit neu; keine NASA-Telemetrie."
+      },
+      "focusBodyId": "jupiter",
+      "terminalLocation": {
+        "bodyId": "jupiter",
+        "eventType": "atmospheric-entry",
+        "dateUtc": "2003-09-21",
+        "status": "mission-ended",
+        "displayPositionPolicy": "inherit-target-body-at-selected-simulation-time",
+        "note": "Nur die Modellposition des Zielkoerpers wird uebernommen; keine rekonstruierte historische Sondenposition."
+      }
     },
     {
       "id": "huygens",
       "name": "Huygens",
       "type": "probe",
-      "parentId": null,
+      "parentId": "titan",
       "launchDate": "1997-10-15",
       "targets": "Titan",
       "missionStatus": "Beendet 2005",
-      "description": "ESA-Landesonde: Landung auf Titan am 14. Januar 2005.",
+      "description": "ESA-Landesonde: Landung auf Titan am 14. Januar 2005. Position im Atlas: auf Titan (entsprechend der Modellposition des Himmelskoerpers).",
       "sourceUrl": "https://science.nasa.gov/mission/cassini-huygens/",
       "color": "#d4ad7d",
-      "style": "rock"
+      "style": "rock",
+      "missionFlightPath": "./data/mission-flights/huygens.json",
+      "naifId": -150,
+      "lastKnownPosition": {
+        "epochUtc": "2026-11-22T00:00:00Z",
+        "referenceBody": "sun",
+        "coordinateSystem": "catalog-model-heliocentric-ecliptic-approximate",
+        "spherical": null,
+        "cartesianJ2000Au": null,
+        "sourceBodyId": "titan",
+        "status": "inherited-body-model",
+        "lastDocumentedEventDate": "2005-01-14",
+        "sourceUrl": "https://science.nasa.gov/mission/cassini-huygens/",
+        "note": "Katalogmodell-Koordinaten von Titan fuer das Datenstandsdatum; KEINE real gemessene Sondenposition, KEINE J2000-Ephemeride. Fuer andere Simulationszeitpunkte werden die Koordinaten dynamisch vom Zielkoerper uebernommen.",
+        "modelCartesianAu": [
+          9.2459783484,
+          -0.4024342549,
+          2.0238824377
+        ]
+      },
+      "distanceToSun": {
+        "au": 9.4734454698,
+        "sourceEpochUtc": "2026-11-22T00:00:00Z",
+        "retrievedOn": "2026-11-22",
+        "sourceBodyId": "titan",
+        "status": "inherited-body-model-snapshot",
+        "sourceUrl": "https://science.nasa.gov/mission/cassini-huygens/",
+        "note": "Sonnenabstand des Zielkoerpers Titan aus dem Katalogmodell am angegebenen Datum. Die UI berechnet den Abstand fuer die jeweils gewaehlte Simulationszeit neu; keine NASA-Telemetrie."
+      },
+      "focusBodyId": "titan",
+      "terminalLocation": {
+        "bodyId": "titan",
+        "eventType": "landing",
+        "dateUtc": "2005-01-14",
+        "status": "mission-ended",
+        "displayPositionPolicy": "inherit-target-body-at-selected-simulation-time",
+        "note": "Nur die Modellposition des Zielkoerpers wird uebernommen; keine rekonstruierte historische Sondenposition."
+      }
     }
   ]
 }
