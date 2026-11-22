@@ -1,0 +1,71 @@
+/* App-Shell, Viewport, Sidebar und globale Overlays.
+ * Die @chunk-IDs sichern die bisherige Kaskaden-Reihenfolge beim Build.
+ */
+/* @chunk 0002 */
+#app{height:100dvh;display:flex;flex-direction:column}
+/* @endchunk 0002 */
+/* @chunk 0004 */
+.shell{flex:1;min-height:0;display:grid}
+/* @endchunk 0004 */
+/* @chunk 0009 */
+.viewport{min-width:0;min-height:0;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#111e38,#070d19 67%)}
+#space{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;cursor:grab}
+#space:active{cursor:grabbing}
+#space:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+#labels-canvas{position:absolute;inset:0;z-index:4;pointer-events:none}
+.space-glow{position:absolute;width:350px;height:350px;pointer-events:none;z-index:2;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#ffb75e34 0%,#e68a2925 11%,#e7a13c12 28%,transparent 67%);mix-blend-mode:screen;filter:blur(7px)}
+.viewport-topright{position:absolute;z-index:5;top:31px;right:25px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:9px;pointer-events:none}
+.view-mode{color:#a7b4c4;font-size:9px;letter-spacing:1.6px;font-weight:720}
+/* @endchunk 0009 */
+/* @chunk 0011 */
+.canvas-error{position:absolute;z-index:20;top:45%;left:10%;right:10%;text-align:center;color:#ffcece;background:#39191fd9;border:1px solid #6b3a41;border-radius:9px;padding:22px;font-size:13px}
+.canvas-error[hidden]{display:none}
+/* @endchunk 0011 */
+/* @chunk 0020 */
+.toast{position:fixed;z-index:80;bottom:24px;left:50%;transform:translate(-50%,22px);pointer-events:none;opacity:0;transition:opacity .3s,transform .3s;max-width:min(94vw,460px);background:#172839;border:1px solid #50776b;box-shadow:0 18px 54px #0008;border-radius:9px;color:#c7eee3;font-size:11px;padding:12px 17px;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.error{background:#311d22;border-color:#704148;color:#ffd4cb}
+.help-modal{background:linear-gradient(140deg,#142033,#0b1322);border:1px solid #3a4d61;max-width:520px;width:100%;padding:28px 30px;border-radius:14px;box-shadow:0 30px 110px #000b}
+.help-modal h2{font-size:27px;margin:23px 0 9px;letter-spacing:-.6px}
+.help-modal p{font-size:12px;line-height:1.7;color:#9eafc1}
+/* @endchunk 0020 */
+/* @chunk 0049 */
+#app{min-height:0}
+.shell{grid-template-columns:minmax(286px,330px) minmax(0,1fr)}
+.sidebar{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;z-index:12;background:linear-gradient(165deg,#0e1624,#0b1220);border-right:1px solid var(--line)}
+.sidebar-tabs{height:60px;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:9px 11px 0;border-bottom:1px solid #29384b;background:#101a2a}
+.sidebar-tab{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;color:#93a5ba;background:transparent;border:0;border-radius:9px 9px 0 0;font-size:12px;font-weight:680;transition:background .15s,color .15s}
+.sidebar-tab:hover{background:#1a293e;color:#e4ebf3}
+.sidebar-tab.active{background:#203147;color:#e9c59a}
+.sidebar-tab.active:after{content:"";position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:3px 3px 0 0}
+.sidebar-tab .sheet-tab-icon{font-size:18px;line-height:1;color:#a4b6c8}
+.sidebar-tab.active .sheet-tab-icon{color:var(--accent)}
+/* @endchunk 0049 */
+/* @chunk 0050 */
+.sidebar-tab:focus-visible, .sheet-tab:focus-visible{outline:2px solid #dbb77d;outline-offset:-2px}
+.sidebar-content{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;overflow:hidden}
+.sidebar-content>[hidden]{display:none!important}
+.sidebar-content>.catalog, .sidebar-content>.detail{display:flex;flex:1;position:relative!important;inset:auto!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;width:100%!important;height:auto!important;max-width:none!important;min-height:0;transform:none!important;border:0;border-radius:0;box-shadow:none;overflow:hidden;z-index:auto}
+.sidebar-content>.catalog{flex-direction:column;background:transparent}
+.sidebar-content>.detail{flex-direction:column;background:linear-gradient(165deg,#10192a,#0b1421 80%)}
+/* @endchunk 0050 */
+/* @chunk 0105 */
+
+
+/* v149: Orbit/trail hover is only enabled while simulation playback is paused. */
+#space.path-hover{cursor:pointer}
+
+.viewport>.orbit-hover-tooltip{position:absolute;z-index:18;display:flex;flex-direction:column;gap:3px;max-width:min(230px,calc(100% - 16px));padding:8px 11px;background:#101b2bef;border:1px solid #647b92;border-radius:7px;box-shadow:0 8px 30px #0009;color:#eaf1fa;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.viewport>.orbit-hover-tooltip[hidden]{display:none!important}
+
+.orbit-hover-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+
+.orbit-hover-category{font-size:10px;color:#aabbd0}
+
+
+/* v150: make the absence of probe ephemerides explicit in isolated views. */
+.schematic-scene-note{position:absolute;z-index:7;top:69px;left:max(16px,env(safe-area-inset-left));pointer-events:none;border:1px solid #45576d;border-radius:6px;background:#101b2bde;color:#cbd4e0;padding:7px 10px;font:600 10px var(--font);box-shadow:0 4px 15px #0007}
+
+.schematic-scene-note[hidden]{display:none!important}
+/* @endchunk 0105 */

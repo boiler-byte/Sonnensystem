@@ -113,7 +113,8 @@ test('v137: compact hero keeps its size, exposes the generic fallback markup and
   assert.match(css,/\.detail-hero\{height:144px\}/);
   assert.match(css,/\.detail-hero\{height:65px/);
   assert.match(css,/\.sheet-content>\.detail \.detail-hero\{height:172px/);
-  assert.match(css,/\.hero-size-label-reference\.is-earth/);
+  assert.match(css,/\.hero-size-label-reference\{background:#528ccf;color:#eff7ff\}/);
+  assert.doesNotMatch(css,/\.hero-size-label-reference\.is-earth\{/);
   assert.match(css,/\.hero-size-label-reference\.is-moon/);
   assert.match(css,/\.hero-size-plot\.is-moon \.hero-size-reference-circle\{background-color:#c9b395/);
   assert.match(css,/\.hero-generic-body\.saturn:after/);

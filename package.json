@@ -1,15 +1,17 @@
 {
   "name": "sonnensystem",
-  "version": "157.0.0",
+  "version": "158.0.0",
   "private": true,
   "type": "module",
   "description": "Modularer WebGL-Sonnensystematlas mit Offline-PWA und NASA/JPL-Horizons-Proxy",
   "scripts": {
-    "start": "node server/server.mjs",
-    "dev": "node --watch server/server.mjs",
-    "check": "node scripts/validate-catalog.mjs && node --test tests/*.test.mjs",
+    "start": "node scripts/build-css.mjs && node server/server.mjs",
+    "dev": "node scripts/build-css.mjs && node --watch server/server.mjs",
+    "check": "node scripts/build-css.mjs --check && node scripts/validate-catalog.mjs && node --test tests/*.test.mjs",
     "check:data": "node scripts/validate-catalog.mjs",
-    "textures:list": "node scripts/cache-textures.mjs"
+    "textures:list": "node scripts/cache-textures.mjs",
+    "build:css": "node scripts/build-css.mjs",
+    "check:css": "node scripts/build-css.mjs --check"
   },
   "engines": {
     "node": ">=20"

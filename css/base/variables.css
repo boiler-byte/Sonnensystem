@@ -1,0 +1,6 @@
+/* Globale Farb- und Schriftvariablen.
+ * Die @chunk-IDs sichern die bisherige Kaskaden-Reihenfolge beim Build.
+ */
+/* @chunk 0000 */
+:root{--bg:#070b14;--line:#1b293a;--muted:#77869a;--text:#e8edf3;--accent:#d6ab76;--control-bg:#172739;--control-bg-hover:#26394c;--control-border:#405269;--control-border-hover:#9e7b52;--control-text:#dec199;--focus-ring:2px solid #e8b778;--focus-ring-secondary:2px solid #dfb77d;--focus-ring-muted:2px solid #d9b587;--speed-thumb-shadow:0 0 0 2px #172437,0 0 0 4px #e3b773,0 3px 9px #000b;--font:Inter,"Segoe UI",Roboto,Arial,sans-serif}
+/* @endchunk 0000 */

@@ -61,8 +61,8 @@ test('v43: labels synchronize titles, active styling and aria-pressed after togg
 
 test('v20: bigger contrasted slider thumb with mobile on-stage control panel and two sheet tabs',async()=>{
   const html=await read('index.html'),css=await read('css/styles.css'),sheet=await read('src/ui/bottom-sheet.js');
-  assert.match(css,/#speed::-webkit-slider-thumb\{[\s\S]*?width:26px;height:26px;[\s\S]*?background:#ffedc7/);
-  assert.match(css,/#speed::-moz-range-thumb\{[\s\S]*?width:26px;height:26px;[\s\S]*?background:#ffedc7/);
+  assert.match(css,/#speed::-webkit-slider-thumb, \.layer-speed-rail #layer-speed::-webkit-slider-thumb\{[^}]*width:26px;height:26px;[^}]*background:#ffedc7/);
+  assert.match(css,/#speed::-moz-range-thumb, \.layer-speed-rail #layer-speed::-moz-range-thumb\{[^}]*width:26px;height:26px;[^}]*background:#ffedc7/);
   assert.match(css,/\.speed-slider-rail\{\s*position:relative;width:44px;height:200px/);
   assert.match(css,/transform:translate\(-50%,-50%\) rotate\(-90deg\)/);
   assert.match(css,/\.viewport>\.control-panel\{\s*display:flex!important/);

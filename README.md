@@ -1,6 +1,13 @@
-# Sonnensystem – interaktiver 3D-Atlas (v157.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v158.0.0)
 
-Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein Frontend-Buildprozess und keine Laufzeit-Abhängigkeiten aus npm.
+Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein JavaScript-Bundler und keine npm-Laufzeitabhängigkeiten. Die CSS-Ausgabedatei wird aus thematischen Quellen generiert.
+
+## Neu in v158: CSS-Konsolidierung
+
+- Wiederkehrende Farben für Steuerelemente sowie die drei bisherigen Fokus-Ringvarianten sind als Design-Tokens in `css/base/variables.css` definiert. Die vorhandene globale Akzentfarbe wird auch für die Tab-Markierungen und Slider verwendet.
+- Gemeinsame AR-/Cinema-Basisregeln, Hover-Zustände und SVG-Deklarationen wurden zusammengeführt. Identische Erde-Referenzfarben im Größenvergleich sowie weitere doppelte Einzelregeln wurden entfernt.
+- Die beiden Geschwindigkeitsregler teilen ihre Track-/Thumb-Stile je Browser-Pseudoelement (`::-webkit-*` bzw. `::-moz-*`). Der dynamische Track-Farbverlauf bleibt direkt an den jeweiligen Inputs gebunden, damit Fortschrittsänderungen unverändert funktionieren.
+- Die Kaskaden-/Media-Query-Reihenfolge bleibt erhalten. Generierte `css/styles.css` von **79.620 auf 79.002 Byte** reduziert. `npm run check` und vergleichende Desktop-/Mobil-Style-Snapshots geprüft.
 
 ## Neu in v157: Objektansicht im Mobile-Sheet
 
@@ -248,10 +255,20 @@ npm start
 Anschließend `http://localhost:4173` öffnen. Optional kann `PORT` in `.env` konfiguriert werden; `.env.example` zeigt die unterstützten Variablen. Für optionale externe Datendienste sind Kontaktdaten oder API-Schlüssel erforderlich. Lokale Katalog- und Redaktionsdaten funktionieren ohne diese Dienste.
 
 ```sh
+npm run build:css    # css/styles.css aus den Moduldateien erzeugen
+npm run check:css    # Prüfen, ob die generierte CSS-Datei aktuell ist
 npm run check         # Katalogvalidierung und komplette Regressionstests
 npm run check:data    # Nur Katalog und redaktionelle Daten prüfen
 npm run textures:list # Lokale Texturen und ihre SHA-256-Versionen anzeigen
 ```
+
+## CSS-Quellstruktur
+
+Die Styles werden in `css/base/` (`variables.css`, `reset.css`, `layout.css`), `css/components/` (`catalog.css`, `details.css`, `controls.css`, `timeline.css`, `bottom-sheet.css`) und `css/responsive.css` gepflegt. **`css/styles.css` ist ausschließlich die generierte Ausgabedatei** und bleibt der einzige im `index.html` eingebundene CSS-Pfad (auch für die Offline-PWA).
+
+Nach jeder CSS-Änderung `npm run build:css` ausführen; `npm run check:css` erkennt veraltete Ausgaben. `npm start` und `npm run dev` generieren beim Start automatisch, `npm run check` prüft den Stand vor den Regressionstests. Es werden keine zusätzlichen npm-Abhängigkeiten benötigt.
+
+Die `/* @chunk NNNN */`-Markierungen in den Moduldateien bewahren die **bisherige Reihenfolge** der Regeln über Modulgrenzen hinweg. Das ist nötig, weil die alte Stylesheet-Kaskade aus verstreuten Media Queries und späteren Überschreibungen besteht. Neue Regeln im passenden Modul und mit einer in die Reihenfolge passenden Chunk-ID ergänzen bzw. einen bestehenden Chunk erweitern. Die Markierungen nicht löschen; der Build erkennt fehlende und doppelte IDs.
 
 ## Aktuelle Funktionen
 

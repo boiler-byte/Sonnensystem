@@ -79,7 +79,8 @@ test('v55: appearance toggles retain aria-pressed states, titles and keyboard fo
     assert.match(button,/title="[^"]+"/);
     assert.doesNotMatch(button,/orbit-toggle-indicator/);
   }
-  assert.match(css,/\.scale-tool-toggle:focus-visible\{outline:2px solid/);
+  assert.match(css,/:root\{[^}]*--focus-ring:2px solid #e8b778/);
+  assert.match(css,/\.scale-tool-toggle:focus-visible\{outline:var\(--focus-ring\)/);
   assert.match(css,/\.scale-tool-toggle svg\{[\s\S]*?pointer-events:none/);
 });
 

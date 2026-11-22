@@ -1,3 +1,11 @@
+## v158 – CSS-Design-Tokens und historische Doppelungen konsolidiert (22.11.2026)
+
+- Design-Tokens für gemeinsame Steuerelement-Farben und drei historisch unterschiedliche Fokuslinien in `css/base/variables.css` eingeführt. Vorhandenen `--accent` an weiteren Stellen wiederverwendet; die tatsächlichen Farbwerte bleiben gleich.
+- AR-/Cinema-Button-Basis, Hover, Fokus und SVG-Gemeinsamkeiten zusammengefasst; identische Erde-Referenzregel im Größenvergleich entfernt; weitere gleiche Deklarationen konsolidiert.
+- Gemeinsame Slider-Track-/Thumb-Regeln für Zeit- und Layer-Geschwindigkeit, WebKit und Firefox bewusst getrennt gruppiert. Variabler Trackverlauf `--speed-track-bg` ist auf beiden Inputs definiert und reagiert weiterhin auf `--speed-progress`.
+- Unveränderte CSS-Chunks/Kaskadenreihenfolge und identisches Layout. Generiertes CSS **79.620 → 79.002 Byte**. Regressionen inklusive `tests/css-optimization-v158.test.mjs` und vergleichender Browser-Stil-/Screenshot-Prüfung für Desktop/Tablet/Mobil.
+- Paket `158.0.0`, HTML `V158.0` und PWA-Shell `sonnensystem-shell-v158` (Cache-Aktualisierung für Bestandsinstallationen).
+
 ## v157 – Objektansicht lässt mobiles Detail-Sheet geöffnet (22.11.2026)
 
 - Der `{Objekt}-Ansicht`-Toggle wechselt weiterhin zwischen den Objektansichten, ohne dabei das Mobile-Sheet zu schließen oder dessen Snap-Stufe zu verändern.

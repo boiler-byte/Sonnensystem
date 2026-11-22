@@ -1,3 +1,17 @@
+## CSS-Module und generierte Ausgabe
+
+CSS-Quellen liegen in `css/base/`, `css/components/` und `css/responsive.css`. Die Browser-/PWA-Datei `css/styles.css` wird durch `npm run build:css` erzeugt und nicht direkt bearbeitet. `npm run check:css` prüft, ob die Ausgabe den Modulquellen entspricht; `npm run check` führt diese Prüfung vor den Regressionstests aus.
+
+`/* @chunk NNNN */` und `/* @endchunk NNNN */` sind Build-Metadaten. Die fortlaufenden IDs halten die ursprüngliche Reihenfolge der Selektoren und Media Queries stabil; ein pauschales Sortieren nach Dateien würde bestehende Überschreibungen verändern. Innerhalb eines Chunks steht jede ursprüngliche Top-Level-Regel auf einer eigenen Zeile. Bei Ergänzungen auf vollständige und eindeutig nummerierte Chunks achten. Die generierte Datei bleibt das einzige Stylesheet im PWA-Shell-Cache.
+
+## v158: Design-Tokens und gemeinsame Styles
+
+Globale, mehrfach verwendete Farbwerte für Steuerflächen, Rahmen, Hover-Zustände und die drei bislang bewusst leicht unterschiedlich gefärbten Fokuslinien liegen in `css/base/variables.css`: `--control-bg`, `--control-bg-hover`, `--control-border`, `--control-border-hover`, `--control-text`, `--focus-ring`, `--focus-ring-secondary` und `--focus-ring-muted`. Bestehende Komponenten sollen diese Werte möglichst wiederverwenden statt neue feste Hexfarben zu duplizieren. `--accent` bleibt der allgemeine Akzentwert.
+
+Die AR-/Cinema-Buttons teilen ihre gemeinsamen Eigenschaften in einem Selektorblock; nur tatsächlich unterschiedliche Zustände und SVG-Eigenschaften bleiben separat. In `css/components/timeline.css` teilen `#speed` und `#layer-speed` die Track-/Thumb-Deklarationen **je Pseudoelement-Typ**. Niemals WebKit- und Firefox-Pseudoelemente in derselben Selektorliste zusammenführen, weil nicht unterstützte Pseudoelemente die gesamte Regel verwerfen können. `--speed-track-bg` wird auf den beiden Inputs definiert, **nicht** auf `:root`, damit die dynamischen Custom Properties (`--speed-fill`, `--speed-empty`, `--speed-progress`) bei Änderungen per JavaScript auf dem betreffenden Slider ausgewertet werden.
+
+`tests/css-optimization-v158.test.mjs` prüft diese Invarianten. Die ursprünglichen `@chunk`-IDs, ihre Reihenfolge und die Media-Query-Abstufungen bleiben bestehen; bei weiteren Bereinigungen zuerst die unveränderte Kaskadenwirkung prüfen. Die Ausgabedatei wird weiterhin ausschließlich mit `npm run build:css` erzeugt.
+
 ## v140: LOD-Wartung und Prüfung
 
 Der LOD-Mechanismus ist im Modul `src/renderer/lod.js` zusammengefasst. Die Schwellen **32/8/2 CSS-Pixel (Durchmesser)** liegen in `LOD_DIAMETERS`; nach Änderungen an FOV, Projektion oder Body-Scale `npm run check` ausführen und `tests/object-lod-v140.test.mjs` beachten. Für LOD 0 bleiben Oberflächentexturen und das originale Shaderprogramm erhalten, LOD 1 verwendet reduzierte Geometrie und einen einfachen farbigen Lichtshader, LOD 2/3 verwenden GPU-Point-Sprites. Punkte werden nach Kugeln und vor Umlaufbahnen gezeichnet, und der dynamische Marker-Puffer wird nach jedem Bild zurückgesetzt. Bei neuem Frontend-Modul den PWA-`SHELL` in `sw.js` aktualisieren. Der Cache-Name lautet `sonnensystem-shell-v140`.

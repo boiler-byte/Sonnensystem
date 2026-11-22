@@ -25,9 +25,13 @@ test('v124: Layer speed range remains keyboard accessible and has filled tracks 
   for(const pseudo of ['::-webkit-slider-runnable-track','::-moz-range-track']){
     const block=css.slice(css.indexOf(`.layer-speed-rail #layer-speed${pseudo}{`));
     assert.match(block,/height:6px/);
-    assert.match(block,/var\(--speed-fill\) var\(--speed-progress\)/);
-    assert.match(block,/var\(--speed-empty\) var\(--speed-progress\)/);
+    assert.match(block,/background:var\(--speed-track-bg\)/);
   }
+  // The shared track token remains local to the two range inputs, so the
+  // JavaScript-updated --speed-progress is resolved on each individual slider.
+  assert.match(css,/\.vertical-speed-control #speed, \.layer-speed-rail #layer-speed\{[^}]*--speed-track-bg:linear-gradient\(/);
+  assert.match(css,/--speed-track-bg:[^}]*var\(--speed-fill\) var\(--speed-progress\)/);
+  assert.match(css,/--speed-track-bg:[^}]*var\(--speed-empty\) var\(--speed-progress\)/);
   assert.match(css,/#layer-speed::-webkit-slider-thumb\{[^}]*width:26px;height:26px/);
   assert.match(css,/#layer-speed::-moz-range-thumb\{[^}]*width:26px;height:26px/);
 });
