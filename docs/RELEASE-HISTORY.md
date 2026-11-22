@@ -1,3 +1,9 @@
+## v159 – Daten/Wissen-Reiter bleiben beim Scrollen oben (22.11.2026)
+
+- `.detail-tabs` bleibt im nativen Scrollcontainer `.detail-scroll`, haftet beim Scrollen mit `position: sticky; top: 0` am oberen Rand und überlagert Inhalte mit deckendem Hintergrund sowie `z-index`. Gilt auf Desktop und im mobilen Bottom-Sheet.
+- Keine Änderungen an Tab-Wechsel, Fokus-Reihenfolge, Scrollcontainern oder Objektdaten. Regressionstest `tests/detail-sticky-tabs-v159.test.mjs`.
+- Paket `159.0.0`, HTML `V159.0`, PWA-Shell `sonnensystem-shell-v159`. Basis v158.
+
 ## v158 – CSS-Design-Tokens und historische Doppelungen konsolidiert (22.11.2026)
 
 - Design-Tokens für gemeinsame Steuerelement-Farben und drei historisch unterschiedliche Fokuslinien in `css/base/variables.css` eingeführt. Vorhandenen `--accent` an weiteren Stellen wiederverwendet; die tatsächlichen Farbwerte bleiben gleich.

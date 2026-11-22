@@ -1,6 +1,11 @@
-# Sonnensystem – interaktiver 3D-Atlas (v158.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v159.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein JavaScript-Bundler und keine npm-Laufzeitabhängigkeiten. Die CSS-Ausgabedatei wird aus thematischen Quellen generiert.
+
+## Neu in v159: Sticky-Tabs in den Objektdetails
+
+- Die Reiter **Daten** und **Wissen** sind innerhalb der scrollbaren Objektdetails per `position: sticky; top: 0` am oberen Rand fixiert, sobald sie ihn erreichen.
+- Eine deckende Hintergrundfläche und ein erhöhter `z-index` halten sie beim Scrollen vor den Inhalten lesbar. Das Tab-Verhalten, die Reihenfolge und die mobile Sheet-Navigation sind unverändert.
 
 ## Neu in v158: CSS-Konsolidierung
 

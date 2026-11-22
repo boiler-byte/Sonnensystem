@@ -4,6 +4,10 @@ CSS-Quellen liegen in `css/base/`, `css/components/` und `css/responsive.css`. D
 
 `/* @chunk NNNN */` und `/* @endchunk NNNN */` sind Build-Metadaten. Die fortlaufenden IDs halten die ursprüngliche Reihenfolge der Selektoren und Media Queries stabil; ein pauschales Sortieren nach Dateien würde bestehende Überschreibungen verändern. Innerhalb eines Chunks steht jede ursprüngliche Top-Level-Regel auf einer eigenen Zeile. Bei Ergänzungen auf vollständige und eindeutig nummerierte Chunks achten. Die generierte Datei bleibt das einzige Stylesheet im PWA-Shell-Cache.
 
+## v159: Sticky-Reiter in den Objektdetails
+
+`.detail-tabs` liegt weiterhin direkt in `.detail-scroll` und nutzt `position: sticky; top: 0; z-index: 5`. Die deckende Fläche verhindert Textdurchscheinen. Der Scrollcontainer bleibt auf Desktop und im mobilen Bottom-Sheet derselbe; die Reiter werden nicht aus dem normalen Dokumentfluss genommen. Änderungen an `css/components/details.css` per `npm run build:css` in die generierte `css/styles.css` übertragen. Regressionen in `tests/detail-sticky-tabs-v159.test.mjs`.
+
 ## v158: Design-Tokens und gemeinsame Styles
 
 Globale, mehrfach verwendete Farbwerte für Steuerflächen, Rahmen, Hover-Zustände und die drei bislang bewusst leicht unterschiedlich gefärbten Fokuslinien liegen in `css/base/variables.css`: `--control-bg`, `--control-bg-hover`, `--control-border`, `--control-border-hover`, `--control-text`, `--focus-ring`, `--focus-ring-secondary` und `--focus-ring-muted`. Bestehende Komponenten sollen diese Werte möglichst wiederverwenden statt neue feste Hexfarben zu duplizieren. `--accent` bleibt der allgemeine Akzentwert.
