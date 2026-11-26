@@ -4,6 +4,7 @@
   "id": "./",
   "description": "Interaktiver 3D-Sonnensystematlas mit Planeten, Monden, Asteroiden und Satelliten.",
   "lang": "de",
+  "categories": ["education", "science"],
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

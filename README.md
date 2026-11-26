@@ -1,6 +1,13 @@
-# Sonnensystem – interaktiver 3D-Atlas (v161.0.0)
+# Sonnensystem – interaktiver 3D-Atlas (v162.0.0)
 
 Browserbasierter Sonnensystematlas mit WebGL, lokalem Katalog, deutschsprachigen Objektartikeln, Planetenansichten, AR-Blicksteuerung und Offline-PWA. Kein JavaScript-Bundler und keine npm-Laufzeitabhängigkeiten. Die CSS-Ausgabedatei wird aus thematischen Quellen generiert.
+
+## Neu in v162: Boiler Room v2
+
+- Die öffentlichen Schnittstellen `manifest.webmanifest`, `boiler-room.json` und `sw.js` liegen im Projektstamm. Das Manifest behält seine PWA-Identität und erhält die Kategorien `education` und `science`.
+- Die technische Boiler-Room-Version 162 setzt die bestehende Projektversionsfolge fort; sichtbare Version `162.0.0`. Die Erstveröffentlichung von ORBITAL/Sonnensystem ist nicht datiert und bleibt daher `null`.
+- Offline-Modus `partial`: lokaler Atlas, Katalog, Simulation und mitgelieferte Texturen; NASA/JPL-Abgleich und serverseitige Textur-Aktualisierung erfordern den Server bzw. Internetzugang. Die vorhandene PWA-Cache-Strategie bleibt unverändert (Texturen werden bei Nutzung gecacht).
+- Integration, Prüfnachweise und Bereitstellung: [Boiler-Room-Integration](docs/BOILER-ROOM.md). Keine Änderung an Anwendungslogik, Bedienung oder Benutzerdaten.
 
 ## Neu in v161: Feste Maus- und Touchbelegung bei Objektauswahl
 
